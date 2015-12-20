@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<monitor-rules>
+   <rule id="test:Metric:arts-shop-sc">
+      <metric-item monitorCount="true"/>
+      <config starttime="00:00" endtime="24:00">
+         <condition minute="3" alertType="error">
+            <sub-condition type="DescVal" text="100.0"/>
+            <sub-condition type="DescPer" text="90.0"/>
+         </condition>
+      </config>
+   </rule>
+</monitor-rules>
