@@ -1,16 +1,13 @@
 package org.unidal.cat.report.internals;
 
 import java.io.IOException;
-import java.util.Date;
 
 import org.unidal.cat.report.Report;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.remote.RemoteContext;
 
 public interface ReportProvider<T extends Report> {
-	public boolean isEligible(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain);
+	public boolean isEligible(RemoteContext ctx, ReportDelegate<T> delegate);
 
-	public T getReport(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain,
-	      ReportFilter<T> filter) throws IOException;
+	public T getReport(RemoteContext ctx, ReportDelegate<T> delegate) throws IOException;
 }

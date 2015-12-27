@@ -10,7 +10,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.unidal.cat.report.Report;
-import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.internals.FileReportStorage;
 import org.unidal.cat.report.internals.ReportProvider;
@@ -128,11 +127,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		} else {
 			return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
 		}
-	}
-
-	@Override
-	public T getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<T> filter) throws IOException {
-		return m_provider.getReport(getDelegate(), period, startTime, domain, filter);
 	}
 
 	public abstract int getThreadsCount();

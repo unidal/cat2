@@ -2,10 +2,16 @@ package com.dianping.cat.report.page.event;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.report.ReportPeriod;
+import org.unidal.cat.report.internals.ReportProvider;
+import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
+import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;
@@ -60,6 +66,12 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private DomainGroupConfigManager m_configManager;
+
+	@Inject("event")
+	private ReportDelegate<EventReport> m_delegate;
+
+	@Inject
+	private ReportProvider<EventReport> m_provider;
 
 	private void buildDistributionInfo(Model model, String type, String name, EventReport report) {
 		PieGraphChartVisitor chartVisitor = new PieGraphChartVisitor(type, name);
@@ -152,7 +164,18 @@ public class Handler implements PageHandler<Context> {
 		return report;
 	}
 
-	private EventReport getHourlyReport(Payload payload) {
+	private EventReport getHourlyReport(Payload payload) throws IOException {
+		String domain = payload.getDomain();
+		String ipAddress = payload.getIpAddress();
+		RemoteContext ctx = new DefaultRemoteContext(m_delegate.getName(), domain, new Date(payload.getDate()),
+		      ReportPeriod.HOUR, null) //
+		      .setProperty("ip", ipAddress);
+
+		return m_provider.getReport(ctx, m_delegate);
+	}
+
+	@Deprecated
+	EventReport getHourlyReport2(Payload payload) {
 		String domain = payload.getDomain();
 		String ipAddress = payload.getIpAddress();
 		ModelRequest request = new ModelRequest(domain, payload.getDate()) //

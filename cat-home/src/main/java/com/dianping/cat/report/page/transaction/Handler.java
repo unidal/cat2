@@ -7,9 +7,14 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.report.Report;
+import org.unidal.cat.report.ReportFilter;
+import org.unidal.cat.report.ReportFilterManager;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.internals.ReportProvider;
 import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
+import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;
@@ -71,6 +76,15 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject(type = ModelService.class, value = TransactionAnalyzer.ID)
 	private ModelService<TransactionReport> m_service;
+
+	@Inject("transaction")
+	private ReportDelegate<TransactionReport> m_delegate;
+
+	@Inject
+	private ReportProvider<TransactionReport> m_provider;
+
+	@Inject
+	private ReportFilterManager m_filterManager;
 
 	private void buildDistributionInfo(Model model, String type, String name, TransactionReport report) {
 		PieGraphChartVisitor chartVisitor = new PieGraphChartVisitor(type, name);
@@ -170,20 +184,18 @@ public class Handler implements PageHandler<Context> {
 		return report;
 	}
 
-	@Inject("transaction")
-	private ReportDelegate<TransactionReport> m_delegate;
-
-	@Inject
-	private ReportProvider<TransactionReport> m_provider;
-
-	protected TransactionReport getHourlyReport(Payload payload) throws IOException {
+	private TransactionReport getHourlyReport(Payload payload) throws IOException {
 		String domain = payload.getDomain();
-		// String ipAddress = payload.getIpAddress();
+		String name = m_delegate.getName();
+		ReportFilter<? extends Report> filter = m_filterManager.getFilter(name, "report");
+		RemoteContext ctx = new DefaultRemoteContext(name, domain, new Date(payload.getDate()), ReportPeriod.HOUR, filter) //
+		      .setProperty("ip", payload.getIpAddress());
 
-		return m_provider.getReport(m_delegate, ReportPeriod.HOUR, new Date(payload.getDate()), domain, null);
+		return m_provider.getReport(ctx, m_delegate);
 	}
 
-	protected TransactionReport getHourlyReport2(Payload payload) {
+	@Deprecated
+	TransactionReport getHourlyReport2(Payload payload) {
 		String domain = payload.getDomain();
 		String ipAddress = payload.getIpAddress();
 		ModelRequest request = new ModelRequest(domain, payload.getDate()).setProperty("type", payload.getType())

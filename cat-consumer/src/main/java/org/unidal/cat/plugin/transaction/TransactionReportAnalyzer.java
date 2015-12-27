@@ -26,11 +26,9 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 
-@Named(type = MessageAnalyzer.class, value = TransactionReportAnalyzer.ID)
+@Named(type = MessageAnalyzer.class, value = TransactionConstants.ID)
 public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> implements LogEnabled {
-	public static final String ID = "transaction";
-
-	@Inject(ID)
+	@Inject(TransactionConstants.ID)
 	private ReportManager<TransactionReport> m_reportManager;
 
 	@Inject
@@ -41,7 +39,8 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		List<Message> children = t.getChildren();
 		int size = children.size();
 
-		if (tree.getMessage() == t && size > 0) { // root transaction with children
+		if (tree.getMessage() == t && size > 0) { // root transaction with
+			// children
 			Message last = children.get(size - 1);
 
 			if (last instanceof Event) {
@@ -91,16 +90,19 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		m_logger = logger;
 	}
 
+	@Deprecated
 	@Override
 	public int getAnanlyzerCount() {
 		return 2;
 	}
 
+	@Deprecated
 	@Override
 	public TransactionReport getReport(String domain) {
 		return null;
 	}
 
+	@Deprecated
 	@Override
 	public com.dianping.cat.report.ReportManager<?> getReportManager() {
 		return null;
@@ -157,7 +159,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		range.setSum(range.getSum() + d);
 	}
 
-	protected void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
+	private void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
 		String type = t.getType();
 		String name = t.getName();
 
@@ -185,7 +187,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		}
 	}
 
-	protected void processTypeAndName(Transaction t, TransactionType type, TransactionName name, String messageId,
+	private void processTypeAndName(Transaction t, TransactionType type, TransactionName name, String messageId,
 	      double duration) {
 		type.incTotalCount();
 		name.incTotalCount();

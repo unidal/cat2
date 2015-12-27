@@ -1,13 +1,12 @@
 package org.unidal.cat.report.internals;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -19,22 +18,22 @@ public class HistoricalReportProvider<T extends Report> implements ReportProvide
 	private ReportStorage<T> m_storage;
 
 	@Override
-	public boolean isEligible(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain) {
-		return !period.isHistorical(startTime);
+	public boolean isEligible(RemoteContext ctx, ReportDelegate<T> delegate) {
+		return ctx.getPeriod().isHistorical(ctx.getStartTime());
 	}
 
 	@Override
-	public T getReport(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain,
-	      ReportFilter<T> filter) throws IOException {
-		List<T> reports = m_storage.loadAll(delegate, period, startTime, domain);
+	public T getReport(RemoteContext ctx, ReportDelegate<T> delegate) throws IOException {
+		List<T> reports = m_storage.loadAll(delegate, ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
 
 		if (reports.isEmpty()) {
 			return null;
 		} else {
-			T aggregated = delegate.aggregate(period, reports);
+			T aggregated = delegate.aggregate(ctx.getPeriod(), reports);
+			ReportFilter<T> filter = ctx.getFilter();
 
 			if (filter != null) {
-				filter.applyTo(aggregated);
+				filter.applyTo(ctx, aggregated);
 			}
 
 			return aggregated;

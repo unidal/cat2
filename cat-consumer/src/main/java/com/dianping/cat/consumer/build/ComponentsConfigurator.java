@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.unidal.cat.plugin.event.EventReportAggregator;
+import org.unidal.cat.plugin.event.EventReportAnalyzer;
+import org.unidal.cat.plugin.event.EventReportDelegate;
+import org.unidal.cat.plugin.event.EventReportManager;
+import org.unidal.cat.plugin.event.filter.EventReportFilter;
 import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
@@ -91,8 +96,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.addAll(defineReportComponents());
 
-//		all.addAll(defineTransactionComponents());
-		all.addAll(defineEventComponents());
+		// all.addAll(defineTransactionComponents());
+		// all.addAll(defineEventComponents());
 		all.addAll(defineProblemComponents());
 		all.addAll(defineHeartbeatComponents());
 		all.addAll(defineTopComponents());
@@ -155,7 +160,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		return all;
 	}
 
-	private Collection<Component> defineEventComponents() {
+	Collection<Component> defineEventComponents() {
 		final List<Component> all = new ArrayList<Component>();
 		final String ID = EventAnalyzer.ID;
 
@@ -312,6 +317,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionReportDelegate.class));
 		all.add(A(TransactionReportAnalyzer.class));
 		all.add(A(TransactionReportFilter.class));
+
+		all.add(A(EventReportManager.class));
+		all.add(A(EventReportAggregator.class));
+		all.add(A(EventReportDelegate.class));
+		all.add(A(EventReportAnalyzer.class));
+		all.add(A(EventReportFilter.class));
 
 		return all;
 	}

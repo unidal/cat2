@@ -18,6 +18,7 @@ import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportConfiguration;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteStub;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
@@ -49,8 +50,11 @@ public class ReportProviderTest extends JdbcTestCase {
 
 		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals(true, provider.isEligible(delegate, ReportPeriod.HOUR, startTime, report.getDomain()));
-		Assert.assertEquals(report, provider.getReport(delegate, ReportPeriod.HOUR, startTime, report.getDomain(), null));
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
+		      ReportPeriod.HOUR, null);
+
+		Assert.assertEquals(true, provider.isEligible(ctx, delegate));
+		Assert.assertEquals(report, provider.getReport(ctx, delegate));
 	}
 
 	@Test
@@ -63,12 +67,15 @@ public class ReportProviderTest extends JdbcTestCase {
 		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
 		Date startTime = new Date();
-		Report report = new TransactionReport("default").setStartTime(startTime);
+		Report report = new TransactionReport("default2").setStartTime(startTime);
 
 		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals(true, provider.isEligible(delegate, ReportPeriod.HOUR, startTime, report.getDomain()));
-		Assert.assertEquals(report, provider.getReport(delegate, ReportPeriod.HOUR, startTime, report.getDomain(), null));
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
+		      ReportPeriod.HOUR, null);
+
+		Assert.assertEquals(true, provider.isEligible(ctx, delegate));
+		Assert.assertEquals(report, provider.getReport(ctx, delegate));
 	}
 
 	@Test
@@ -77,13 +84,16 @@ public class ReportProviderTest extends JdbcTestCase {
 		ReportProvider<Report> provider = lookup(ReportProvider.class, HistoricalReportProvider.ID);
 		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
-		Date startTime = new Date();
+		Date startTime = new Date(1446885302848L);
 		Report report = new TransactionReport("historical").setStartTime(startTime);
 
 		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals(true, provider.isEligible(delegate, ReportPeriod.HOUR, startTime, report.getDomain()));
-		Assert.assertEquals(report, provider.getReport(delegate, ReportPeriod.HOUR, startTime, report.getDomain(), null));
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
+		      ReportPeriod.HOUR, null);
+
+		Assert.assertEquals(true, provider.isEligible(ctx, delegate));
+		Assert.assertEquals(report, provider.getReport(ctx, delegate));
 	}
 
 	@Test
@@ -99,9 +109,11 @@ public class ReportProviderTest extends JdbcTestCase {
 
 		s_servers.clear();
 
-		Assert.assertEquals(true, provider.isEligible(delegate, ReportPeriod.HOUR, startTime, report.getDomain()));
-		Assert.assertEquals(report, provider.getReport(delegate, ReportPeriod.HOUR, startTime, report.getDomain(), null));
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
+		      ReportPeriod.HOUR, null);
 
+		Assert.assertEquals(true, provider.isEligible(ctx, delegate));
+		Assert.assertEquals(report, provider.getReport(ctx, delegate));
 		Assert.assertEquals("[127.0.0.1, 127.0.0.3]", s_servers.toString());
 	}
 

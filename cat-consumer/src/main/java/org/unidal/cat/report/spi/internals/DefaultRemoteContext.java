@@ -140,7 +140,7 @@ public class DefaultRemoteContext implements RemoteContext {
 	}
 
 	@Override
-	public void setProperty(String property, String newValue) {
+	public RemoteContext setProperty(String property, String newValue) {
 		if (newValue == null) {
 			if (m_properties != null) {
 				m_properties.remove(property);
@@ -152,6 +152,8 @@ public class DefaultRemoteContext implements RemoteContext {
 
 			m_properties.put(property, newValue);
 		}
+
+		return this;
 	}
 
 	@Override

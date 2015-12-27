@@ -174,69 +174,64 @@
 			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionReportFilter</implementation>
 		</component>
 		<component>
-			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
+			<role>org.unidal.cat.report.spi.ReportManager</role>
 			<role-hint>event</role-hint>
-			<implementation>com.dianping.cat.consumer.event.EventAnalyzer</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<implementation>org.unidal.cat.plugin.event.EventReportManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.report.ReportManager</role>
+					<role>org.unidal.cat.report.internals.ReportProvider</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.internals.ReportStorage</role>
+					<field-name>m_storage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.internals.ReportStorage</role>
+					<role-hint>file</role-hint>
+					<field-name>m_fileStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.spi.ReportDelegateManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.report.spi.ReportAggregator</role>
+			<role-hint>event</role-hint>
+			<implementation>org.unidal.cat.plugin.event.EventReportAggregator</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.report.spi.ReportDelegate</role>
+			<role-hint>event</role-hint>
+			<implementation>org.unidal.cat.plugin.event.EventReportDelegate</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.report.spi.ReportAggregator</role>
+					<role-hint>event</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
+			<role-hint>event</role-hint>
+			<implementation>org.unidal.cat.plugin.event.EventReportAnalyzer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.report.spi.ReportManager</role>
 					<role-hint>event</role-hint>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.ReportDelegate</role>
-					<role-hint>event</role-hint>
+					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
-				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.ReportManager</role>
-			<role-hint>event</role-hint>
-			<implementation>com.dianping.cat.report.DefaultReportManager</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<configuration>
-				<name>event</name>
-			</configuration>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.report.ReportDelegate</role>
-					<role-hint>event</role-hint>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.ReportBucketManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportContentDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.DomainValidator</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.report.ReportDelegate</role>
-			<role-hint>event</role-hint>
-			<implementation>com.dianping.cat.consumer.event.EventDelegate</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.task.TaskManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.consumer.config.AllReportConfigManager</role>
-				</requirement>
-			</requirements>
+			<role>org.unidal.cat.report.ReportFilter</role>
+			<role-hint>event:report</role-hint>
+			<implementation>org.unidal.cat.plugin.event.filter.EventReportFilter</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.consumer.problem.ProblemHandler</role>

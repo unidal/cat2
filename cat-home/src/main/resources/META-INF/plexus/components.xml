@@ -3777,6 +3777,9 @@
 				<requirement>
 					<role>org.unidal.cat.report.internals.ReportProvider</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.ReportFilterManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -3867,6 +3870,13 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.DomainGroupConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.spi.ReportDelegate</role>
+					<role-hint>event</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.internals.ReportProvider</role>
 				</requirement>
 			</requirements>
 		</component>

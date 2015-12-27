@@ -1,29 +1,27 @@
-package org.unidal.cat.plugin.transaction.filter;
+package org.unidal.cat.plugin.event.filter;
 
-import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.IVisitor;
-import com.dianping.cat.consumer.transaction.model.entity.AllDuration;
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
-import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.consumer.event.model.IVisitor;
+import com.dianping.cat.consumer.event.model.entity.EventName;
+import com.dianping.cat.consumer.event.model.entity.EventReport;
+import com.dianping.cat.consumer.event.model.entity.EventType;
+import com.dianping.cat.consumer.event.model.entity.Machine;
+import com.dianping.cat.consumer.event.model.entity.Range;
+import com.dianping.cat.consumer.event.model.transform.BaseVisitor;
 
-@Named(type = ReportFilter.class, value = TransactionConstants.ID + ":report")
-public class TransactionReportFilter implements ReportFilter<TransactionReport> {
+@Named(type = ReportFilter.class, value = EventConstants.ID + ":report")
+public class EventReportFilter implements ReportFilter<EventReport> {
 	@Override
-	public void applyTo(TransactionReport report) {
+	public void applyTo(EventReport report) {
 	}
 
 	@Override
-	public void applyTo(RemoteContext ctx, TransactionReport report) {
+	public void applyTo(RemoteContext ctx, EventReport report) {
 		String type = ctx.getProperty("type", null);
 		String name = ctx.getProperty("name", null);
 		String ip = ctx.getProperty("ip", null);
@@ -41,7 +39,7 @@ public class TransactionReportFilter implements ReportFilter<TransactionReport> 
 
 	@Override
 	public String getReportName() {
-		return TransactionConstants.ID;
+		return EventConstants.ID;
 	}
 
 	static class Filter extends BaseVisitor {
@@ -64,17 +62,6 @@ public class TransactionReportFilter implements ReportFilter<TransactionReport> 
 		}
 
 		@Override
-		public void visitAllDuration(AllDuration duration) {
-		}
-
-		@Override
-		public void visitDuration(Duration duration) {
-			if (m_type != null && m_name != null) {
-				super.visitDuration(duration);
-			}
-		}
-
-		@Override
 		public void visitMachine(Machine machine) {
 			if (m_ip == null || m_ip.equals(Constants.ALL)) {
 				super.visitMachine(machine);
@@ -84,7 +71,7 @@ public class TransactionReportFilter implements ReportFilter<TransactionReport> 
 		}
 
 		@Override
-		public void visitName(TransactionName name) {
+		public void visitName(EventName name) {
 			if (m_type != null) {
 				super.visitName(name);
 			}
@@ -104,14 +91,14 @@ public class TransactionReportFilter implements ReportFilter<TransactionReport> 
 		}
 
 		@Override
-		public void visitTransactionReport(TransactionReport transactionReport) {
-			synchronized (transactionReport) {
-				super.visitTransactionReport(transactionReport);
+		public void visitEventReport(EventReport eventReport) {
+			synchronized (eventReport) {
+				super.visitEventReport(eventReport);
 			}
 		}
 
 		@Override
-		public void visitType(TransactionType type) {
+		public void visitType(EventType type) {
 			if (m_type == null) {
 				super.visitType(type);
 			} else if (type.getId().equals(m_type)) {

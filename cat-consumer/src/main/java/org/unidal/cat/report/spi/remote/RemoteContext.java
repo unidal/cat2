@@ -26,6 +26,6 @@ public interface RemoteContext {
 
 	public Date getStartTime();
 
-	public void setProperty(String property, String newValue);
+	public RemoteContext setProperty(String property, String newValue);
 
 }

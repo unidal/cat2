@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.unidal.cat.report.Report;
-import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.ReportPeriod;
 
 public interface ReportManager<T extends Report> {
@@ -19,5 +18,5 @@ public interface ReportManager<T extends Report> {
 
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException;
 
-	public T getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<T> filter) throws IOException;
+	// public T getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<T> filter) throws IOException;
 }

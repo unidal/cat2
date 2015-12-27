@@ -3,7 +3,6 @@ package org.unidal.cat.report.internals;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -17,9 +16,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
 import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportConfiguration;
 import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteStub;
 import org.unidal.helper.Threads;
@@ -41,17 +38,16 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 	private ExecutorService m_pool;
 
 	@Override
-	public boolean isEligible(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain) {
-		return !period.isHistorical(startTime);
+	public boolean isEligible(RemoteContext ctx, ReportDelegate<T> delegate) {
+		return !ctx.getPeriod().isHistorical(ctx.getStartTime());
 	}
 
 	@Override
-	public T getReport(final ReportDelegate<T> delegate, final ReportPeriod period, final Date startTime,
-	      final String domain, final ReportFilter<T> filter) throws IOException {
+	public T getReport(final RemoteContext ctx, final ReportDelegate<T> delegate) throws IOException {
 		Map<String, Boolean> servers = m_configuration.getServers();
 		int len = servers.size();
-		List<Callable<T>> callables = new ArrayList<Callable<T>>();
-		final RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
+		List<Callable<T>> callables = new ArrayList<Callable<T>>(servers.size());
+		// final RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
 
 		for (Map.Entry<String, Boolean> e : servers.entrySet()) {
 			if (e.getValue().booleanValue()) {
@@ -94,10 +90,11 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 		if (reports.isEmpty()) {
 			return null;
 		} else {
-			T report = delegate.aggregate(period, reports);
+			T report = delegate.aggregate(ctx.getPeriod(), reports);
+			ReportFilter<Report> filter = ctx.getFilter();
 
 			if (filter != null) {
-				filter.applyTo(report);
+				filter.applyTo(ctx, report);
 			}
 
 			return report;
