@@ -3,8 +3,8 @@ package org.unidal.cat.report;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.transaction.report.TransactionConstants;
-import org.unidal.cat.transaction.report.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.transaction.TransactionReportManager;
 import org.unidal.lookup.ComponentTestCase;
 
 public class ReportManagerManagerTest extends ComponentTestCase {

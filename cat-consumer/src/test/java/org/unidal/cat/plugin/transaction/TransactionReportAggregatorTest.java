@@ -1,4 +1,4 @@
-package org.unidal.cat.transaction.report;
+package org.unidal.cat.plugin.transaction;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -7,6 +7,8 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportAggregator;
 import org.unidal.dal.jdbc.test.JdbcTestCase;

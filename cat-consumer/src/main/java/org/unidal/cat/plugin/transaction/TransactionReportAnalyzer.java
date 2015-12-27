@@ -1,4 +1,4 @@
-package org.unidal.cat.transaction.report;
+package org.unidal.cat.plugin.transaction;
 
 import java.io.IOException;
 import java.util.Date;

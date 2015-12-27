@@ -1,4 +1,4 @@
-package org.unidal.cat.transaction.report;
+package org.unidal.cat.plugin.transaction;
 
 import org.unidal.cat.report.spi.ReportManager;
 import org.unidal.cat.report.spi.internals.AbstractReportManager;

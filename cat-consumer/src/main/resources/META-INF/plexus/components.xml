@@ -116,7 +116,7 @@
 		<component>
 			<role>org.unidal.cat.report.spi.ReportManager</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.transaction.report.TransactionReportManager</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionReportManager</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.report.internals.ReportProvider</role>
@@ -138,12 +138,12 @@
 		<component>
 			<role>org.unidal.cat.report.spi.ReportAggregator</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.transaction.report.TransactionReportAggregator</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAggregator</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.report.spi.ReportDelegate</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.transaction.report.TransactionReportDelegate</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionReportDelegate</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.report.spi.ReportAggregator</role>
@@ -154,7 +154,7 @@
 		<component>
 			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.transaction.report.TransactionReportAnalyzer</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAnalyzer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.report.spi.ReportManager</role>
@@ -171,7 +171,7 @@
 		<component>
 			<role>org.unidal.cat.report.ReportFilter</role>
 			<role-hint>transaction:report</role-hint>
-			<implementation>org.unidal.cat.transaction.report.filter.TransactionReportFilter</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionReportFilter</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.analysis.MessageAnalyzer</role>

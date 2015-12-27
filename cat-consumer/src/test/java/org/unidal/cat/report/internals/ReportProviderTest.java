@@ -13,13 +13,13 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportConfiguration;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteStub;
-import org.unidal.cat.transaction.report.TransactionConstants;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;

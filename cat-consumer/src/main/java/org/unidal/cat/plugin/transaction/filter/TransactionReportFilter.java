@@ -1,8 +1,8 @@
-package org.unidal.cat.transaction.report.filter;
+package org.unidal.cat.plugin.transaction.filter;
 
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.spi.remote.RemoteContext;
-import org.unidal.cat.transaction.report.TransactionConstants;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;

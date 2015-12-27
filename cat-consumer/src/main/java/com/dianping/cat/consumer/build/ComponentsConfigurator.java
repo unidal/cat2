@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
+import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
+import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
+import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.filter.TransactionReportFilter;
 import org.unidal.cat.report.internals.DefaultReportConfiguration;
 import org.unidal.cat.report.internals.DefaultReportFilterManager;
 import org.unidal.cat.report.internals.DefaultReportManagerManager;
@@ -16,11 +21,6 @@ import org.unidal.cat.report.internals.RecentReportProvider;
 import org.unidal.cat.report.spi.internals.DefaultRemoteSkeleton;
 import org.unidal.cat.report.spi.internals.DefaultRemoteStub;
 import org.unidal.cat.report.spi.internals.DefaultReportDelegateManager;
-import org.unidal.cat.transaction.report.TransactionReportAggregator;
-import org.unidal.cat.transaction.report.TransactionReportAnalyzer;
-import org.unidal.cat.transaction.report.TransactionReportDelegate;
-import org.unidal.cat.transaction.report.TransactionReportManager;
-import org.unidal.cat.transaction.report.filter.TransactionReportFilter;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -272,7 +272,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		return all;
 	}
 
-	private Collection<Component> defineTransactionComponents() {
+	Collection<Component> defineTransactionComponents() {
 		final List<Component> all = new ArrayList<Component>();
 		final String ID = TransactionAnalyzer.ID;
 

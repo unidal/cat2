@@ -3,10 +3,10 @@ package org.unidal.cat.report;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.unidal.cat.plugin.transaction.TransactionReportAggregatorTest;
 import org.unidal.cat.report.internals.ReportProviderTest;
 import org.unidal.cat.report.internals.ReportStorageTest;
 import org.unidal.cat.report.spi.remote.RemoteIntegrationTest;
-import org.unidal.cat.transaction.report.TransactionReportAggregatorTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({

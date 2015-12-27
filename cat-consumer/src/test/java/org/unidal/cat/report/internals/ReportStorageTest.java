@@ -10,10 +10,10 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.transaction.report.TransactionConstants;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
 import org.unidal.helper.Files;
 
