@@ -13,7 +13,11 @@ import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
 import org.unidal.cat.plugin.transaction.TransactionReportManager;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.report.internals.DefaultReportConfiguration;
 import org.unidal.cat.report.internals.DefaultReportFilterManager;
 import org.unidal.cat.report.internals.DefaultReportManagerManager;
@@ -316,7 +320,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionReportAggregator.class));
 		all.add(A(TransactionReportDelegate.class));
 		all.add(A(TransactionReportAnalyzer.class));
-		all.add(A(TransactionReportFilter.class));
+
+		all.add(A(TransactionReportHelper.class));
+		all.add(A(TransactionTypeFilter.class));
+		all.add(A(TransactionTypeGraphFilter.class));
+		all.add(A(TransactionNameFilter.class));
+		all.add(A(TransactionNameGraphFilter.class));
 
 		all.add(A(EventReportManager.class));
 		all.add(A(EventReportAggregator.class));

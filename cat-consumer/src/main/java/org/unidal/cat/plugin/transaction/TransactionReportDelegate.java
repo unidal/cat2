@@ -17,9 +17,9 @@ import com.dianping.cat.consumer.transaction.model.transform.DefaultNativeParser
 import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultXmlBuilder;
 
-@Named(type = ReportDelegate.class, value = TransactionConstants.ID)
+@Named(type = ReportDelegate.class, value = TransactionConstants.NAME)
 public class TransactionReportDelegate implements ReportDelegate<TransactionReport> {
-	@Inject(type = ReportAggregator.class, value = TransactionConstants.ID)
+	@Inject(type = ReportAggregator.class, value = TransactionConstants.NAME)
 	private ReportAggregator<TransactionReport> m_aggregator;
 
 	@Override
@@ -47,7 +47,7 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 
 	@Override
 	public String getName() {
-		return TransactionConstants.ID;
+		return TransactionConstants.NAME;
 	}
 
 	@Override

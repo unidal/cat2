@@ -12,8 +12,8 @@ public class ReportManagerManagerTest extends ComponentTestCase {
 	public void testConfiguration() {
 		ReportManagerManager rmm = lookup(ReportManagerManager.class);
 
-		Assert.assertTrue(rmm.hasReportManager(TransactionConstants.ID));
-		Assert.assertSame(TransactionReportManager.class, rmm.getReportManager(TransactionConstants.ID).getClass());
+		Assert.assertTrue(rmm.hasReportManager(TransactionConstants.NAME));
+		Assert.assertSame(TransactionReportManager.class, rmm.getReportManager(TransactionConstants.NAME).getClass());
 
 		try {
 			rmm.getReportManager("undefined");

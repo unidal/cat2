@@ -42,7 +42,7 @@ public class TransactionReportAggregatorTest extends JdbcTestCase {
 	@Test
 	public void testAggregate() throws Exception {
 		TransactionReportAggregator aggregator = (TransactionReportAggregator) lookup(ReportAggregator.class,
-		      TransactionConstants.ID);
+		      TransactionConstants.NAME);
 		TransactionReport p1 = loadReport("aggregate_p1.xml");
 		TransactionReport p2 = loadReport("aggregate_p2.xml");
 		TransactionReport expected = loadReport("aggregate_all.xml");

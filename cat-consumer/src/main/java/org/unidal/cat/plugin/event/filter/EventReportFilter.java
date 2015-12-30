@@ -17,10 +17,6 @@ import com.dianping.cat.consumer.event.model.transform.BaseVisitor;
 @Named(type = ReportFilter.class, value = EventConstants.ID + ":report")
 public class EventReportFilter implements ReportFilter<EventReport> {
 	@Override
-	public void applyTo(EventReport report) {
-	}
-
-	@Override
 	public void applyTo(RemoteContext ctx, EventReport report) {
 		String type = ctx.getProperty("type", null);
 		String name = ctx.getProperty("name", null);

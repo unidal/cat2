@@ -14,6 +14,10 @@ import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
+
 @Named(type = RemoteStub.class)
 public class DefaultRemoteStub implements RemoteStub {
 	@Inject
@@ -23,15 +27,36 @@ public class DefaultRemoteStub implements RemoteStub {
 	public InputStream getReport(RemoteContext ctx, String server) throws IOException {
 		String url = ctx.buildURL(m_configuration.getServerUriPrefix(server));
 		int timeout = m_configuration.getRemoteCallTimeoutInMillis();
-		Map<String, List<String>> headers = new HashMap<String, List<String>>(2);
 
-		InputStream in = Urls.forIO().connectTimeout(timeout).readTimeout(timeout)//
-		      .header("Accept-Encoding", "gzip").openStream(url, headers);
+		Transaction t = Cat.newTransaction("Remote", server);
+		
+		t.addData(url);
 
-		if ("[gzip]".equals(String.valueOf(headers.get("Content-Encoding")))) {
-			return new GZIPInputStream(in);
-		} else {
+		try {
+			Map<String, List<String>> headers = new HashMap<String, List<String>>(2);
+			InputStream in = Urls.forIO().connectTimeout(timeout).readTimeout(timeout)//
+			      .header("Accept-Encoding", "gzip").openStream(url, headers);
+
+			if ("[gzip]".equals(String.valueOf(headers.get("Content-Encoding")))) {
+				in = new GZIPInputStream(in);
+			}
+
+			t.setStatus(Message.SUCCESS);
 			return in;
+		} catch (IOException e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} catch (RuntimeException e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} catch (Error e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} finally {
+			t.complete();
 		}
 	}
 }

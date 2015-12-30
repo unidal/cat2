@@ -49,7 +49,7 @@ public class ReportStorageTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testDefaultHourly() throws Exception {
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 
 		// for hourly
@@ -77,7 +77,7 @@ public class ReportStorageTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testFileDaily() throws IOException {
 		ReportStorage<Report> storage = lookup(ReportStorage.class, FileReportStorage.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Date period = ReportPeriod.DAY.getStartTime(startTime);
 		Report report = new TransactionReport("file").setStartTime(period);
@@ -98,7 +98,7 @@ public class ReportStorageTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testFileHourly() throws IOException {
 		ReportStorage<Report> storage = lookup(ReportStorage.class, FileReportStorage.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Date period = ReportPeriod.HOUR.getStartTime(startTime);
 		Report report = new TransactionReport("file").setStartTime(period);
@@ -119,7 +119,7 @@ public class ReportStorageTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testMysqlDaily() throws Exception {
 		ReportStorage<Report> storage = lookup(ReportStorage.class, MysqlReportStorage.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Date period = ReportPeriod.DAY.getStartTime(startTime);
 		Report report = new TransactionReport("mysql").setStartTime(period);
@@ -143,7 +143,7 @@ public class ReportStorageTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testMysqlHourly() throws Exception {
 		ReportStorage<Report> storage = lookup(ReportStorage.class, MysqlReportStorage.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Date period = ReportPeriod.HOUR.getStartTime(startTime);
 		Report report = new TransactionReport("mysql").setStartTime(period);

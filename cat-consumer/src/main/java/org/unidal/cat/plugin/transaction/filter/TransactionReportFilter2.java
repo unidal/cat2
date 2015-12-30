@@ -16,12 +16,10 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 
-@Named(type = ReportFilter.class, value = TransactionConstants.ID + ":report")
-public class TransactionReportFilter implements ReportFilter<TransactionReport> {
-	@Override
-	public void applyTo(TransactionReport report) {
-	}
-
+@Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionReportFilter2.ID)
+public class TransactionReportFilter2 implements ReportFilter<TransactionReport> {
+	public static final String ID = "report";
+	
 	@Override
 	public void applyTo(RemoteContext ctx, TransactionReport report) {
 		String type = ctx.getProperty("type", null);
@@ -31,17 +29,18 @@ public class TransactionReportFilter implements ReportFilter<TransactionReport> 
 		int max = ctx.getIntProperty("max", -1);
 
 		IVisitor visitor = new Filter(type, name, ip, min, max);
+
 		report.accept(visitor);
 	}
 
 	@Override
 	public String getId() {
-		return "report";
+		return ID;
 	}
 
 	@Override
 	public String getReportName() {
-		return TransactionConstants.ID;
+		return TransactionConstants.NAME;
 	}
 
 	static class Filter extends BaseVisitor {

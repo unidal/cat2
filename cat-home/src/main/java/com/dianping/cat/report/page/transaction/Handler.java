@@ -2,11 +2,14 @@ package com.dianping.cat.report.page.transaction;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.ReportFilterManager;
@@ -69,7 +72,7 @@ public class Handler implements PageHandler<Context> {
 	private TransactionMergeHelper m_mergeHelper;
 
 	@Inject
-	private PayloadNormalizer m_normalizePayload;
+	private PayloadNormalizer m_normalizer;
 
 	@Inject
 	private DomainGroupConfigManager m_configManager;
@@ -113,6 +116,10 @@ public class Handler implements PageHandler<Context> {
 	}
 
 	private void buildTransactionNameGraph(Model model, TransactionReport report, String type, String name, String ip) {
+		if (name == null || name.length() == 0) {
+			name = Constants.ALL;
+		}
+
 		TransactionType t = report.findOrCreateMachine(ip).findOrCreateType(type);
 		TransactionName transactionName = t.findOrCreateName(name);
 
@@ -159,9 +166,11 @@ public class Handler implements PageHandler<Context> {
 				removes.add(ip);
 			}
 		}
+
 		for (String ip : removes) {
 			report.getMachines().remove(ip);
 		}
+
 		return report;
 	}
 
@@ -184,14 +193,24 @@ public class Handler implements PageHandler<Context> {
 		return report;
 	}
 
-	private TransactionReport getHourlyReport(Payload payload) throws IOException {
+	@Deprecated
+	TransactionReport getHourlyGraphReport2(Model model, Payload payload) {
 		String domain = payload.getDomain();
-		String name = m_delegate.getName();
-		ReportFilter<? extends Report> filter = m_filterManager.getFilter(name, "report");
-		RemoteContext ctx = new DefaultRemoteContext(name, domain, new Date(payload.getDate()), ReportPeriod.HOUR, filter) //
-		      .setProperty("ip", payload.getIpAddress());
+		String ipAddress = payload.getIpAddress();
+		String name = payload.getName();
 
-		return m_provider.getReport(ctx, m_delegate);
+		if (name == null || name.length() == 0) {
+			name = "*";
+		}
+
+		ModelRequest request = new ModelRequest(domain, payload.getDate()) //
+		      .setProperty("type", payload.getType()) //
+		      .setProperty("name", name)//
+		      .setProperty("ip", ipAddress);
+
+		ModelResponse<TransactionReport> response = m_service.invoke(request);
+		TransactionReport report = response.getModel();
+		return report;
 	}
 
 	@Deprecated
@@ -211,6 +230,151 @@ public class Handler implements PageHandler<Context> {
 		}
 	}
 
+	private void handleGroups(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		String group = payload.getGroup();
+
+		if (StringUtils.isEmpty(group)) {
+			group = m_configManager.queryDefaultGroup(domain);
+			payload.setGroup(group);
+		}
+
+		model.setGroupIps(m_configManager.queryIpByDomainAndGroup(domain, group));
+		model.setGroups(m_configManager.queryDomainGroup(payload.getDomain()));
+	}
+
+	private void handleHistoryGraph(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		String ipAddress = payload.getIpAddress();
+		String type = payload.getType();
+		String name = payload.getName();
+		TransactionReport report;
+
+		if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
+			report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
+
+			buildDistributionInfo(model, type, name, report);
+		}
+
+		m_historyGraph.buildTrendGraph(model, payload);
+	}
+
+	private void handleHistoryGraphGrouped(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		String group = payload.getGroup();
+		String type = payload.getType();
+		String name = payload.getName();
+		TransactionReport report = m_reportService.queryReport(domain, payload.getHistoryStartDate(),
+		      payload.getHistoryEndDate());
+		report = filterReportByGroup(report, domain, group);
+
+		buildDistributionInfo(model, type, name, report);
+		List<String> ips = m_configManager.queryIpByDomainAndGroup(domain, group);
+
+		m_historyGraph.buildGroupTrendGraph(model, payload, ips);
+	}
+
+	private void handleHistoryReport(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		TransactionReport report = m_reportService.queryReport(domain, payload.getHistoryStartDate(),
+		      payload.getHistoryEndDate());
+
+		if (report != null) {
+			model.setReport(report);
+			buildTransactionMetaInfo(model, payload, report);
+		}
+	}
+
+	private void handleHistoryReportGrouped(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		String ipAddress = payload.getIpAddress();
+		String group = payload.getGroup();
+		TransactionReport report = m_reportService.queryReport(domain, payload.getHistoryStartDate(),
+		      payload.getHistoryEndDate());
+		report = filterReportByGroup(report, domain, group);
+		report = m_mergeHelper.mergeAllMachines(report, ipAddress);
+
+		if (report != null) {
+			model.setReport(report);
+			buildTransactionMetaInfo(model, payload, report);
+		}
+	}
+
+	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
+		String filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
+		RemoteContext ctx = hourlyContext(payload.getDomain(), payload.getDate(), filterId) //
+		      .setProperty("ip", payload.getIpAddress()) //
+		      .setProperty("type", payload.getType()) //
+		      .setProperty("name", payload.getName());
+		TransactionReport report = m_provider.getReport(ctx, m_delegate);
+
+		String ipAddress = payload.getIpAddress();
+		String type = payload.getType();
+		String name = payload.getName();
+		String ip = payload.getIpAddress();
+
+		if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
+			buildDistributionInfo(model, type, name, report);
+		}
+
+		buildTransactionNameGraph(model, report, type, name, ip);
+
+		model.setReport(report);
+	}
+
+	private void handleHourlyGraphGrouped(Model model, Payload payload) {
+		String domain = payload.getDomain();
+		String group = payload.getGroup();
+		String type = payload.getType();
+		String name = payload.getName();
+		String ip = payload.getIpAddress();
+
+		TransactionReport report = getHourlyGraphReport(model, payload);
+		report = filterReportByGroup(report, domain, group);
+		buildDistributionInfo(model, type, name, report);
+
+		if (name == null || name.length() == 0) {
+			name = Constants.ALL;
+		}
+		report = m_mergeHelper.mergeAllNames(report, ip, name);
+
+		model.setReport(report);
+		buildTransactionNameGraph(model, report, type, name, ip);
+	}
+
+	private void handleHourlyReport(Model model, Payload payload) throws IOException {
+		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
+		RemoteContext ctx = hourlyContext(payload.getDomain(), payload.getDate(), filterId) //
+		      .setProperty("ip", payload.getIpAddress()) //
+		      .setProperty("type", payload.getType());
+		TransactionReport report = m_provider.getReport(ctx, m_delegate);
+
+		if (report != null) {
+			report = m_mergeHelper.mergeAllMachines(report, payload.getIpAddress());
+
+			buildTransactionMetaInfo(model, payload, report);
+		}
+
+		model.setReport(report);
+	}
+
+	private void handleHourlyReportGrouped(Model model, Payload payload) throws IOException {
+		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
+		RemoteContext ctx = hourlyContext(payload.getDomain(), payload.getDate(), filterId);
+		TransactionReport report = m_provider.getReport(ctx, m_delegate);
+
+		if (report != null) {
+			String domain = payload.getDomain();
+			String group = payload.getGroup();
+
+			report = filterReportByGroup(report, domain, group);
+
+			buildTransactionMetaInfo(model, payload, report);
+		}
+
+		model.setReport(report);
+	}
+
 	@Override
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "t")
@@ -223,106 +387,35 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 		Payload payload = ctx.getPayload();
-
-		normalize(model, payload);
-		String domain = payload.getDomain();
 		Action action = payload.getAction();
-		String ipAddress = payload.getIpAddress();
-		String group = payload.getGroup();
-		String type = payload.getType();
-		String name = payload.getName();
-		String ip = payload.getIpAddress();
 
-		if (StringUtils.isEmpty(group)) {
-			group = m_configManager.queryDefaultGroup(domain);
-			payload.setGroup(group);
-		}
-		model.setGroupIps(m_configManager.queryIpByDomainAndGroup(domain, group));
-		model.setGroups(m_configManager.queryDomainGroup(payload.getDomain()));
+		normalizePayload(model, payload);
+		handleGroups(model, payload);
+
 		switch (action) {
 		case HOURLY_REPORT:
-			TransactionReport report = getHourlyReport(payload);
-			report = m_mergeHelper.mergeAllMachines(report, ipAddress);
-
-			if (report != null) {
-				model.setReport(report);
-				buildTransactionMetaInfo(model, payload, report);
-			}
+			handleHourlyReport(model, payload);
 			break;
-		case HISTORY_REPORT:
-			report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
-
-			if (report != null) {
-				model.setReport(report);
-				buildTransactionMetaInfo(model, payload, report);
-			}
-			break;
-		case HISTORY_GRAPH:
-			if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
-				report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
-
-				buildDistributionInfo(model, type, name, report);
-			}
-
-			m_historyGraph.buildTrendGraph(model, payload);
-			break;
-		case GRAPHS:
-			report = getHourlyGraphReport(model, payload);
-
-			if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
-				buildDistributionInfo(model, type, name, report);
-			}
-			if (name == null || name.length() == 0) {
-				name = Constants.ALL;
-			}
-
-			report = m_mergeHelper.mergeAllNames(report, ip, name);
-
-			model.setReport(report);
-			buildTransactionNameGraph(model, report, type, name, ip);
+		case HOURLY_GRAPH:
+			handleHourlyGraph(model, payload);
 			break;
 		case HOURLY_GROUP_REPORT:
-			report = getHourlyReport(payload);
-			report = filterReportByGroup(report, domain, group);
-			report = m_mergeHelper.mergeAllMachines(report, ipAddress);
-
-			if (report != null) {
-				model.setReport(report);
-
-				buildTransactionMetaInfo(model, payload, report);
-			}
+			handleHourlyReportGrouped(model, payload);
+			break;
+		case HOURLY_GROUP_GRAPHS:
+			handleHourlyGraphGrouped(model, payload);
+			break;
+		case HISTORY_REPORT:
+			handleHistoryReport(model, payload);
+			break;
+		case HISTORY_GRAPH:
+			handleHistoryGraph(model, payload);
 			break;
 		case HISTORY_GROUP_REPORT:
-			report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
-			report = filterReportByGroup(report, domain, group);
-			report = m_mergeHelper.mergeAllMachines(report, ipAddress);
-
-			if (report != null) {
-				model.setReport(report);
-				buildTransactionMetaInfo(model, payload, report);
-			}
-			break;
-		case GROUP_GRAPHS:
-			report = getHourlyGraphReport(model, payload);
-			report = filterReportByGroup(report, domain, group);
-			buildDistributionInfo(model, type, name, report);
-
-			if (name == null || name.length() == 0) {
-				name = Constants.ALL;
-			}
-			report = m_mergeHelper.mergeAllNames(report, ip, name);
-
-			model.setReport(report);
-			buildTransactionNameGraph(model, report, type, name, ip);
+			handleHistoryReportGrouped(model, payload);
 			break;
 		case HISTORY_GROUP_GRAPH:
-			report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
-			report = filterReportByGroup(report, domain, group);
-
-			buildDistributionInfo(model, type, name, report);
-			List<String> ips = m_configManager.queryIpByDomainAndGroup(domain, group);
-
-			m_historyGraph.buildGroupTrendGraph(model, payload, ips);
+			handleHistoryGraphGrouped(model, payload);
 			break;
 		}
 
@@ -333,8 +426,16 @@ public class Handler implements PageHandler<Context> {
 		}
 	}
 
-	private void normalize(Model model, Payload payload) {
-		m_normalizePayload.normalize(model, payload);
+	private RemoteContext hourlyContext(String domain, long startTime, String filterId) {
+		ReportFilter<? extends Report> filter = m_filterManager.getFilter(m_delegate.getName(), filterId);
+		RemoteContext ctx = new DefaultRemoteContext(m_delegate.getName(), domain, startTime, ReportPeriod.HOUR, filter);
+
+		return ctx;
+	}
+
+	private void normalizePayload(Model model, Payload payload) {
+		m_normalizer.normalize(model, payload);
+
 		model.setPage(ReportPage.TRANSACTION);
 		model.setAction(payload.getAction());
 
@@ -358,5 +459,4 @@ public class Handler implements PageHandler<Context> {
 	public enum SummaryOrder {
 		TYPE, TOTAL_COUNT, FAILURE_COUNT, MIN, MAX, SUM, SUM2
 	}
-
 }

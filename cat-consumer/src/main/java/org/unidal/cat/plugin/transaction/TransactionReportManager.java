@@ -6,7 +6,7 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 
-@Named(type = ReportManager.class, value = TransactionConstants.ID)
+@Named(type = ReportManager.class, value = TransactionConstants.NAME)
 public class TransactionReportManager extends AbstractReportManager<TransactionReport> {
 	@Override
 	public int getThreadsCount() {

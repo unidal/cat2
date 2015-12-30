@@ -17,7 +17,7 @@ import com.dianping.cat.Cat;
 public class DefaultReportFilterManager extends ContainerHolder implements ReportFilterManager {
 	private Map<String, ReportFilter<Report>> m_filters = new HashMap<String, ReportFilter<Report>>();
 
-	private Set<String> m_missingFilters = new HashSet<String>();
+	private Set<String> m_badFilters = new HashSet<String>();
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -30,7 +30,7 @@ public class DefaultReportFilterManager extends ContainerHolder implements Repor
 		ReportFilter<Report> filter = m_filters.get(key);
 
 		if (filter == null) {
-			if (m_missingFilters.contains(key)) {
+			if (m_badFilters.contains(key)) {
 				return null;
 			}
 
@@ -43,8 +43,8 @@ public class DefaultReportFilterManager extends ContainerHolder implements Repor
 
 						m_filters.put(key, filter);
 					} catch (Exception e) {
-						Cat.logError(String.format("ReportFilter(%s) is missing, IGNORED.", key), e);
-						m_missingFilters.add(key);
+						Cat.logError(String.format("ReportFilter(%s) is missing or invalid, IGNORED.", key), e);
+						m_badFilters.add(key);
 					}
 				}
 			}

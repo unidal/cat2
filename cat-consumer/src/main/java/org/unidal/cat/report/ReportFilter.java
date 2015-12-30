@@ -7,7 +7,5 @@ public interface ReportFilter<T extends Report> {
 
 	public String getId();
 
-	public void applyTo(T report);
-
 	public void applyTo(RemoteContext ctx, T report);
 }

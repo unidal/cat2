@@ -9,7 +9,7 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.consumer.transaction.TransactionReportMerger;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 
-@Named(type = ReportAggregator.class, value = TransactionConstants.ID)
+@Named(type = ReportAggregator.class, value = TransactionConstants.NAME)
 public class TransactionReportAggregator implements ReportAggregator<TransactionReport> {
 	@Override
 	public TransactionReport aggregate(ReportPeriod period, Collection<TransactionReport> reports) {

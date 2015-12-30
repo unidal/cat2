@@ -43,7 +43,7 @@ public class ReportProviderTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testDefault() throws IOException {
 		ReportProvider<Report> provider = lookup(ReportProvider.class);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Report report = new TransactionReport("default").setStartTime(startTime);
@@ -64,7 +64,7 @@ public class ReportProviderTest extends JdbcTestCase {
 		defineComponent(ReportConfiguration.class, MockReportConfiguration.class);
 
 		ReportProvider<Report> provider = lookup(ReportProvider.class);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
 		Date startTime = new Date();
 		Report report = new TransactionReport("default2").setStartTime(startTime);
@@ -82,7 +82,7 @@ public class ReportProviderTest extends JdbcTestCase {
 	@SuppressWarnings("unchecked")
 	public void testHistorical() throws IOException {
 		ReportProvider<Report> provider = lookup(ReportProvider.class, HistoricalReportProvider.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		ReportStorage<Report> storage = lookup(ReportStorage.class);
 		Date startTime = new Date(1446885302848L);
 		Report report = new TransactionReport("historical").setStartTime(startTime);
@@ -103,7 +103,7 @@ public class ReportProviderTest extends JdbcTestCase {
 		defineComponent(ReportConfiguration.class, MockReportConfiguration.class);
 
 		ReportProvider<Report> provider = lookup(ReportProvider.class, RecentReportProvider.ID);
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.ID);
+		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
 		Date startTime = new Date();
 		Report report = new TransactionReport("recent").setStartTime(startTime);
 

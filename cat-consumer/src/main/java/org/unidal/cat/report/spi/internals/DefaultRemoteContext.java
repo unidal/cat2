@@ -33,6 +33,15 @@ public class DefaultRemoteContext implements RemoteContext {
 		m_filter = filter;
 	}
 
+	public DefaultRemoteContext(String name, String domain, long startTime, ReportPeriod period,
+	      ReportFilter<? extends Report> filter) {
+		m_name = name;
+		m_domain = domain;
+		m_startTime = new Date(startTime);
+		m_period = period;
+		m_filter = filter;
+	}
+
 	@Override
 	public String buildURL(String serverUriPrefix) {
 		StringBuilder sb = new StringBuilder(256);

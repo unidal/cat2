@@ -2,8 +2,11 @@ package com.dianping.cat.report.page.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
+import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
 import org.unidal.cat.report.Report;
@@ -49,14 +52,23 @@ public class Handler implements PageHandler<Context> {
 		} else {
 			OutputStream out = ctx.getHttpServletResponse().getOutputStream();
 
-			m_skeleton.handleReport(buildContext(payload), out);
+			m_skeleton.handleReport(buildContext(ctx.getHttpServletRequest(), payload), out);
 		}
 	}
 
-	private RemoteContext buildContext(Payload payload) {
+	@SuppressWarnings("unchecked")
+	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
 		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
-
-		return new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
+		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
 		      payload.getStartTime(), payload.getPeriod(), filter);
+		List<String> names = Collections.list(req.getParameterNames());
+
+		for (String name : names) {
+			String value = req.getParameter(name);
+
+			ctx.setProperty(name, value);
+		}
+
+		return ctx;
 	}
 }

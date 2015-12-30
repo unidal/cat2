@@ -1,21 +1,21 @@
 package com.dianping.cat.report.page.transaction;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	GRAPHS("graphs"),
+	HOURLY_REPORT("view"),
 
-	HISTORY_GRAPH("historyGraph"),
+	HOURLY_GRAPH("graphs"),
+	
+	HOURLY_GROUP_GRAPHS("groupGraphs"),
+	
+	HOURLY_GROUP_REPORT("groupReport"),
 
 	HISTORY_REPORT("history"),
 
-	HOURLY_REPORT("view"),
-
-	GROUP_GRAPHS("groupGraphs"),
-
-	HISTORY_GROUP_GRAPH("historyGroupGraph"),
+	HISTORY_GRAPH("historyGraph"),
 
 	HISTORY_GROUP_REPORT("historyGroupReport"),
 
-	HOURLY_GROUP_REPORT("groupReport");
+	HISTORY_GROUP_GRAPH("historyGroupGraph");
 
 	private String m_name;
 

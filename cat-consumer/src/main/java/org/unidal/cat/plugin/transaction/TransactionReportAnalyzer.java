@@ -26,9 +26,9 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 
-@Named(type = MessageAnalyzer.class, value = TransactionConstants.ID)
+@Named(type = MessageAnalyzer.class, value = TransactionConstants.NAME)
 public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> implements LogEnabled {
-	@Inject(TransactionConstants.ID)
+	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_reportManager;
 
 	@Inject

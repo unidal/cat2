@@ -8,12 +8,15 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 public class TransactionMergeHelper {
 
 	public TransactionReport mergeAllMachines(TransactionReport report, String ipAddress) {
-		if (StringUtils.isEmpty(ipAddress) || Constants.ALL.equalsIgnoreCase(ipAddress)) {
-			AllMachineMerger all = new AllMachineMerger();
+		if (report != null) {
+			if (ipAddress == null || ipAddress.length() == 0 || Constants.ALL.equalsIgnoreCase(ipAddress)) {
+				AllMachineMerger all = new AllMachineMerger();
 
-			all.visitTransactionReport(report);
-			report = all.getReport();
+				all.visitTransactionReport(report);
+				report = all.getReport();
+			}
 		}
+
 		return report;
 	}
 

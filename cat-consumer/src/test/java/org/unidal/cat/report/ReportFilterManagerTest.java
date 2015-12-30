@@ -32,11 +32,6 @@ public class ReportFilterManagerTest extends ComponentTestCase {
 
 	public static class MockReportFilter implements ReportFilter<Report> {
 		@Override
-		public void applyTo(Report report) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public void applyTo(RemoteContext ctx, Report report) {
 			throw new UnsupportedOperationException();
 		}

@@ -345,11 +345,6 @@ public class RemoteIntegrationTest extends JettyServer {
 	@Named(type = ReportFilter.class, value = "mock:mock")
 	public static final class MockReportFilter implements ReportFilter<MockReport> {
 		@Override
-		public void applyTo(MockReport report) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public void applyTo(RemoteContext ctx, MockReport report) {
 			if ("true".equals(ctx.getProperty("error", null))) {
 				throw new RuntimeException("Unknown issue.");
@@ -389,12 +384,6 @@ public class RemoteIntegrationTest extends JettyServer {
 		@Override
 		public List<MockReport> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 			return Arrays.asList(new MockReport(period, startTime, domain));
-		}
-
-		@Override
-		public MockReport getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<MockReport> filter)
-		      throws IOException {
-			throw new UnsupportedOperationException();
 		}
 	}
 

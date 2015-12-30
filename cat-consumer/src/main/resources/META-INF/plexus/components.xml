@@ -169,9 +169,48 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.report.ReportFilter</role>
-			<role-hint>transaction:report</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionReportFilter</implementation>
+			<role-hint>transaction:type</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.report.ReportFilter</role>
+			<role-hint>transaction:type-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.report.ReportFilter</role>
+			<role-hint>transaction:name</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionNameFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.report.ReportFilter</role>
+			<role-hint>transaction:name-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.report.spi.ReportManager</role>
