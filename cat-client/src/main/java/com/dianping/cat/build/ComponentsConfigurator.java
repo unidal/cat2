@@ -3,6 +3,7 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.message.MessageIdBuilder;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -34,10 +35,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(C(ClientConfigManager.class, DefaultClientConfigManager.class));
-		all.add(C(MessageIdFactory.class));
+		all.add(C(MessageIdFactory.class)); // TODO remove it later
+		all.add(A(MessageIdBuilder.class));
 
 		all.add(C(MessageManager.class, DefaultMessageManager.class) //
-		      .req(ClientConfigManager.class, TransportManager.class,  MessageIdFactory.class));
+		      .req(ClientConfigManager.class, TransportManager.class, MessageIdFactory.class));
 		all.add(C(MessageProducer.class, DefaultMessageProducer.class) //
 		      .req(MessageManager.class, MessageIdFactory.class));
 

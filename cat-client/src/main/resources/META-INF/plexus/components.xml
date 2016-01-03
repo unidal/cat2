@@ -1,6 +1,10 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.cat.message.MessageIdBuilder</role>
+			<implementation>org.unidal.cat.message.DefaultMessageIdBuilder</implementation>
+		</component>
+		<component>
 			<role>com.dianping.cat.configuration.ClientConfigManager</role>
 			<implementation>com.dianping.cat.configuration.DefaultClientConfigManager</implementation>
 		</component>
