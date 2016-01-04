@@ -12,12 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultTransaction;
 import com.dianping.cat.message.internal.MessageId;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -54,10 +54,10 @@ public class LocalMessageBucketManagerTest extends ComponentTestCase {
 	}
 
 	private MessageIdFactory getMessageIdFactory(String ip, String domain) throws IOException {
-		MessageIdFactory factory = new MockMessageIdFactory();
+		MockMessageIdFactory factory = new MockMessageIdFactory();
 
 		factory.setIpAddress(ip);
-		factory.initialize(domain);
+		factory.initialize(new File("target/mark"), domain);
 
 		return factory;
 	}
@@ -102,7 +102,7 @@ public class LocalMessageBucketManagerTest extends ComponentTestCase {
 		m_manager.setLocalIp(m_ip);
 
 		clear("source", m_ip);
-		
+
 		for (int i = 0; i < m_threadNum; i++) {
 			clear("source" + i, m_ip);
 		}
@@ -135,13 +135,13 @@ public class LocalMessageBucketManagerTest extends ComponentTestCase {
 			DefaultMessageTree tree = newMessageTree(messageId, i, m_now + i * 10L);
 			MessageId id = MessageId.parse(tree.getMessageId());
 			ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(512);
-			
+
 			m_codec.encode(tree, buf);
 
 			tree.setBuffer(buf);
 			m_manager.storeMessage(tree, id);
 		}
-		
+
 		Thread.sleep(1000);
 
 		for (int i = 0; i < m_num; i++) {
@@ -161,15 +161,20 @@ public class LocalMessageBucketManagerTest extends ComponentTestCase {
 	}
 
 	static class MockMessageIdFactory extends MessageIdFactory {
+		private String m_ip;
+
+		@Override
+		protected String getIpAddress() {
+			return m_ip;
+		}
+
 		@Override
 		protected long getTimestamp() {
 			return 1343532130488L / 3600 / 1000;
 		}
 
-		@Override
-		public void initialize(String domain) throws IOException {
-			super.initialize(domain);
-			super.resetIndex();
+		public void setIpAddress(String ip) {
+			m_ip = ip;
 		}
 	}
 

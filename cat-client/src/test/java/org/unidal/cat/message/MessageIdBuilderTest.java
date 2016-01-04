@@ -56,7 +56,7 @@ public class MessageIdBuilderTest {
 
 		new File(baseDir, "parallel.mark").delete();
 
-		final MessageIdBuilder builder = new MockMessageIdBuilder(baseDir, "parallel");
+		final MessageIdFactory builder = new MockMessageIdBuilder(baseDir, "parallel");
 		final Set<String> ids = Collections.synchronizedSet(new HashSet<String>());
 		int threads = 10;
 		final int messagesPerThread = 1234;
@@ -89,7 +89,7 @@ public class MessageIdBuilderTest {
 
 		new File(baseDir, "serial.mark").delete();
 
-		MessageIdBuilder builder = new MockMessageIdBuilder(baseDir, "serial");
+		MessageIdFactory builder = new MockMessageIdBuilder(baseDir, "serial");
 
 		for (int i = 0; i < 100; i++) {
 			Assert.assertEquals(String.format("serial-c0a81f9e-403215-%s", i), builder.getNextId());
@@ -199,7 +199,7 @@ public class MessageIdBuilderTest {
 		}
 	}
 
-	private static class MockMessageIdBuilder extends MessageIdBuilder {
+	private static class MockMessageIdBuilder extends MessageIdFactory {
 		private MockMessageIdBuilder(File baseDir, String domain) throws IOException {
 			super.initialize(baseDir, domain);
 		}

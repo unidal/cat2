@@ -28,7 +28,6 @@ import org.unidal.tuple.Pair;
 
 import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.configuration.KVConfig;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.spi.MessageQueue;
 import com.site.helper.JsonBuilder;
 
@@ -52,16 +51,13 @@ public class ChannelManager implements Task {
 
 	private ChannelHolder m_activeChannelHolder;
 
-	private MessageIdFactory m_idfactory;
-
 	private JsonBuilder m_jsonBuilder = new JsonBuilder();
 
 	public ChannelManager(Logger logger, List<InetSocketAddress> serverAddresses, MessageQueue queue,
-	      ClientConfigManager configManager, MessageIdFactory idFactory) {
+	      ClientConfigManager configManager) {
 		m_logger = logger;
 		m_queue = queue;
 		m_configManager = configManager;
-		m_idfactory = idFactory;
 
 		EventLoopGroup group = new NioEventLoopGroup(1, new ThreadFactory() {
 			@Override
@@ -343,7 +339,6 @@ public class ChannelManager implements Task {
 	public void run() {
 		while (m_active) {
 			// make save message id index asyc
-			m_idfactory.saveMark();
 			checkServerChanged();
 
 			ChannelFuture activeFuture = m_activeChannelHolder.getActiveFuture();

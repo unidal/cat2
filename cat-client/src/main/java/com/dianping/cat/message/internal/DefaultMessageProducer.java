@@ -3,6 +3,7 @@ package com.dianping.cat.message.internal;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;

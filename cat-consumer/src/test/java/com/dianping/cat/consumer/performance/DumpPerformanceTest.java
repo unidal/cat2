@@ -1,29 +1,31 @@
 package com.dianping.cat.consumer.performance;
 
+import java.io.File;
+
 import org.junit.Test;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
 import com.dianping.cat.message.Message;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.internal.MockMessageBuilder;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
-public class DumpPerformanceTest  extends ComponentTestCase{
+public class DumpPerformanceTest extends ComponentTestCase {
 
 	private MessageIdFactory m_factory = new MessageIdFactory();
-	
+
 	public void setUp() throws Exception {
 		super.setUp();
-		m_factory.initialize("test");
+		m_factory.initialize(new File("target/mark"), "test");
 	}
-		
+
 	@Test
 	public void test() throws Exception {
 		DumpAnalyzer analyzer = (DumpAnalyzer) lookup(MessageAnalyzer.class, DumpAnalyzer.ID);
-		
+
 		MessageTree tree = buildMessage();
 
 		long current = System.currentTimeMillis();
@@ -33,7 +35,7 @@ public class DumpPerformanceTest  extends ComponentTestCase{
 			analyzer.process(tree);
 		}
 		System.out.println("Cost " + (System.currentTimeMillis() - current) / 1000);
-		//cost 167 -> 77
+		// cost 167 -> 77
 	}
 
 	public MessageTree buildMessage() {

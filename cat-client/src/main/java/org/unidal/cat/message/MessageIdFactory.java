@@ -17,7 +17,7 @@ import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 
 @Named
-public class MessageIdBuilder {
+public class MessageIdFactory {
 	private static final long HOUR = 3600 * 1000L;
 
 	private String m_domain;

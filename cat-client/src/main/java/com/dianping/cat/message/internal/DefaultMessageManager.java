@@ -1,5 +1,6 @@
 package com.dianping.cat.message.internal;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -13,6 +14,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 
@@ -194,7 +196,7 @@ public class DefaultMessageManager extends ContainerHolder implements MessageMan
 
 		// initialize domain and IP address
 		try {
-			m_factory.initialize(m_domain.getId());
+			m_factory.initialize(new File("/data/appdatas/cat/"), m_domain.getId());
 		} catch (IOException e) {
 			throw new InitializationException("Error while initializing MessageIdFactory!", e);
 		}
@@ -552,7 +554,7 @@ public class DefaultMessageManager extends ContainerHolder implements MessageMan
 				String childId = nextMessageId();
 				DefaultTransaction source = (DefaultTransaction) message;
 				DefaultTransaction target = new DefaultTransaction(source.getType(), source.getName(),
-						DefaultMessageManager.this);
+				      DefaultMessageManager.this);
 
 				target.setTimestamp(source.getTimestamp());
 				target.setDurationInMicros(source.getDurationInMicros());

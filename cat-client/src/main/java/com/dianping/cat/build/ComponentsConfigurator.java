@@ -3,7 +3,7 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.message.MessageIdBuilder;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -14,7 +14,6 @@ import com.dianping.cat.configuration.DefaultClientConfigManager;
 import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.cat.message.internal.DefaultMessageProducer;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.io.DefaultTransportManager;
 import com.dianping.cat.message.io.TcpSocketSender;
 import com.dianping.cat.message.io.TransportManager;
@@ -36,7 +35,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(ClientConfigManager.class, DefaultClientConfigManager.class));
 		all.add(C(MessageIdFactory.class)); // TODO remove it later
-		all.add(A(MessageIdBuilder.class));
+		all.add(A(MessageIdFactory.class));
 
 		all.add(C(MessageManager.class, DefaultMessageManager.class) //
 		      .req(ClientConfigManager.class, TransportManager.class, MessageIdFactory.class));
@@ -44,7 +43,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		      .req(MessageManager.class, MessageIdFactory.class));
 
 		all.add(C(TcpSocketSender.class) //
-		      .req(ClientConfigManager.class, MessageIdFactory.class) //
+		      .req(ClientConfigManager.class) //
 		      .req(MessageStatistics.class, "default", "m_statistics") //
 		      .req(MessageCodec.class, PlainTextMessageCodec.ID, "m_codec"));
 		all.add(C(TransportManager.class, DefaultTransportManager.class) //

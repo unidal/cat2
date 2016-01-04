@@ -10,9 +10,8 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel.MapMode;
 
 import org.junit.Test;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ComponentTestCase;
-
-import com.dianping.cat.message.internal.MessageIdFactory;
 
 public class MmapConsumerTaskTest extends ComponentTestCase {
 	private void createMessage(MessageIdFactory factory, StringBuilder sb, int i) {
@@ -39,7 +38,7 @@ public class MmapConsumerTaskTest extends ComponentTestCase {
 		MessageIdFactory factory = lookup(MessageIdFactory.class);
 		StringBuilder sb = new StringBuilder(8192);
 
-		factory.initialize("cat");
+		factory.initialize(new File("target/mark"), "cat");
 
 		for (int i = 0; i < 100; i++) {
 			createMessage(factory, sb, i);
@@ -53,8 +52,8 @@ public class MmapConsumerTaskTest extends ComponentTestCase {
 		updateMmapIndex(idx, dat.length(), dat.length(), 0);
 	}
 
-	private void updateMmapIndex(File idx, long capacity, long writerIndex, long readerIndex) throws FileNotFoundException,
-	      IOException {
+	private void updateMmapIndex(File idx, long capacity, long writerIndex, long readerIndex)
+	      throws FileNotFoundException, IOException {
 		RandomAccessFile raf = new RandomAccessFile(idx, "rw");
 		MappedByteBuffer buffer = raf.getChannel().map(MapMode.READ_WRITE, 0, 24);
 
@@ -82,7 +81,7 @@ public class MmapConsumerTaskTest extends ComponentTestCase {
 		MessageIdFactory factory = lookup(MessageIdFactory.class);
 		StringBuilder sb = new StringBuilder(8192);
 
-		factory.initialize("cat");
+		factory.initialize(new File("target/mark"), "cat");
 
 		for (int i = 0; i < 50; i++) {
 			createMessage(factory, sb, i);

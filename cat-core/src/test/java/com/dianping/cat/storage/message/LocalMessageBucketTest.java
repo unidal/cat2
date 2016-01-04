@@ -14,10 +14,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.internal.MessageId;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -30,6 +30,7 @@ import com.dianping.cat.message.storage.MessageBucket;
 public class LocalMessageBucketTest extends ComponentTestCase {
 
 	private final String m_baseDir = "target/bucket/hdfs/dump/";
+
 	private final String m_dataDir = "/data/appdatas/cat/";
 
 	public void setup() {
@@ -39,7 +40,7 @@ public class LocalMessageBucketTest extends ComponentTestCase {
 			new File(m_baseDir + file).delete();
 			new File(m_baseDir + file + ".idx").delete();
 		}
-		
+
 		String tmpDir = System.getProperty("java.io.tmpdir");
 		new File(tmpDir, "cat-Test.mark").delete();
 		new File(m_dataDir, "cat-Test.mark").delete();
@@ -79,8 +80,7 @@ public class LocalMessageBucketTest extends ComponentTestCase {
 		bucket.close();
 	}
 
-	private MessageId buildChannelBuffer(MessageIdFactory factory, MessageCodec codec, MessageTree tree,
-	      ByteBuf buf) {
+	private MessageId buildChannelBuffer(MessageIdFactory factory, MessageCodec codec, MessageTree tree, ByteBuf buf) {
 		String messageId = factory.getNextId();
 
 		tree.setMessageId(messageId);
@@ -148,8 +148,7 @@ public class LocalMessageBucketTest extends ComponentTestCase {
 
 		bucket.setBaseDir(new File(m_baseDir));
 		bucket.initialize("dump" + id);
-		factory.setIpAddress("7f000001");
-		factory.initialize("Test");
+		factory.initialize(new File("target/mark"), "Test");
 		return bucket;
 	}
 
@@ -157,6 +156,11 @@ public class LocalMessageBucketTest extends ComponentTestCase {
 		@Override
 		protected long getTimestamp() {
 			return 1343532130488L;
+		}
+
+		@Override
+		protected String getIpAddress() {
+			return "7f000001";
 		}
 	}
 }

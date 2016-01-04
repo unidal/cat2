@@ -19,7 +19,6 @@ import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultTransaction;
-import com.dianping.cat.message.internal.MessageIdFactory;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageQueue;
 import com.dianping.cat.message.spi.MessageStatistics;
@@ -39,9 +38,6 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 
 	@Inject
 	private ClientConfigManager m_configManager;
-
-	@Inject
-	private MessageIdFactory m_factory;
 
 	private MessageQueue m_queue = new DefaultMessageQueue(SIZE);
 
@@ -92,7 +88,7 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 
 	@Override
 	public void initialize() {
-		m_manager = new ChannelManager(m_logger, m_serverAddresses, m_queue, m_configManager, m_factory);
+		m_manager = new ChannelManager(m_logger, m_serverAddresses, m_queue, m_configManager);
 
 		Threads.forGroup("cat").start(this);
 		Threads.forGroup("cat").start(m_manager);
@@ -137,25 +133,24 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 		tran.setStatus(Transaction.SUCCESS);
 		tran.setCompleted(true);
 		tran.addChild(first.getMessage());
-        tran.setTimestamp(first.getMessage().getTimestamp());
-        long lastTimestamp = 0;
-        long lastDuration = 0;
+		tran.setTimestamp(first.getMessage().getTimestamp());
+		long lastTimestamp = 0;
+		long lastDuration = 0;
 
 		while (max >= 0) {
 			MessageTree tree = trees.poll();
 
 			if (tree == null) {
-                tran.setDurationInMillis(lastTimestamp - tran.getTimestamp() + lastDuration);
+				tran.setDurationInMillis(lastTimestamp - tran.getTimestamp() + lastDuration);
 				break;
 			}
-            lastTimestamp = tree.getMessage().getTimestamp();
-            if(tree.getMessage() instanceof DefaultTransaction){
-                lastDuration = ((DefaultTransaction) tree.getMessage()).getDurationInMillis();
-            } else {
-                lastDuration = 0;
-            }
+			lastTimestamp = tree.getMessage().getTimestamp();
+			if (tree.getMessage() instanceof DefaultTransaction) {
+				lastDuration = ((DefaultTransaction) tree.getMessage()).getDurationInMillis();
+			} else {
+				lastDuration = 0;
+			}
 			tran.addChild(tree.getMessage());
-			m_factory.reuse(tree.getMessageId());
 			max--;
 		}
 		((DefaultMessageTree) first).setMessage(tran);
