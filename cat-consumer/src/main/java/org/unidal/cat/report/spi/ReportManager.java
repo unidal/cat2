@@ -18,5 +18,7 @@ public interface ReportManager<T extends Report> {
 
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException;
 
+	public T getHourlyReport(Date startTime, String domain, String filterId, String... keyValuePairs) throws IOException;
+
 	// public T getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<T> filter) throws IOException;
 }

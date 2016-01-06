@@ -8,7 +8,7 @@ import org.unidal.web.mvc.payload.annotation.FieldMeta;
 import com.dianping.cat.mvc.AbstractReportPayload;
 import com.dianping.cat.report.ReportPage;
 
-public class Payload extends AbstractReportPayload<Action,ReportPage> {
+public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@FieldMeta("op")
 	private Action m_action;
 
@@ -109,6 +109,13 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 		if (m_action == null) {
 			m_action = Action.HOURLY_REPORT;
 		}
-	}
 
+		if (m_type != null && m_type.length() == 0) {
+			m_type = null;
+		}
+
+		if (m_queryName != null && m_queryName.length() == 0) {
+			m_queryName = null;
+		}
+	}
 }

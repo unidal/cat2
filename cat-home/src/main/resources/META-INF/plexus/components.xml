@@ -3751,9 +3751,6 @@
 					<role>com.dianping.cat.report.page.transaction.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.transaction.XmlViewer</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.cat.report.page.transaction.service.TransactionReportService</role>
 				</requirement>
 				<requirement>
@@ -3763,22 +3760,8 @@
 					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.DomainGroupConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.service.ModelService</role>
+					<role>org.unidal.cat.report.spi.ReportManager</role>
 					<role-hint>transaction</role-hint>
-					<field-name>m_service</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.report.spi.ReportDelegate</role>
-					<role-hint>transaction</role-hint>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.report.internals.ReportProvider</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.report.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -3802,10 +3785,6 @@
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.report.page.transaction.XmlViewer</role>
-			<implementation>com.dianping.cat.report.page.transaction.XmlViewer</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.transaction.service.TransactionReportService</role>

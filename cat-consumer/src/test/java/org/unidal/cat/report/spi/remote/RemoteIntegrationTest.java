@@ -382,6 +382,12 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
+      public MockReport getHourlyReport(Date startTime, String domain, String filterId, String... keyValuePairs)
+            throws IOException {
+			throw new UnsupportedOperationException();
+      }
+
+		@Override
 		public List<MockReport> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 			return Arrays.asList(new MockReport(period, startTime, domain));
 		}
