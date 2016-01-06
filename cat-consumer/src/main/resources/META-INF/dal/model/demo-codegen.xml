@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="demo" root="true">
+    <entity-ref name="x" type="list" names="xs" />
+  </entity>
+  <entity name="x">
+    <attribute name="a" value-type="int" />
+    <attribute name="desc" value-type="String" />
+    <entity-ref name="y" />
+  </entity>
+  <entity name="y">
+    <attribute name="b" value-type="int" />
+    <attribute name="desc" value-type="String" />
+    <entity-ref name="z" type="list" names="zs" />
+  </entity>
+  <entity name="z">
+    <attribute name="c" value-type="int" />
+    <attribute name="desc" value-type="String" />
+    <element name="text" value-type="int" text="true" />
+  </entity>
+</model>
+

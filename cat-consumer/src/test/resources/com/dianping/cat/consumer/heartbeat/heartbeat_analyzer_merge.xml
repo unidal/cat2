@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<heartbeat-report domain="group" startTime="2012-01-01 00:00:00" endTime="2012-01-01 00:59:59">
+   <domain>group</domain>
+   <ip>192.168.1.1</ip>
+   <machine ip="192.168.1.1">
+      <period minute="1" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="2" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="3" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="4" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="5" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="6" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="7" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="8" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="9" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+      <period minute="10" thread-count="0" daemon-count="0" total-started-count="0" cat-thread-count="0" pigeon-thread-count="0" http-thread-count="0" new-gc-count="0" old-gc-count="0" memory-free="0" heap-usage="0" none-heap-usage="0" system-load-average="0.00" cat-message-produced="0" cat-message-overflow="0" cat-message-size="0.00">
+         <extension id="System">
+            <detail id="LoadAverage" value="2.97"/>
+            <detail id="FreePhysicalMemory" value="1.2018978816E10"/>
+            <detail id="FreeSwapSpaceSize" value="2.5769795584E10"/>
+         </extension>
+         <extension id="Disk">
+            <detail id="/ Free" value="1.0107654144E10"/>
+            <detail id="/data Free" value="2.084978458624E12"/>
+         </extension>
+         <extension id="GC">
+            <detail id="ParNewCount" value="1628.0"/>
+            <detail id="ParNewTime" value="430117.0"/>
+            <detail id="ConcurrentMarkSweepCount" value="4.0"/>
+            <detail id="ConcurrentMarkSweepTime" value="11818.0"/>
+         </extension>
+         <extension id="JVMHeap">
+            <detail id="Code Cache" value="1.7322432E7"/>
+            <detail id="Par Eden Space" value="3.75876092E9"/>
+            <detail id="Par Survivor Space" value="8.863744E8"/>
+            <detail id="CMS Old Gen" value="7.101881448E9"/>
+            <detail id="CMS Perm Gen" value="6.820388E7"/>
+         </extension>
+         <extension id="FrameworkThread">
+            <detail id="HttpThread" value="153.0"/>
+            <detail id="CatThread" value="10.0"/>
+            <detail id="PigeonThread" value="0.0"/>
+            <detail id="ActiveThread" value="247.0"/>
+            <detail id="StartedThread" value="19847.0"/>
+         </extension>
+         <extension id="CatUsage">
+            <detail id="Produced" value="8366036.0"/>
+            <detail id="Overflowed" value="0.0"/>
+            <detail id="Bytes" value="7.029551299E9"/>
+         </extension>
+         <extension id="dal">
+         </extension>
+      </period>
+   </machine>
+</heartbeat-report>
