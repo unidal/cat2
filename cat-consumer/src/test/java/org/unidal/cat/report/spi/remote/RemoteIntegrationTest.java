@@ -377,19 +377,19 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-		public MockReport getCurrentReport(String domain, Date startTime, int index, boolean createIfNotExist) {
+		public MockReport getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist) {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-      public MockReport getHourlyReport(Date startTime, String domain, String filterId, String... keyValuePairs)
-            throws IOException {
-			throw new UnsupportedOperationException();
-      }
-
-		@Override
 		public List<MockReport> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 			return Arrays.asList(new MockReport(period, startTime, domain));
+		}
+
+		@Override
+		public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
+		      String... keyValuePairs) throws IOException {
+			throw new UnsupportedOperationException();
 		}
 	}
 

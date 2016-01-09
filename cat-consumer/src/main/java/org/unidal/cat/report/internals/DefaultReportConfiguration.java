@@ -1,5 +1,6 @@
 package org.unidal.cat.report.internals;
 
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,6 +16,13 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 
 	private String m_serverUriPrefixPattern = "http://%s/cat/r/service";
 
+	private File m_baseDataDir;
+
+	@Override
+	public File getBaseDataDir() {
+		return m_baseDataDir;
+	}
+
 	@Override
 	public int getRemoteCallThreads() {
 		return 20;
@@ -22,12 +30,7 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 
 	@Override
 	public int getRemoteCallTimeoutInMillis() {
-		return 10 * 1000     * 60;
-	}
-
-	@Override
-	public String getServerUriPrefix(String server) {
-		return String.format(m_serverUriPrefixPattern, server);
+		return 10 * 1000 * 60;
 	}
 
 	@Override
@@ -36,7 +39,18 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	}
 
 	@Override
+	public String getServerUriPrefix(String server) {
+		return String.format(m_serverUriPrefixPattern, server);
+	}
+
+	@Override
 	public void initialize() throws InitializationException {
+		m_baseDataDir = new File("/data/appdatas/cat/bucket");
 		m_servers.putIfAbsent("127.0.0.1:2281", true);
+	}
+
+	@Override
+	public boolean isLocalMode() {
+		return true;
 	}
 }

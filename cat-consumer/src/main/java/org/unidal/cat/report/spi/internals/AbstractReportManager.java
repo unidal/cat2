@@ -54,9 +54,9 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 			for (T report : reports) {
 				if (atEnd) {
-					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, index, ReportStoragePolicy.FILE_AND_MYSQL);
 				} else {
-					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, ReportStoragePolicy.FILE);
+					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, index, ReportStoragePolicy.FILE);
 				}
 			}
 		}
@@ -80,8 +80,12 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		m_reportName = roleHint;
 	}
 
+	protected ReportDelegate<T> getDelegate() {
+		return m_delegateManager.getDelegate(m_reportName);
+	}
+
 	@Override
-	public T getCurrentReport(String domain, Date startTime, int index, boolean createIfNotExist) {
+	public T getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist) {
 		long key = startTime.getTime() + index;
 		ConcurrentMap<String, T> map = m_reports.get(key);
 
@@ -112,10 +116,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return report;
 	}
 
-	protected ReportDelegate<T> getDelegate() {
-		return m_delegateManager.getDelegate(m_reportName);
-	}
-
 	@Override
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 		if (period == ReportPeriod.HOUR && period.isCurrent(startTime)) {
@@ -123,7 +123,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 			List<T> reports = new ArrayList<T>(count);
 
 			for (int i = 0; i < count; i++) {
-				T report = getCurrentReport(domain, startTime, i, false);
+				T report = getLocalReport(domain, startTime, i, false);
 
 				if (report != null) {
 					reports.add(report);
@@ -136,10 +136,11 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	}
 
 	@Override
-	public T getHourlyReport(Date startTime, String domain, String filterId, String... keyValuePairs) throws IOException {
+	public T getReport(ReportPeriod period, Date startTime, String domain, String filterId, String... keyValuePairs)
+	      throws IOException {
 		ReportDelegate<T> delegate = getDelegate();
 		ReportFilter<? extends Report> filter = m_filterManager.getFilter(delegate.getName(), filterId);
-		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, ReportPeriod.HOUR, filter);
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
 
 		int len = keyValuePairs.length;
 

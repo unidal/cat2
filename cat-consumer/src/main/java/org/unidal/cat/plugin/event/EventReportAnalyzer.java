@@ -75,7 +75,7 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> im
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();
-		EventReport report = m_reportManager.getCurrentReport(domain, new Date(getStartTime()), m_index, true);
+		EventReport report = m_reportManager.getLocalReport(domain, new Date(getStartTime()), m_index, true);
 		Message message = tree.getMessage();
 		String ip = tree.getIpAddress();
 

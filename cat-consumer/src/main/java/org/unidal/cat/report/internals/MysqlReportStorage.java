@@ -109,7 +109,7 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 	}
 
 	@Override
-	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, ReportStoragePolicy policy)
+	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
 	      throws IOException {
 		if (!policy.forMySQL()) {
 			return;

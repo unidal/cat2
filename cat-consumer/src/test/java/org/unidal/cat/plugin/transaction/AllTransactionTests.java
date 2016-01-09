@@ -8,6 +8,8 @@ import org.unidal.cat.plugin.transaction.filter.TransactionReportFilterTest;
 @RunWith(Suite.class)
 @SuiteClasses({
 
+TransactionReportManagerTest.class,
+
 TransactionReportAggregatorTest.class,
 
 TransactionReportFilterTest.class

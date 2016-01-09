@@ -47,7 +47,6 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 		Map<String, Boolean> servers = m_configuration.getServers();
 		int len = servers.size();
 		List<Callable<T>> callables = new ArrayList<Callable<T>>(servers.size());
-		// final RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
 
 		for (Map.Entry<String, Boolean> e : servers.entrySet()) {
 			if (e.getValue().booleanValue()) {

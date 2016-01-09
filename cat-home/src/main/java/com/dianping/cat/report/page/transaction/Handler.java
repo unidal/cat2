@@ -12,6 +12,7 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
+import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
@@ -35,7 +36,6 @@ import com.dianping.cat.report.page.transaction.GraphPayload.AverageTimePayload;
 import com.dianping.cat.report.page.transaction.GraphPayload.DurationPayload;
 import com.dianping.cat.report.page.transaction.GraphPayload.FailurePayload;
 import com.dianping.cat.report.page.transaction.GraphPayload.HitPayload;
-import com.dianping.cat.report.page.transaction.service.TransactionReportService;
 import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
 import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
 import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper;
@@ -49,9 +49,6 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private JspViewer m_jspViewer;
-
-	@Inject
-	private TransactionReportService m_reportService;
 
 	@Inject
 	private TransactionMergeHelper m_mergeHelper;
@@ -128,15 +125,17 @@ public class Handler implements PageHandler<Context> {
 		model.setPieChart(new JsonBuilder().toJson(chart));
 	}
 
-	private void handleHistoryGraph(Model model, Payload payload) {
-		String domain = payload.getDomain();
-		String ipAddress = payload.getIpAddress();
-		String type = payload.getType();
-		String name = payload.getName();
-		TransactionReport report;
+	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
+		String filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
+		Date startTime = new Date(payload.getDate());
+		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
+		      "ip", payload.getIpAddress(), //
+		      "type", payload.getType(), //
+		      "name", payload.getName());
 
-		if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
-			report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());
+		if (Constants.ALL.equalsIgnoreCase(payload.getIpAddress())) {
+			String type = payload.getType();
+			String name = payload.getName();
 
 			buildDistributionInfo(model, type, name, report);
 		}
@@ -144,30 +143,33 @@ public class Handler implements PageHandler<Context> {
 		m_historyGraph.buildTrendGraph(model, payload);
 	}
 
-	private void handleHistoryReport(Model model, Payload payload) {
-		String domain = payload.getDomain();
-		TransactionReport report = m_reportService.queryReport(domain, payload.getHistoryStartDate(),
-		      payload.getHistoryEndDate());
+	private void handleHistoryReport(Model model, Payload payload) throws IOException {
+		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
+		TransactionReport report = m_manager.getReport(payload.getReportPeriod(), payload.getHistoryStartDate(),
+		      payload.getDomain(), filterId, //
+		      "ip", payload.getIpAddress(), //
+		      "type", payload.getType());
 
 		if (report != null) {
-			model.setReport(report);
 			buildTransactionMetaInfo(model, payload, report);
+
+			model.setReport(report);
 		}
 	}
 
 	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
 		String filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
-		TransactionReport report = m_manager.getHourlyReport(new Date(payload.getDate()), payload.getDomain(), filterId, //
+		Date startTime = new Date(payload.getDate());
+		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType(), //
 		      "name", payload.getName());
 
-		String ipAddress = payload.getIpAddress();
 		String type = payload.getType();
 		String name = payload.getName();
 		String ip = payload.getIpAddress();
 
-		if (Constants.ALL.equalsIgnoreCase(ipAddress)) {
+		if (Constants.ALL.equalsIgnoreCase(ip)) {
 			buildDistributionInfo(model, type, name, report);
 		}
 
@@ -178,7 +180,8 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
-		TransactionReport report = m_manager.getHourlyReport(new Date(payload.getDate()), payload.getDomain(), filterId, //
+		Date startTime = new Date(payload.getDate());
+		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType());
 
@@ -233,13 +236,5 @@ public class Handler implements PageHandler<Context> {
 		model.setPage(ReportPage.TRANSACTION);
 		model.setAction(payload.getAction());
 		model.setQueryName(payload.getQueryName());
-	}
-
-	public enum DetailOrder {
-		TYPE, NAME, TOTAL_COUNT, FAILURE_COUNT, MIN, MAX, SUM, SUM2
-	}
-
-	public enum SummaryOrder {
-		TYPE, TOTAL_COUNT, FAILURE_COUNT, MIN, MAX, SUM, SUM2
 	}
 }
