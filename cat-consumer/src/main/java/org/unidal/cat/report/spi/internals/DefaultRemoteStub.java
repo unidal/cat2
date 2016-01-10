@@ -17,6 +17,7 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
+import com.dianping.cat.message.internal.DefaultMessageProducer;
 
 @Named(type = RemoteStub.class)
 public class DefaultRemoteStub implements RemoteStub {
@@ -25,16 +26,17 @@ public class DefaultRemoteStub implements RemoteStub {
 
 	@Override
 	public InputStream getReport(RemoteContext ctx, String server) throws IOException {
-		String url = ctx.buildURL(m_configuration.getServerUriPrefix(server));
-		int timeout = m_configuration.getRemoteCallTimeoutInMillis();
-
-		Transaction t = Cat.newTransaction("Remote", server);
-		
-		t.addData(url);
+		DefaultMessageProducer cat = (DefaultMessageProducer) Cat.getProducer();
+		Transaction t = cat.newTransaction(ctx.getParentTransaction(), "Remote", server);
 
 		try {
+			String url = ctx.buildURL(m_configuration.getServerUriPrefix(server));
+			int ct = m_configuration.getRemoteCallConnectTimeoutInMillis();
+			int rt = m_configuration.getRemoteCallReadTimeoutInMillis();
+
+			t.addData(url);
 			Map<String, List<String>> headers = new HashMap<String, List<String>>(2);
-			InputStream in = Urls.forIO().connectTimeout(timeout).readTimeout(timeout)//
+			InputStream in = Urls.forIO().connectTimeout(ct).readTimeout(rt)//
 			      .header("Accept-Encoding", "gzip").openStream(url, headers);
 
 			if ("[gzip]".equals(String.valueOf(headers.get("Content-Encoding")))) {
@@ -44,15 +46,12 @@ public class DefaultRemoteStub implements RemoteStub {
 			t.setStatus(Message.SUCCESS);
 			return in;
 		} catch (IOException e) {
-			Cat.logError(e);
 			t.setStatus(e);
 			throw e;
 		} catch (RuntimeException e) {
-			Cat.logError(e);
 			t.setStatus(e);
 			throw e;
 		} catch (Error e) {
-			Cat.logError(e);
 			t.setStatus(e);
 			throw e;
 		} finally {

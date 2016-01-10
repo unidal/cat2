@@ -10,6 +10,10 @@ import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
+
 @Named(type = ReportProvider.class, value = HistoricalReportProvider.ID)
 public class HistoricalReportProvider<T extends Report> implements ReportProvider<T> {
 	public static final String ID = "historical";
@@ -24,19 +28,41 @@ public class HistoricalReportProvider<T extends Report> implements ReportProvide
 
 	@Override
 	public T getReport(RemoteContext ctx, ReportDelegate<T> delegate) throws IOException {
-		List<T> reports = m_storage.loadAll(delegate, ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
+		Transaction t = Cat.getProducer().newTransaction("Service", "Historical");
 
-		if (reports.isEmpty()) {
-			return null;
-		} else {
-			T aggregated = delegate.aggregate(ctx.getPeriod(), reports);
-			ReportFilter<T> filter = ctx.getFilter();
+		t.addData(ctx.toString());
+		
+		try {
+			List<T> reports = m_storage.loadAll(delegate, ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
 
-			if (filter != null) {
-				filter.applyTo(ctx, aggregated);
+			if (reports.isEmpty()) {
+				t.setStatus(Message.SUCCESS);
+				return null;
+			} else {
+				T aggregated = delegate.aggregate(ctx.getPeriod(), reports);
+				ReportFilter<T> filter = ctx.getFilter();
+
+				if (filter != null) {
+					filter.applyTo(ctx, aggregated);
+				}
+
+				t.setStatus(Message.SUCCESS);
+				return aggregated;
 			}
-
-			return aggregated;
+		} catch (IOException e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} catch (RuntimeException e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} catch (Error e) {
+			Cat.logError(e);
+			t.setStatus(e);
+			throw e;
+		} finally {
+			t.complete();
 		}
 	}
 }

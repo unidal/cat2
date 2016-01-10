@@ -19,7 +19,7 @@ import com.dianping.cat.consumer.event.model.transform.DefaultXmlBuilder;
 
 @Named(type = ReportDelegate.class, value = EventConstants.ID)
 public class EventReportDelegate implements ReportDelegate<EventReport> {
-	@Inject(type = ReportAggregator.class, value = EventConstants.ID)
+	@Inject(EventConstants.ID)
 	private ReportAggregator<EventReport> m_aggregator;
 
 	@Override

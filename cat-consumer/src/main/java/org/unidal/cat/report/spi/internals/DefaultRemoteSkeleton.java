@@ -8,6 +8,7 @@ import org.unidal.cat.report.Report;
 import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.ReportManagerManager;
 import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.report.spi.ReportDelegateManager;
 import org.unidal.cat.report.spi.ReportManager;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.cat.report.spi.remote.RemoteSkeleton;
@@ -20,11 +21,14 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 	@Inject
 	private ReportManagerManager m_rmm;
 
+	@Inject
+	private ReportDelegateManager m_rdg;
+
 	@Override
-	@SuppressWarnings("unchecked")
 	public void handleReport(RemoteContext ctx, OutputStream out) throws IOException {
 		String id = ctx.getName();
 		ReportManager<Report> rm = m_rmm.getReportManager(id);
+		ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
 		List<Report> reports = rm.getLocalReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
 
 		if (reports == null || reports.isEmpty()) {
@@ -32,7 +36,6 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 		}
 
 		ReportFilter<Report> filter = ctx.getFilter();
-		ReportDelegate<Report> delegate = lookup(ReportDelegate.class, id);
 		Report report = delegate.aggregate(ctx.getPeriod(), reports);
 
 		if (filter != null) {

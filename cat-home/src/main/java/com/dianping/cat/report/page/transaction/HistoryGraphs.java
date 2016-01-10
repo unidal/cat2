@@ -12,6 +12,7 @@ import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.core.dal.DailyGraph;
 import com.dianping.cat.core.dal.DailyGraphDao;
 import com.dianping.cat.core.dal.DailyGraphEntity;
@@ -283,6 +284,11 @@ public class HistoryGraphs extends BaseHistoryGraphs {
 		item.setSubTitles(buildSubTitle(start, size, step, queryType));
 		return item;
 	}
+
+	public void buildTrend(Model model, TransactionReport current, TransactionReport last, TransactionReport baseline) {
+	   // TODO Auto-generated method stub
+	   
+   }
 
 	public void buildTrendGraph(Model model, Payload payload) {
 		Date start = payload.getHistoryStartDate();

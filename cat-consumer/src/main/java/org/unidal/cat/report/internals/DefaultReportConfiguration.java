@@ -29,8 +29,13 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	}
 
 	@Override
-	public int getRemoteCallTimeoutInMillis() {
-		return 10 * 1000 * 60;
+	public int getRemoteCallConnectTimeoutInMillis() {
+		return 1 * 1000; // 1s
+	}
+
+	@Override
+	public int getRemoteCallReadTimeoutInMillis() {
+		return 10 * 1000; // 10s
 	}
 
 	@Override

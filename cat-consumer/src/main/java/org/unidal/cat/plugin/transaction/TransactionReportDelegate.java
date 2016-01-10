@@ -19,7 +19,7 @@ import com.dianping.cat.consumer.transaction.model.transform.DefaultXmlBuilder;
 
 @Named(type = ReportDelegate.class, value = TransactionConstants.NAME)
 public class TransactionReportDelegate implements ReportDelegate<TransactionReport> {
-	@Inject(type = ReportAggregator.class, value = TransactionConstants.NAME)
+	@Inject(TransactionConstants.NAME)
 	private ReportAggregator<TransactionReport> m_aggregator;
 
 	@Override

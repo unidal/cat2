@@ -120,6 +120,8 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 				load(hourlyReports, delegate, hourlyFile);
 			}
 
+			hourlyReports.add(delegate.createLocal(ReportPeriod.DAY, domain, startTime));
+
 			T report = delegate.aggregate(period, hourlyReports);
 
 			reports.add(report);

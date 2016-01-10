@@ -103,7 +103,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 		T report = map.get(domain);
 
-		if (report == null) {
+		if (report == null && createIfNotExist) {
 			report = getDelegate().createLocal(ReportPeriod.HOUR, domain, startTime);
 
 			T r = map.putIfAbsent(domain, report);
@@ -129,6 +129,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 					reports.add(report);
 				}
 			}
+
 			return reports;
 		} else {
 			return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
@@ -155,9 +156,13 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 			throw new IllegalArgumentException("Parameter(keyValuePairs) is not paired!");
 		}
 
-		T report = m_provider.getReport(ctx, delegate);
+		try {
+			T report = m_provider.getReport(ctx, delegate);
 
-		return report;
+			return report;
+		} finally {
+			ctx.destroy();
+		}
 	}
 
 	public abstract int getThreadsCount();

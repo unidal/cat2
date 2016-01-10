@@ -275,8 +275,8 @@ public class RemoteIntegrationTest extends JettyServer {
 	@Named(type = ReportConfiguration.class)
 	public static final class MockReportConfiguration extends DefaultReportConfiguration {
 		@Override
-		public int getRemoteCallTimeoutInMillis() {
-			return super.getRemoteCallTimeoutInMillis() * 100;
+		public int getRemoteCallReadTimeoutInMillis() {
+			return super.getRemoteCallReadTimeoutInMillis() * 100;
 		}
 
 		@Override

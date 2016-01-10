@@ -7,7 +7,9 @@ public interface ReportConfiguration {
 
 	public int getRemoteCallThreads();
 
-	public int getRemoteCallTimeoutInMillis();
+	public int getRemoteCallConnectTimeoutInMillis();
+
+	public int getRemoteCallReadTimeoutInMillis();
 
 	public String getServerUriPrefix(String server);
 

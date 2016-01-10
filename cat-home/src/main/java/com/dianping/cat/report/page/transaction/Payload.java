@@ -1,6 +1,7 @@
 package com.dianping.cat.report.page.transaction;
 
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.unidal.cat.report.ReportPeriod;
@@ -26,11 +27,11 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@FieldMeta("type")
 	private String m_type;
 
-	@FieldMeta("xml")
-	private boolean m_xml;
-
 	@FieldMeta("group")
 	private String m_group;
+
+	@FieldMeta("date")
+	private long m_startTime;
 
 	public Payload() {
 		super(ReportPage.TRANSACTION);
@@ -80,10 +81,6 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 		return m_type;
 	}
 
-	public boolean isXml() {
-		return m_xml;
-	}
-
 	public void setAction(String action) {
 		m_action = Action.getByName(action, Action.HOURLY_REPORT);
 	}
@@ -109,7 +106,60 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	}
 
 	@Override
-   public Date getHistoryStartDate() {
-	   return ReportPeriod.DAY.getStartTime(new Date()); // TODO hack
-   }
+	public Date getHistoryEndDate() {
+		return getReportPeriod().getNextStartTime(getStartTime());
+	}
+
+	@Override
+	public Date getHistoryStartDate() {
+		return getStartTime();
+	}
+
+	public Date getStartTime() {
+		ReportPeriod period = getReportPeriod();
+
+		if (m_startTime == 0) {
+			return period.getStartTime(new Date());
+		} else {
+			Date time = getDate(period, m_startTime, m_step);
+
+			return period.getStartTime(time);
+		}
+	}
+
+	private Date getDate(ReportPeriod period, long date, int step) {
+		long time = date < 100000000L ? date * 100 : date;
+		long year = (time % 10000000000L) / 1000000L;
+		long month = (time % 1000000L) / 10000L;
+		long day = (time % 10000L) / 100L;
+		long hour = (time % 100L) / 1L;
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.YEAR, (int) year);
+		cal.set(Calendar.MONTH, (int) month - 1);
+		cal.set(Calendar.DATE, (int) day);
+		cal.set(Calendar.HOUR_OF_DAY, (int) hour);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		if (step != 0) {
+			switch (period) {
+			case HOUR:
+				cal.add(Calendar.HOUR_OF_DAY, step);
+				break;
+			case DAY:
+				cal.add(Calendar.DATE, step);
+				break;
+			case WEEK:
+				cal.add(Calendar.DATE, 7 * step);
+				break;
+			case MONTH:
+				cal.add(Calendar.MONTH, step);
+				break;
+			}
+		}
+
+		return cal.getTime();
+	}
 }

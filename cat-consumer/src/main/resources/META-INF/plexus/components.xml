@@ -32,6 +32,9 @@
 				<requirement>
 					<role>org.unidal.cat.report.ReportManagerManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.spi.ReportDelegateManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

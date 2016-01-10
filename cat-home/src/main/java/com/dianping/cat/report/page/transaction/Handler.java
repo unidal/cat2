@@ -127,39 +127,53 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
 		String filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
-		Date startTime = new Date(payload.getDate());
-		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
+		ReportPeriod period = payload.getReportPeriod();
+		String domain = payload.getDomain();
+		Date date = payload.getStartTime();
+		TransactionReport current = m_manager.getReport(period, period.getStartTime(date), domain, filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType(), //
 		      "name", payload.getName());
+		TransactionReport last = m_manager.getReport(period, period.getLastStartTime(date), domain, filterId, //
+		      "ip", payload.getIpAddress(), //
+		      "type", payload.getType(), //
+		      "name", payload.getName());
+		TransactionReport baseline = m_manager.getReport(period, period.getBaselineStartTime(date), domain, filterId, //
+		      "ip", payload.getIpAddress(), //
+		      "type", payload.getType(), //
+		      "name", payload.getName());
+
+		model.setReport(current);
 
 		if (Constants.ALL.equalsIgnoreCase(payload.getIpAddress())) {
 			String type = payload.getType();
 			String name = payload.getName();
 
-			buildDistributionInfo(model, type, name, report);
+			buildDistributionInfo(model, type, name, current);
 		}
 
-		m_historyGraph.buildTrendGraph(model, payload);
+		m_historyGraph.buildTrend(model, current, last, baseline);
+		// m_historyGraph.buildTrendGraph(model, payload);
 	}
 
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
 		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
-		TransactionReport report = m_manager.getReport(payload.getReportPeriod(), payload.getHistoryStartDate(),
-		      payload.getDomain(), filterId, //
+		ReportPeriod period = payload.getReportPeriod();
+		Date startTime = payload.getStartTime();
+		TransactionReport report = m_manager.getReport(period, startTime, payload.getDomain(), filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType());
 
 		if (report != null) {
 			buildTransactionMetaInfo(model, payload, report);
-
-			model.setReport(report);
 		}
+
+		model.setReport(report);
 	}
 
 	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
 		String filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
-		Date startTime = new Date(payload.getDate());
+		Date startTime = payload.getStartTime();
 		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType(), //
@@ -180,7 +194,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
-		Date startTime = new Date(payload.getDate());
+		Date startTime = payload.getStartTime();
 		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
 		      "ip", payload.getIpAddress(), //
 		      "type", payload.getType());

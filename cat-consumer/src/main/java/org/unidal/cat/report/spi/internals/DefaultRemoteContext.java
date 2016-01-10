@@ -11,6 +11,8 @@ import org.unidal.cat.report.ReportFilter;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.spi.remote.RemoteContext;
 
+import com.dianping.cat.message.Transaction;
+
 public class DefaultRemoteContext implements RemoteContext {
 	private String m_name;
 
@@ -23,6 +25,8 @@ public class DefaultRemoteContext implements RemoteContext {
 	private Map<String, String> m_properties;
 
 	private ReportFilter<? extends Report> m_filter;
+
+	private ThreadLocal<Transaction> m_parent = new ThreadLocal<Transaction>();
 
 	public DefaultRemoteContext(String name, String domain, Date startTime, ReportPeriod period,
 	      ReportFilter<? extends Report> filter) {
@@ -84,6 +88,12 @@ public class DefaultRemoteContext implements RemoteContext {
 	}
 
 	@Override
+	public void destroy() {
+		m_parent.remove();
+		m_properties.clear();
+	}
+
+	@Override
 	public String getDomain() {
 		return m_domain;
 	}
@@ -112,6 +122,11 @@ public class DefaultRemoteContext implements RemoteContext {
 	@Override
 	public String getName() {
 		return m_name;
+	}
+
+	@Override
+	public Transaction getParentTransaction() {
+		return m_parent.get();
 	}
 
 	@Override
@@ -149,6 +164,11 @@ public class DefaultRemoteContext implements RemoteContext {
 	}
 
 	@Override
+	public void setParentTransaction(Transaction parent) {
+		m_parent.set(parent);
+	}
+
+	@Override
 	public RemoteContext setProperty(String property, String newValue) {
 		if (newValue == null) {
 			if (m_properties != null) {
@@ -167,7 +187,7 @@ public class DefaultRemoteContext implements RemoteContext {
 
 	@Override
 	public String toString() {
-		return String.format("%s[%s]", getClass().getSimpleName(), buildURL(""));
+		return buildURL("");
 	}
 
 	private String urlEncode(String str) {

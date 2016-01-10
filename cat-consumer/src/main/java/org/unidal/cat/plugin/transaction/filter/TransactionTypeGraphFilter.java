@@ -63,7 +63,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
 			if (type != null) {
 				m_type = m_machine.findOrCreateType(type.getId());
-				
+
 				m_helper.mergeType(m_type, type);
 				machine.addType(type);
 			}
@@ -78,11 +78,14 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 			if (all) {
 				m_machine = new Machine(Constants.ALL);
 			} else {
-				m_machine = new Machine(m_ip);
-
 				Machine m = transactionReport.findMachine(m_ip);
+
+				m_machine = new Machine(m_ip);
 				transactionReport.getMachines().clear();
-				transactionReport.addMachine(m);
+
+				if (m != null) {
+					transactionReport.addMachine(m);
+				}
 			}
 
 			super.visitTransactionReport(transactionReport);

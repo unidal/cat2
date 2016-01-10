@@ -15,37 +15,37 @@ import com.dianping.cat.Cat;
 
 @Named(type = ReportDelegateManager.class)
 public class DefaultReportDelegateManager extends ContainerHolder implements ReportDelegateManager {
-	private Map<String, ReportDelegate<Report>> m_filters = new HashMap<String, ReportDelegate<Report>>();
+	private Map<String, ReportDelegate<Report>> m_delegates = new HashMap<String, ReportDelegate<Report>>();
 
-	private Set<String> m_missingFilters = new HashSet<String>();
+	private Set<String> m_missingDelegates = new HashSet<String>();
 
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T extends Report> ReportDelegate<T> getDelegate(String reportName) {
 		String key = reportName;
-		ReportDelegate<Report> filter = m_filters.get(key);
+		ReportDelegate<Report> delegate = m_delegates.get(key);
 
-		if (filter == null) {
-			if (m_missingFilters.contains(key)) {
+		if (delegate == null) {
+			if (m_missingDelegates.contains(key)) {
 				return null;
 			}
 
-			synchronized (m_filters) {
-				filter = (ReportDelegate<Report>) m_filters.get(key);
+			synchronized (m_delegates) {
+				delegate = (ReportDelegate<Report>) m_delegates.get(key);
 
-				if (filter == null) {
+				if (delegate == null) {
 					try {
-						filter = lookup(ReportDelegate.class, key);
+						delegate = lookup(ReportDelegate.class, key);
 
-						m_filters.put(key, filter);
+						m_delegates.put(key, delegate);
 					} catch (Exception e) {
 						Cat.logError(String.format("ReportDelegate(%s) is missing, IGNORED.", key), e);
-						m_missingFilters.add(key);
+						m_missingDelegates.add(key);
 					}
 				}
 			}
 		}
 
-		return (ReportDelegate<T>) filter;
+		return (ReportDelegate<T>) delegate;
 	}
 }
