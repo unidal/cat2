@@ -1,15 +1,20 @@
 package org.unidal.cat.report;
 
+import java.io.File;
 import java.util.Map;
 
 public interface ReportConfiguration {
 
-	public abstract int getRemoteCallThreads();
+	public int getRemoteCallThreads();
 
-	public abstract int getRemoteCallTimeoutInMillis();
+	public int getRemoteCallTimeoutInMillis();
 
-	public abstract String getServerUriPrefix(String server);
+	public String getServerUriPrefix(String server);
 
-	public abstract Map<String, Boolean> getServers();
+	public Map<String, Boolean> getServers();
+
+	public boolean isLocalMode();
+
+	public File getBaseDataDir();
 
 }

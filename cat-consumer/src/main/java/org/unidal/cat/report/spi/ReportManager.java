@@ -12,11 +12,12 @@ public interface ReportManager<T extends Report> {
 
 	public void doInitLoad(Date date, int index) throws IOException;
 
-	public T getCurrentReport(String domain, Date startTime, int index, boolean createIfNotExist);
+	public T getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist);
 
 	// public Set<String> getDomains(ReportPeriod period, Date startTime);
 
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException;
 
-	// public T getReport(ReportPeriod period, Date startTime, String domain, ReportFilter<T> filter) throws IOException;
+	public T getReport(ReportPeriod period, Date startTime, String domain, String filterId, String... keyValuePairs)
+	      throws IOException;
 }

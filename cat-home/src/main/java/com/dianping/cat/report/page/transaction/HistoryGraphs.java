@@ -21,8 +21,6 @@ import com.dianping.cat.core.dal.GraphEntity;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.report.graph.LineChart;
 import com.dianping.cat.report.page.BaseHistoryGraphs;
-import com.dianping.cat.report.page.transaction.Handler.DetailOrder;
-import com.dianping.cat.report.page.transaction.Handler.SummaryOrder;
 
 public class HistoryGraphs extends BaseHistoryGraphs {
 
@@ -348,5 +346,13 @@ public class HistoryGraphs extends BaseHistoryGraphs {
 			}
 		}
 		return buildGraphDatasForHour(start, end, type, name, graphs);
+	}
+
+	public enum DetailOrder {
+		TYPE, NAME, TOTAL_COUNT, FAILURE_COUNT, MIN, MAX, SUM, SUM2
+	}
+
+	public enum SummaryOrder {
+		TYPE, TOTAL_COUNT, FAILURE_COUNT, MIN, MAX, SUM, SUM2
 	}
 }

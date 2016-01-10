@@ -56,7 +56,7 @@ public class ReportStorageTest extends JdbcTestCase {
 		Date hourlyPeriod = ReportPeriod.HOUR.getStartTime(startTime);
 		Report hourlyReport = new TransactionReport("default").setStartTime(hourlyPeriod);
 
-		storage.store(delegate, ReportPeriod.HOUR, hourlyReport, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, hourlyReport, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 		List<Report> hourlyReports = storage.loadAll(delegate, ReportPeriod.HOUR, hourlyPeriod, hourlyReport.getDomain());
 
 		Assert.assertEquals(1, hourlyReports.size());
@@ -66,7 +66,7 @@ public class ReportStorageTest extends JdbcTestCase {
 		Date dailyPeriod = ReportPeriod.DAY.getStartTime(startTime);
 		Report dailyReport = new TransactionReport("default").setStartTime(dailyPeriod);
 
-		storage.store(delegate, ReportPeriod.DAY, dailyReport, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.DAY, dailyReport, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 		List<Report> dailyReports = storage.loadAll(delegate, ReportPeriod.DAY, dailyPeriod, dailyReport.getDomain());
 
 		Assert.assertEquals(1, dailyReports.size());
@@ -83,9 +83,9 @@ public class ReportStorageTest extends JdbcTestCase {
 		Report report = new TransactionReport("file").setStartTime(period);
 		File dailyFile = ((FileReportStorage<Report>) storage).getDailyReportFile(delegate, period, report.getDomain());
 
-		storage.store(delegate, ReportPeriod.DAY, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.DAY, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals("target/report/2015-11/07/daily/transaction/file.xml", dailyFile.getPath());
+		Assert.assertEquals(true, dailyFile.getPath().endsWith("/report/2015-11/07/transaction/daily/file.xml"));
 		Assert.assertTrue(String.format("File(%s) has not been created.", dailyFile), dailyFile.exists());
 
 		List<Report> reports = storage.loadAll(delegate, ReportPeriod.DAY, period, report.getDomain());
@@ -102,11 +102,11 @@ public class ReportStorageTest extends JdbcTestCase {
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Date period = ReportPeriod.HOUR.getStartTime(startTime);
 		Report report = new TransactionReport("file").setStartTime(period);
-		File file = ((FileReportStorage<Report>) storage).getHourlyReportFile(delegate, period, report.getDomain());
+		File file = ((FileReportStorage<Report>) storage).getHourlyReportFile(delegate, period, report.getDomain(), 0);
 
-		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals("target/report/2015-11/07/16/transaction/file.xml", file.getPath());
+		Assert.assertEquals(true, file.getPath().endsWith("/report/2015-11/07/transaction/16/file-0.xml"));
 		Assert.assertTrue(String.format("File(%s) has not been created.", file), file.exists());
 
 		List<Report> reports = storage.loadAll(delegate, ReportPeriod.HOUR, period, report.getDomain());
@@ -124,7 +124,7 @@ public class ReportStorageTest extends JdbcTestCase {
 		Date period = ReportPeriod.DAY.getStartTime(startTime);
 		Report report = new TransactionReport("mysql").setStartTime(period);
 
-		storage.store(delegate, ReportPeriod.DAY, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.DAY, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
 		DailyReportDao dao = lookup(DailyReportDao.class);
 		DailyReportContentDao contentDao = lookup(DailyReportContentDao.class);
@@ -148,7 +148,7 @@ public class ReportStorageTest extends JdbcTestCase {
 		Date period = ReportPeriod.HOUR.getStartTime(startTime);
 		Report report = new TransactionReport("mysql").setStartTime(period);
 
-		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
 		HourlyReportDao dao = lookup(HourlyReportDao.class);
 		HourlyReportContentDao contentDao = lookup(HourlyReportContentDao.class);

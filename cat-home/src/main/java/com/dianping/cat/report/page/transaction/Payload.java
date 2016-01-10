@@ -1,14 +1,16 @@
 package com.dianping.cat.report.page.transaction;
 
 import java.net.URLEncoder;
+import java.util.Date;
 
+import org.unidal.cat.report.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 import com.dianping.cat.mvc.AbstractReportPayload;
 import com.dianping.cat.report.ReportPage;
 
-public class Payload extends AbstractReportPayload<Action,ReportPage> {
+public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@FieldMeta("op")
 	private Action m_action;
 
@@ -59,6 +61,17 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 		return m_queryName;
 	}
 
+	public ReportPeriod getReportPeriod() {
+		if (m_action == null || !m_action.isHistory()) {
+			return ReportPeriod.HOUR;
+		} else {
+			String type = super.getReportType();
+			ReportPeriod period = ReportPeriod.getByName(type, ReportPeriod.DAY);
+
+			return period;
+		}
+	}
+
 	public String getSortBy() {
 		return m_sortBy;
 	}
@@ -75,33 +88,9 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 		m_action = Action.getByName(action, Action.HOURLY_REPORT);
 	}
 
-	public void setGroup(String group) {
-		m_group = group;
-	}
-
-	public void setName(String name) {
-		m_name = name;
-	}
-
 	@Override
 	public void setPage(String page) {
 		m_page = ReportPage.getByName(page, ReportPage.TRANSACTION);
-	}
-
-	public void setQueryName(String queryName) {
-		this.m_queryName = queryName;
-	}
-
-	public void setSortBy(String sortBy) {
-		m_sortBy = sortBy;
-	}
-
-	public void setType(String type) {
-		m_type = type;
-	}
-
-	public void setXml(boolean xml) {
-		m_xml = xml;
 	}
 
 	@Override
@@ -109,6 +98,18 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 		if (m_action == null) {
 			m_action = Action.HOURLY_REPORT;
 		}
+
+		if (m_type != null && m_type.length() == 0) {
+			m_type = null;
+		}
+
+		if (m_queryName != null && m_queryName.length() == 0) {
+			m_queryName = null;
+		}
 	}
 
+	@Override
+   public Date getHistoryStartDate() {
+	   return ReportPeriod.DAY.getStartTime(new Date()); // TODO hack
+   }
 }

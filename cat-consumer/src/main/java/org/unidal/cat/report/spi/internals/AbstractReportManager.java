@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import org.unidal.cat.report.Report;
+import org.unidal.cat.report.ReportFilter;
+import org.unidal.cat.report.ReportFilterManager;
 import org.unidal.cat.report.ReportPeriod;
 import org.unidal.cat.report.internals.FileReportStorage;
 import org.unidal.cat.report.internals.ReportProvider;
@@ -18,6 +20,7 @@ import org.unidal.cat.report.internals.ReportStoragePolicy;
 import org.unidal.cat.report.spi.ReportDelegate;
 import org.unidal.cat.report.spi.ReportDelegateManager;
 import org.unidal.cat.report.spi.ReportManager;
+import org.unidal.cat.report.spi.remote.RemoteContext;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
@@ -34,14 +37,12 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	@Inject
 	private ReportDelegateManager m_delegateManager;
 
+	@Inject
+	private ReportFilterManager m_filterManager;
+
 	private String m_reportName;
 
 	private Map<Long, ConcurrentMap<String, T>> m_reports = new HashMap<Long, ConcurrentMap<String, T>>();
-
-	@Override
-	public void enableRoleHint(String roleHint) {
-		m_reportName = roleHint;
-	}
 
 	@Override
 	public void doCheckpoint(Date startTime, int index, boolean atEnd) throws IOException {
@@ -53,9 +54,9 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 			for (T report : reports) {
 				if (atEnd) {
-					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, index, ReportStoragePolicy.FILE_AND_MYSQL);
 				} else {
-					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, ReportStoragePolicy.FILE);
+					m_storage.store(getDelegate(), ReportPeriod.HOUR, report, index, ReportStoragePolicy.FILE);
 				}
 			}
 		}
@@ -75,7 +76,16 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	}
 
 	@Override
-	public T getCurrentReport(String domain, Date startTime, int index, boolean createIfNotExist) {
+	public void enableRoleHint(String roleHint) {
+		m_reportName = roleHint;
+	}
+
+	protected ReportDelegate<T> getDelegate() {
+		return m_delegateManager.getDelegate(m_reportName);
+	}
+
+	@Override
+	public T getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist) {
 		long key = startTime.getTime() + index;
 		ConcurrentMap<String, T> map = m_reports.get(key);
 
@@ -106,10 +116,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return report;
 	}
 
-	protected ReportDelegate<T> getDelegate() {
-		return m_delegateManager.getDelegate(m_reportName);
-	}
-
 	@Override
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 		if (period == ReportPeriod.HOUR && period.isCurrent(startTime)) {
@@ -117,7 +123,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 			List<T> reports = new ArrayList<T>(count);
 
 			for (int i = 0; i < count; i++) {
-				T report = getCurrentReport(domain, startTime, i, false);
+				T report = getLocalReport(domain, startTime, i, false);
 
 				if (report != null) {
 					reports.add(report);
@@ -127,6 +133,31 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		} else {
 			return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
 		}
+	}
+
+	@Override
+	public T getReport(ReportPeriod period, Date startTime, String domain, String filterId, String... keyValuePairs)
+	      throws IOException {
+		ReportDelegate<T> delegate = getDelegate();
+		ReportFilter<? extends Report> filter = m_filterManager.getFilter(delegate.getName(), filterId);
+		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
+
+		int len = keyValuePairs.length;
+
+		if (len % 2 == 0) {
+			for (int i = 0; i < len; i += 2) {
+				String property = keyValuePairs[i];
+				String value = keyValuePairs[i + 1];
+
+				ctx.setProperty(property, value);
+			}
+		} else {
+			throw new IllegalArgumentException("Parameter(keyValuePairs) is not paired!");
+		}
+
+		T report = m_provider.getReport(ctx, delegate);
+
+		return report;
 	}
 
 	public abstract int getThreadsCount();

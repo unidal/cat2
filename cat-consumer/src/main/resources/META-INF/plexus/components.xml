@@ -78,6 +78,9 @@
 			<implementation>org.unidal.cat.report.internals.DefaultReportStorage</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.report.ReportConfiguration</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.report.internals.ReportStorage</role>
 					<role-hint>mysql</role-hint>
 					<field-name>m_mysql</field-name>
@@ -112,6 +115,11 @@
 			<role>org.unidal.cat.report.internals.ReportStorage</role>
 			<role-hint>file</role-hint>
 			<implementation>org.unidal.cat.report.internals.FileReportStorage</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.report.ReportConfiguration</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.report.spi.ReportManager</role>
@@ -132,6 +140,9 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.report.spi.ReportDelegateManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -231,6 +242,9 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.report.spi.ReportDelegateManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.report.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>

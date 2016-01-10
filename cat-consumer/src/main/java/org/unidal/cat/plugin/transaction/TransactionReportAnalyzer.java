@@ -120,7 +120,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();
-		TransactionReport report = m_reportManager.getCurrentReport(domain, new Date(getStartTime()), m_index, true);
+		TransactionReport report = m_reportManager.getLocalReport(domain, new Date(getStartTime()), m_index, true);
 		Message message = tree.getMessage();
 
 		report.addIp(tree.getIpAddress());

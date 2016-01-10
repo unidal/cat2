@@ -48,7 +48,7 @@ public class ReportProviderTest extends JdbcTestCase {
 		Date startTime = new Date(1446885302848L); // Sat Nov 07 16:35:02 CST 2015
 		Report report = new TransactionReport("default").setStartTime(startTime);
 
-		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
 		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
 		      ReportPeriod.HOUR, null);
@@ -69,7 +69,7 @@ public class ReportProviderTest extends JdbcTestCase {
 		Date startTime = new Date();
 		Report report = new TransactionReport("default2").setStartTime(startTime);
 
-		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
 		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
 		      ReportPeriod.HOUR, null);
@@ -87,7 +87,7 @@ public class ReportProviderTest extends JdbcTestCase {
 		Date startTime = new Date(1446885302848L);
 		Report report = new TransactionReport("historical").setStartTime(startTime);
 
-		storage.store(delegate, ReportPeriod.HOUR, report, ReportStoragePolicy.FILE_AND_MYSQL);
+		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
 		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), report.getDomain(), startTime,
 		      ReportPeriod.HOUR, null);
