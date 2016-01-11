@@ -22,12 +22,12 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 	private TransactionReportHelper m_helper;
 
 	@Override
-	public void applyTo(RemoteContext ctx, TransactionReport report) {
+	public void tailor(RemoteContext ctx, TransactionReport report) {
 		String type = ctx.getProperty("type", null);
 		String name = ctx.getProperty("name", null);
 		String ip = ctx.getProperty("ip", null);
 
-		IVisitor visitor = new Filter(type, name, ip);
+		IVisitor visitor = new NameGraphTailor(type, name, ip);
 
 		report.accept(visitor);
 	}
@@ -42,7 +42,7 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 		return TransactionConstants.NAME;
 	}
 
-	private class Filter extends BaseVisitor {
+	private class NameGraphTailor extends BaseVisitor {
 		private String m_typeName;
 
 		private String m_name;
@@ -53,7 +53,7 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 
 		private TransactionType m_type;
 
-		public Filter(String type, String name, String ip) {
+		public NameGraphTailor(String type, String name, String ip) {
 			m_typeName = type;
 			m_name = name;
 			m_ip = ip;
@@ -117,4 +117,9 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 			name.setFailMessageUrl(null);
 		}
 	}
+
+	@Override
+   public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+	   return report;
+   }
 }

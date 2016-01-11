@@ -43,7 +43,7 @@ public class HistoricalReportProvider<T extends Report> implements ReportProvide
 				ReportFilter<T> filter = ctx.getFilter();
 
 				if (filter != null) {
-					filter.applyTo(ctx, aggregated);
+					filter.tailor(ctx, aggregated);
 				}
 
 				t.setStatus(Message.SUCCESS);

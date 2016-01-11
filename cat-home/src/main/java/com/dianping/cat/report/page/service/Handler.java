@@ -21,6 +21,8 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
 import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
@@ -52,7 +54,12 @@ public class Handler implements PageHandler<Context> {
 		} else {
 			OutputStream out = ctx.getHttpServletResponse().getOutputStream();
 
-			m_skeleton.handleReport(buildContext(ctx.getHttpServletRequest(), payload), out);
+			RemoteContext rc = buildContext(ctx.getHttpServletRequest(), payload);
+			boolean success = m_skeleton.handleReport(rc, out);
+
+			if (!success) {
+				Cat.logEvent("Service", "MissingReport", Message.SUCCESS, rc.buildURL(""));
+			}
 		}
 	}
 

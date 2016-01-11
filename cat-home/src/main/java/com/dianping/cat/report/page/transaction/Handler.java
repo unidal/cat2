@@ -145,11 +145,13 @@ public class Handler implements PageHandler<Context> {
 
 		model.setReport(current);
 
-		if (Constants.ALL.equalsIgnoreCase(payload.getIpAddress())) {
-			String type = payload.getType();
-			String name = payload.getName();
+		if (current != null) {
+			if (Constants.ALL.equalsIgnoreCase(payload.getIpAddress())) {
+				String type = payload.getType();
+				String name = payload.getName();
 
-			buildDistributionInfo(model, type, name, current);
+				buildDistributionInfo(model, type, name, current);
+			}
 		}
 
 		m_historyGraph.buildTrend(model, current, last, baseline);
@@ -179,15 +181,17 @@ public class Handler implements PageHandler<Context> {
 		      "type", payload.getType(), //
 		      "name", payload.getName());
 
-		String type = payload.getType();
-		String name = payload.getName();
-		String ip = payload.getIpAddress();
+		if (report != null) {
+			String type = payload.getType();
+			String name = payload.getName();
+			String ip = payload.getIpAddress();
 
-		if (Constants.ALL.equalsIgnoreCase(ip)) {
-			buildDistributionInfo(model, type, name, report);
+			if (Constants.ALL.equalsIgnoreCase(ip)) {
+				buildDistributionInfo(model, type, name, report);
+			}
+
+			buildTransactionNameGraph(model, report, type, name, ip);
 		}
-
-		buildTransactionNameGraph(model, report, type, name, ip);
 
 		model.setReport(report);
 	}

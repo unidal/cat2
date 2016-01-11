@@ -345,15 +345,6 @@ public class RemoteIntegrationTest extends JettyServer {
 	@Named(type = ReportFilter.class, value = "mock:mock")
 	public static final class MockReportFilter implements ReportFilter<MockReport> {
 		@Override
-		public void applyTo(RemoteContext ctx, MockReport report) {
-			if ("true".equals(ctx.getProperty("error", null))) {
-				throw new RuntimeException("Unknown issue.");
-			} else {
-				report.setNotes(ctx.getProperties().toString());
-			}
-		}
-
-		@Override
 		public String getId() {
 			return "mock";
 		}
@@ -361,6 +352,20 @@ public class RemoteIntegrationTest extends JettyServer {
 		@Override
 		public String getReportName() {
 			return "mock";
+		}
+
+		@Override
+      public MockReport screen(RemoteContext ctx, MockReport report) {
+	      return report;
+      }
+
+		@Override
+		public void tailor(RemoteContext ctx, MockReport report) {
+			if ("true".equals(ctx.getProperty("error", null))) {
+				throw new RuntimeException("Unknown issue.");
+			} else {
+				report.setNotes(ctx.getProperties().toString());
+			}
 		}
 	}
 

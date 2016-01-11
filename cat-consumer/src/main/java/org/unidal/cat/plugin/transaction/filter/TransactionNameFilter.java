@@ -22,11 +22,11 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 	private TransactionReportHelper m_helper;
 
 	@Override
-	public void applyTo(RemoteContext ctx, TransactionReport report) {
+	public void tailor(RemoteContext ctx, TransactionReport report) {
 		String type = ctx.getProperty("type", null);
 		String ip = ctx.getProperty("ip", null);
 
-		IVisitor visitor = new Filter(type, ip);
+		IVisitor visitor = new NameTailor(type, ip);
 
 		report.accept(visitor);
 	}
@@ -41,7 +41,7 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 		return TransactionConstants.NAME;
 	}
 
-	private class Filter extends BaseVisitor {
+	private class NameTailor extends BaseVisitor {
 		private String m_typeName;
 
 		private String m_ip;
@@ -50,7 +50,7 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 
 		private TransactionType m_type;
 
-		public Filter(String type, String ip) {
+		public NameTailor(String type, String ip) {
 			m_typeName = type;
 			m_ip = ip;
 		}
@@ -110,4 +110,9 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 			m_helper.mergeName(n, name);
 		}
 	}
+
+	@Override
+   public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+	   return report;
+   }
 }

@@ -98,7 +98,7 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 				ReportFilter<Report> filter = ctx.getFilter();
 
 				if (filter != null) {
-					filter.applyTo(ctx, report);
+					filter.tailor(ctx, report);
 				}
 
 				t.setStatus(Message.SUCCESS);
