@@ -43,9 +43,11 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 		List<Report> screenedReports = new ArrayList<Report>();
 
 		for (Report report : reports) {
-			Report screenedReport = filter.screen(ctx, report);
+			Report screenedReport = filter == null ? report : filter.screen(ctx, report);
 
-			screenedReports.add(screenedReport);
+			if (screenedReport != null) {
+				screenedReports.add(screenedReport);
+			}
 		}
 
 		// aggregate the reports

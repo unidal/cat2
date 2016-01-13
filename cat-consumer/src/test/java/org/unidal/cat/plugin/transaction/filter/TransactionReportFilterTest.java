@@ -74,31 +74,65 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 
 	@Test
 	public void testName() throws Exception {
-		TransactionReport report = loadReport("source.xml");
 		TransactionReport expected = loadReport("name.xml");
+		TransactionReport source = loadReport("source.xml");
+		TransactionReport report = loadReport("source.xml");
 
-		tailor(TransactionNameFilter.ID, ReportPeriod.HOUR, report, "type", "URL");
+		TransactionReport screened = screen(TransactionNameFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
 
+		tailor(TransactionNameFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 
 	@Test
-	public void testNameGraph() throws Exception {
+	public void testGraphName() throws Exception {
+		TransactionReport expected = loadReport("graph-name.xml");
+		TransactionReport source = loadReport("source.xml");
 		TransactionReport report = loadReport("source.xml");
-		TransactionReport expected = loadReport("name-graph.xml");
 
-		tailor(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, "type", "URL", "name", "/cat/r/t");
+		TransactionReport screened = screen(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL", "name", "/cat/r/t");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
 
+		tailor(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL", "name", "/cat/r/t");
+		Assert.assertEquals(expected.toString(), report.toString());
+	}
+	
+	@Test
+	public void testGraphNameWithIp() throws Exception {
+		TransactionReport expected = loadReport("graph-name-ip.xml");
+		TransactionReport source = loadReport("source.xml");
+		TransactionReport report = loadReport("source.xml");
+		
+		TransactionReport screened = screen(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
+				"type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
+		
+		tailor(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
+				"type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 
 	@Test
 	public void testNameWithIp() throws Exception {
-		TransactionReport report = loadReport("source.xml");
 		TransactionReport expected = loadReport("name-ip.xml");
+		TransactionReport source = loadReport("source.xml");
+		TransactionReport report = loadReport("source.xml");
 
-		tailor(TransactionNameFilter.ID, ReportPeriod.HOUR, report, "type", "URL", "ip", "192.168.31.158");
+		TransactionReport screened = screen(TransactionNameFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL", "ip", "192.168.31.158");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
 
+		tailor(TransactionNameFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL", "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 
@@ -117,12 +151,34 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 	}
 
 	@Test
-	public void testTypeGraph() throws Exception {
+	public void testGraphType() throws Exception {
+		TransactionReport expected = loadReport("graph-type.xml");
+		TransactionReport source = loadReport("source.xml");
 		TransactionReport report = loadReport("source.xml");
-		TransactionReport expected = loadReport("type-graph.xml");
 
-		tailor(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, "type", "URL");
+		TransactionReport screened = screen(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
 
+		tailor(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
+		      "type", "URL");
+		Assert.assertEquals(expected.toString(), report.toString());
+	}
+	
+	@Test
+	public void testGraphTypeWithIp() throws Exception {
+		TransactionReport expected = loadReport("graph-type-ip.xml");
+		TransactionReport source = loadReport("source.xml");
+		TransactionReport report = loadReport("source.xml");
+		
+		TransactionReport screened = screen(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
+				"type", "URL", "ip", "192.168.31.158");
+		Assert.assertEquals(source.toString(), report.toString());
+		Assert.assertEquals(expected.toString(), screened.toString());
+		
+		tailor(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
+				"type", "URL", "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 
@@ -132,11 +188,13 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 		TransactionReport source = loadReport("source.xml");
 		TransactionReport report = loadReport("source.xml");
 
-		TransactionReport screened = screen(TransactionTypeFilter.ID, ReportPeriod.HOUR, report, "ip", "192.168.31.158");
+		TransactionReport screened = screen(TransactionTypeFilter.ID, ReportPeriod.HOUR, report, //
+		      "ip", "192.168.31.158");
 		Assert.assertEquals(source.toString(), report.toString());
 		Assert.assertEquals(expected.toString(), screened.toString());
 
-		tailor(TransactionTypeFilter.ID, ReportPeriod.HOUR, report, "ip", "192.168.31.158");
+		tailor(TransactionTypeFilter.ID, ReportPeriod.HOUR, report, //
+		      "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 }

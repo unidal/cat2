@@ -355,9 +355,9 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-      public MockReport screen(RemoteContext ctx, MockReport report) {
-	      return report;
-      }
+		public MockReport screen(RemoteContext ctx, MockReport report) {
+			return report;
+		}
 
 		@Override
 		public void tailor(RemoteContext ctx, MockReport report) {

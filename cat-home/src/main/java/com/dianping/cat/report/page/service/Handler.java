@@ -32,6 +32,22 @@ public class Handler implements PageHandler<Context> {
 	@Inject
 	private ReportFilterManager m_manager;
 
+	@SuppressWarnings("unchecked")
+	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
+		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
+		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
+		      payload.getStartTime(), payload.getPeriod(), filter);
+		List<String> names = Collections.list(req.getParameterNames());
+
+		for (String name : names) {
+			String value = req.getParameter(name);
+
+			ctx.setProperty(name, value);
+		}
+
+		return ctx;
+	}
+
 	@Override
 	@PayloadMeta(Payload.class)
 	@InboundActionMeta(name = "service")
@@ -61,21 +77,5 @@ public class Handler implements PageHandler<Context> {
 				Cat.logEvent("Service", "MissingReport", Message.SUCCESS, rc.buildURL(""));
 			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
-		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
-		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
-		      payload.getStartTime(), payload.getPeriod(), filter);
-		List<String> names = Collections.list(req.getParameterNames());
-
-		for (String name : names) {
-			String value = req.getParameter(name);
-
-			ctx.setProperty(name, value);
-		}
-
-		return ctx;
 	}
 }
