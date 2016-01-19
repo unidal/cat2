@@ -3,15 +3,16 @@
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
+<%@ attribute name="resource" fragment="true"%>
 <jsp:useBean id="navBar" class="com.dianping.cat.report.view.NavigationBar" scope="page" />
 <res:bean id="res" />
-<html lang="en"><head>
+<html lang="en">
+<head>
+	<title>CAT</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	<meta charset="utf-8">
-	<title>CAT</title>
-	<meta name="description" content="Restyling jQuery UI Widgets and Elements">
+	<meta name="description" content="CAT Districuted Realtime Monitoring System">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-	<res:useJs value="${res.js.local['jquery-1.7.1.js']}" target="head-js" />
 	<link rel="stylesheet" href="${model.webapp}/assets/css/bootstrap.min.css">
 	<link rel="stylesheet" href="${model.webapp}/assets/css/font-awesome.min.css">
 	<link rel="stylesheet" href="${model.webapp}/assets/css/jquery-ui.min.css">
@@ -19,16 +20,18 @@
 	<link rel="stylesheet" href="${model.webapp}/assets/css/ace.min.css" id="main-ace-style">
 	<link rel="stylesheet" href="${model.webapp}/assets/css/ace-skins.min.css">
 	<link rel="stylesheet" href="${model.webapp}/assets/css/ace-rtl.min.css">
+	<link rel="stylesheet" href="${model.webapp}/css/body.css">
+	<script src="${model.webapp}/js/jquery-1.7.1.js"></script>
 	<script src="${model.webapp}/assets/js/ace-extra.min.js"></script>
 	<script src="${model.webapp}/assets/js/bootstrap.min.js"></script>
-	<res:useJs value="${res.js.local['highcharts.js']}" target="head-js" />
-	<res:useCss value='${res.css.local.body_css}' target="head-css" />
+	<script src="${model.webapp}/js/highcharts.js"></script>
 	<script src="${model.webapp}/assets/js/jquery-ui.min.js"></script>
 	<script src="${model.webapp}/assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace-elements.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace.min.js"></script>
-	</head>
-	<body class="no-skin">
+	<jsp:invoke fragment="resource"/>
+</head>
+<body class="no-skin">
 		<!-- #section:basics/navbar.layout -->
 		<div id="navbar" class="navbar navbar-default">
 			<script type="text/javascript">
@@ -47,11 +50,9 @@
 				<!-- /section:basics/sidebar.mobile.toggle -->
 				<div class="navbar-header pull-left">
 					<!-- #section:basics/navbar.layout.brand -->
-					<a href="/cat/r/home"  class="navbar-brand">
+					<a href="${model.webapp}/r/home"  class="navbar-brand">
 						<span>CAT</span>
-						<small style="font-size:65%">
-							（Central Application Tracking）
-						</small>
+						<small style="font-size:65%">(Central Application Tracking)</small>
 					</a>
 				</div>
 				<div class="navbar-header pull-left position" style="width:350px;padding-top:5px;">
@@ -64,9 +65,7 @@
 							<i class="ace-icon fa fa-search nav-search-icon"></i>
 							</span>
 							<span class="input-group-btn">
-								<button class="btn btn-sm btn-pink" type="button" id="search_go">
-									Go
-								</button> 
+								<button class="btn btn-sm btn-pink" type="button" id="search_go">Go</button> 
 							</span>
 						</div>
 					</form>
@@ -76,7 +75,7 @@
 				<div class="navbar-buttons navbar-header pull-right" role="navigation">
 				<ul class="nav ace-nav" style="height:auto;">
 					<li class="light-blue">
-						<a href="http://github.com/dianping/cat/" target="_blank">
+						<a href="http://github.com/dianping/cat" target="_blank">
 							<i class="ace-icon glyphicon glyphicon-star"></i>
 							<span>Star</span>
 						</a>
@@ -84,14 +83,13 @@
 					<li class="light-blue" >
 						<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 							<span class="user-info">
-								<span id="loginInfo" ></span>
+								<span id="loginInfo"></span>
 							</span>
 							<i class="ace-icon fa fa-caret-down"></i>
 						</a>
 						<ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
 							<li>
-								<a href="/cat/s/login?op=logout" ><i class="ace-icon fa fa-power-off"></i>
-								注销</a>
+								<a href="${model.webapp}/s/login?op=logout" ><i class="ace-icon fa fa-power-off"></i>注销</a>
 							</li>
 						</ul>
 					</li>
@@ -99,6 +97,7 @@
 				</div> 
 			</div>
 		</div>
+
 		<jsp:doBody/>
 		
 		<script type="text/javascript">
@@ -277,7 +276,7 @@
 			var data = [];
 			<c:forEach var="item" items="${model.domainGroups}">
 				<c:set var="detail" value="${item.value}" />
-					<c:forEach var="productline" items="${detail.projectLines}" varStatus="index">
+				<c:forEach var="productline" items="${detail.projectLines}" varStatus="index">
 					<c:forEach var="domain" items="${productline.value.lineDomains}">
 							var item = {};
 							item['label'] = '${domain}';
@@ -285,7 +284,8 @@
 							
 							data.push(item);
 					</c:forEach>
-			</c:forEach></c:forEach>
+				</c:forEach>
+			</c:forEach>
 			
 			$( "#search" ).catcomplete({
 				delay: 0,

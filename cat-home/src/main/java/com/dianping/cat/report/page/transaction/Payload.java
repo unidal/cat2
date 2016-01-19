@@ -118,12 +118,17 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	public Date getStartTime() {
 		ReportPeriod period = getReportPeriod();
 
-		if (m_startTime == 0) {
+		if (m_startTime <= 0) {
+			m_startTime = System.currentTimeMillis();
+		}
+
+		Date time = getDate(period, m_startTime, m_step);
+		Date startTime = period.getStartTime(time);
+
+		if (startTime.after(new Date())) {
 			return period.getStartTime(new Date());
 		} else {
-			Date time = getDate(period, m_startTime, m_step);
-
-			return period.getStartTime(time);
+			return startTime;
 		}
 	}
 

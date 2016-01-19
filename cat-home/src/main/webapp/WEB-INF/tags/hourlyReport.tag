@@ -2,13 +2,15 @@
 <%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
-<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <%@ attribute name="title"%>
 <%@ attribute name="navUrlPrefix"%>
 <%@ attribute name="timestamp"%>
 <%@ attribute name="subtitle" fragment="true"%>
+<%@ attribute name="resource" fragment="true"%>
 
 <a:body_with_nav>
+<jsp:attribute name="resource"><jsp:invoke fragment="resource"/></jsp:attribute>
+<jsp:body>
 <script>
 	function buildHref(domain){
 		var href = '<a href="?op=${payload.action.name}&domain='+domain+'&date=${model.date}">&nbsp;[&nbsp;'+domain+'&nbsp;]&nbsp;</a>';
@@ -86,5 +88,5 @@
 	</div>
 	<jsp:doBody />
 </div>
-
+</jsp:body>
 </a:body_with_nav>

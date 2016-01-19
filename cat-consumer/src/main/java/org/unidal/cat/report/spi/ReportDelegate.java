@@ -16,8 +16,6 @@ public interface ReportDelegate<T extends Report> {
 
 	public String buildXml(T report);
 
-	public T getLocalReport(ReportPeriod period, Date startTime, String domain);
-
 	public String getName();
 
 	public T parseBinary(byte[] content);

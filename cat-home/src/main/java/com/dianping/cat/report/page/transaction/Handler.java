@@ -207,6 +207,10 @@ public class Handler implements PageHandler<Context> {
 			report = m_mergeHelper.mergeAllMachines(report, payload.getIpAddress());
 
 			buildTransactionMetaInfo(model, payload, report);
+		} else {
+			report = new TransactionReport(payload.getDomain());
+			report.setPeriod(ReportPeriod.HOUR);
+			report.setStartTime(startTime);
 		}
 
 		model.setReport(report);
@@ -242,6 +246,12 @@ public class Handler implements PageHandler<Context> {
 			handleHistoryGraph(model, payload);
 			break;
 		}
+
+		TransactionReport report = model.getReport();
+		Date startTime = report.getStartTime();
+		Date endTime = ReportPeriod.HOUR.getNextStartTime(startTime);
+
+		report.setEndTime(new Date(endTime.getTime() - 1000));
 
 		if (!ctx.isProcessStopped()) {
 			m_jspViewer.view(ctx, model);

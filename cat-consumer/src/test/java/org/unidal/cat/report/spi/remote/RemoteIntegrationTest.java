@@ -312,11 +312,6 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-		public MockReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public String getName() {
 			return "mock";
 		}

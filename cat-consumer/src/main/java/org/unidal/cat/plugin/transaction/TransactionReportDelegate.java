@@ -27,10 +27,6 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 		return m_aggregator.aggregate(period, reports);
 	}
 
-	public TransactionReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
-		return null;
-	}
-
 	@Override
 	public byte[] buildBinary(TransactionReport report) {
 		byte[] data = DefaultNativeBuilder.build(report);
@@ -66,7 +62,13 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 
 	@Override
 	public TransactionReport readStream(InputStream in) {
-		return DefaultNativeParser.parse(in);
+		TransactionReport report = DefaultNativeParser.parse(in);
+
+		if (report.getDomain() == null) {
+			return null;
+		} else {
+			return report;
+		}
 	}
 
 	@Override

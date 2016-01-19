@@ -78,7 +78,11 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 				for (Future<T> future : futures) {
 					if (future.isDone()) {
 						try {
-							reports.add(future.get());
+							T report = future.get();
+
+							if (report != null) {
+								reports.add(report);
+							}
 						} catch (InterruptedException e) {
 							break;
 						} catch (Exception e) {
