@@ -3,8 +3,8 @@ package com.dianping.cat.demo;
 import java.io.InputStream;
 
 import org.junit.Test;
+import org.unidal.helper.Files;
 import org.unidal.helper.Urls;
-import org.unidal.webres.helper.Files;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.helper.TimeHelper;

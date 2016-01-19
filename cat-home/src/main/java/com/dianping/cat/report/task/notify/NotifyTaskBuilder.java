@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Inject;
-import org.unidal.webres.helper.Splitters;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.Constants;
