@@ -6,11 +6,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.remote.DefaultRemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 

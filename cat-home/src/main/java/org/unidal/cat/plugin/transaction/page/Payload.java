@@ -4,7 +4,7 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.unidal.cat.report.ReportPeriod;
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 

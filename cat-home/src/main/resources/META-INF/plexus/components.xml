@@ -3757,7 +3757,7 @@
 					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.report.spi.ReportManager</role>
+					<role>org.unidal.cat.spi.ReportManager</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
 			</requirements>
@@ -3818,11 +3818,11 @@
 					<role>com.dianping.cat.report.page.DomainGroupConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.report.spi.ReportDelegate</role>
+					<role>org.unidal.cat.spi.report.ReportDelegate</role>
 					<role-hint>event</role-hint>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.report.internals.ReportProvider</role>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -5869,10 +5869,10 @@
 			<implementation>com.dianping.cat.report.page.service.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.report.spi.remote.RemoteSkeleton</role>
+					<role>org.unidal.cat.spi.remote.RemoteSkeleton</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.report.ReportFilterManager</role>
+					<role>org.unidal.cat.spi.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>

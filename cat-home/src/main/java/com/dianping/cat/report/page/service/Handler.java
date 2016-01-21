@@ -9,12 +9,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
-import org.unidal.cat.report.Report;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportFilterManager;
-import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteSkeleton;
+import org.unidal.cat.spi.Report;
+import org.unidal.cat.spi.ReportFilterManager;
+import org.unidal.cat.spi.remote.DefaultRemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteSkeleton;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;

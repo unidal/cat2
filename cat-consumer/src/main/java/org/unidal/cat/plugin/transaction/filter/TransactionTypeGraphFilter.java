@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 

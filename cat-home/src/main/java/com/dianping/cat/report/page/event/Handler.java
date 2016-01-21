@@ -7,11 +7,11 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.internals.ReportProvider;
-import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.remote.DefaultRemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.provider.ReportProvider;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;

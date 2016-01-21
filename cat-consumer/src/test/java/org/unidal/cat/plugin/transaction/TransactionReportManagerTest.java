@@ -7,12 +7,12 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.report.ReportManagerManager;
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.internals.ReportStorage;
-import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.report.spi.ReportDelegateManager;
-import org.unidal.cat.report.spi.ReportManager;
+import org.unidal.cat.spi.ReportManager;
+import org.unidal.cat.spi.ReportManagerManager;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.internals.ReportDelegateManager;
+import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;

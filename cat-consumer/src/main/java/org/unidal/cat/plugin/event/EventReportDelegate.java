@@ -5,9 +5,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportAggregator;
-import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportAggregator;
+import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 

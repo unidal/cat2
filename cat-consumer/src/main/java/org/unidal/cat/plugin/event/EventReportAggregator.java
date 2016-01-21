@@ -2,8 +2,8 @@ package org.unidal.cat.plugin.event;
 
 import java.util.Collection;
 
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportAggregator;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.consumer.event.EventReportMerger;

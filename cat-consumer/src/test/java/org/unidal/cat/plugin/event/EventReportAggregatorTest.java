@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.EventReportAggregator;
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportAggregator;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
 
 import com.dianping.cat.consumer.event.model.entity.EventReport;

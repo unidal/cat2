@@ -1,8 +1,8 @@
 package org.unidal.cat.plugin.event.filter;
 
 import org.unidal.cat.plugin.event.EventConstants;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
