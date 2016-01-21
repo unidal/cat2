@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 public enum Action implements org.unidal.web.mvc.Action {
 	HOURLY_REPORT("view", false),

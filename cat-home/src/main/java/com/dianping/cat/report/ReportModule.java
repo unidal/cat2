@@ -11,7 +11,7 @@ com.dianping.cat.report.page.home.Handler.class,
 
 com.dianping.cat.report.page.problem.Handler.class,
 
-com.dianping.cat.report.page.transaction.Handler.class,
+org.unidal.cat.plugin.transaction.page.Handler.class,
 
 com.dianping.cat.report.page.event.Handler.class,
 

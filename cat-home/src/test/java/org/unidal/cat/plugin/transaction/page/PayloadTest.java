@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,6 +7,7 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.page.Payload;
 
 import com.dianping.cat.report.service.ModelPeriod;
 

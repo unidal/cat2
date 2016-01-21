@@ -5,9 +5,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<jsp:useBean id="ctx" type="com.dianping.cat.report.page.transaction.Context" scope="request" />
-<jsp:useBean id="payload" type="com.dianping.cat.report.page.transaction.Payload" scope="request" />
-<jsp:useBean id="model"	type="com.dianping.cat.report.page.transaction.Model" scope="request" />
+<jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.page.Context" scope="request" />
+<jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.page.Payload" scope="request" />
+<jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
 <c:set var="report" value="${model.report}"/>
 
 <a:report>

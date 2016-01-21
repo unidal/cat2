@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 import org.unidal.web.mvc.view.BaseJspViewer;
 

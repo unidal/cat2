@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 import java.util.ArrayList;
 import java.util.List;

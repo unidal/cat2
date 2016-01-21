@@ -3738,17 +3738,17 @@
 			<implementation>com.dianping.cat.helper.JsonBuilder</implementation>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.transaction.Handler</role>
-			<implementation>com.dianping.cat.report.page.transaction.Handler</implementation>
+			<role>org.unidal.cat.plugin.transaction.page.Handler</role>
+			<implementation>org.unidal.cat.plugin.transaction.page.Handler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.report.graph.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.transaction.HistoryGraphs</role>
+					<role>org.unidal.cat.plugin.transaction.page.HistoryGraphs</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.transaction.JspViewer</role>
+					<role>org.unidal.cat.plugin.transaction.page.JspViewer</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
@@ -3763,8 +3763,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.transaction.HistoryGraphs</role>
-			<implementation>com.dianping.cat.report.page.transaction.HistoryGraphs</implementation>
+			<role>org.unidal.cat.plugin.transaction.page.HistoryGraphs</role>
+			<implementation>org.unidal.cat.plugin.transaction.page.HistoryGraphs</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.core.dal.GraphDao</role>
@@ -3775,8 +3775,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.transaction.JspViewer</role>
-			<implementation>com.dianping.cat.report.page.transaction.JspViewer</implementation>
+			<role>org.unidal.cat.plugin.transaction.page.JspViewer</role>
+			<implementation>org.unidal.cat.plugin.transaction.page.JspViewer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>

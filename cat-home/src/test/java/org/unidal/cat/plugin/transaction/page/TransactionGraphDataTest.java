@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +10,7 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.page.HistoryGraphs;
 
 import com.dianping.cat.core.dal.Graph;
 

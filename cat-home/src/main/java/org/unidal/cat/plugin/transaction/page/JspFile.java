@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction;
+package org.unidal.cat.plugin.transaction.page;
 
 public enum JspFile {
 	HOURLY_REPORT("/jsp/report/transaction/transaction.jsp"),
