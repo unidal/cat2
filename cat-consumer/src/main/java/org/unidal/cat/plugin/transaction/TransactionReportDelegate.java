@@ -28,13 +28,6 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 	}
 
 	@Override
-	public byte[] buildBinary(TransactionReport report) {
-		byte[] data = DefaultNativeBuilder.build(report);
-
-		return data;
-	}
-
-	@Override
 	public String buildXml(TransactionReport report) {
 		String xml = new DefaultXmlBuilder().buildXml(report);
 
@@ -44,11 +37,6 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 	@Override
 	public String getName() {
 		return TransactionConstants.NAME;
-	}
-
-	@Override
-	public TransactionReport parseBinary(byte[] content) {
-		return DefaultNativeParser.parse(content);
 	}
 
 	@Override

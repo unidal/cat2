@@ -43,10 +43,6 @@ import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.remote.DefaultRemoteContext;
-import org.unidal.cat.spi.remote.RemoteContext;
-import org.unidal.cat.spi.remote.RemoteSkeleton;
-import org.unidal.cat.spi.remote.RemoteStub;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.helper.Files;
@@ -300,11 +296,6 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-		public byte[] buildBinary(MockReport report) {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public String buildXml(MockReport report) {
 			throw new UnsupportedOperationException();
 		}
@@ -317,11 +308,6 @@ public class RemoteIntegrationTest extends JettyServer {
 		@Override
 		public String getName() {
 			return "mock";
-		}
-
-		@Override
-		public MockReport parseBinary(byte[] content) {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override

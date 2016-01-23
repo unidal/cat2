@@ -101,6 +101,9 @@
 			<implementation>org.unidal.cat.spi.report.storage.MysqlReportStorage</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
+				<requirement>
 					<role>com.dianping.cat.core.dal.HourlyReportDao</role>
 				</requirement>
 				<requirement>
@@ -123,6 +126,32 @@
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.service.CompressionService</role>
+			<implementation>org.unidal.cat.service.internals.DefaultCompressionService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+					<role-hint>zlib</role-hint>
+					<field-name>m_zlib</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+					<role-hint>gzip</role-hint>
+					<field-name>m_gzip</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.service.CompressionService</role>
+			<role-hint>gzip</role-hint>
+			<implementation>org.unidal.cat.service.internals.GzipCompressionService</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.service.CompressionService</role>
+			<role-hint>zlib</role-hint>
+			<implementation>org.unidal.cat.service.internals.ZlibCompressionService</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.ReportManager</role>

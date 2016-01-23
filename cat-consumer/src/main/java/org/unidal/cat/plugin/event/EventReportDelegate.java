@@ -27,17 +27,6 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 		return m_aggregator.aggregate(period, reports);
 	}
 
-	public EventReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
-		return null;
-	}
-
-	@Override
-	public byte[] buildBinary(EventReport report) {
-		byte[] data = DefaultNativeBuilder.build(report);
-
-		return data;
-	}
-
 	@Override
 	public String buildXml(EventReport report) {
 		String xml = new DefaultXmlBuilder().buildXml(report);
@@ -46,13 +35,17 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	}
 
 	@Override
-	public String getName() {
-		return EventConstants.ID;
+	public EventReport createLocal(ReportPeriod period, String domain, Date startTime) {
+		return new EventReport(domain).setPeriod(period).setStartTime(startTime);
+	}
+
+	public EventReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
+		return null;
 	}
 
 	@Override
-	public EventReport parseBinary(byte[] content) {
-		return DefaultNativeParser.parse(content);
+	public String getName() {
+		return EventConstants.ID;
 	}
 
 	@Override
@@ -72,10 +65,5 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	@Override
 	public void writeStream(OutputStream out, EventReport report) {
 		DefaultNativeBuilder.build(report, out);
-	}
-
-	@Override
-	public EventReport createLocal(ReportPeriod period, String domain, Date startTime) {
-		return new EventReport(domain).setPeriod(period).setStartTime(startTime);
 	}
 }

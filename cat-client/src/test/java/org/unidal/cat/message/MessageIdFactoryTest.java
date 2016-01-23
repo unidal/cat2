@@ -22,7 +22,7 @@ import org.unidal.helper.Files;
 import org.unidal.helper.Joiners;
 import org.unidal.helper.Threads;
 
-public class MessageIdBuilderTest {
+public class MessageIdFactoryTest {
 	/**
 	 * Run it multiple times in console to simulate multiple processes scenario,
 	 * 
@@ -105,7 +105,7 @@ public class MessageIdBuilderTest {
 			args.add("java");
 			args.add("-cp");
 			args.add(System.getProperty("java.class.path"));
-			args.add(MessageIdBuilderTest.class.getName());
+			args.add(MessageIdFactoryTest.class.getName());
 			args.add("slave");
 
 			return Joiners.by(' ').join(args);

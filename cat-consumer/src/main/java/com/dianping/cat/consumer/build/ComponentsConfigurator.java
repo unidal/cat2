@@ -18,6 +18,9 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
+import org.unidal.cat.service.internals.DefaultCompressionService;
+import org.unidal.cat.service.internals.ZlibCompressionService;
+import org.unidal.cat.service.internals.GzipCompressionService;
 import org.unidal.cat.spi.DefaultReportConfiguration;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
@@ -315,6 +318,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultReportStorage.class));
 		all.add(A(MysqlReportStorage.class));
 		all.add(A(FileReportStorage.class));
+
+		all.add(A(DefaultCompressionService.class));
+		all.add(A(GzipCompressionService.class));
+		all.add(A(ZlibCompressionService.class));
 
 		all.add(A(TransactionReportManager.class));
 		all.add(A(TransactionReportAggregator.class));

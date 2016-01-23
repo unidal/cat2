@@ -12,13 +12,9 @@ import org.unidal.cat.spi.ReportPeriod;
 public interface ReportDelegate<T extends Report> {
 	public T aggregate(ReportPeriod period, Collection<T> reports);
 
-	public byte[] buildBinary(T report);
-
 	public String buildXml(T report);
 
 	public String getName();
-
-	public T parseBinary(byte[] content);
 
 	public T parseXml(String xml);
 

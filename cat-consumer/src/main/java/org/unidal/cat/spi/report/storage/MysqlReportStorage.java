@@ -1,6 +1,10 @@
 package org.unidal.cat.spi.report.storage;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -8,6 +12,7 @@ import java.util.List;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.ReportStoragePolicy;
@@ -35,6 +40,9 @@ import com.dianping.cat.core.dal.HourlyReportEntity;
 @Named(type = ReportStorage.class, value = MysqlReportStorage.ID)
 public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, Initializable {
 	public static final String ID = "mysql";
+
+	@Inject
+	private CompressionService m_compression;
 
 	@Inject
 	private HourlyReportDao m_hourlyDao;
@@ -74,7 +82,9 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 			DailyReport dr = m_dailyDao.findByDomainNamePeriod(domain, delegate.getName(), startTime,
 			      DailyReportEntity.READSET_FULL);
 			DailyReportContent content = m_dailyContentDao.findByPK(dr.getId(), DailyReportContentEntity.READSET_FULL);
-			T report = delegate.parseBinary(content.getContent());
+			InputStream in = new ByteArrayInputStream(content.getContent());
+			InputStream cin = m_compression.decompress(in);
+			T report = delegate.readStream(cin);
 
 			reports.add(report);
 			return reports;
@@ -95,7 +105,9 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 				try {
 					HourlyReportContent content = m_hourlyContentDao.findByPK(hr.getId(),
 					      HourlyReportContentEntity.READSET_FULL);
-					T report = delegate.parseBinary(content.getContent());
+					InputStream in = new ByteArrayInputStream(content.getContent());
+					InputStream cin = m_compression.decompress(in);
+					T report = delegate.readStream(cin);
 
 					reports.add(report);
 				} catch (Exception e) {
@@ -129,7 +141,11 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 	}
 
 	private void storeDaily(ReportDelegate<T> delegate, T report) throws IOException {
-		byte[] content = delegate.buildBinary(report);
+		ByteArrayOutputStream out = new ByteArrayOutputStream(2 * 1024 * 1024);
+		OutputStream cout = m_compression.compress(out);
+
+		delegate.writeStream(cout, report);
+		cout.close();
 
 		try {
 			DailyReport r = m_dailyDao.createLocal();
@@ -145,7 +161,7 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 			DailyReportContent rc = m_dailyContentDao.createLocal();
 
 			rc.setReportId(r.getId());
-			rc.setContent(content);
+			rc.setContent(out.toByteArray());
 			m_dailyContentDao.insert(rc);
 		} catch (DalException e) {
 			throw new IOException(String.format("Unable to store daily report(%s) to MySQL!", delegate.getName()), e);
@@ -153,7 +169,11 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 	}
 
 	private void storeHourly(ReportDelegate<T> delegate, T report) throws IOException {
-		byte[] binaryContent = delegate.buildBinary(report);
+		ByteArrayOutputStream out = new ByteArrayOutputStream(2 * 1024 * 1024);
+		OutputStream cout = m_compression.compress(out);
+
+		delegate.writeStream(cout, report);
+		cout.close();
 
 		try {
 			HourlyReport r = m_hourlyDao.createLocal();
@@ -168,7 +188,7 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T>, I
 			m_hourlyDao.insert(r);
 
 			rc.setReportId(r.getId());
-			rc.setContent(binaryContent);
+			rc.setContent(out.toByteArray());
 			m_hourlyContentDao.insert(rc);
 		} catch (DalException e) {
 			throw new IOException(String.format("Unable to store hourly report(%s) to MySQL!", delegate.getName()), e);
