@@ -73,7 +73,9 @@
 		</ul>
 		</div> 
 	</div>
-	
+</div>
+
+<div>
 	<div class="domainNavbar" style="display:none;font-size:small">
 		<table border="1" rules="all">
 			<c:forEach var="item" items="${model.domainGroups}">
@@ -163,5 +165,4 @@
 		});
 	});
 	</script>
-
 </div>
