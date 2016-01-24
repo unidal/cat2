@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.spi.DefaultReportConfiguration;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportPeriod;
@@ -35,14 +34,14 @@ import com.dianping.cat.core.dal.HourlyReportEntity;
 public class ReportStorageTest extends JdbcTestCase {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		Files.forDir().delete(new File("target"), true);
+		Files.forDir().delete(new File("target/report"), true);
 	}
 
 	@Before
 	public void before() throws Exception {
 		createTables("report");
 
-		defineComponent(ReportConfiguration.class, MockReportConfiguration.class);
+		lookup(ReportConfiguration.class).setBaseDataDir(new File("target"));
 	}
 
 	@Override
@@ -167,12 +166,5 @@ public class ReportStorageTest extends JdbcTestCase {
 
 		Assert.assertEquals(1, reports.size());
 		Assert.assertEquals(report, reports.get(0));
-	}
-
-	public static final class MockReportConfiguration extends DefaultReportConfiguration {
-		@Override
-		public File getBaseDataDir() {
-			return new File("target");
-		}
 	}
 }

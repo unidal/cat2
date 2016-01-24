@@ -18,5 +18,7 @@ public interface ReportConfiguration {
 	public boolean isLocalMode();
 
 	public File getBaseDataDir();
+	
+	public void setBaseDataDir(File baseDataDir);
 
 }

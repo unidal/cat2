@@ -23,11 +23,6 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	}
 
 	@Override
-	public int getRemoteCallThreads() {
-		return 20;
-	}
-
-	@Override
 	public int getRemoteCallConnectTimeoutInMillis() {
 		return 1 * 1000; // 1s
 	}
@@ -35,6 +30,11 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	@Override
 	public int getRemoteCallReadTimeoutInMillis() {
 		return 10 * 1000; // 10s
+	}
+
+	@Override
+	public int getRemoteCallThreads() {
+		return 20;
 	}
 
 	@Override
@@ -56,5 +56,10 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	@Override
 	public boolean isLocalMode() {
 		return true;
+	}
+
+	@Override
+	public void setBaseDataDir(File baseDataDir) {
+		m_baseDataDir = baseDataDir;
 	}
 }
