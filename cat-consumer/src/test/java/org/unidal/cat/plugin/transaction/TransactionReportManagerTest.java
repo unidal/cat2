@@ -1,12 +1,14 @@
 package org.unidal.cat.plugin.transaction;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.spi.DefaultReportConfiguration;
+import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
@@ -20,7 +22,9 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 public class TransactionReportManagerTest extends ComponentTestCase {
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws IOException {
+	public void test() throws Exception {
+		defineComponent(ReportConfiguration.class, MockReportConfiguration.class);
+
 		ReportManagerManager rmm = lookup(ReportManagerManager.class);
 		ReportDelegateManager delegateManager = lookup(ReportDelegateManager.class);
 		ReportStorage<TransactionReport> storage = lookup(ReportStorage.class);
@@ -47,5 +51,12 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 
 		Assert.assertEquals(1, dailyReports.size());
 		Assert.assertEquals("[ip0, ip1]", dailyReports.get(0).getIps().toString());
+	}
+
+	public static final class MockReportConfiguration extends DefaultReportConfiguration {
+		@Override
+		public File getBaseDataDir() {
+			return new File("target");
+		}
 	}
 }

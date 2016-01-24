@@ -11,13 +11,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.spi.DefaultReportConfiguration;
 import org.unidal.cat.spi.Report;
+import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
-import org.unidal.cat.spi.report.storage.FileReportStorage;
-import org.unidal.cat.spi.report.storage.MysqlReportStorage;
-import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
 import org.unidal.helper.Files;
 
@@ -36,12 +35,14 @@ import com.dianping.cat.core.dal.HourlyReportEntity;
 public class ReportStorageTest extends JdbcTestCase {
 	@BeforeClass
 	public static void beforeClass() throws Exception {
-		Files.forDir().delete(new File("target/report"), true);
+		Files.forDir().delete(new File("target"), true);
 	}
 
 	@Before
 	public void before() throws Exception {
 		createTables("report");
+
+		defineComponent(ReportConfiguration.class, MockReportConfiguration.class);
 	}
 
 	@Override
@@ -89,7 +90,7 @@ public class ReportStorageTest extends JdbcTestCase {
 
 		storage.store(delegate, ReportPeriod.DAY, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals(true, dailyFile.getPath().endsWith("/report/2015-11/07/transaction/daily/file.xml"));
+		Assert.assertEquals(true, dailyFile.getPath().endsWith("/report/2015-11/07/transaction/daily/file.rpt"));
 		Assert.assertTrue(String.format("File(%s) has not been created.", dailyFile), dailyFile.exists());
 
 		List<Report> reports = storage.loadAll(delegate, ReportPeriod.DAY, period, report.getDomain());
@@ -110,7 +111,7 @@ public class ReportStorageTest extends JdbcTestCase {
 
 		storage.store(delegate, ReportPeriod.HOUR, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
 
-		Assert.assertEquals(true, file.getPath().endsWith("/report/2015-11/07/transaction/16/file-0.xml"));
+		Assert.assertEquals(true, file.getPath().endsWith("/report/2015-11/07/transaction/16/file-0.rpt"));
 		Assert.assertTrue(String.format("File(%s) has not been created.", file), file.exists());
 
 		List<Report> reports = storage.loadAll(delegate, ReportPeriod.HOUR, period, report.getDomain());
@@ -166,5 +167,12 @@ public class ReportStorageTest extends JdbcTestCase {
 
 		Assert.assertEquals(1, reports.size());
 		Assert.assertEquals(report, reports.get(0));
+	}
+
+	public static final class MockReportConfiguration extends DefaultReportConfiguration {
+		@Override
+		public File getBaseDataDir() {
+			return new File("target");
+		}
 	}
 }

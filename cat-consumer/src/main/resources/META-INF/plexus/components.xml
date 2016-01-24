@@ -125,6 +125,9 @@
 				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

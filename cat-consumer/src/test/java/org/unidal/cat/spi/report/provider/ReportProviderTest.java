@@ -23,9 +23,6 @@ import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.remote.RemoteStub;
 import org.unidal.cat.spi.report.ReportDelegate;
-import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
-import org.unidal.cat.spi.report.provider.RecentReportProvider;
-import org.unidal.cat.spi.report.provider.ReportProvider;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.dal.jdbc.test.JdbcTestCase;
 

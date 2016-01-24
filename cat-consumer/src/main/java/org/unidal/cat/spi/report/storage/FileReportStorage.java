@@ -1,18 +1,22 @@
 package org.unidal.cat.spi.report.storage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
-import org.unidal.helper.Files;
 import org.unidal.helper.Scanners;
 import org.unidal.helper.Scanners.FileMatcher;
 import org.unidal.lookup.annotation.Inject;
@@ -25,8 +29,11 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 	@Inject
 	private ReportConfiguration m_configuration;
 
+	@Inject
+	private CompressionService m_compression;
+
 	File getDailyReportFile(ReportDelegate<T> delegate, Date startTime, String domain) {
-		MessageFormat format = new MessageFormat("report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}/daily/{2}.xml");
+		MessageFormat format = new MessageFormat("report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}/daily/{2}.rpt");
 		String type = delegate.getName();
 		String path = format.format(new Object[] { startTime, type, domain });
 		File file = new File(m_configuration.getBaseDataDir(), path);
@@ -34,9 +41,33 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 		return file;
 	}
 
+	List<File> getDailyReportFilesInHourly(ReportDelegate<T> delegate, Date startTime, final String domain) {
+		MessageFormat format = new MessageFormat("report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}");
+		String type = delegate.getName();
+		String path = format.format(new Object[] { startTime, type });
+		File baseDir = new File(m_configuration.getBaseDataDir(), path);
+		List<File> files = Scanners.forDir().scan(baseDir, new FileMatcher() {
+			@Override
+			public Direction matches(File base, String path) {
+				int pos1 = path.lastIndexOf('-');
+				int pos2 = path.lastIndexOf('/');
+
+				if (pos1 > pos2 && pos2 > 0) {
+					if (domain == null || domain.equals(path.substring(pos2 + 1, pos1))) {
+						return Direction.MATCHED;
+					}
+				}
+
+				return Direction.DOWN;
+			}
+		});
+
+		return files;
+	}
+
 	File getHourlyReportFile(ReportDelegate<T> delegate, Date startTime, String domain, int index) {
 		MessageFormat format = new MessageFormat(
-		      "report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}/{0,date,HH}/{2}-{3}.xml");
+		      "report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}/{0,date,HH}/{2}-{3}.rpt");
 		String type = delegate.getName();
 		String path = format.format(new Object[] { startTime, type, domain, index });
 		File file = new File(m_configuration.getBaseDataDir(), path);
@@ -67,30 +98,6 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 		return files;
 	}
 
-	List<File> getDailyReportFilesInHourly(ReportDelegate<T> delegate, Date startTime, final String domain) {
-		MessageFormat format = new MessageFormat("report/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{1}");
-		String type = delegate.getName();
-		String path = format.format(new Object[] { startTime, type });
-		File baseDir = new File(m_configuration.getBaseDataDir(), path);
-		List<File> files = Scanners.forDir().scan(baseDir, new FileMatcher() {
-			@Override
-			public Direction matches(File base, String path) {
-				int pos1 = path.lastIndexOf('-');
-				int pos2 = path.lastIndexOf('/');
-
-				if (pos1 > pos2 && pos2 > 0) {
-					if (domain == null || domain.equals(path.substring(pos2 + 1, pos1))) {
-						return Direction.MATCHED;
-					}
-				}
-
-				return Direction.DOWN;
-			}
-		});
-
-		return files;
-	}
-
 	@Override
 	public List<T> loadAll(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException {
@@ -111,14 +118,14 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 
 		if (file.exists()) {
 			// try to find from aggregated daily report file
-			load(reports, delegate, file);
+			loadFromFile(reports, delegate, file);
 		} else {
 			// aggregate them and save it
 			List<T> hourlyReports = new ArrayList<T>(2);
 			List<File> hourlyFiles = getDailyReportFilesInHourly(delegate, startTime, domain);
 
 			for (File hourlyFile : hourlyFiles) {
-				load(hourlyReports, delegate, hourlyFile);
+				loadFromFile(hourlyReports, delegate, hourlyFile);
 			}
 
 			hourlyReports.add(delegate.createLocal(ReportPeriod.DAY, domain, startTime));
@@ -131,34 +138,38 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 		return reports;
 	}
 
-	private T load(List<T> reports, ReportDelegate<T> delegate, File file) throws IOException {
-		if (file.exists()) {
-			String xml = Files.forIO().readFrom(file, "utf-8");
-
-			if (xml != null && xml.length() > 0) {
-				T report = delegate.parseXml(xml);
-
-				if (reports != null) {
-					reports.add(report);
-				}
-
-				return report;
-			}
-		}
-
-		return null;
-	}
-
 	private List<T> loadAllHourly(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException {
 		List<File> files = getHourlyReportFiles(delegate, startTime, domain);
 		List<T> reports = new ArrayList<T>();
 
 		for (File file : files) {
-			load(reports, delegate, file);
+			loadFromFile(reports, delegate, file);
 		}
 
 		return reports;
+	}
+
+	private void loadFromFile(List<T> reports, ReportDelegate<T> delegate, File file) throws IOException {
+		if (file.exists()) {
+			InputStream in = new FileInputStream(file);
+			InputStream cin = m_compression.decompress(in);
+			T report = delegate.readStream(cin);
+
+			if (reports != null) {
+				reports.add(report);
+			}
+		}
+	}
+
+	private void saveToFile(ReportDelegate<T> delegate, File file, T report) throws IOException {
+		file.getParentFile().mkdirs();
+
+		OutputStream out = new FileOutputStream(file);
+		OutputStream cout = m_compression.compress(out);
+
+		delegate.writeStream(cout, report);
+		cout.close();
 	}
 
 	@Override
@@ -170,27 +181,17 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 
 		switch (period) {
 		case HOUR:
-			storeHourlyReport(delegate, report, index);
+			File hourly = getHourlyReportFile(delegate, report.getStartTime(), report.getDomain(), index);
+
+			saveToFile(delegate, hourly, report);
 			break;
 		case DAY:
-			storeDailyReport(delegate, report);
+			File daily = getDailyReportFile(delegate, report.getStartTime(), report.getDomain());
+
+			saveToFile(delegate, daily, report);
 			break;
 		default:
 			throw new UnsupportedOperationException("Not implemented yet!");
 		}
-	}
-
-	private void storeDailyReport(ReportDelegate<T> delegate, T report) throws IOException {
-		File file = getDailyReportFile(delegate, report.getStartTime(), report.getDomain());
-		String xml = delegate.buildXml(report);
-
-		Files.forIO().writeTo(file, xml);
-	}
-
-	private void storeHourlyReport(ReportDelegate<T> delegate, T report, int index) throws IOException {
-		File file = getHourlyReportFile(delegate, report.getStartTime(), report.getDomain(), index);
-		String xml = delegate.buildXml(report);
-
-		Files.forIO().writeTo(file, xml);
 	}
 }
