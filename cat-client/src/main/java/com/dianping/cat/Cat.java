@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -214,7 +215,7 @@ public class Cat {
 	 *           the value added to the metric
 	 */
 	public static void logMetricForSum(String name, double value) {
-		logMetricInternal(name, "S", String.format("%.2f", value));
+		logMetricInternal(name, "S", String.format(Locale.US, "%.2f", value));
 	}
 
 	/**
@@ -228,7 +229,7 @@ public class Cat {
 	 *           the quantity to be accumulated
 	 */
 	public static void logMetricForSum(String name, double sum, int quantity) {
-		logMetricInternal(name, "S,C", String.format("%s,%.2f", quantity, sum));
+		logMetricInternal(name, "S,C", String.format(Locale.US, "%s,%.2f", quantity, sum));
 	}
 
 	private static void logMetricInternal(String name, String status, String keyValuePairs) {
