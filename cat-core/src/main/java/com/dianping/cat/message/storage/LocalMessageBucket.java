@@ -147,6 +147,7 @@ public class LocalMessageBucket implements MessageBucket {
 			m_blockSize += size;
 			m_block.addIndex(id.getIndex(), size);
 			buf.getBytes(0, m_out, size); // write buffer and compress it
+			buf.release();
 
 			if (m_blockSize >= MAX_BLOCK_SIZE) {
 				return flushBlock();

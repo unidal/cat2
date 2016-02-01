@@ -128,33 +128,35 @@ public final class TcpSocketReceiver implements LogEnabled {
 			if (buffer.readableBytes() < 4) {
 				return;
 			}
+
 			buffer.markReaderIndex();
+
 			int length = buffer.readInt();
+
 			buffer.resetReaderIndex();
+
 			if (buffer.readableBytes() < length + 4) {
 				return;
 			}
+
 			try {
-				if (length > 0) {
-					ByteBuf readBytes = buffer.readBytes(length + 4);
-					readBytes.markReaderIndex();
-					readBytes.readInt();
+				ByteBuf readBytes = buffer.readSlice(length + 4);
+				
+				readBytes.markReaderIndex();
+				readBytes.readInt();
 
-					DefaultMessageTree tree = (DefaultMessageTree) m_codec.decode(readBytes);
+				DefaultMessageTree tree = (DefaultMessageTree) m_codec.decode(readBytes);
 
-					readBytes.resetReaderIndex();
-					tree.setBuffer(readBytes);
-					m_handler.handle(tree);
-					m_processCount++;
+				readBytes.retain();
+				readBytes.resetReaderIndex();
+				tree.setBuffer(readBytes);
+				m_handler.handle(tree);
+				m_processCount++;
 
-					long flag = m_processCount % CatConstants.SUCCESS_COUNT;
+				long flag = m_processCount % CatConstants.SUCCESS_COUNT;
 
-					if (flag == 0) {
-						m_serverStateManager.addMessageTotal(CatConstants.SUCCESS_COUNT);
-					}
-				} else {
-					// client message is error
-					buffer.readBytes(length);
+				if (flag == 0) {
+					m_serverStateManager.addMessageTotal(CatConstants.SUCCESS_COUNT);
 				}
 			} catch (Exception e) {
 				m_serverStateManager.addMessageTotalLoss(1);
