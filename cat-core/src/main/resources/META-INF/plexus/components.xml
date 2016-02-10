@@ -1,6 +1,58 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.cat.message.storage.IndexManager</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.message.storage.local.LocalIndexManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.storage.Index</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.message.storage.local.LocalIndex</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.message.storage.FileBuilder</role>
+					<role-hint>local</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.storage.local.TokenMappingManager</role>
+					<role-hint>local</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.storage.FileBuilder</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.message.storage.local.LocalFileBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.message.storage.StorageConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.storage.local.TokenMapping</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.message.storage.local.LocalTokenMapping</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.message.storage.FileBuilder</role>
+					<role-hint>local</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.storage.local.TokenMappingManager</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.message.storage.local.LocalTokenMappingManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.storage.StorageConfiguration</role>
+			<implementation>org.unidal.cat.message.storage.DefaultStorageConfiguration</implementation>
+		</component>
+		<component>
 			<role>com.dianping.cat.analysis.MessageConsumer</role>
 			<implementation>com.dianping.cat.analysis.RealtimeConsumer</implementation>
 			<requirements>

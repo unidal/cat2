@@ -21,8 +21,9 @@ import org.junit.Test;
 import org.unidal.helper.Files;
 import org.unidal.helper.Joiners;
 import org.unidal.helper.Threads;
+import org.unidal.lookup.ComponentTestCase;
 
-public class MessageIdFactoryTest {
+public class MessageIdFactoryTest extends ComponentTestCase {
 	/**
 	 * Run it multiple times in console to simulate multiple processes scenario,
 	 * 
@@ -48,6 +49,13 @@ public class MessageIdFactoryTest {
 			System.err.println("Options: [master|slave] <args>");
 			System.exit(1);
 		}
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testSetup() {
+		MessageIdFactory factory = lookup(MessageIdFactory.class);
+
+		factory.getNextId();
 	}
 
 	@Test

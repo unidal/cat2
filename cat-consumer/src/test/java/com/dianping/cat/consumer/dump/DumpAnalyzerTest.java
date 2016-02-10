@@ -3,11 +3,11 @@ package com.dianping.cat.consumer.dump;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.message.storage.MessageId;
 
 import com.dianping.cat.consumer.MockLog;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.internal.DefaultTransaction;
-import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import com.dianping.cat.statistic.ServerStatisticManager;

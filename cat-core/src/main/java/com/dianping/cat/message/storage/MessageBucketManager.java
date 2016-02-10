@@ -1,6 +1,7 @@
 package com.dianping.cat.message.storage;
 
-import com.dianping.cat.message.internal.MessageId;
+import org.unidal.cat.message.storage.MessageId;
+
 import com.dianping.cat.message.spi.MessageTree;
 
 public interface MessageBucketManager {
