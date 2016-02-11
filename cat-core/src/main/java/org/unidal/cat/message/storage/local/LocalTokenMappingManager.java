@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.unidal.cat.message.storage.TokenMapping;
+import org.unidal.cat.message.storage.TokenMappingManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;

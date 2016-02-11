@@ -8,7 +8,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.message.storage.StorageConfiguration;
-import org.unidal.cat.message.storage.local.TokenMapping;
 import org.unidal.lookup.ComponentTestCase;
 
 public class TokenMappingTest extends ComponentTestCase {

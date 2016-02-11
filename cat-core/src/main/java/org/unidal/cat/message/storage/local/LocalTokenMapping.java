@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.unidal.cat.message.storage.FileBuilder;
+import org.unidal.cat.message.storage.TokenMapping;
 import org.unidal.cat.message.storage.FileBuilder.FileType;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
