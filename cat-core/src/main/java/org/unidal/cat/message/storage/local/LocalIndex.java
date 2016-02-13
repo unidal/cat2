@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.FileBuilder;
+import org.unidal.cat.message.storage.FileBuilder.FileType;
 import org.unidal.cat.message.storage.Index;
-import org.unidal.cat.message.storage.MessageId;
 import org.unidal.cat.message.storage.TokenMapping;
 import org.unidal.cat.message.storage.TokenMappingManager;
-import org.unidal.cat.message.storage.FileBuilder.FileType;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -49,19 +49,21 @@ public class LocalIndex implements Index {
 
 	@Override
 	public void close() {
-		try {
-			m_header.flush();
-		} catch (IOException e) {
-			Cat.logError(e);
-		}
+		if (m_file != null) {
+			try {
+				m_header.flush();
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
 
-		try {
-			m_file.close();
-		} catch (IOException e) {
-			Cat.logError(e);
-		}
+			try {
+				m_file.close();
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
 
-		m_file = null;
+			m_file = null;
+		}
 	}
 
 	private void ensureOpen(MessageId from) throws IOException {

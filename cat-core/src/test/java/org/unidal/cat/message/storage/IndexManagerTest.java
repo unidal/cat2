@@ -5,8 +5,7 @@ import java.io.IOException;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.message.storage.IndexManager;
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.ComponentTestCase;
 
 public class IndexManagerTest extends ComponentTestCase {

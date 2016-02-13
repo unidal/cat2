@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;

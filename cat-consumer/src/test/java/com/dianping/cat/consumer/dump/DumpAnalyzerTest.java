@@ -3,7 +3,7 @@ package com.dianping.cat.consumer.dump;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 
 import com.dianping.cat.consumer.MockLog;
 import com.dianping.cat.message.Message;

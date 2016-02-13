@@ -1,6 +1,6 @@
 package com.dianping.cat.message.storage;
 
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 
 import com.dianping.cat.message.spi.MessageTree;
 

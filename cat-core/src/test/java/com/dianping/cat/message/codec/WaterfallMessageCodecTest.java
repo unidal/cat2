@@ -15,7 +15,6 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.MockMessageTreeBuilder;
-import com.dianping.cat.message.codec.WaterfallMessageCodec;
 import com.dianping.cat.message.codec.WaterfallMessageCodec.Ruler;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;

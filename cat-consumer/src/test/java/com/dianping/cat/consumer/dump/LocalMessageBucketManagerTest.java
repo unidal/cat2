@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.MessageIdFactory;
-import org.unidal.cat.message.storage.MessageId;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.Transaction;

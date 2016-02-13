@@ -12,7 +12,7 @@ import java.util.zip.GZIPInputStream;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;

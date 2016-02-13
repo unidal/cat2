@@ -4,20 +4,21 @@ import java.io.File;
 
 import junit.framework.Assert;
 
+import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.message.storage.Index;
-import org.unidal.cat.message.storage.IndexManager;
-import org.unidal.cat.message.storage.MessageId;
-import org.unidal.cat.message.storage.StorageConfiguration;
+import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.ComponentTestCase;
 
 public class IndexTest extends ComponentTestCase {
-	@Test
-	public void testMapAndLookup() throws Exception {
+	@Before
+	public void before() throws Exception {
 		StorageConfiguration config = lookup(StorageConfiguration.class);
 
 		config.setBaseDataDir(new File("target"));
+	}
 
+	@Test
+	public void testMapAndLookup() throws Exception {
 		MessageId from = MessageId.parse("from-0a260014-403899-76543");
 		MessageId expected = MessageId.parse("to-0a260015-403899-12345");
 		IndexManager manager = lookup(IndexManager.class, "local");

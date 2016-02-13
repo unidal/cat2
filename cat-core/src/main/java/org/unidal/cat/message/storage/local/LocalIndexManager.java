@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Index;
 import org.unidal.cat.message.storage.IndexManager;
-import org.unidal.cat.message.storage.MessageId;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 

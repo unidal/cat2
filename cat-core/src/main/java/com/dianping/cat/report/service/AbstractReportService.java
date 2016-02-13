@@ -18,6 +18,8 @@ import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.core.dal.DailyReport;
+import com.dianping.cat.core.dal.DailyReportContent;
+import com.dianping.cat.core.dal.DailyReportContentDao;
 import com.dianping.cat.core.dal.DailyReportDao;
 import com.dianping.cat.core.dal.HourlyReport;
 import com.dianping.cat.core.dal.HourlyReportContent;
@@ -25,18 +27,16 @@ import com.dianping.cat.core.dal.HourlyReportContentDao;
 import com.dianping.cat.core.dal.HourlyReportDao;
 import com.dianping.cat.core.dal.HourlyReportEntity;
 import com.dianping.cat.core.dal.MonthlyReport;
+import com.dianping.cat.core.dal.MonthlyReportContent;
+import com.dianping.cat.core.dal.MonthlyReportContentDao;
 import com.dianping.cat.core.dal.MonthlyReportDao;
 import com.dianping.cat.core.dal.MonthlyReportEntity;
 import com.dianping.cat.core.dal.WeeklyReport;
+import com.dianping.cat.core.dal.WeeklyReportContent;
+import com.dianping.cat.core.dal.WeeklyReportContentDao;
 import com.dianping.cat.core.dal.WeeklyReportDao;
 import com.dianping.cat.core.dal.WeeklyReportEntity;
 import com.dianping.cat.helper.TimeHelper;
-import com.dianping.cat.core.dal.DailyReportContent;
-import com.dianping.cat.core.dal.DailyReportContentDao;
-import com.dianping.cat.core.dal.MonthlyReportContent;
-import com.dianping.cat.core.dal.MonthlyReportContentDao;
-import com.dianping.cat.core.dal.WeeklyReportContent;
-import com.dianping.cat.core.dal.WeeklyReportContentDao;
 import com.dianping.cat.message.Event;
 
 public abstract class AbstractReportService<T> implements LogEnabled, ReportService<T> {

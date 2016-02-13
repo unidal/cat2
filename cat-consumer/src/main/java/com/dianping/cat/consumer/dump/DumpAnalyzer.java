@@ -2,7 +2,7 @@ package com.dianping.cat.consumer.dump;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.message.storage.MessageId;
+import org.unidal.cat.message.MessageId;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.annotation.Inject;
 
