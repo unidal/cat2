@@ -6,12 +6,13 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -19,7 +20,9 @@ import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
 
 public class DefaultBlock implements Block {
-	private static final int MAX_SIZE = 64 * 1024;
+	private static final int MAX_SIZE = 256 * 1024;
+
+	private static final int BUFFER_SIZE = 1024;
 
 	private String m_domain;
 
@@ -31,7 +34,9 @@ public class DefaultBlock implements Block {
 
 	private Map<MessageId, Integer> m_ids = new LinkedHashMap<MessageId, Integer>();
 
-	private DataOutputStream m_out;
+	private DeflaterOutputStream m_out;
+
+	private boolean m_gzip = true;
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_ids.put(id, offset);
@@ -42,16 +47,26 @@ public class DefaultBlock implements Block {
 		m_domain = domain;
 		m_hour = hour;
 		m_data = Unpooled.buffer(8 * 1024);
-		m_data.setZero(0, m_data.capacity());
 
-		DeflaterOutputStream os = new DeflaterOutputStream(new ByteBufOutputStream(m_data), new Deflater(5, true), 512);
-		m_out = new DataOutputStream(os);
+		ByteBufOutputStream os = new ByteBufOutputStream(m_data);
+
+		if (m_gzip) {
+			try {
+				m_out = new GZIPOutputStream(os);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		} else {
+			m_out = new DeflaterOutputStream(os, new Deflater(5, true), 512);
+		}
 	}
 
 	@Override
 	public void finish() {
 		if (m_out != null) {
 			try {
+				m_out.finish();
+				m_out.flush();
 				m_out.close();
 			} catch (IOException e) {
 				// ignore it
@@ -90,37 +105,34 @@ public class DefaultBlock implements Block {
 	public void pack(MessageId id, ByteBuf buf) throws IOException {
 		int len = buf.readableBytes();
 
-		if (id.getIndex() == 134) {
-			System.out.println("len = " + len);
-			System.out.println(new String(buf.array(), 0 , len));
-		}
-		
-		m_out.writeInt(len);
 		buf.readBytes(m_out, len);
 
 		m_ids.put(id, m_offset);
-		m_offset += len + 4;
+		m_offset += len;
 	}
 
 	@Override
 	public ByteBuf unpack(MessageId id) throws IOException {
-		Inflater inflater = new Inflater(true);
-		InflaterInputStream is = new InflaterInputStream(new ByteBufInputStream(m_data), inflater, 512);
-		DataInputStream in = new DataInputStream(is);
+		ByteBufInputStream is = new ByteBufInputStream(m_data);
+		DataInputStream in;
+
+		if (m_gzip) {
+			in = new DataInputStream(new GZIPInputStream(is));
+		} else {
+			Inflater inflater = new Inflater(true);
+
+			in = new DataInputStream(new InflaterInputStream(is, inflater, BUFFER_SIZE));
+		}
+
 		int offset = m_ids.get(id);
 
 		in.skip(offset);
 
 		int len = in.readInt();
 		byte[] data = new byte[len];
-		
+
 		in.readFully(data);
 		in.close();
-		
-		if (id.getIndex() == 134) {
-			System.out.println("len : " + len);
-			System.out.println(new String(data, 0 , len));
-		}
 
 		return Unpooled.wrappedBuffer(data);
 	}

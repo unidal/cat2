@@ -15,7 +15,6 @@ import org.unidal.cat.message.storage.internals.DefaultBlock;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
@@ -38,18 +37,10 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	}
 
 	@Override
-	public void shutdown() {
-		m_enabled.set(false);
-
-		for (Block block : m_blocks.values()) {
-			try {
-				m_dumper.dump(block);
-			} catch (IOException e) {
-				// ignore it
-			}
-		}
-
-		m_blocks.clear();
+	public void initialize(int index, BlockingQueue<MessageTree> queue) {
+		m_index = index;
+		m_queue = queue;
+		m_enabled = new AtomicBoolean(true);
 	}
 
 	@Override
@@ -79,19 +70,31 @@ public class DefaultMessageProcessor implements MessageProcessor {
 							m_blocks.put(domain, new DefaultBlock(domain, hour));
 						}
 					} catch (Exception e) {
-						Cat.logError(e);
+						e.printStackTrace();
 					}
 				}
 			}
 		} catch (InterruptedException e) {
 			// ignore it
 		}
+
+		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 	}
 
 	@Override
-	public void initialize(int index, BlockingQueue<MessageTree> queue) {
-		m_index = index;
-		m_queue = queue;
-		m_enabled = new AtomicBoolean(true);
+	public void shutdown() {
+		m_enabled.set(false);
+
+		for (Block block : m_blocks.values()) {
+			try {
+				block.finish();
+
+				m_dumper.dump(block);
+			} catch (IOException e) {
+				// ignore it
+			}
+		}
+
+		m_blocks.clear();
 	}
 }

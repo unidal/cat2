@@ -36,12 +36,17 @@ public class MessageDumperTest extends ComponentTestCase {
 
 		for (int i = 0; i < 10000; i++) {
 			MessageId id = MessageId.parse("mock-0a010203-404259-" + i);
-			Block block = bucket.get(id);
-			ByteBuf buf = block.unpack(id);
-			MessageTree tree = m_helper.decode(buf);
 
-			System.out.println(tree.getMessageId());
-			Assert.assertEquals(id.toString(), tree.getMessageId());
+			try {
+				Block block = bucket.get(id);
+				ByteBuf buf = block.unpack(id);
+				MessageTree tree = m_helper.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			} catch (Exception e) {
+				System.out.println("Error when loading message: " + id);
+				throw e;
+			}
 		}
 	}
 
@@ -51,22 +56,18 @@ public class MessageDumperTest extends ComponentTestCase {
 
 		for (int i = 0; i < 10000; i++) {
 			String id = "mock-0a010203-404259-" + i;
-			DefaultMessageTree tree = m_helper.tree(id);
+			DefaultMessageTree tree = m_helper.tree(id, i);
 
 			m_helper.encode(tree);
 			dumper.process(tree);
 		}
 
-		System.in.read();
-
-		dumper.doCheckpoint(true);
-
-		System.in.read();
+		dumper.awaitTermination();
 	}
 
 	class TreeHelper {
 		public MessageTree decode(ByteBuf buf) {
-			buf.readInt(); // get rid of it
+			// buf.readInt(); // get rid of it
 
 			MessageCodec codec = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
 			MessageTree tree = codec.decode(buf);
@@ -82,13 +83,13 @@ public class MessageDumperTest extends ComponentTestCase {
 			tree.setBuffer(buf);
 		}
 
-		DefaultMessageTree tree(String messageId) {
+		DefaultMessageTree tree(String messageId, final int index) {
 			Message message = new MockMessageBuilder() {
 				@Override
 				public MessageHolder define() {
 					TransactionHolder t = t("WEBCLUSTER", "GET",
 					      "This&123123&1231&3&\n\n\n\n&\t\t\t\n\n\n\n\n\n is test data\t\t\n\n", 112819) //
-					      .at(1455333904354L) //
+					      .at(1455333904000L + index) //
 					      .after(1300).child(t("QUICKIESERVICE", "gimme_stuff", 1571)) //
 					      .after(100).child(e("SERVICE", "event1", "This\n\n\n\n\n\n is test data\t\t\n\n")) //
 					      .after(100).child(h("SERVICE", "heartbeat1")) //

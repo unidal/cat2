@@ -13,6 +13,19 @@ import org.unidal.lookup.annotation.Named;
 public class LocalBucketManager extends ContainerHolder implements BucketManager {
 	private Map<Integer, Map<String, Bucket>> m_buckets = new LinkedHashMap<Integer, Map<String, Bucket>>();
 
+	@Override
+	public void closeBuckets() {
+		for (Map<String, Bucket> map : m_buckets.values()) {
+			for (Bucket bucket : map.values()) {
+				bucket.close();
+				
+				Thread.yield();
+			}
+		}
+
+		m_buckets.clear();
+	}
+
 	private Map<String, Bucket> findOrCreateMap(Map<Integer, Map<String, Bucket>> map, int hour,
 	      boolean createIfNotExists) {
 		Map<String, Bucket> m = map.get(hour);

@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.message.storage.BlockDumper;
+import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageProcessor;
 import org.unidal.helper.Threads;
@@ -22,12 +25,37 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	private List<MessageProcessor> m_processors = new ArrayList<MessageProcessor>();
 
 	@Override
-	public void doCheckpoint(boolean atEnd) {
-		if (atEnd) {
-			for (MessageProcessor processor : m_processors) {
-				processor.shutdown();
+	public void awaitTermination() throws InterruptedException {
+		while (true) {
+			boolean allEmpty = true;
+
+			for (BlockingQueue<MessageTree> queue : m_queues) {
+				if (!queue.isEmpty()) {
+					allEmpty = false;
+					break;
+				}
 			}
+
+			if (allEmpty) {
+				break;
+			}
+
+			TimeUnit.MILLISECONDS.sleep(1);
 		}
+
+		for (MessageProcessor processor : m_processors) {
+			processor.shutdown();
+
+			Thread.yield();
+		}
+
+		BlockDumper dumper = lookup(BlockDumper.class);
+
+		dumper.awaitTermination();
+
+		BucketManager manager = lookup(BucketManager.class, "local");
+
+		manager.closeBuckets();
 	}
 
 	@Override

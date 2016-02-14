@@ -51,12 +51,6 @@ public class LocalBucket implements Bucket {
 	public void close() {
 		if (m_indexFile != null) {
 			try {
-				m_indexHeader.flush();
-			} catch (IOException e) {
-				Cat.logError(e);
-			}
-
-			try {
 				m_dataFile.close();
 			} catch (IOException e) {
 				Cat.logError(e);
@@ -106,7 +100,7 @@ public class LocalBucket implements Bucket {
 
 		m_dataFile.seek(dataOffset);
 
-		int len = m_dataFile.readShort();
+		int len = m_dataFile.readInt();
 		byte[] data = new byte[len];
 
 		m_dataFile.readFully(data);
@@ -134,7 +128,7 @@ public class LocalBucket implements Bucket {
 		int len = data.readableBytes();
 
 		m_dataFile.seek(m_dataOffset);
-		m_dataFile.writeShort(len);
+		m_dataFile.writeInt(len);
 		m_dataFile.write(data.array(), 0, len);
 		m_dataOffset += len;
 	}
@@ -150,14 +144,6 @@ public class LocalBucket implements Bucket {
 		private Map<Integer, Map<Integer, Integer>> m_blockTable = new LinkedHashMap<Integer, Map<Integer, Integer>>();
 
 		private int m_nextBlock;
-
-		private boolean m_dirty;
-
-		public void flush() throws IOException {
-			if (m_dirty) {
-				m_indexFile.getChannel().force(false);
-			}
-		}
 
 		public int getOffset(int ip, int seq) throws IOException {
 			int blockIndex = seq / MESSAGE_PER_BLOCK;
@@ -185,7 +171,6 @@ public class LocalBucket implements Bucket {
 				m_indexFile.writeInt(ip);
 				m_indexFile.writeInt(index);
 				m_indexOffset += 8;
-				m_dirty = true;
 			}
 
 			return block;

@@ -1,6 +1,7 @@
 package org.unidal.cat.message.storage.local;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -10,8 +11,6 @@ import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
-
-import com.dianping.cat.Cat;
 
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
@@ -24,6 +23,8 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	private AtomicBoolean m_enabled;
 
+	private CountDownLatch m_latch;
+
 	@Override
 	public String getName() {
 		return getClass().getSimpleName() + "-" + m_index;
@@ -32,6 +33,12 @@ public class DefaultBlockWriter implements BlockWriter {
 	@Override
 	public void shutdown() {
 		m_enabled.set(false);
+
+		try {
+			m_latch.await();
+		} catch (InterruptedException e) {
+			// ignore it
+		}
 	}
 
 	@Override
@@ -46,13 +53,16 @@ public class DefaultBlockWriter implements BlockWriter {
 
 						bucket.put(block);
 					} catch (Exception e) {
-						Cat.logError(e);
+						e.printStackTrace();
 					}
 				}
 			}
 		} catch (InterruptedException e) {
 			// ignore it
 		}
+
+		m_latch.countDown();
+		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 	}
 
 	@Override
@@ -60,5 +70,6 @@ public class DefaultBlockWriter implements BlockWriter {
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);
+		m_latch = new CountDownLatch(1);
 	}
 }
