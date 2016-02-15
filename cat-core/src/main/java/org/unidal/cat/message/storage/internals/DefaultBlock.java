@@ -40,7 +40,7 @@ public class DefaultBlock implements Block {
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_ids.put(id, offset);
-		m_data = Unpooled.wrappedBuffer(data);
+		m_data = data == null ? null : Unpooled.wrappedBuffer(data);
 	}
 
 	public DefaultBlock(String domain, int hour) {
@@ -52,12 +52,12 @@ public class DefaultBlock implements Block {
 
 		if (m_gzip) {
 			try {
-				m_out = new GZIPOutputStream(os);
+				m_out = new GZIPOutputStream(os, BUFFER_SIZE);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		} else {
-			m_out = new DeflaterOutputStream(os, new Deflater(5, true), 512);
+			m_out = new DeflaterOutputStream(os, new Deflater(5, true), BUFFER_SIZE);
 		}
 	}
 
@@ -113,11 +113,15 @@ public class DefaultBlock implements Block {
 
 	@Override
 	public ByteBuf unpack(MessageId id) throws IOException {
+		if (m_data == null) {
+			return null;
+		}
+
 		ByteBufInputStream is = new ByteBufInputStream(m_data);
 		DataInputStream in;
 
 		if (m_gzip) {
-			in = new DataInputStream(new GZIPInputStream(is));
+			in = new DataInputStream(new GZIPInputStream(is, BUFFER_SIZE));
 		} else {
 			Inflater inflater = new Inflater(true);
 

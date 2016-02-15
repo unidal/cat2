@@ -44,8 +44,7 @@ public class MessageDumperTest extends ComponentTestCase {
 
 				Assert.assertEquals(id.toString(), tree.getMessageId());
 			} catch (Exception e) {
-				System.out.println("Error when loading message: " + id);
-				throw e;
+				throw new Exception(String.format("Error when loading message(%s)! ", id), e);
 			}
 		}
 	}
@@ -70,7 +69,7 @@ public class MessageDumperTest extends ComponentTestCase {
 			// buf.readInt(); // get rid of it
 
 			MessageCodec codec = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
-			MessageTree tree = codec.decode(buf);
+			MessageTree tree = buf == null ? null : codec.decode(buf);
 
 			return tree;
 		}
