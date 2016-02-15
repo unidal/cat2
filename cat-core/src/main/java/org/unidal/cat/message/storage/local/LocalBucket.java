@@ -3,8 +3,11 @@ package org.unidal.cat.message.storage.local;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Date;
@@ -31,6 +34,10 @@ public class LocalBucket implements Bucket {
 	@Inject("local")
 	private FileBuilder m_bulider;
 
+	private StopWatch m_indexStopWatch;
+
+	private StopWatch m_dataStopWatch;
+
 	private DataHelper m_data = new DataHelper();
 
 	private IndexHelper m_index = new IndexHelper();
@@ -38,8 +45,15 @@ public class LocalBucket implements Bucket {
 	@Override
 	public void close() {
 		if (m_index.isOpen()) {
+			m_indexStopWatch.start();
 			m_index.close();
+			m_indexStopWatch.stop();
+
+			m_dataStopWatch.start();
 			m_data.close();
+			m_dataStopWatch.stop();
+
+			System.out.println(String.format("%s, %s", m_indexStopWatch, m_dataStopWatch));
 		}
 	}
 
@@ -52,8 +66,10 @@ public class LocalBucket implements Bucket {
 			File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
 			File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
 
-			m_index.init(indexPath);
+			m_indexStopWatch = new StopWatch("index-" + domain);
+			m_dataStopWatch = new StopWatch("data-" + domain);
 			m_data.init(dataPath);
+			m_index.init(indexPath);
 		}
 	}
 
@@ -87,10 +103,14 @@ public class LocalBucket implements Bucket {
 
 			long dataOffset = m_data.getDataOffset();
 
+			m_indexStopWatch.start();
 			m_index.write(id, dataOffset, blockOffset);
+			m_indexStopWatch.stop();
 		}
 
+		m_dataStopWatch.start();
 		m_data.write(data);
+		m_dataStopWatch.stop();
 	}
 
 	@Override
@@ -99,15 +119,25 @@ public class LocalBucket implements Bucket {
 	}
 
 	private class DataHelper {
-		private RandomAccessFile m_dataFile;
-
 		private File m_dataPath;
 
+		private RandomAccessFile m_dataFile;
+
 		private long m_dataOffset;
+
+		private DataOutputStream m_out;
 
 		public void close() {
 			try {
 				m_dataFile.close();
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
+
+			try {
+				if (m_out != null) {
+					m_out.close();
+				}
 			} catch (IOException e) {
 				Cat.logError(e);
 			}
@@ -126,8 +156,10 @@ public class LocalBucket implements Bucket {
 		public void init(File dataPath) throws IOException {
 			m_dataPath = dataPath;
 			m_dataPath.getParentFile().mkdirs();
-			m_dataFile = new RandomAccessFile(m_dataPath, "rwd"); // read-write without meta sync
-			m_dataOffset = m_dataFile.length();
+
+			m_out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(m_dataPath, true), BLOCK_SIZE));
+			m_dataFile = new RandomAccessFile(m_dataPath, "r"); // read-only
+			m_dataOffset = m_dataPath.length();
 		}
 
 		public byte[] read(long dataOffset) throws IOException {
@@ -144,10 +176,9 @@ public class LocalBucket implements Bucket {
 		public void write(ByteBuf data) throws IOException {
 			int len = data.readableBytes();
 
-			m_dataFile.seek(m_dataOffset);
-			m_dataFile.writeInt(len);
-			m_dataFile.write(data.array(), 0, len);
-			m_dataOffset += len;
+			m_out.writeInt(len);
+			data.readBytes(m_out, len);
+			m_dataOffset += len + 4;
 		}
 	}
 
@@ -295,6 +326,31 @@ public class LocalBucket implements Bucket {
 					}
 				}
 			}
+		}
+	}
+
+	private static class StopWatch {
+		private String m_name;
+
+		private long m_sum;
+
+		private long m_start;
+
+		public StopWatch(String name) {
+			m_name = name;
+		}
+
+		public void start() {
+			m_start = System.nanoTime();
+		}
+
+		public void stop() {
+			m_sum += System.nanoTime() - m_start;
+		}
+
+		@Override
+		public String toString() {
+			return String.format("%s: %s ms", m_name, m_sum / 1000000L);
 		}
 	}
 }
