@@ -16,7 +16,7 @@ public interface Block {
 
 	public int getHour();
 
-	public Map<MessageId, Integer> getIds();
+	public Map<MessageId, Integer> getMappings();
 
 	public boolean isFull();
 

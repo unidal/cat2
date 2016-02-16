@@ -34,7 +34,7 @@ public class MessageDumperTest extends ComponentTestCase {
 		BucketManager manager = lookup(BucketManager.class, "local");
 		Bucket bucket = manager.getBucket("mock", 404259, true);
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			MessageId id = MessageId.parse("mock-0a010203-404259-" + i);
 
 			try {
@@ -53,7 +53,7 @@ public class MessageDumperTest extends ComponentTestCase {
 	public void testWrite() throws Exception {
 		MessageDumper dumper = lookup(MessageDumper.class);
 
-		for (int i = 0; i < 10000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			String id = "mock-0a010203-404259-" + i;
 			DefaultMessageTree tree = m_helper.tree(id, i);
 

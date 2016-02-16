@@ -32,14 +32,14 @@ public class DefaultBlock implements Block {
 
 	private int m_offset;
 
-	private Map<MessageId, Integer> m_ids = new LinkedHashMap<MessageId, Integer>();
+	private Map<MessageId, Integer> m_mappings = new LinkedHashMap<MessageId, Integer>();
 
 	private DeflaterOutputStream m_out;
 
 	private boolean m_gzip = true;
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
-		m_ids.put(id, offset);
+		m_mappings.put(id, offset);
 		m_data = data == null ? null : Unpooled.wrappedBuffer(data);
 	}
 
@@ -92,8 +92,8 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public Map<MessageId, Integer> getIds() {
-		return m_ids;
+	public Map<MessageId, Integer> getMappings() {
+		return m_mappings;
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class DefaultBlock implements Block {
 
 		buf.readBytes(m_out, len);
 
-		m_ids.put(id, m_offset);
+		m_mappings.put(id, m_offset);
 		m_offset += len;
 	}
 
@@ -128,7 +128,7 @@ public class DefaultBlock implements Block {
 			in = new DataInputStream(new InflaterInputStream(is, inflater, BUFFER_SIZE));
 		}
 
-		int offset = m_ids.get(id);
+		int offset = m_mappings.get(id);
 
 		in.skip(offset);
 
