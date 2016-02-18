@@ -47,6 +47,8 @@ public class MessageDumperTest extends ComponentTestCase {
 				throw new Exception(String.format("Error when loading message(%s)! ", id), e);
 			}
 		}
+		
+		bucket.close();
 	}
 
 	@Test
