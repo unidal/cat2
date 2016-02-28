@@ -18,6 +18,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
+import org.unidal.cat.metric.Metric;
 
 public class DefaultBlock implements Block {
 	private static final int MAX_SIZE = 256 * 1024;
@@ -37,6 +38,8 @@ public class DefaultBlock implements Block {
 	private DeflaterOutputStream m_out;
 
 	private boolean m_gzip = true;
+
+	private Metric m_metric;
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_mappings.put(id, offset);
@@ -105,16 +108,32 @@ public class DefaultBlock implements Block {
 	public void pack(MessageId id, ByteBuf buf) throws IOException {
 		int len = buf.readableBytes();
 
-		buf.readBytes(m_out, len);
+		if (m_metric != null) {
+			m_metric.start();
+		}
 
+		buf.readBytes(m_out, len);
 		m_mappings.put(id, m_offset);
 		m_offset += len;
+
+		if (m_metric != null) {
+			m_metric.end();
+		}
+	}
+
+	public DefaultBlock setMetric(Metric metric) {
+		m_metric = metric;
+		return this;
 	}
 
 	@Override
 	public ByteBuf unpack(MessageId id) throws IOException {
 		if (m_data == null) {
 			return null;
+		}
+
+		if (m_metric != null) {
+			m_metric.start();
 		}
 
 		ByteBufInputStream is = new ByteBufInputStream(m_data);
@@ -138,6 +157,12 @@ public class DefaultBlock implements Block {
 		in.readFully(data);
 		in.close();
 
-		return Unpooled.wrappedBuffer(data);
+		ByteBuf buf = Unpooled.wrappedBuffer(data);
+
+		if (m_metric != null) {
+			m_metric.end();
+		}
+
+		return buf;
 	}
 }

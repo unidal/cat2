@@ -12,6 +12,8 @@ import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.MessageProcessor;
 import org.unidal.cat.message.storage.internals.DefaultBlock;
+import org.unidal.cat.metric.Benchmark;
+import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -45,9 +47,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	@Override
 	public void run() {
+		Benchmark benchmark = new Benchmark("MessageProcessor-" + m_index);
+		Metric wm = benchmark.get("wait");
+		Metric pm = benchmark.get("pack");
+		DefaultMessageTree tree;
+
 		try {
 			while (m_enabled.get()) {
-				DefaultMessageTree tree = (DefaultMessageTree) m_queue.poll(5, TimeUnit.MILLISECONDS);
+				wm.start();
+				tree = (DefaultMessageTree) m_queue.poll(5, TimeUnit.MILLISECONDS);
+				wm.end();
 
 				if (tree != null) {
 					MessageId id = MessageId.parse(tree.getMessageId());
@@ -61,6 +70,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					}
 
 					try {
+						pm.start();
 						block.pack(id, tree.getBuffer());
 
 						if (block.isFull()) {
@@ -69,6 +79,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 							m_dumper.dump(block);
 							m_blocks.put(domain, new DefaultBlock(domain, hour));
 						}
+
+						pm.end();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -79,6 +91,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 
 		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
+		benchmark.print();
 	}
 
 	@Override

@@ -48,8 +48,6 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 
 	@Override
 	public void awaitTermination() throws InterruptedException {
-		long t1 = System.currentTimeMillis();
-
 		while (true) {
 			boolean allEmpty = true;
 
@@ -64,16 +62,11 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 				break;
 			}
 
-			TimeUnit.MILLISECONDS.sleep(5);
+			TimeUnit.MILLISECONDS.sleep(1);
 		}
-
-		long t2 = System.currentTimeMillis();
-		System.out.println("queue: " + (t2 - t1) + " ms");
 
 		for (BlockWriter writer : m_writers) {
 			writer.shutdown();
-
-			Thread.yield();
 		}
 	}
 }

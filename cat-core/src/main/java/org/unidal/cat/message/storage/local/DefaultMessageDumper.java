@@ -38,15 +38,13 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 
 			if (allEmpty) {
 				break;
+			} else {
+				TimeUnit.MILLISECONDS.sleep(1);
 			}
-
-			TimeUnit.MILLISECONDS.sleep(1);
 		}
 
 		for (MessageProcessor processor : m_processors) {
 			processor.shutdown();
-
-			Thread.yield();
 		}
 
 		BlockDumper dumper = lookup(BlockDumper.class);

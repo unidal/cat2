@@ -9,6 +9,9 @@ import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockWriter;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
+import org.unidal.cat.metric.Benchmark;
+import org.unidal.cat.metric.Metric;
+import org.unidal.cat.metric.BenchmarkEnabled;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -43,13 +46,23 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	@Override
 	public void run() {
+		Benchmark benchmark = new Benchmark("BlockWriter-" + m_index);
+		Metric metric = benchmark.get("wait");
+		Block block;
+
 		try {
 			while (m_enabled.get()) {
-				Block block = m_queue.poll(5, TimeUnit.MILLISECONDS);
+				metric.start();
+				block = m_queue.poll(5, TimeUnit.MILLISECONDS);
+				metric.end();
 
 				if (block != null) {
 					try {
 						Bucket bucket = m_manager.getBucket(block.getDomain(), block.getHour(), true);
+
+						if (bucket instanceof BenchmarkEnabled) {
+							((BenchmarkEnabled) bucket).setBenchmark(benchmark);
+						}
 
 						bucket.put(block);
 					} catch (Exception e) {
@@ -61,8 +74,9 @@ public class DefaultBlockWriter implements BlockWriter {
 			// ignore it
 		}
 
-		m_latch.countDown();
 		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
+		m_latch.countDown();
+		benchmark.print();
 	}
 
 	@Override
