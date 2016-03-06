@@ -1,5 +1,12 @@
 language: java
+
+cache:
+  directories:
+  - ~/.m2
+
+branches:
+  only:
+    - master
+
 install:
-  mvn install -Dmaven.test.skip -B -fae
-script:
-  #mvn test -B -fae
+  -
