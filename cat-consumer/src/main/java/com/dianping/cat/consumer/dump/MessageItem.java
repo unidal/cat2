@@ -1,6 +1,7 @@
 package com.dianping.cat.consumer.dump;
 
-import com.dianping.cat.message.internal.MessageId;
+import org.unidal.cat.message.MessageId;
+
 import com.dianping.cat.message.spi.MessageTree;
 
 public class MessageItem {

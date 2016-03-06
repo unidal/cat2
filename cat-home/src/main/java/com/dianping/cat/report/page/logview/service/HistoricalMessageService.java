@@ -13,7 +13,6 @@ import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.codec.HtmlMessageCodec;
 import com.dianping.cat.message.codec.WaterfallMessageCodec;
-import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.storage.MessageBucketManager;
@@ -50,13 +49,6 @@ public class HistoricalMessageService  extends BaseHistoricalModelService<String
 	@Override
 	public boolean isEligable(ModelRequest request) {
 		boolean eligibale = request.getPeriod().isHistorical();
-
-		if (eligibale) {
-			String messageId = request.getProperty("messageId");
-			MessageId id = MessageId.parse(messageId);
-
-			return id.getVersion() == 2;
-		}
 
 		return eligibale;
 	}

@@ -54,6 +54,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.addAll(new Cat2ComponentsConfigurator().defineComponents());
+
 		all.add(C(MessageConsumer.class, RealtimeConsumer.class) //
 		      .req(MessageAnalyzerManager.class, ServerStatisticManager.class, BlackListManager.class));
 
@@ -81,7 +83,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		all.add(C(CommandFormatHandler.class, DefaultCommandFormatlHandler.class));
 
-		all.add(C(CommandFormatConfigManager.class).req(CommandFormatHandler.class, ConfigDao.class, ContentFetcher.class));
+		all.add(C(CommandFormatConfigManager.class)
+		      .req(CommandFormatHandler.class, ConfigDao.class, ContentFetcher.class));
 
 		all.add(C(AppConfigManager.class).req(ConfigDao.class, ContentFetcher.class));
 
@@ -99,8 +102,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		// database
 		all.add(defineJdbcDataSourceConfigurationManagerComponent("/data/appdatas/cat/datasources.xml"));
-		//		all.add(C(JdbcDataSourceDescriptorManager.class) //
-		//		      .config(E("datasourceFile").value("/data/appdatas/cat/datasources.xml")));
+		// all.add(C(JdbcDataSourceDescriptorManager.class) //
+		// .config(E("datasourceFile").value("/data/appdatas/cat/datasources.xml")));
 
 		all.addAll(new CatCoreDatabaseConfigurator().defineComponents());
 		all.addAll(new CodecComponentConfigurator().defineComponents());

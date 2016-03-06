@@ -148,7 +148,7 @@ public abstract class BaseCompositeModelService<T> extends ModelServiceWithCalSu
 
 	protected abstract T merge(ModelRequest request, final List<ModelResponse<T>> responses);
 
-	public void setSerivces(ModelService<T>... services) {
+	public void setSerivces(ModelService<T>[] services) {
 		for (ModelService<T> service : services) {
 			m_allServices.add(service);
 		}

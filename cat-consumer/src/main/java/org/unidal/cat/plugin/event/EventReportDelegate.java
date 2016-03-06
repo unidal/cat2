@@ -5,9 +5,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportAggregator;
-import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportAggregator;
+import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -19,23 +19,12 @@ import com.dianping.cat.consumer.event.model.transform.DefaultXmlBuilder;
 
 @Named(type = ReportDelegate.class, value = EventConstants.ID)
 public class EventReportDelegate implements ReportDelegate<EventReport> {
-	@Inject(type = ReportAggregator.class, value = EventConstants.ID)
+	@Inject(EventConstants.ID)
 	private ReportAggregator<EventReport> m_aggregator;
 
 	@Override
 	public EventReport aggregate(ReportPeriod period, Collection<EventReport> reports) {
 		return m_aggregator.aggregate(period, reports);
-	}
-
-	public EventReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
-		return null;
-	}
-
-	@Override
-	public byte[] buildBinary(EventReport report) {
-		byte[] data = DefaultNativeBuilder.build(report);
-
-		return data;
 	}
 
 	@Override
@@ -46,13 +35,17 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	}
 
 	@Override
-	public String getName() {
-		return EventConstants.ID;
+	public EventReport createLocal(ReportPeriod period, String domain, Date startTime) {
+		return new EventReport(domain).setPeriod(period).setStartTime(startTime);
+	}
+
+	public EventReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
+		return null;
 	}
 
 	@Override
-	public EventReport parseBinary(byte[] content) {
-		return DefaultNativeParser.parse(content);
+	public String getName() {
+		return EventConstants.ID;
 	}
 
 	@Override
@@ -72,10 +65,5 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	@Override
 	public void writeStream(OutputStream out, EventReport report) {
 		DefaultNativeBuilder.build(report, out);
-	}
-
-	@Override
-	public EventReport createLocal(ReportPeriod period, String domain, Date startTime) {
-		return new EventReport(domain).setPeriod(period).setStartTime(startTime);
 	}
 }

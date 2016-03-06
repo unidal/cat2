@@ -3,7 +3,7 @@ package com.dianping.cat;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.unidal.cat.message.MessageIdBuilderTest;
+import org.unidal.cat.message.MessageIdFactoryTest;
 
 import com.dianping.cat.configuration.ConfigTest;
 import com.dianping.cat.configuration.NetworkInterfaceManagerTest;
@@ -47,7 +47,7 @@ CatTest.class,
 
 ApiTest.class,
 
-MessageIdBuilderTest.class
+MessageIdFactoryTest.class
 
 })
 public class AllTests {

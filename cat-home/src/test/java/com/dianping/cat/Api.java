@@ -3,8 +3,8 @@ package com.dianping.cat;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.unidal.helper.Files;
 import org.unidal.helper.Urls;
-import org.unidal.webres.helper.Files;
 import org.unidal.webres.json.JsonArray;
 import org.unidal.webres.json.JsonObject;
 

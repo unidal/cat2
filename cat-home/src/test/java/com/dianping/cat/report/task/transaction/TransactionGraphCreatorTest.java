@@ -7,13 +7,13 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.page.HistoryGraphs.DetailOrder;
+import org.unidal.cat.plugin.transaction.page.HistoryGraphs.SummaryOrder;
 import org.unidal.helper.Files;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
 import com.dianping.cat.core.dal.Graph;
-import com.dianping.cat.report.page.transaction.HistoryGraphs.DetailOrder;
-import com.dianping.cat.report.page.transaction.HistoryGraphs.SummaryOrder;
 import com.dianping.cat.report.page.transaction.task.TransactionGraphCreator;
 
 public class TransactionGraphCreatorTest {

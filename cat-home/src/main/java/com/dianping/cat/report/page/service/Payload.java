@@ -3,7 +3,7 @@ package com.dianping.cat.report.page.service;
 import java.util.Date;
 import java.util.List;
 
-import org.unidal.cat.report.ReportPeriod;
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;

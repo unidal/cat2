@@ -1,26 +1,36 @@
 package org.unidal.cat.plugin.transaction;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.unidal.cat.report.ReportManagerManager;
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.internals.ReportStorage;
-import org.unidal.cat.report.spi.ReportDelegate;
-import org.unidal.cat.report.spi.ReportDelegateManager;
-import org.unidal.cat.report.spi.ReportManager;
+import org.unidal.cat.spi.ReportConfiguration;
+import org.unidal.cat.spi.ReportManager;
+import org.unidal.cat.spi.ReportManagerManager;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.internals.ReportDelegateManager;
+import org.unidal.cat.spi.report.storage.ReportStorage;
+import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 
 public class TransactionReportManagerTest extends ComponentTestCase {
+	@BeforeClass
+	public static void beforeClass() throws Exception {
+		Files.forDir().delete(new File("target/report"), true);
+	}
+
 	@Test
 	@SuppressWarnings("unchecked")
-	public void test() throws IOException {
+	public void testCheckpoint() throws Exception {
+		lookup(ReportConfiguration.class).setBaseDataDir(new File("target"));
+
 		ReportManagerManager rmm = lookup(ReportManagerManager.class);
 		ReportDelegateManager delegateManager = lookup(ReportDelegateManager.class);
 		ReportStorage<TransactionReport> storage = lookup(ReportStorage.class);

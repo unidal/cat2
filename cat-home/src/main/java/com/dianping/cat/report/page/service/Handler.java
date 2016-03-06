@@ -9,18 +9,20 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
-import org.unidal.cat.report.Report;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.ReportFilterManager;
-import org.unidal.cat.report.spi.internals.DefaultRemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteContext;
-import org.unidal.cat.report.spi.remote.RemoteSkeleton;
+import org.unidal.cat.spi.Report;
+import org.unidal.cat.spi.ReportFilterManager;
+import org.unidal.cat.spi.remote.DefaultRemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteSkeleton;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
 import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
@@ -29,6 +31,22 @@ public class Handler implements PageHandler<Context> {
 
 	@Inject
 	private ReportFilterManager m_manager;
+
+	@SuppressWarnings("unchecked")
+	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
+		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
+		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
+		      payload.getStartTime(), payload.getPeriod(), filter);
+		List<String> names = Collections.list(req.getParameterNames());
+
+		for (String name : names) {
+			String value = req.getParameter(name);
+
+			ctx.setProperty(name, value);
+		}
+
+		return ctx;
+	}
 
 	@Override
 	@PayloadMeta(Payload.class)
@@ -52,23 +70,12 @@ public class Handler implements PageHandler<Context> {
 		} else {
 			OutputStream out = ctx.getHttpServletResponse().getOutputStream();
 
-			m_skeleton.handleReport(buildContext(ctx.getHttpServletRequest(), payload), out);
+			RemoteContext rc = buildContext(ctx.getHttpServletRequest(), payload);
+			boolean success = m_skeleton.handleReport(rc, out);
+
+			if (!success) {
+				Cat.logEvent("Service", "MissingReport", Message.SUCCESS, rc.buildURL(""));
+			}
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
-		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
-		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
-		      payload.getStartTime(), payload.getPeriod(), filter);
-		List<String> names = Collections.list(req.getParameterNames());
-
-		for (String name : names) {
-			String value = req.getParameter(name);
-
-			ctx.setProperty(name, value);
-		}
-
-		return ctx;
 	}
 }

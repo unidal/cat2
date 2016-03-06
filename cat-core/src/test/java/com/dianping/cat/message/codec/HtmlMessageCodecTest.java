@@ -19,7 +19,6 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Metric;
 import com.dianping.cat.message.Trace;
 import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.codec.HtmlMessageCodec;
 import com.dianping.cat.message.internal.AbstractMessage;
 import com.dianping.cat.message.internal.DefaultEvent;
 import com.dianping.cat.message.internal.DefaultHeartbeat;

@@ -10,10 +10,10 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.zip.GZIPOutputStream;
 
+import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
@@ -147,6 +147,7 @@ public class LocalMessageBucket implements MessageBucket {
 			m_blockSize += size;
 			m_block.addIndex(id.getIndex(), size);
 			buf.getBytes(0, m_out, size); // write buffer and compress it
+			buf.release();
 
 			if (m_blockSize >= MAX_BLOCK_SIZE) {
 				return flushBlock();

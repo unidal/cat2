@@ -55,6 +55,10 @@ public class MessageIdFactory {
 	}
 
 	protected synchronized int getIndex(long timestamp) {
+		if (m_domain == null) {
+			throw new IllegalStateException("MessageIdFactory is not initialized, call method initialize(...) first!");
+		}
+
 		int offset = m_batchOffset.incrementAndGet();
 
 		if (m_lastTimestamp != timestamp || offset >= getBatchSize()) {

@@ -1,13 +1,15 @@
 package org.unidal.cat.plugin.transaction.filter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.IVisitor;
 import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
@@ -22,16 +24,6 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 	private TransactionReportHelper m_helper;
 
 	@Override
-	public void applyTo(RemoteContext ctx, TransactionReport report) {
-		String type = ctx.getProperty("type", null);
-		String ip = ctx.getProperty("ip", null);
-
-		IVisitor visitor = new Filter(type, ip);
-
-		report.accept(visitor);
-	}
-
-	@Override
 	public String getId() {
 		return ID;
 	}
@@ -41,7 +33,107 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 		return TransactionConstants.NAME;
 	}
 
-	private class Filter extends BaseVisitor {
+	@Override
+	public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+		String type = ctx.getProperty("type", null);
+		String ip = ctx.getProperty("ip", null);
+		NameScreener visitor = new NameScreener(report.getDomain(), type, ip);
+
+		report.accept(visitor);
+		return visitor.getReport();
+	}
+
+	@Override
+	public void tailor(RemoteContext ctx, TransactionReport report) {
+		String type = ctx.getProperty("type", null);
+		String ip = ctx.getProperty("ip", null);
+		NameTailor visitor = new NameTailor(type, ip);
+
+		report.accept(visitor);
+	}
+
+	private class NameScreener extends BaseVisitor {
+		private String m_typeName;
+
+		private String m_ip;
+
+		private TransactionHolder m_holder = new TransactionHolder();
+
+		public NameScreener(String domain, String type, String ip) {
+			m_typeName = type;
+			m_ip = ip;
+			m_holder.setReport(new TransactionReport(domain));
+		}
+
+		public TransactionReport getReport() {
+			return m_holder.getReport();
+		}
+
+		@Override
+		public void visitMachine(Machine machine) {
+			Machine m = m_holder.getMachine();
+			TransactionType t = m.findOrCreateType(m_typeName);
+			TransactionType type = machine.findType(m_typeName);
+
+			m_helper.mergeMachine(m, machine);
+			m_holder.setType(t);
+
+			if (type != null) {
+				visitType(type);
+			}
+		}
+
+		@Override
+		public void visitName(TransactionName name) {
+			TransactionName n = m_holder.getName();
+
+			m_helper.mergeName(n, name);
+		}
+
+		@Override
+		public void visitTransactionReport(TransactionReport report) {
+			TransactionReport r = m_holder.getReport();
+
+			m_helper.mergeReport(r, report);
+
+			if (m_ip == null || m_ip.equals(Constants.ALL)) {
+				Machine m = r.findOrCreateMachine(Constants.ALL);
+				Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
+
+				m_holder.setMachine(m);
+
+				for (Machine machine : machines) {
+					visitMachine(machine);
+				}
+			} else {
+				Machine machine = report.findMachine(m_ip);
+				Machine m = r.findOrCreateMachine(m_ip);
+
+				if (machine != null) {
+					m_holder.setMachine(m);
+					visitMachine(machine);
+				}
+			}
+		}
+
+		@Override
+		public void visitType(TransactionType type) {
+			TransactionType t = m_holder.getType();
+
+			m_helper.mergeType(t, type);
+
+			Collection<TransactionName> names = new ArrayList<TransactionName>(type.getNames().values());
+
+			for (TransactionName name : names) {
+				TransactionName n = t.findOrCreateName(name.getId());
+
+				m_holder.setName(n);
+				visitName(name);
+			}
+		}
+	}
+
+	private class NameTailor extends BaseVisitor {
 		private String m_typeName;
 
 		private String m_ip;
@@ -50,7 +142,7 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 
 		private TransactionType m_type;
 
-		public Filter(String type, String ip) {
+		public NameTailor(String type, String ip) {
 			m_typeName = type;
 			m_ip = ip;
 		}
@@ -69,6 +161,17 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 			}
 
 			super.visitMachine(machine);
+		}
+
+		@Override
+		public void visitName(TransactionName name) {
+			name.getRanges().clear();
+			name.getDurations().clear();
+			name.getAllDurations().clear();
+
+			TransactionName n = m_type.findOrCreateName(name.getId());
+
+			m_helper.mergeName(n, name);
 		}
 
 		@Override
@@ -97,17 +200,6 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 			type.getAllDurations().clear();
 
 			super.visitType(type);
-		}
-
-		@Override
-		public void visitName(TransactionName name) {
-			name.getRanges().clear();
-			name.getDurations().clear();
-			name.getAllDurations().clear();
-
-			TransactionName n = m_type.findOrCreateName(name.getId());
-
-			m_helper.mergeName(n, name);
 		}
 	}
 }

@@ -20,11 +20,11 @@ import com.dianping.cat.core.dal.HourlyReportContent;
 import com.dianping.cat.core.dal.HourlyReportContentDao;
 import com.dianping.cat.core.dal.HourlyReportDao;
 import com.dianping.cat.report.DefaultReportManager;
+import com.dianping.cat.report.DefaultReportManager.StoragePolicy;
 import com.dianping.cat.report.DomainValidator;
 import com.dianping.cat.report.ReportBucket;
 import com.dianping.cat.report.ReportBucketManager;
 import com.dianping.cat.report.ReportDelegate;
-import com.dianping.cat.report.DefaultReportManager.StoragePolicy;
 
 public class DefaultReportManagerTest {
 

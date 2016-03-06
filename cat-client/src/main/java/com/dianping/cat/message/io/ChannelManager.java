@@ -117,8 +117,8 @@ public class ChannelManager implements Task {
 
 			if (pair.getKey()) {
 				String servers = pair.getValue();
-				List<InetSocketAddress> serverAddresses = parseSocketAddress(servers);
-				ChannelHolder newHolder = initChannel(serverAddresses, servers);
+				List<InetSocketAddress> addresses = parseSocketAddress(servers);
+				ChannelHolder newHolder = initChannel(addresses, servers);
 
 				if (newHolder != null) {
 					if (newHolder.isConnectChanged()) {
@@ -206,7 +206,7 @@ public class ChannelManager implements Task {
 
 			for (int i = 0; i < len; i++) {
 				InetSocketAddress address = addresses.get(i);
-				String hostAddress = address.getAddress().getHostAddress();
+				String hostAddress = address.getHostName(); // address.getAddress().getHostAddress()
 				ChannelHolder holder = null;
 
 				if (m_activeChannelHolder != null && hostAddress.equals(m_activeChannelHolder.getIp())) {
@@ -232,16 +232,20 @@ public class ChannelManager implements Task {
 			m_logger.error(e.getMessage(), e);
 		}
 
-		try {
-			StringBuilder sb = new StringBuilder();
+		if (addresses.size() > 0) {
+			try {
+				StringBuilder sb = new StringBuilder();
 
-			for (InetSocketAddress address : addresses) {
-				sb.append(address.toString()).append(";");
+				for (InetSocketAddress address : addresses) {
+					sb.append(address.toString()).append(";");
+				}
+
+				m_logger.info("Error when init CAT server " + sb.toString());
+			} catch (Exception e) {
+				// ignore
 			}
-			m_logger.info("Error when init CAT server " + sb.toString());
-		} catch (Exception e) {
-			// ignore
 		}
+
 		return null;
 	}
 
@@ -285,20 +289,25 @@ public class ChannelManager implements Task {
 	}
 
 	private List<InetSocketAddress> parseSocketAddress(String content) {
+		List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
+
 		try {
 			List<String> strs = Splitters.by(";").noEmptyItem().split(content);
-			List<InetSocketAddress> address = new ArrayList<InetSocketAddress>();
 
 			for (String str : strs) {
 				List<String> items = Splitters.by(":").noEmptyItem().split(str);
+				String hostname = items.get(0);
+				int port = Integer.parseInt(items.get(1));
 
-				address.add(new InetSocketAddress(items.get(0), Integer.parseInt(items.get(1))));
+				if (port > 0) {
+					addresses.add(new InetSocketAddress(hostname, port));
+				}
 			}
-			return address;
 		} catch (Exception e) {
 			m_logger.error(e.getMessage(), e);
 		}
-		return new ArrayList<InetSocketAddress>();
+
+		return addresses;
 	}
 
 	private void reconnectDefaultServer(ChannelFuture activeFuture, List<InetSocketAddress> serverAddresses) {

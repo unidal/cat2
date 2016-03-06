@@ -1,8 +1,8 @@
 package org.unidal.cat.plugin.event.filter;
 
 import org.unidal.cat.plugin.event.EventConstants;
-import org.unidal.cat.report.ReportFilter;
-import org.unidal.cat.report.spi.remote.RemoteContext;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
@@ -17,14 +17,14 @@ import com.dianping.cat.consumer.event.model.transform.BaseVisitor;
 @Named(type = ReportFilter.class, value = EventConstants.ID + ":report")
 public class EventReportFilter implements ReportFilter<EventReport> {
 	@Override
-	public void applyTo(RemoteContext ctx, EventReport report) {
+	public void tailor(RemoteContext ctx, EventReport report) {
 		String type = ctx.getProperty("type", null);
 		String name = ctx.getProperty("name", null);
 		String ip = ctx.getProperty("ip", null);
 		int min = ctx.getIntProperty("min", -1);
 		int max = ctx.getIntProperty("max", -1);
 
-		IVisitor visitor = new Filter(type, name, ip, min, max);
+		IVisitor visitor = new TailerVisitor(type, name, ip, min, max);
 		report.accept(visitor);
 	}
 
@@ -38,7 +38,7 @@ public class EventReportFilter implements ReportFilter<EventReport> {
 		return EventConstants.ID;
 	}
 
-	static class Filter extends BaseVisitor {
+	static class TailerVisitor extends BaseVisitor {
 		private String m_ip;
 
 		private String m_name;
@@ -49,7 +49,7 @@ public class EventReportFilter implements ReportFilter<EventReport> {
 
 		private int m_max;
 
-		public Filter(String type, String name, String ip, int min, int max) {
+		public TailerVisitor(String type, String name, String ip, int min, int max) {
 			m_type = type;
 			m_name = name;
 			m_ip = ip;
@@ -102,4 +102,10 @@ public class EventReportFilter implements ReportFilter<EventReport> {
 			}
 		}
 	}
+
+	@Override
+   public EventReport screen(RemoteContext ctx, EventReport report) {
+	   // TODO Auto-generated method stub
+	   return null;
+   }
 }

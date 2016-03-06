@@ -5,93 +5,137 @@ import java.util.Map;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.consumer.transaction.model.entity.Duration;
+import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.Range;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 
 @Named(type = TransactionReportHelper.class)
 public class TransactionReportHelper {
-	public void mergeName(TransactionName old, TransactionName other) {
-		long totalCountSum = old.getTotalCount() + other.getTotalCount();
-		if (totalCountSum > 0) {
-			double line95Values = old.getLine95Value() * old.getTotalCount() + other.getLine95Value()
-			      * other.getTotalCount();
-			double line99Values = old.getLine99Value() * old.getTotalCount() + other.getLine99Value()
-			      * other.getTotalCount();
+	public void mergeDurations(Map<Integer, Duration> dst, Map<Integer, Duration> src) {
+		for (Map.Entry<Integer, Duration> e : src.entrySet()) {
+			Integer key = e.getKey();
+			Duration duration = e.getValue();
+			Duration oldDuration = dst.get(key);
 
-			old.setLine95Value(line95Values / totalCountSum);
-			old.setLine99Value(line99Values / totalCountSum);
-		}
+			if (oldDuration == null) {
+				oldDuration = new Duration(duration.getValue());
+				dst.put(key, oldDuration);
+			}
 
-		old.setTotalCount(totalCountSum);
-		old.setFailCount(old.getFailCount() + other.getFailCount());
-		old.setTps(old.getTps() + other.getTps());
-
-		if (other.getMin() < old.getMin()) {
-			old.setMin(other.getMin());
-		}
-
-		if (other.getMax() > old.getMax()) {
-			old.setMax(other.getMax());
-		}
-
-		old.setSum(old.getSum() + other.getSum());
-		old.setSum2(old.getSum2() + other.getSum2());
-
-		if (old.getTotalCount() > 0) {
-			old.setFailPercent(old.getFailCount() * 100.0 / old.getTotalCount());
-			old.setAvg(old.getSum() / old.getTotalCount());
-			old.setStd(std(old.getTotalCount(), old.getAvg(), old.getSum2(), old.getMax()));
-		}
-
-		if (old.getSuccessMessageUrl() == null) {
-			old.setSuccessMessageUrl(other.getSuccessMessageUrl());
-		}
-
-		if (old.getFailMessageUrl() == null) {
-			old.setFailMessageUrl(other.getFailMessageUrl());
+			oldDuration.setCount(oldDuration.getCount() + duration.getCount());
 		}
 	}
 
-	public void mergeType(TransactionType old, TransactionType other) {
-		long totalCountSum = old.getTotalCount() + other.getTotalCount();
+	public void mergeMachine(Machine old, Machine other) {
+		// nothing to do
+	}
+
+	public void mergeName(TransactionName dst, TransactionName src) {
+		long totalCountSum = dst.getTotalCount() + src.getTotalCount();
 		if (totalCountSum > 0) {
-			double line95Values = old.getLine95Value() * old.getTotalCount() + other.getLine95Value()
-			      * other.getTotalCount();
-			double line99Values = old.getLine99Value() * old.getTotalCount() + other.getLine99Value()
-			      * other.getTotalCount();
+			double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
+			double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value() * src.getTotalCount();
 
-			old.setLine95Value(line95Values / totalCountSum);
-			old.setLine99Value(line99Values / totalCountSum);
+			dst.setLine95Value(line95Values / totalCountSum);
+			dst.setLine99Value(line99Values / totalCountSum);
 		}
 
-		old.setTotalCount(totalCountSum);
-		old.setFailCount(old.getFailCount() + other.getFailCount());
-		old.setTps(old.getTps() + other.getTps());
+		dst.setTotalCount(totalCountSum);
+		dst.setFailCount(dst.getFailCount() + src.getFailCount());
+		dst.setTps(dst.getTps() + src.getTps());
 
-		if (other.getMin() < old.getMin()) {
-			old.setMin(other.getMin());
+		if (src.getMin() < dst.getMin()) {
+			dst.setMin(src.getMin());
 		}
 
-		if (other.getMax() > old.getMax()) {
-			old.setMax(other.getMax());
+		if (src.getMax() > dst.getMax()) {
+			dst.setMax(src.getMax());
 		}
 
-		old.setSum(old.getSum() + other.getSum());
-		old.setSum2(old.getSum2() + other.getSum2());
+		dst.setSum(dst.getSum() + src.getSum());
+		dst.setSum2(dst.getSum2() + src.getSum2());
 
-		if (old.getTotalCount() > 0) {
-			old.setFailPercent(old.getFailCount() * 100.0 / old.getTotalCount());
-			old.setAvg(old.getSum() / old.getTotalCount());
-			old.setStd(std(old.getTotalCount(), old.getAvg(), old.getSum2(), old.getMax()));
+		if (dst.getTotalCount() > 0) {
+			dst.setFailPercent(dst.getFailCount() * 100.0 / dst.getTotalCount());
+			dst.setAvg(dst.getSum() / dst.getTotalCount());
+			dst.setStd(std(dst.getTotalCount(), dst.getAvg(), dst.getSum2(), dst.getMax()));
 		}
 
-		if (old.getSuccessMessageUrl() == null) {
-			old.setSuccessMessageUrl(other.getSuccessMessageUrl());
+		if (dst.getSuccessMessageUrl() == null) {
+			dst.setSuccessMessageUrl(src.getSuccessMessageUrl());
 		}
 
-		if (old.getFailMessageUrl() == null) {
-			old.setFailMessageUrl(other.getFailMessageUrl());
+		if (dst.getFailMessageUrl() == null) {
+			dst.setFailMessageUrl(src.getFailMessageUrl());
+		}
+	}
+
+	public void mergeRanges(Map<Integer, Range> dst, Map<Integer, Range> src) {
+		for (Map.Entry<Integer, Range> e : src.entrySet()) {
+			Integer key = e.getKey();
+			Range duration = e.getValue();
+			Range oldRange = dst.get(key);
+
+			if (oldRange == null) {
+				oldRange = new Range(duration.getValue());
+				dst.put(key, oldRange);
+			}
+
+			oldRange.setCount(oldRange.getCount() + duration.getCount());
+			oldRange.setFails(oldRange.getFails() + duration.getFails());
+			oldRange.setSum(oldRange.getSum() + duration.getSum());
+
+			if (oldRange.getCount() > 0) {
+				oldRange.setAvg(oldRange.getSum() / oldRange.getCount());
+			}
+		}
+	}
+
+	public void mergeReport(TransactionReport dst, TransactionReport src) {
+		dst.mergeAttributes(src);
+		dst.getDomainNames().addAll(src.getDomainNames());
+		dst.getIps().addAll(src.getIps());
+	}
+
+	public void mergeType(TransactionType dst, TransactionType src) {
+		long totalCountSum = dst.getTotalCount() + src.getTotalCount();
+		if (totalCountSum > 0) {
+			double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
+			double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value() * src.getTotalCount();
+
+			dst.setLine95Value(line95Values / totalCountSum);
+			dst.setLine99Value(line99Values / totalCountSum);
+		}
+
+		dst.setTotalCount(totalCountSum);
+		dst.setFailCount(dst.getFailCount() + src.getFailCount());
+		dst.setTps(dst.getTps() + src.getTps());
+
+		if (src.getMin() < dst.getMin()) {
+			dst.setMin(src.getMin());
+		}
+
+		if (src.getMax() > dst.getMax()) {
+			dst.setMax(src.getMax());
+		}
+
+		dst.setSum(dst.getSum() + src.getSum());
+		dst.setSum2(dst.getSum2() + src.getSum2());
+
+		if (dst.getTotalCount() > 0) {
+			dst.setFailPercent(dst.getFailCount() * 100.0 / dst.getTotalCount());
+			dst.setAvg(dst.getSum() / dst.getTotalCount());
+			dst.setStd(std(dst.getTotalCount(), dst.getAvg(), dst.getSum2(), dst.getMax()));
+		}
+
+		if (dst.getSuccessMessageUrl() == null) {
+			dst.setSuccessMessageUrl(src.getSuccessMessageUrl());
+		}
+
+		if (dst.getFailMessageUrl() == null) {
+			dst.setFailMessageUrl(src.getFailMessageUrl());
 		}
 	}
 
@@ -104,42 +148,6 @@ public class TransactionReportHelper {
 			return max - avg;
 		} else {
 			return Math.sqrt(value);
-		}
-	}
-
-	public void mergeDurations(Map<Integer, Duration> old, Map<Integer, Duration> other) {
-		for (Map.Entry<Integer, Duration> e : other.entrySet()) {
-			Integer key = e.getKey();
-			Duration duration = e.getValue();
-			Duration oldDuration = old.get(key);
-
-			if (oldDuration == null) {
-				oldDuration = new Duration(duration.getValue());
-				old.put(key, oldDuration);
-			}
-
-			oldDuration.setCount(oldDuration.getCount() + duration.getCount());
-		}
-	}
-
-	public void mergeRanges(Map<Integer, Range> old, Map<Integer, Range> other) {
-		for (Map.Entry<Integer, Range> e : other.entrySet()) {
-			Integer key = e.getKey();
-			Range duration = e.getValue();
-			Range oldRange = old.get(key);
-
-			if (oldRange == null) {
-				oldRange = new Range(duration.getValue());
-				old.put(key, oldRange);
-			}
-
-			oldRange.setCount(oldRange.getCount() + duration.getCount());
-			oldRange.setFails(oldRange.getFails() + duration.getFails());
-			oldRange.setSum(oldRange.getSum() + duration.getSum());
-
-			if (oldRange.getCount() > 0) {
-				oldRange.setAvg(oldRange.getSum() / oldRange.getCount());
-			}
 		}
 	}
 }

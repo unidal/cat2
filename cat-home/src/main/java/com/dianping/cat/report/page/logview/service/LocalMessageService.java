@@ -14,7 +14,6 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.codec.HtmlMessageCodec;
 import com.dianping.cat.message.codec.WaterfallMessageCodec;
-import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.storage.MessageBucketManager;
@@ -80,7 +79,7 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 
 			payload.setMessageId(request.getProperty("messageId"));
 			payload.setWaterfall(Boolean.valueOf(request.getProperty("waterfall", "false")));
-			
+
 			String report = getReport(request, period, domain, payload);
 
 			response.setModel(report);
@@ -102,13 +101,6 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 	public boolean isEligable(ModelRequest request) {
 		if (m_manager.isHdfsOn()) {
 			boolean eligibale = request.getPeriod().isCurrent();
-
-			if (eligibale) {
-				String messageId = request.getProperty("messageId");
-				MessageId id = MessageId.parse(messageId);
-
-				return id.getVersion() == 2;
-			}
 
 			return eligibale;
 		} else {

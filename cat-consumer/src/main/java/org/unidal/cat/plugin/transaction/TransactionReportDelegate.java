@@ -5,9 +5,9 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
-import org.unidal.cat.report.ReportPeriod;
-import org.unidal.cat.report.spi.ReportAggregator;
-import org.unidal.cat.report.spi.ReportDelegate;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportAggregator;
+import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -19,23 +19,12 @@ import com.dianping.cat.consumer.transaction.model.transform.DefaultXmlBuilder;
 
 @Named(type = ReportDelegate.class, value = TransactionConstants.NAME)
 public class TransactionReportDelegate implements ReportDelegate<TransactionReport> {
-	@Inject(type = ReportAggregator.class, value = TransactionConstants.NAME)
+	@Inject(TransactionConstants.NAME)
 	private ReportAggregator<TransactionReport> m_aggregator;
 
 	@Override
 	public TransactionReport aggregate(ReportPeriod period, Collection<TransactionReport> reports) {
 		return m_aggregator.aggregate(period, reports);
-	}
-
-	public TransactionReport getLocalReport(ReportPeriod period, Date startTime, String domain) {
-		return null;
-	}
-
-	@Override
-	public byte[] buildBinary(TransactionReport report) {
-		byte[] data = DefaultNativeBuilder.build(report);
-
-		return data;
 	}
 
 	@Override
@@ -51,11 +40,6 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 	}
 
 	@Override
-	public TransactionReport parseBinary(byte[] content) {
-		return DefaultNativeParser.parse(content);
-	}
-
-	@Override
 	public TransactionReport parseXml(String xml) {
 		try {
 			return DefaultSaxParser.parse(xml);
@@ -66,7 +50,13 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 
 	@Override
 	public TransactionReport readStream(InputStream in) {
-		return DefaultNativeParser.parse(in);
+		TransactionReport report = DefaultNativeParser.parse(in);
+
+		if (report.getDomain() == null) {
+			return null;
+		} else {
+			return report;
+		}
 	}
 
 	@Override
