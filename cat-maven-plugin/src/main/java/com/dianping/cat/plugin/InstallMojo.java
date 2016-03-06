@@ -35,22 +35,22 @@ public class InstallMojo extends AbstractMojo {
 	private String m_datasourcePath = m_path + File.separator + "datasources.xml";
 
 	/**
-	 * @parameter expression="${jdbc.url}"
+	 * @parameter property="jdbc.url"
 	 */
 	private String m_jdbcUrl;
 
 	/**
-	 * @parameter expression="${jdbc.user}"
+	 * @parameter property="jdbc.user"
 	 */
 	private String m_user;
 
 	/**
-	 * @parameter expression="${jdbc.password}"
+	 * @parameter property="jdbc.password"
 	 */
 	private String m_password;
 
 	/**
-	 * @parameter expression="${verbose}"
+	 * @parameter property="verbose"
 	 */
 	private boolean m_verbose = false;
 

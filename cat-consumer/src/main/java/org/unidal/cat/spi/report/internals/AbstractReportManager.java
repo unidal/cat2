@@ -3,9 +3,7 @@ package org.unidal.cat.spi.report.internals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -42,7 +40,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 	private String m_reportName;
 
-	private Map<Long, ConcurrentMap<String, T>> m_reports = new HashMap<Long, ConcurrentMap<String, T>>();
+	private ConcurrentMap<Long, ConcurrentMap<String, T>> m_reports = new ConcurrentHashMap<Long, ConcurrentMap<String, T>>();
 
 	@Override
 	public void doCheckpoint(Date startTime, int index, boolean atEnd) throws IOException {
