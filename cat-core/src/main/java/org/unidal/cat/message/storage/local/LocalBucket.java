@@ -71,7 +71,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			m_dataMetric.start();
 			m_data.init(dataPath);
 			m_dataMetric.end();
-			
+
 			m_indexMetric.start();
 			m_index.init(indexPath);
 			m_indexMetric.end();
@@ -104,14 +104,13 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 	public void put(Block block) throws IOException {
 		Map<MessageId, Integer> mappings = block.getMappings();
 		ByteBuf data = block.getData();
+		long dataOffset = m_data.getDataOffset();
 
 		for (Map.Entry<MessageId, Integer> e : mappings.entrySet()) {
 			MessageId id = e.getKey();
 			int offset = e.getValue();
 
 			ensureOpen(id);
-
-			long dataOffset = m_data.getDataOffset();
 
 			m_indexMetric.start();
 			m_index.write(id, dataOffset, offset);
