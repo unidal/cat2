@@ -89,7 +89,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();
-		int hash = domain.hashCode();
+		int hash = Math.abs(domain.hashCode());
 		int index = hash % (m_processors.size() - 1); // last one for message overflow
 		BlockingQueue<MessageTree> queue = m_queues.get(index);
 
