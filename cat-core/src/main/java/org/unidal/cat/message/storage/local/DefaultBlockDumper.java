@@ -16,11 +16,15 @@ import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+
 @Named(type = BlockDumper.class)
 public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, Initializable {
 	private List<BlockingQueue<Block>> m_queues = new ArrayList<BlockingQueue<Block>>();
 
 	private List<BlockWriter> m_writers = new ArrayList<BlockWriter>();
+
+	private int m_failCount = -1;
 
 	@Override
 	public void awaitTermination() throws InterruptedException {
@@ -53,7 +57,11 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 		int index = hash % m_writers.size();
 		BlockingQueue<Block> queue = m_queues.get(index);
 
-		queue.offer(block);
+		boolean success = queue.offer(block);
+
+		if (!success && (++m_failCount % 100) == 0) {
+			Cat.logError(new RuntimeException("Error when offer tree in block dumper"));
+		}
 	}
 
 	@Override
