@@ -21,6 +21,5 @@ public class MessageIdTest extends ComponentTestCase {
 		Assert.assertEquals(1454036400000L, id.getTimestamp());
 		Assert.assertEquals(12345, id.getIndex());
 
-		Assert.assertEquals(1454036400000L, MessageId.getTimestamp("child-0a260015-403899-12345"));
 	}
 }
