@@ -23,30 +23,6 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 	private List<BlockWriter> m_writers = new ArrayList<BlockWriter>();
 
 	@Override
-	public void dump(Block block) throws IOException {
-		String domain = block.getDomain();
-		int hash = domain.hashCode();
-		int index = hash % m_writers.size();
-		BlockingQueue<Block> queue = m_queues.get(index);
-
-		queue.offer(block);
-	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		for (int i = 0; i < 10; i++) {
-			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
-			BlockWriter writer = lookup(BlockWriter.class);
-
-			m_queues.add(queue);
-			m_writers.add(writer);
-
-			writer.initialize(i, queue);
-			Threads.forGroup("Cat").start(writer);
-		}
-	}
-
-	@Override
 	public void awaitTermination() throws InterruptedException {
 		while (true) {
 			boolean allEmpty = true;
@@ -67,6 +43,30 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 
 		for (BlockWriter writer : m_writers) {
 			writer.shutdown();
+		}
+	}
+
+	@Override
+	public void dump(Block block) throws IOException {
+		String domain = block.getDomain();
+		int hash = domain.hashCode();
+		int index = hash % m_writers.size();
+		BlockingQueue<Block> queue = m_queues.get(index);
+
+		queue.offer(block);
+	}
+
+	@Override
+	public void initialize() throws InitializationException {
+		for (int i = 0; i < 10; i++) {
+			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
+			BlockWriter writer = lookup(BlockWriter.class);
+
+			m_queues.add(queue);
+			m_writers.add(writer);
+
+			writer.initialize(i, queue);
+			Threads.forGroup("Cat").start(writer);
 		}
 	}
 }

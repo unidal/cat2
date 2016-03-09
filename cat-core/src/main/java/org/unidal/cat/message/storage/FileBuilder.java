@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.Date;
 
 public interface FileBuilder {
-	public File getFile(String domain, Date startTime, String ip, FileType type);
-
 	public static enum FileType {
 		MAPPING("map"),
 
@@ -23,4 +21,6 @@ public interface FileBuilder {
 			return m_extension;
 		}
 	}
+
+	public File getFile(String domain, Date startTime, String ip, FileType type);
 }
