@@ -21,11 +21,11 @@ public class LocalFileBuilder implements FileBuilder {
 
 		switch (type) {
 		case MAPPING:
-			format = new MessageFormat("dump/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{0,date,HH}/{2}.{3}");
+			format = new MessageFormat("dump/{0,date,yyyyMMdd}/{0,date,HH}/{2}.{3}");
 			path = format.format(new Object[] { startTime, null, ip, type.getExtension() });
 			break;
 		default:
-			format = new MessageFormat("dump/{0,date,yyyy}-{0,date,MM}/{0,date,dd}/{0,date,HH}/{1}-{2}.{3}");
+			format = new MessageFormat("dump/{0,date,yyyyMMdd}/{0,date,HH}/{1}-{2}.{3}");
 			path = format.format(new Object[] { startTime, domain, ip, type.getExtension() });
 			break;
 		}
