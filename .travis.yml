@@ -1,5 +1,17 @@
 language: java
+
+cache:
+  directories:
+  - ~/.m2
+
+git:
+  depth: 3
+
+branches:
+  only:
+    - master
+
 install:
-  mvn install -Dmaven.test.skip -B -fae
-script:
-  #mvn test -B -fae
+  - mvn clean package -Dmaven.test.skip
+
+script: true
