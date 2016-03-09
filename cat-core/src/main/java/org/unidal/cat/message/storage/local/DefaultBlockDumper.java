@@ -53,7 +53,7 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 	@Override
 	public void dump(Block block) throws IOException {
 		String domain = block.getDomain();
-		int hash = domain.hashCode();
+		int hash = Math.abs(domain.hashCode());
 		int index = hash % m_writers.size();
 		BlockingQueue<Block> queue = m_queues.get(index);
 
