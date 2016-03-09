@@ -1,9 +1,8 @@
 package org.unidal.cat.message.storage.local;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,9 +28,20 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	private BlockingQueue<MessageTree> m_queue;
 
-	private Map<String, Block> m_blocks = new HashMap<String, Block>();
+	private ConcurrentHashMap<String, Block> m_blocks = new ConcurrentHashMap<String, Block>();
 
 	private AtomicBoolean m_enabled;
+
+	@Override
+	public MessageTree findTree(MessageId messageId) {
+		String domain = messageId.getDomain();
+		Block block = m_blocks.get(domain);
+
+		if (block != null) {
+			return block.findTree(messageId);
+		}
+		return null;
+	}
 
 	@Override
 	public String getName() {
@@ -55,7 +65,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		try {
 			while (m_enabled.get()) {
 				wm.start();
-				tree = (DefaultMessageTree) m_queue.poll(5, TimeUnit.MILLISECONDS);
+				tree = (DefaultMessageTree) m_queue.poll(5,
+						TimeUnit.MILLISECONDS);
 				wm.end();
 
 				if (tree != null) {
@@ -71,7 +82,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 					try {
 						pm.start();
-						block.pack(id, tree.getBuffer());
+						block.pack(id, tree);
 
 						if (block.isFull()) {
 							block.finish();
@@ -90,7 +101,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			// ignore it
 		}
 
-		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
+		System.out.println(getClass().getSimpleName() + "-" + m_index
+				+ " is shutdown");
 		benchmark.print();
 	}
 

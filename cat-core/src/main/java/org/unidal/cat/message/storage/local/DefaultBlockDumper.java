@@ -16,35 +16,15 @@ import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+
 @Named(type = BlockDumper.class)
 public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, Initializable {
 	private List<BlockingQueue<Block>> m_queues = new ArrayList<BlockingQueue<Block>>();
 
 	private List<BlockWriter> m_writers = new ArrayList<BlockWriter>();
 
-	@Override
-	public void dump(Block block) throws IOException {
-		String domain = block.getDomain();
-		int hash = domain.hashCode();
-		int index = hash % m_writers.size();
-		BlockingQueue<Block> queue = m_queues.get(index);
-
-		queue.offer(block);
-	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		for (int i = 0; i < 10; i++) {
-			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
-			BlockWriter writer = lookup(BlockWriter.class);
-
-			m_queues.add(queue);
-			m_writers.add(writer);
-
-			writer.initialize(i, queue);
-			Threads.forGroup("Cat").start(writer);
-		}
-	}
+	private int m_failCount = -1;
 
 	@Override
 	public void awaitTermination() throws InterruptedException {
@@ -67,6 +47,34 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 
 		for (BlockWriter writer : m_writers) {
 			writer.shutdown();
+		}
+	}
+
+	@Override
+	public void dump(Block block) throws IOException {
+		String domain = block.getDomain();
+		int hash = domain.hashCode();
+		int index = hash % m_writers.size();
+		BlockingQueue<Block> queue = m_queues.get(index);
+
+		boolean success = queue.offer(block);
+
+		if (!success && (++m_failCount % 100) == 0) {
+			Cat.logError(new RuntimeException("Error when offer tree in block dumper"));
+		}
+	}
+
+	@Override
+	public void initialize() throws InitializationException {
+		for (int i = 0; i < 10; i++) {
+			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
+			BlockWriter writer = lookup(BlockWriter.class);
+
+			m_queues.add(queue);
+			m_writers.add(writer);
+
+			writer.initialize(i, queue);
+			Threads.forGroup("Cat").start(writer);
 		}
 	}
 }

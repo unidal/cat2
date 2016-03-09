@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -18,7 +19,8 @@ import java.util.zip.InflaterInputStream;
 
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
-import org.unidal.cat.metric.Metric;
+
+import com.dianping.cat.message.spi.MessageTree;
 
 public class DefaultBlock implements Block {
 	private static final int MAX_SIZE = 256 * 1024;
@@ -39,7 +41,7 @@ public class DefaultBlock implements Block {
 
 	private boolean m_gzip = true;
 
-	private Metric m_metric;
+	private ConcurrentHashMap<MessageId, MessageTree> m_trees = new ConcurrentHashMap<MessageId, MessageTree>();
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_mappings.put(id, offset);
@@ -62,6 +64,11 @@ public class DefaultBlock implements Block {
 		} else {
 			m_out = new DeflaterOutputStream(os, new Deflater(5, true), BUFFER_SIZE);
 		}
+	}
+
+	@Override
+	public MessageTree findTree(MessageId id) {
+		return m_trees.get(id);
 	}
 
 	@Override
@@ -105,35 +112,20 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public void pack(MessageId id, ByteBuf buf) throws IOException {
+	public void pack(MessageId id, MessageTree tree) throws IOException {
+		ByteBuf buf = tree.getBuffer();
 		int len = buf.readableBytes();
-
-		if (m_metric != null) {
-			m_metric.start();
-		}
 
 		buf.readBytes(m_out, len);
 		m_mappings.put(id, m_offset);
 		m_offset += len;
-
-		if (m_metric != null) {
-			m_metric.end();
-		}
-	}
-
-	public DefaultBlock setMetric(Metric metric) {
-		m_metric = metric;
-		return this;
+		m_trees.put(id, tree);
 	}
 
 	@Override
 	public ByteBuf unpack(MessageId id) throws IOException {
 		if (m_data == null) {
 			return null;
-		}
-
-		if (m_metric != null) {
-			m_metric.start();
 		}
 
 		ByteBufInputStream is = new ByteBufInputStream(m_data);
@@ -158,10 +150,6 @@ public class DefaultBlock implements Block {
 		in.close();
 
 		ByteBuf buf = Unpooled.wrappedBuffer(data);
-
-		if (m_metric != null) {
-			m_metric.end();
-		}
 
 		return buf;
 	}

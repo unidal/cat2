@@ -34,14 +34,11 @@ public class DefaultBlockWriter implements BlockWriter {
 	}
 
 	@Override
-	public void shutdown() {
-		m_enabled.set(false);
-
-		try {
-			m_latch.await();
-		} catch (InterruptedException e) {
-			// ignore it
-		}
+	public void initialize(int index, BlockingQueue<Block> queue) {
+		m_index = index;
+		m_queue = queue;
+		m_enabled = new AtomicBoolean(true);
+		m_latch = new CountDownLatch(1);
 	}
 
 	@Override
@@ -80,10 +77,13 @@ public class DefaultBlockWriter implements BlockWriter {
 	}
 
 	@Override
-	public void initialize(int index, BlockingQueue<Block> queue) {
-		m_index = index;
-		m_queue = queue;
-		m_enabled = new AtomicBoolean(true);
-		m_latch = new CountDownLatch(1);
+	public void shutdown() {
+		m_enabled.set(false);
+
+		try {
+			m_latch.await();
+		} catch (InterruptedException e) {
+			// ignore it
+		}
 	}
 }
