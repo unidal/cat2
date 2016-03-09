@@ -5,18 +5,23 @@ import io.netty.buffer.ByteBufAllocator;
 
 import java.nio.charset.Charset;
 
+import org.unidal.cat.message.MessageId;
+import org.unidal.cat.message.storage.Block;
+import org.unidal.cat.message.storage.Bucket;
+import org.unidal.cat.message.storage.BucketManager;
+import org.unidal.cat.message.storage.MessageDumper;
+import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
-import com.dianping.cat.consumer.dump.LocalMessageBucketManager;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.codec.HtmlMessageCodec;
 import com.dianping.cat.message.codec.WaterfallMessageCodec;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
-import com.dianping.cat.message.storage.MessageBucketManager;
+import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 import com.dianping.cat.mvc.ApiPayload;
 import com.dianping.cat.report.service.LocalModelService;
 import com.dianping.cat.report.service.ModelPeriod;
@@ -28,14 +33,20 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 
 	public static final String ID = DumpAnalyzer.ID;
 
-	@Inject(LocalMessageBucketManager.ID)
-	private MessageBucketManager m_bucketManager;
+	@Inject("local")
+	private BucketManager m_localBucketManager;
 
 	@Inject(HtmlMessageCodec.ID)
 	private MessageCodec m_html;
 
 	@Inject(WaterfallMessageCodec.ID)
 	private MessageCodec m_waterfall;
+
+	@Inject(PlainTextMessageCodec.ID)
+	private MessageCodec m_plainText;
+
+	@Inject
+	private MessageDumperManager m_dumperManager;
 
 	public LocalMessageService() {
 		super("logview");
@@ -46,7 +57,23 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 	      throws Exception {
 		String messageId = payload.getMessageId();
 		boolean waterfull = payload.isWaterfall();
-		MessageTree tree = m_bucketManager.loadMessage(messageId);
+		MessageId id = MessageId.parse(messageId);
+		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
+		MessageTree tree = null;
+
+		if (dumper != null) {
+			tree = dumper.find(id);
+		}
+
+		if (tree == null) {
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getHour(), true);
+			Block block = bucket.get(id);
+			ByteBuf data = block.unpack(id);
+
+			if (data != null) {
+				tree = m_plainText.decode(data);
+			}
+		}
 
 		if (tree != null) {
 			ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
@@ -88,6 +115,7 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 			t.addData("domain", domain);
 			t.setStatus(Message.SUCCESS);
 		} catch (Exception e) {
+			e.printStackTrace();
 			Cat.logError(e);
 			t.setStatus(e);
 			response.setException(e);

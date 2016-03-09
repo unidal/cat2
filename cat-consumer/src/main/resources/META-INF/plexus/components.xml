@@ -566,8 +566,7 @@
 					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.storage.MessageBucketManager</role>
-					<role-hint>local</role-hint>
+					<role>org.unidal.cat.message.storage.MessageDumperManager</role>
 				</requirement>
 			</requirements>
 		</component>

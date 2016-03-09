@@ -1,5 +1,7 @@
 package com.dianping.cat.message.spi;
 
+import io.netty.buffer.ByteBuf;
+
 import com.dianping.cat.message.Message;
 
 public interface MessageTree extends Cloneable {
@@ -7,6 +9,8 @@ public interface MessageTree extends Cloneable {
 
 	public String getDomain();
 
+	public ByteBuf getBuffer();
+	
 	public String getHostName();
 
 	public String getIpAddress();

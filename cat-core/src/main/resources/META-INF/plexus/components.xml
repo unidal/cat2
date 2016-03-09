@@ -305,6 +305,10 @@
 			<implementation>com.dianping.cat.CatCoreModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.message.storage.MessageDumperManager</role>
+			<implementation>org.unidal.cat.message.storage.MessageDumperManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.dal.jdbc.datasource.DataSourceProvider</role>
 			<implementation>org.unidal.dal.jdbc.datasource.DefaultDataSourceProvider</implementation>
 			<configuration>

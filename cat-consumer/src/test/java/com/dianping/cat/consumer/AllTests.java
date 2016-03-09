@@ -14,7 +14,6 @@ import com.dianping.cat.consumer.cross.CrossInfoTest;
 import com.dianping.cat.consumer.cross.CrossReportMergerTest;
 import com.dianping.cat.consumer.dependency.DependencyAnalyzerTest;
 import com.dianping.cat.consumer.dependency.DependencyReportMergerTest;
-import com.dianping.cat.consumer.dump.DumpAnalyzerTest;
 import com.dianping.cat.consumer.event.EventAnalyzerTest;
 import com.dianping.cat.consumer.event.EventReportMergerTest;
 import com.dianping.cat.consumer.heartbeat.HeartbeatAnalyzerTest;
@@ -96,8 +95,6 @@ ProblemReportMergerTest.class,
 CompositeFormatTest.class,
 
 DefaultFormatTest.class,
-
-DumpAnalyzerTest.class,
 
 TransactionReportTypeAggergatorTest.class,
 

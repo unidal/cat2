@@ -20,7 +20,7 @@ public abstract class AbstractMessageAnalyzer<R> extends ContainerHolder impleme
 	@Inject
 	protected ServerConfigManager m_serverConfigManager;
 
-	private long m_extraTime;
+	protected long m_extraTime;
 
 	protected long m_startTime;
 

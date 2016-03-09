@@ -16,6 +16,8 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.cat.metric.BenchmarkEnabled;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.cat.message.spi.MessageTree;
+
 public class BucketTest extends ComponentTestCase {
 	@Before
 	public void before() {
@@ -110,12 +112,18 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void pack(MessageId id, ByteBuf buf) throws IOException {
+		public void pack(MessageId id, MessageTree tree) throws IOException {
 		}
 
 		@Override
 		public ByteBuf unpack(MessageId id) throws IOException {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public MessageTree findTree(MessageId messageId) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

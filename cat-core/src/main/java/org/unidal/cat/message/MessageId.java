@@ -1,5 +1,6 @@
 package org.unidal.cat.message;
 
+
 public class MessageId {
 	private String m_domain;
 
