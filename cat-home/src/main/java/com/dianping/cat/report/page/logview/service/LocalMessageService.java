@@ -6,7 +6,6 @@ import io.netty.buffer.ByteBufAllocator;
 import java.nio.charset.Charset;
 
 import org.unidal.cat.message.MessageId;
-import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -14,6 +13,7 @@ import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -60,15 +60,19 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		MessageId id = MessageId.parse(messageId);
 		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
 		MessageTree tree = null;
+		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
 		if (dumper != null) {
 			tree = dumper.find(id);
+
+			if (tree == null) {
+				System.err.println("Message " + id + " not found");
+			}
 		}
 
 		if (tree == null) {
-			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getHour(), true);
-			Block block = bucket.get(id);
-			ByteBuf data = block.unpack(id);
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), ip, id.getHour(), true);
+			ByteBuf data = bucket.get(id);
 
 			if (data != null) {
 				tree = m_plainText.decode(data);

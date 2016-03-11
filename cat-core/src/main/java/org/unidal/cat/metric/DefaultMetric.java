@@ -22,7 +22,7 @@ public class DefaultMetric implements Metric {
 		if (m_start == -1) {
 			throw new IllegalStateException(String.format("Metric(%s) is not started yet", m_name));
 		} else {
-			long durationInMicro = (System.nanoTime() - m_start) / 1000000L;
+			long durationInMicro = (System.nanoTime() - m_start) / 1000L;
 
 			m_count++;
 			m_sum += durationInMicro;

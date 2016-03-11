@@ -17,6 +17,7 @@ import org.unidal.cat.message.storage.internals.DefaultBlock;
 import org.unidal.cat.metric.Benchmark;
 import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.cat.metric.Metric;
+import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.spi.MessageCodec;
@@ -30,38 +31,39 @@ public class BucketTest extends ComponentTestCase {
 
 	@Before
 	public void before() {
+		File baseDir = new File("target");
+
+		Files.forDir().delete(new File(baseDir, "dump"), true);
+
+		lookup(StorageConfiguration.class).setBaseDataDir(baseDir);
 		m_codec = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
 		m_benchmarkManager = lookup(BenchmarkManager.class);
-		lookup(StorageConfiguration.class).setBaseDataDir(new File("target"));
 	}
 
 	@Test
 	public void testWriteAndRead() throws Exception {
+		String ip = "0a010203";
+		String domain = "mock";
+		int hour = 404857;
 		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, ip, hour, true);
 
-		for (int i = 0; i < 1; i++) {
-			String domain = "mock";
-			int hour = 404857;
-			Bucket bucket = manager.getBucket(domain, hour, true);
+		for (int i = 0; i < 1000; i++) {
 			Block block = new DefaultBlock(domain, hour);
 
-			for (int count = 0; count < 10; count++) {
-				MessageId id = new MessageId(domain, "0a010203", hour, i);
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
 				MessageTree tree = TreeHelper.tree(m_codec, id);
 
 				block.pack(id, tree);
 			}
 
-			try {
-				bucket.put(block);
-			} catch (Exception e) {
-				System.out.println(i);
-				throw e;
-			}
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
 
 			for (MessageId id : block.getMappings().keySet()) {
-				Block b = bucket.get(id);
-				MessageTree tree = b.findTree(id);
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
 
 				Assert.assertEquals(id.toString(), tree.getMessageId());
 			}
@@ -69,18 +71,18 @@ public class BucketTest extends ComponentTestCase {
 	}
 
 	@Test
-	public void testWritePerformance() throws IOException {
+	public void testWritePerf() throws IOException {
 		BucketManager manager = lookup(BucketManager.class, "local");
 		Benchmark bm = m_benchmarkManager.get("bucket");
 		Metric mb = bm.get("build");
 		Metric mo = bm.get("other");
 		Metric mc = bm.get("close");
 
-		for (int i = 0; i < 1000000; i++) {
+		for (int i = 0; i < 100000; i++) {
 			mo.start();
 
 			String domain = "mock";
-			Bucket bucket = manager.getBucket(domain, 404448, true);
+			Bucket bucket = manager.getBucket(domain, "0a010203", 404448, true);
 
 			mo.end();
 
@@ -90,7 +92,7 @@ public class BucketTest extends ComponentTestCase {
 
 			mo.start();
 			try {
-				bucket.put(block);
+				bucket.puts(block.getData(), block.getMappings());
 			} catch (Exception e) {
 				System.out.println(i);
 				e.printStackTrace();

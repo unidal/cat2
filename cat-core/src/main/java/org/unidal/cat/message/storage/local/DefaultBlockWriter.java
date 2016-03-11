@@ -16,6 +16,8 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.configuration.NetworkInterfaceManager;
+
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
 	@Inject
@@ -47,6 +49,7 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	@Override
 	public void run() {
+		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 		Benchmark benchmark = m_benchmarkManager.get("BlockWriter-" + m_index);
 		Metric metric = benchmark.get("wait");
 		Block block;
@@ -59,13 +62,13 @@ public class DefaultBlockWriter implements BlockWriter {
 
 				if (block != null) {
 					try {
-						Bucket bucket = m_bucketManager.getBucket(block.getDomain(), block.getHour(), true);
+						Bucket bucket = m_bucketManager.getBucket(block.getDomain(), ip, block.getHour(), true);
 
 						if (bucket instanceof BenchmarkEnabled) {
 							((BenchmarkEnabled) bucket).setBenchmark(benchmark);
 						}
 
-						bucket.put(block);
+						bucket.puts(block.getData(), block.getMappings());
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

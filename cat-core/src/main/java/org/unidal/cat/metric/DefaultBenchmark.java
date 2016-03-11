@@ -62,9 +62,12 @@ public class DefaultBenchmark implements Benchmark {
 
 	@Override
 	public void print() {
-		m_endTime = System.nanoTime();
+		// TODO
+		if (m_enabled.get()) {
+			m_endTime = System.nanoTime();
 
-		System.out.println(this);
+			System.out.println(this);
+		}
 	}
 
 	@Override

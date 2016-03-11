@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.unidal.cat.message.MessageId;
-import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.FileBuilder;
 import org.unidal.cat.message.storage.FileBuilder.FileType;
@@ -29,7 +28,6 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.configuration.NetworkInterfaceManager;
 
 @Named(type = Bucket.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
 public class LocalBucket implements Bucket, BenchmarkEnabled {
@@ -59,35 +57,14 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 		}
 	}
 
-	private void ensureOpen(MessageId id) throws IOException {
-		if (!m_index.isOpen()) {
-			String domain = id.getDomain();
-			long timestamp = id.getTimestamp();
-			Date startTime = new Date(timestamp);
-			String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
-			File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
-			File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
-
-			m_dataMetric.start();
-			m_data.init(dataPath);
-			m_dataMetric.end();
-
-			m_indexMetric.start();
-			m_index.init(indexPath);
-			m_indexMetric.end();
-		}
-	}
-
 	@Override
-	public Block get(MessageId id) throws IOException {
-		ensureOpen(id);
-
+	public ByteBuf get(MessageId id) throws IOException {
 		m_indexMetric.start();
 		long address = m_index.read(id);
 		m_indexMetric.end();
 
 		if (address < 0) {
-			return new DefaultBlock(id, -1, null);
+			return null;
 		} else {
 			int segmentOffset = (int) (address & 0xFFFFFFL);
 			long dataOffset = address >> 24;
@@ -96,22 +73,31 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			byte[] data = m_data.read(dataOffset);
 			m_dataMetric.end();
 
-			return new DefaultBlock(id, segmentOffset, data);
+			DefaultBlock block = new DefaultBlock(id, segmentOffset, data);
+
+			return block.unpack(id);
 		}
 	}
 
 	@Override
-	public void put(Block block) throws IOException {
-		Map<MessageId, Integer> mappings = block.getMappings();
-		ByteBuf data = block.getData();
+	public void initialize(String domain, String ip, int hour) throws IOException {
+		long timestamp = hour * 3600 * 1000L;
+		Date startTime = new Date(timestamp);
+		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
+		File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
+
+		m_dataMetric.start();
+		m_data.init(dataPath);
+		m_dataMetric.end();
+
+		m_indexMetric.start();
+		m_index.init(indexPath);
+		m_indexMetric.end();
+	}
+
+	@Override
+	public void puts(ByteBuf data, Map<MessageId, Integer> mappings) throws IOException {
 		long dataOffset = m_data.getDataOffset();
-
-		for (Map.Entry<MessageId, Integer> e : mappings.entrySet()) {
-			MessageId id = e.getKey();
-
-			ensureOpen(id);
-			break;
-		}
 
 		m_dataMetric.start();
 		m_data.write(data);
@@ -183,6 +169,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 		}
 
 		public byte[] read(long dataOffset) throws IOException {
+			m_out.flush();
 			m_file.seek(dataOffset);
 
 			int len = m_file.readInt();

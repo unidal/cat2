@@ -12,8 +12,10 @@ import org.unidal.cat.message.MessageId;
 import org.unidal.cat.metric.Benchmark;
 import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.cat.metric.Metric;
+import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -25,9 +27,13 @@ public class MessageDumperTest extends ComponentTestCase {
 
 	@Before
 	public void before() {
+		File baseDir = new File("target");
+
+		Files.forDir().delete(new File(baseDir, "dump"), true);
+
+		lookup(StorageConfiguration.class).setBaseDataDir(baseDir);
 		m_codec = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
 		m_benchmarkManager = lookup(BenchmarkManager.class);
-		lookup(StorageConfiguration.class).setBaseDataDir(new File("target"));
 	}
 
 	@Test
@@ -35,16 +41,16 @@ public class MessageDumperTest extends ComponentTestCase {
 		BucketManager manager = lookup(BucketManager.class, "local");
 		Benchmark sw = m_benchmarkManager.get("test");
 		Metric m = sw.get("message");
+		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
 		for (int i = 0; i < 100000; i++) {
-			Bucket bucket = manager.getBucket("mock", 404259, true);
-			MessageId id = new MessageId("mock", "0a010203", 404259, i);
+			Bucket bucket = manager.getBucket("mock", ip, 404259, true);
+			MessageId id = new MessageId("mock", ip, 404259, i);
 
 			try {
-				Block block = bucket.get(id);
+				ByteBuf buf = bucket.get(id);
 
 				m.start();
-				ByteBuf buf = block.unpack(id);
 				MessageTree tree = m_codec.decode(buf);
 				m.end();
 
@@ -60,14 +66,15 @@ public class MessageDumperTest extends ComponentTestCase {
 	@Test
 	public void testWrite() throws Exception {
 		MessageDumper dumper = lookup(MessageDumper.class);
-		Benchmark sw = m_benchmarkManager.get("test");
+		Benchmark sw = m_benchmarkManager.get("write");
 		Metric m = sw.get("message");
 		Metric p = sw.get("dump");
 
 		for (int i = 0; i < 100000; i++) {
 			m.start();
 
-			MessageTree tree = TreeHelper.tree(m_codec, new MessageId("mock", "0a010203", 404259, i));
+			MessageId id = new MessageId("mock", "0a010203", 404259, i);
+			MessageTree tree = TreeHelper.tree(m_codec, id);
 
 			m.end();
 
@@ -81,19 +88,5 @@ public class MessageDumperTest extends ComponentTestCase {
 		p.end();
 
 		sw.print();
-	}
-
-	@Test
-	public void testReadWrite() throws Exception {
-		MessageDumper dumper = lookup(MessageDumper.class);
-
-		for (int i = 0; i < 100000; i++) {
-			String mid = "mock2-0a010203-404259-" + i;
-			MessageTree tree = TreeHelper.tree(m_codec, mid);
-
-			dumper.process(tree);
-		}
-
-		dumper.awaitTermination();
 	}
 }

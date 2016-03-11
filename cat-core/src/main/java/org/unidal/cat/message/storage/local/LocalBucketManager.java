@@ -49,7 +49,7 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 	}
 
 	@Override
-	public Bucket getBucket(String domain, int hour, boolean createIfNotExists) throws IOException {
+	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException {
 		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour, createIfNotExists);
 		Bucket bucket = map == null ? null : map.get(domain);
 
@@ -62,6 +62,7 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 					bucket = lookup(Bucket.class, "local");
 					bucket.setBenchmark(benchmark);
+					bucket.initialize(domain, ip, hour);
 					map.put(domain, bucket);
 				}
 			}
