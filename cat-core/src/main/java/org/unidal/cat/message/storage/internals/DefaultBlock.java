@@ -7,9 +7,9 @@ import io.netty.buffer.Unpooled;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
@@ -37,11 +37,11 @@ public class DefaultBlock implements Block {
 
 	private Map<MessageId, Integer> m_mappings = new LinkedHashMap<MessageId, Integer>();
 
+	private Map<MessageId, MessageTree> m_trees = new HashMap<MessageId, MessageTree>();
+
 	private DeflaterOutputStream m_out;
 
 	private boolean m_gzip = true;
-
-	private ConcurrentHashMap<MessageId, MessageTree> m_trees = new ConcurrentHashMap<MessageId, MessageTree>();
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_mappings.put(id, offset);

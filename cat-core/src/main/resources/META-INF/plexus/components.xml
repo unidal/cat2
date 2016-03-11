@@ -13,6 +13,9 @@
 				<requirement>
 					<role>org.unidal.cat.message.storage.BlockDumper</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.metric.BenchmarkManager</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -27,12 +30,24 @@
 				<requirement>
 					<role>org.unidal.cat.message.storage.BucketManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.metric.BenchmarkManager</role>
+				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.metric.BenchmarkManager</role>
+			<implementation>org.unidal.cat.metric.DefaultBenchmarkManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.BucketManager</role>
 			<role-hint>local</role-hint>
 			<implementation>org.unidal.cat.message.storage.local.LocalBucketManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.metric.BenchmarkManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.Bucket</role>

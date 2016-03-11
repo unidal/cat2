@@ -98,7 +98,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			boolean success = last.offer(tree);
 
 			if (!success && (++m_failCount % 100) == 0) {
-				Cat.logError(new RuntimeException("Error when offer tree to message dumper"));
+				Cat.logError(new RuntimeException("Error when adding message to queue, fails: " + m_failCount));
 			}
 		}
 	}

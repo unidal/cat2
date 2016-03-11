@@ -12,6 +12,7 @@ import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.MessageProcessor;
 import org.unidal.cat.message.storage.internals.DefaultBlock;
 import org.unidal.cat.metric.Benchmark;
+import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -23,6 +24,9 @@ import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 public class DefaultMessageProcessor implements MessageProcessor {
 	@Inject
 	private BlockDumper m_dumper;
+
+	@Inject
+	private BenchmarkManager m_benchmarkManager;
 
 	private int m_index;
 
@@ -45,7 +49,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	@Override
 	public String getName() {
-		return getClass() + "-" + m_index;
+		return getClass().getSimpleName() + "-" + m_index;
 	}
 
 	@Override
@@ -57,7 +61,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	@Override
 	public void run() {
-		Benchmark benchmark = new Benchmark("MessageProcessor-" + m_index);
+		Benchmark benchmark = m_benchmarkManager.get("MessageProcessor-" + m_index);
 		Metric wm = benchmark.get("wait");
 		Metric pm = benchmark.get("pack");
 		DefaultMessageTree tree;
@@ -65,8 +69,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		try {
 			while (m_enabled.get()) {
 				wm.start();
-				tree = (DefaultMessageTree) m_queue.poll(5,
-						TimeUnit.MILLISECONDS);
+				tree = (DefaultMessageTree) m_queue.poll(5, TimeUnit.MILLISECONDS);
 				wm.end();
 
 				if (tree != null) {
@@ -101,8 +104,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 			// ignore it
 		}
 
-		System.out.println(getClass().getSimpleName() + "-" + m_index
-				+ " is shutdown");
+		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 		benchmark.print();
 	}
 

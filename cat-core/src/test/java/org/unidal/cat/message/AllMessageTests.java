@@ -12,7 +12,11 @@ import org.unidal.cat.message.storage.TokenMappingTest;
 
 MessageIdTest.class,
 
+BenchmarkTest.class,
+
 IndexManagerTest.class,
+
+IndexTest.class,
 
 TokenMappingTest.class,
 

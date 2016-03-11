@@ -10,15 +10,19 @@ import org.unidal.cat.message.storage.BlockWriter;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.metric.Benchmark;
-import org.unidal.cat.metric.Metric;
 import org.unidal.cat.metric.BenchmarkEnabled;
+import org.unidal.cat.metric.BenchmarkManager;
+import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
 	@Inject
-	private BucketManager m_manager;
+	private BucketManager m_bucketManager;
+
+	@Inject
+	private BenchmarkManager m_benchmarkManager;
 
 	private int m_index;
 
@@ -43,7 +47,7 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	@Override
 	public void run() {
-		Benchmark benchmark = new Benchmark("BlockWriter-" + m_index);
+		Benchmark benchmark = m_benchmarkManager.get("BlockWriter-" + m_index);
 		Metric metric = benchmark.get("wait");
 		Block block;
 
@@ -55,7 +59,7 @@ public class DefaultBlockWriter implements BlockWriter {
 
 				if (block != null) {
 					try {
-						Bucket bucket = m_manager.getBucket(block.getDomain(), block.getHour(), true);
+						Bucket bucket = m_bucketManager.getBucket(block.getDomain(), block.getHour(), true);
 
 						if (bucket instanceof BenchmarkEnabled) {
 							((BenchmarkEnabled) bucket).setBenchmark(benchmark);

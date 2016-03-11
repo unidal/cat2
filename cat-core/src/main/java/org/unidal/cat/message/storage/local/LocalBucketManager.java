@@ -6,11 +6,17 @@ import java.util.Map;
 
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
+import org.unidal.cat.metric.Benchmark;
+import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = BucketManager.class, value = "local")
 public class LocalBucketManager extends ContainerHolder implements BucketManager {
+	@Inject
+	private BenchmarkManager m_benchmarkManager;
+
 	private Map<Integer, Map<String, Bucket>> m_buckets = new LinkedHashMap<Integer, Map<String, Bucket>>();
 
 	@Override
@@ -18,8 +24,6 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 		for (Map<String, Bucket> map : m_buckets.values()) {
 			for (Bucket bucket : map.values()) {
 				bucket.close();
-				
-				Thread.yield();
 			}
 		}
 
@@ -54,7 +58,10 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 				bucket = map.get(domain);
 
 				if (bucket == null) {
+					Benchmark benchmark = m_benchmarkManager.get(domain + ":" + hour);
+
 					bucket = lookup(Bucket.class, "local");
+					bucket.setBenchmark(benchmark);
 					map.put(domain, bucket);
 				}
 			}
