@@ -18,7 +18,6 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.message.spi.MessageTree;
-import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @Named(type = MessageProcessor.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultMessageProcessor implements MessageProcessor {
@@ -37,17 +36,6 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private AtomicBoolean m_enabled;
 
 	@Override
-	public MessageTree findTree(MessageId messageId) {
-		String domain = messageId.getDomain();
-		Block block = m_blocks.get(domain);
-
-		if (block != null) {
-			return block.findTree(messageId);
-		}
-		return null;
-	}
-
-	@Override
 	public String getName() {
 		return getClass().getSimpleName() + "-" + m_index;
 	}
@@ -64,12 +52,12 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		Benchmark benchmark = m_benchmarkManager.get("MessageProcessor-" + m_index);
 		Metric wm = benchmark.get("wait");
 		Metric pm = benchmark.get("pack");
-		DefaultMessageTree tree;
+		MessageTree tree;
 
 		try {
 			while (m_enabled.get()) {
 				wm.start();
-				tree = (DefaultMessageTree) m_queue.poll(5, TimeUnit.MILLISECONDS);
+				tree = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				wm.end();
 
 				if (tree != null) {
@@ -85,7 +73,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 					try {
 						pm.start();
-						block.pack(id, tree);
+						block.pack(id, tree.getBuffer());
 
 						if (block.isFull()) {
 							block.finish();

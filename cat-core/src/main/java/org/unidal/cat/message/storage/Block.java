@@ -7,11 +7,7 @@ import java.util.Map;
 
 import org.unidal.cat.message.MessageId;
 
-import com.dianping.cat.message.spi.MessageTree;
-
 public interface Block {
-	public MessageTree findTree(MessageId messageId);
-
 	public void finish();
 
 	public ByteBuf getData() throws IOException;
@@ -24,7 +20,7 @@ public interface Block {
 
 	public boolean isFull();
 
-	public void pack(MessageId id, MessageTree tree) throws IOException;
+	public void pack(MessageId id, ByteBuf buf) throws IOException;
 
 	public ByteBuf unpack(MessageId id) throws IOException;
 }

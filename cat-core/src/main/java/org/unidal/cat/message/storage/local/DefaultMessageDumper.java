@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -58,18 +57,6 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 		BucketManager manager = lookup(BucketManager.class, "local");
 
 		manager.closeBuckets();
-	}
-
-	@Override
-	public MessageTree find(MessageId id) {
-		for (MessageProcessor process : m_processors) {
-			MessageTree tree = process.findTree(id);
-
-			if (tree != null) {
-				return tree;
-			}
-		}
-		return null;
 	}
 
 	@Override

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.message.storage.BucketManager;
-import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -179,7 +178,6 @@ class ServiceComponentConfigurator extends AbstractResourceConfigurator {
 		all.add(C(LocalModelService.class, "logview", LocalMessageService.class)
 			      .req(MessageConsumer.class, ServerConfigManager.class)//
 			      .req(BucketManager.class, "local")//
-			      .req(MessageDumperManager.class)//
 			      .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html")//
 			      .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall")//
 			      .req(MessageCodec.class, PlainTextMessageCodec.ID, "m_plainText"));

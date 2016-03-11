@@ -8,12 +8,9 @@ import java.nio.charset.Charset;
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
-import org.unidal.cat.message.storage.MessageDumper;
-import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -30,11 +27,10 @@ import com.dianping.cat.report.service.ModelResponse;
 import com.dianping.cat.report.service.ModelService;
 
 public class LocalMessageService extends LocalModelService<String> implements ModelService<String> {
-
 	public static final String ID = DumpAnalyzer.ID;
 
 	@Inject("local")
-	private BucketManager m_localBucketManager;
+	private BucketManager m_bucketManager;
 
 	@Inject(HtmlMessageCodec.ID)
 	private MessageCodec m_html;
@@ -44,9 +40,6 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 
 	@Inject(PlainTextMessageCodec.ID)
 	private MessageCodec m_plainText;
-
-	@Inject
-	private MessageDumperManager m_dumperManager;
 
 	public LocalMessageService() {
 		super("logview");
@@ -58,25 +51,12 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		String messageId = payload.getMessageId();
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
-		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
+		Bucket bucket = m_bucketManager.getBucket(id.getDomain(), id.getIpAddressInHex(), id.getHour(), true);
+		ByteBuf data = bucket.get(id);
 		MessageTree tree = null;
-		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
-		if (dumper != null) {
-			tree = dumper.find(id);
-
-			if (tree == null) {
-				System.err.println("Message " + id + " not found");
-			}
-		}
-
-		if (tree == null) {
-			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), ip, id.getHour(), true);
-			ByteBuf data = bucket.get(id);
-
-			if (data != null) {
-				tree = m_plainText.decode(data);
-			}
+		if (data != null) {
+			tree = m_plainText.decode(data);
 		}
 
 		if (tree != null) {
@@ -95,6 +75,7 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 				// ignore it
 			}
 		}
+
 		return null;
 	}
 

@@ -55,7 +55,7 @@ public class BucketTest extends ComponentTestCase {
 				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
 				MessageTree tree = TreeHelper.tree(m_codec, id);
 
-				block.pack(id, tree);
+				block.pack(id, tree.getBuffer());
 			}
 
 			block.finish();
@@ -131,11 +131,6 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
-		public MessageTree findTree(MessageId messageId) {
-			return null;
-		}
-
-		@Override
 		public void finish() {
 		}
 
@@ -168,7 +163,7 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void pack(MessageId id, MessageTree tree) throws IOException {
+		public void pack(MessageId id, ByteBuf buf) throws IOException {
 		}
 
 		@Override

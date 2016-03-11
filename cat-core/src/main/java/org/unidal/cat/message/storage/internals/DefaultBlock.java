@@ -7,7 +7,6 @@ import io.netty.buffer.Unpooled;
 
 import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.zip.Deflater;
@@ -19,8 +18,6 @@ import java.util.zip.InflaterInputStream;
 
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
-
-import com.dianping.cat.message.spi.MessageTree;
 
 public class DefaultBlock implements Block {
 	private static final int MAX_SIZE = 256 * 1024;
@@ -36,8 +33,6 @@ public class DefaultBlock implements Block {
 	private int m_offset;
 
 	private Map<MessageId, Integer> m_mappings = new LinkedHashMap<MessageId, Integer>();
-
-	private Map<MessageId, MessageTree> m_trees = new HashMap<MessageId, MessageTree>();
 
 	private DeflaterOutputStream m_out;
 
@@ -64,11 +59,6 @@ public class DefaultBlock implements Block {
 		} else {
 			m_out = new DeflaterOutputStream(os, new Deflater(5, true), BUFFER_SIZE);
 		}
-	}
-
-	@Override
-	public MessageTree findTree(MessageId id) {
-		return m_trees.get(id);
 	}
 
 	@Override
@@ -112,14 +102,12 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public void pack(MessageId id, MessageTree tree) throws IOException {
-		ByteBuf buf = tree.getBuffer();
+	public void pack(MessageId id, ByteBuf buf) throws IOException {
 		int len = buf.readableBytes();
 
 		buf.readBytes(m_out, len);
 		m_mappings.put(id, m_offset);
 		m_offset += len;
-		m_trees.put(id, tree);
 	}
 
 	@Override
