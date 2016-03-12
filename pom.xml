@@ -8,6 +8,45 @@
 	<name>parent</name>
 	<description>Central Application Tracking</description>
 	<packaging>pom</packaging>
+	<organization>
+		<name>Unidal</name>
+		<url>http://unidal.org</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>manual</distribution>
+		</license>
+	</licenses>
+	<scm>
+		<connection>scm:git:git://github.com/unidal/cat2.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/unidal/cat2.git</developerConnection>
+		<url>https://github.com/unidal/cat2</url>
+	</scm>
+	<url>https://github.com/unidal/cat2</url>
+	<issueManagement>
+		<system>Github</system>
+		<url>https://github.com/unidal/cat2/issues</url>
+	</issueManagement>
+	<developers>
+		<developer>
+			<id>qmwu2000</id>
+			<name>Frankie Wu</name>
+			<email>qmwu2000@gmail.com</email>
+		</developer>
+
+		<developer>
+			<id>youyong205</id>
+			<name>Yong You</name>
+			<email>youyong205@126.com</email>
+		</developer>
+	</developers>
+	<properties>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+	</properties>
 	<modules>
 		<module>cat-client</module>
 		<module>cat-core</module>
@@ -146,7 +185,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-email</artifactId>
+				<artifactI 
+							email</artifactId>
 				<version>1.1</version>
 			</dependency>
 			<dependency>
@@ -185,8 +225,6 @@
 						<includes>
 							<include>**/AllTests.java</include>
 						</includes>
-						<!-- <debugForkedProcess>-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 
-							-Xnoagent -Djava.compiler=NONE</debugForkedProcess> -->
 					</configuration>
 					<dependencies>
 						<dependency>

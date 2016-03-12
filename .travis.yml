@@ -12,6 +12,6 @@ branches:
     - master
 
 install:
-  - mvn clean package -Dmaven.test.skip
+  - mvn clean package -B -U -e -Dmaven.test.skip
 
 script: true
