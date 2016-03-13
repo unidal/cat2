@@ -73,15 +73,9 @@ public class DefaultBlock implements Block {
 			m_isFulsh = true;
 
 			try {
-				System.err.println("===" + m_data.readerIndex());
-				System.err.println("===" + m_data.writerIndex());
-				
 				ByteBuf copyData = Unpooled.copiedBuffer(m_data);
 				@SuppressWarnings("resource")
 				DataInputStream in = new DataInputStream(new GZIPInputStream(new ByteBufInputStream(copyData)));
-
-				System.err.println("===" + m_data.readerIndex());
-				System.err.println("===" + m_data.writerIndex());
 
 				in.skip(offset);
 				int length = in.readInt();
