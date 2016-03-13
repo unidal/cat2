@@ -23,4 +23,7 @@ public interface Block {
 	public void pack(MessageId id, ByteBuf buf) throws IOException;
 
 	public ByteBuf unpack(MessageId id) throws IOException;
+	
+	public ByteBuf findTree(MessageId id);
+
 }

@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
+import org.unidal.cat.message.storage.MessageDumper;
+import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
@@ -27,10 +29,11 @@ import com.dianping.cat.report.service.ModelResponse;
 import com.dianping.cat.report.service.ModelService;
 
 public class LocalMessageService extends LocalModelService<String> implements ModelService<String> {
+
 	public static final String ID = DumpAnalyzer.ID;
 
 	@Inject("local")
-	private BucketManager m_bucketManager;
+	private BucketManager m_localBucketManager;
 
 	@Inject(HtmlMessageCodec.ID)
 	private MessageCodec m_html;
@@ -40,6 +43,9 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 
 	@Inject(PlainTextMessageCodec.ID)
 	private MessageCodec m_plainText;
+
+	@Inject
+	private MessageDumperManager m_dumperManager;
 
 	public LocalMessageService() {
 		super("logview");
@@ -51,12 +57,21 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		String messageId = payload.getMessageId();
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
-		Bucket bucket = m_bucketManager.getBucket(id.getDomain(), id.getIpAddressInHex(), id.getHour(), true);
-		ByteBuf data = bucket.get(id);
+		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
+		ByteBuf inMemory = dumper.find(id);
 		MessageTree tree = null;
 
-		if (data != null) {
-			tree = m_plainText.decode(data);
+		if (inMemory != null) {
+			tree = m_plainText.decode(inMemory);
+		} else {
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), true);
+
+			bucket.flush();
+			ByteBuf data = bucket.get(id);
+
+			if (data != null) {
+				tree = m_plainText.decode(data);
+			}
 		}
 
 		if (tree != null) {
@@ -75,7 +90,6 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 				// ignore it
 			}
 		}
-
 		return null;
 	}
 

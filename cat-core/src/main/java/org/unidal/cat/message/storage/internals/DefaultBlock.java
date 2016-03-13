@@ -19,6 +19,8 @@ import java.util.zip.InflaterInputStream;
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
 
+import com.dianping.cat.Cat;
+
 public class DefaultBlock implements Block {
 	private static final int MAX_SIZE = 256 * 1024;
 
@@ -37,6 +39,8 @@ public class DefaultBlock implements Block {
 	private DeflaterOutputStream m_out;
 
 	private boolean m_gzip = true;
+
+	private boolean m_isFulsh;
 
 	public DefaultBlock(MessageId id, int offset, byte[] data) {
 		m_mappings.put(id, offset);
@@ -62,7 +66,39 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public void finish() {
+	public ByteBuf findTree(MessageId id) {
+		Integer offset = m_mappings.get(id);
+		if (offset != null) {
+			finish();
+			m_isFulsh = true;
+
+			try {
+				System.err.println("===" + m_data.readerIndex());
+				System.err.println("===" + m_data.writerIndex());
+				
+				ByteBuf copyData = Unpooled.copiedBuffer(m_data);
+				@SuppressWarnings("resource")
+				DataInputStream in = new DataInputStream(new GZIPInputStream(new ByteBufInputStream(copyData)));
+
+				System.err.println("===" + m_data.readerIndex());
+				System.err.println("===" + m_data.writerIndex());
+
+				in.skip(offset);
+				int length = in.readInt();
+				byte[] result = new byte[length];
+
+				in.readFully(result);
+
+				return Unpooled.wrappedBuffer(result);
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public synchronized void finish() {
 		if (m_out != null) {
 			try {
 				m_out.finish();
@@ -98,7 +134,7 @@ public class DefaultBlock implements Block {
 
 	@Override
 	public boolean isFull() {
-		return m_offset >= MAX_SIZE;
+		return m_offset >= MAX_SIZE || m_isFulsh;
 	}
 
 	@Override
