@@ -170,5 +170,11 @@ public class BucketTest extends ComponentTestCase {
 		public ByteBuf unpack(MessageId id) throws IOException {
 			throw new UnsupportedOperationException();
 		}
+
+		@Override
+      public ByteBuf findTree(MessageId id) {
+	      // TODO Auto-generated method stub
+	      return null;
+      }
 	}
 }

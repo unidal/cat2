@@ -1,5 +1,7 @@
 package org.unidal.cat.message.storage.local;
 
+import io.netty.buffer.ByteBuf;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -8,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -60,6 +63,18 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	}
 
 	@Override
+	public ByteBuf find(MessageId id) {
+		for (MessageProcessor process : m_processors) {
+			ByteBuf tree = process.findTree(id);
+
+			if (tree != null) {
+				return tree;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public void initialize() throws InitializationException {
 		for (int i = 0; i < 10; i++) {
 			BlockingQueue<MessageTree> queue = new LinkedBlockingQueue<MessageTree>(10000);
@@ -72,7 +87,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			Threads.forGroup("Cat").start(processor);
 		}
 	}
-
+	
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();

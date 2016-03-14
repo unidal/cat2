@@ -11,6 +11,8 @@ import org.unidal.cat.metric.BenchmarkEnabled;
 public interface Bucket extends BenchmarkEnabled {
 	public void close();
 
+	public void flush();
+
 	public ByteBuf get(MessageId id) throws IOException;
 
 	public void initialize(String domain, String ip, int hour) throws IOException;

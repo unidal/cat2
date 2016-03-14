@@ -25,6 +25,86 @@ import com.dianping.cat.configuration.NetworkInterfaceManager;
 
 @Named(type = Index.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
 public class LocalIndex implements Index {
+	private static final int BLOCK_SIZE = 32 * 1024;
+
+	private static final int BYTE_PER_MESSAGE = 8;
+
+	private static final int MESSAGE_PER_BLOCK = BLOCK_SIZE / BYTE_PER_MESSAGE;
+
+	@Inject("local")
+	private FileBuilder m_bulider;
+
+	@Inject("local")
+	private TokenMappingManager m_manager;
+
+	private TokenMapping m_mapping;
+
+	private RandomAccessFile m_file;
+
+	private File m_path;
+
+	private Header m_header = new Header();
+
+	private MessageIdCodec m_codec = new MessageIdCodec();
+
+	@Override
+	public void close() {
+		if (m_file != null) {
+			try {
+				m_header.flush();
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
+
+			try {
+				m_file.close();
+			} catch (IOException e) {
+				Cat.logError(e);
+			}
+
+			m_file = null;
+		}
+	}
+
+	private void ensureOpen(MessageId from) throws IOException {
+		if (m_file == null) {
+			String domain = from.getDomain();
+			Date startTime = new Date(from.getTimestamp());
+			String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
+
+			m_path = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
+			m_path.getParentFile().mkdirs();
+			m_file = new RandomAccessFile(m_path, "rwd"); // read-write without meta sync
+
+			m_mapping = m_manager.getTokenMapping(startTime, ip);
+			m_header.load();
+		}
+	}
+
+	@Override
+	public MessageId lookup(MessageId from) throws IOException {
+		ensureOpen(from);
+
+		int offset = m_header.getOffset(from.getIpAddressValue(), from.getIndex());
+		byte[] data = new byte[8];
+
+		m_file.seek(offset);
+		m_file.read(data);
+
+		return m_codec.decode(data, from.getHour());
+	}
+
+	@Override
+	public void map(MessageId from, MessageId to) throws IOException {
+		ensureOpen(from);
+
+		int offset = m_header.getOffset(from.getIpAddressValue(), from.getIndex());
+		byte[] data = m_codec.encode(to, from.getHour());
+
+		m_file.seek(offset);
+		m_file.write(data);
+	}
+
 	private class Header {
 		private static final String MAGIC_CODE = "CAT2 Local Index";
 
@@ -141,85 +221,5 @@ public class LocalIndex implements Index {
 
 			return data;
 		}
-	}
-
-	private static final int BLOCK_SIZE = 32 * 1024;
-
-	private static final int BYTE_PER_MESSAGE = 8;
-
-	private static final int MESSAGE_PER_BLOCK = BLOCK_SIZE / BYTE_PER_MESSAGE;
-
-	@Inject("local")
-	private FileBuilder m_bulider;
-
-	@Inject("local")
-	private TokenMappingManager m_manager;
-
-	private TokenMapping m_mapping;
-
-	private RandomAccessFile m_file;
-
-	private File m_path;
-
-	private Header m_header = new Header();
-
-	private MessageIdCodec m_codec = new MessageIdCodec();
-
-	@Override
-	public void close() {
-		if (m_file != null) {
-			try {
-				m_header.flush();
-			} catch (IOException e) {
-				Cat.logError(e);
-			}
-
-			try {
-				m_file.close();
-			} catch (IOException e) {
-				Cat.logError(e);
-			}
-
-			m_file = null;
-		}
-	}
-
-	private void ensureOpen(MessageId from) throws IOException {
-		if (m_file == null) {
-			String domain = from.getDomain();
-			Date startTime = new Date(from.getTimestamp());
-			String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
-
-			m_path = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
-			m_path.getParentFile().mkdirs();
-			m_file = new RandomAccessFile(m_path, "rwd"); // read-write without meta sync
-
-			m_mapping = m_manager.getTokenMapping(startTime, ip);
-			m_header.load();
-		}
-	}
-
-	@Override
-	public MessageId lookup(MessageId from) throws IOException {
-		ensureOpen(from);
-
-		int offset = m_header.getOffset(from.getIpAddressValue(), from.getIndex());
-		byte[] data = new byte[8];
-
-		m_file.seek(offset);
-		m_file.read(data);
-
-		return m_codec.decode(data, from.getHour());
-	}
-
-	@Override
-	public void map(MessageId from, MessageId to) throws IOException {
-		ensureOpen(from);
-
-		int offset = m_header.getOffset(from.getIpAddressValue(), from.getIndex());
-		byte[] data = m_codec.encode(to, from.getHour());
-
-		m_file.seek(offset);
-		m_file.write(data);
 	}
 }

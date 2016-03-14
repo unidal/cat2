@@ -57,6 +57,14 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 		}
 	}
 
+	public void flush() {
+		try {
+			m_data.m_file.getFD().sync();
+		} catch (Exception e) {
+			Cat.logError(e);
+		}
+	}
+
 	@Override
 	public ByteBuf get(MessageId id) throws IOException {
 		m_indexMetric.start();
@@ -186,7 +194,9 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			m_out.writeInt(len);
 			data.readBytes(m_out, len);
 			m_offset += len + 4;
+
 		}
+
 	}
 
 	private class IndexHelper {
@@ -417,6 +427,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 					m_channel.write(m_buf, m_address);
 					m_buf.position(pos);
 					m_dirty = false;
+					m_channel.force(false);
 				}
 			}
 
