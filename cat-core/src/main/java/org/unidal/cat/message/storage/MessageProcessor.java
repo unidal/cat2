@@ -10,8 +10,8 @@ import org.unidal.helper.Threads.Task;
 import com.dianping.cat.message.spi.MessageTree;
 
 public interface MessageProcessor extends Task {
-	public void initialize(int index, BlockingQueue<MessageTree> queue);
-	
 	public ByteBuf findTree(MessageId messageId);
+	
+	public void initialize(int index, BlockingQueue<MessageTree> queue);
 
 }

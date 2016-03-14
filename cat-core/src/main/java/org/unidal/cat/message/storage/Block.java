@@ -8,6 +8,8 @@ import java.util.Map;
 import org.unidal.cat.message.MessageId;
 
 public interface Block {
+	public ByteBuf findTree(MessageId id);
+
 	public void finish();
 
 	public ByteBuf getData() throws IOException;
@@ -21,9 +23,7 @@ public interface Block {
 	public boolean isFull();
 
 	public void pack(MessageId id, ByteBuf buf) throws IOException;
-
-	public ByteBuf unpack(MessageId id) throws IOException;
 	
-	public ByteBuf findTree(MessageId id);
+	public ByteBuf unpack(MessageId id) throws IOException;
 
 }
