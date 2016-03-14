@@ -64,14 +64,24 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 
 	@Override
 	public ByteBuf find(MessageId id) {
-		for (MessageProcessor process : m_processors) {
-			ByteBuf tree = process.findTree(id);
+		int index = getIndex(id.getDomain());
+		MessageProcessor process = m_processors.get(index);
+		ByteBuf tree = process.findTree(id);
 
-			if (tree != null) {
-				return tree;
-			}
+		if (tree == null) {
+			process = m_processors.get(m_processors.size() - 1); // last one
+
+			tree = process.findTree(id);
 		}
-		return null;
+
+		return tree;
+	}
+
+	private int getIndex(String domain) {
+		int hash = Math.abs(domain.hashCode());
+		int index = hash % (m_processors.size() - 1); // last one for message overflow
+
+		return index;
 	}
 
 	@Override
@@ -87,12 +97,11 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			Threads.forGroup("Cat").start(processor);
 		}
 	}
-	
+
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();
-		int hash = Math.abs(domain.hashCode());
-		int index = hash % (m_processors.size() - 1); // last one for message overflow
+		int index = getIndex(domain);
 		BlockingQueue<MessageTree> queue = m_queues.get(index);
 
 		if (!queue.offer(tree)) { // overflow

@@ -38,13 +38,14 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private AtomicBoolean m_enabled;
 
 	@Override
-	public ByteBuf findTree(MessageId messageId) {
-		String domain = messageId.getDomain();
+	public ByteBuf findTree(MessageId id) {
+		String domain = id.getDomain();
 		Block block = m_blocks.get(domain);
 
 		if (block != null) {
-			return block.findTree(messageId);
+			return block.findTree(id);
 		}
+		
 		return null;
 	}
 
@@ -94,8 +95,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 							block = new DefaultBlock(domain, hour);
 							m_blocks.put(domain, block);
 						}
+						
 						block.pack(id, tree.getBuffer());
-
 						pm.end();
 					} catch (Exception e) {
 						e.printStackTrace();

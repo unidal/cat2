@@ -56,7 +56,6 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 		int hash = Math.abs(domain.hashCode());
 		int index = hash % m_writers.size();
 		BlockingQueue<Block> queue = m_queues.get(index);
-
 		boolean success = queue.offer(block);
 
 		if (!success && (++m_failCount % 100) == 0) {
