@@ -5,7 +5,7 @@
 	<groupId>com.dianping.cat</groupId>
 	<artifactId>parent</artifactId>
 	<version>2.0-SNAPSHOT</version>
-	<name>parent</name>
+	<name>CAT :: Parent</name>
 	<description>Central Application Tracking</description>
 	<packaging>pom</packaging>
 	<organization>
@@ -35,7 +35,6 @@
 			<name>Frankie Wu</name>
 			<email>qmwu2000@gmail.com</email>
 		</developer>
-
 		<developer>
 			<id>youyong205</id>
 			<name>Yong You</name>
@@ -58,6 +57,13 @@
 	</modules>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.unidal</groupId>
+				<artifactId>frameworks-bom</artifactId>
+				<version>2.4.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
 				<artifactId>cat-client</artifactId>
@@ -82,26 +88,6 @@
 				<groupId>com.dianping.cat</groupId>
 				<artifactId>cat-consumer-advanced</artifactId>
 				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.unidal.framework</groupId>
-				<artifactId>dal-jdbc</artifactId>
-				<version>2.4.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.unidal.framework</groupId>
-				<artifactId>foundation-service</artifactId>
-				<version>2.4.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.unidal.framework</groupId>
-				<artifactId>web-framework</artifactId>
-				<version>2.4.0</version>
-			</dependency>
-			<dependency>
-				<groupId>org.unidal.framework</groupId>
-				<artifactId>test-framework</artifactId>
-				<version>2.4.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.unidal.webres</groupId>
@@ -293,6 +279,29 @@
 					</execution>
 				</executions>
 			</plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>[3.2.5,)</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>[1.6,)</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 	<repositories>

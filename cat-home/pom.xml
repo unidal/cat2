@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <parent>
       <groupId>com.dianping.cat</groupId>
       <artifactId>parent</artifactId>
@@ -7,7 +8,7 @@
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <artifactId>cat-home</artifactId>
-   <name>cat-home</name>
+   <name>CAT :: Home</name>
    <packaging>war</packaging>
    <dependencies>
       <dependency>
@@ -46,12 +47,12 @@
       <dependency>
          <groupId>org.mortbay.jetty</groupId>
          <artifactId>jsp-api-2.1</artifactId>
-         <scope>provided</scope>
+         <scope>${test.server.scope}</scope>
       </dependency>
       <dependency>
          <groupId>org.mortbay.jetty</groupId>
          <artifactId>jsp-2.1</artifactId>
-         <scope>provided</scope>
+         <scope>${test.server.scope}</scope>
       </dependency>
       <dependency>
          <groupId>mysql</groupId>
@@ -65,17 +66,17 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <scope>test</scope>
+         <scope>${test.server.scope}</scope>
       </dependency>
       <dependency>
          <groupId>org.mortbay.jetty</groupId>
          <artifactId>jetty</artifactId>
-         <scope>test</scope>
+         <scope>${test.server.scope}</scope>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>test-framework</artifactId>
-         <scope>test</scope>
+         <scope>${test.server.scope}</scope>
       </dependency>
       <dependency>
          <groupId>org.apache.commons</groupId>
@@ -91,6 +92,7 @@
       </dependency>
    </dependencies>
    <build>
+      <finalName>cat</finalName>
       <resources>
          <resource>
             <directory>${basedir}/src/main/resources</directory>
@@ -110,30 +112,31 @@
                   </goals>
                   <configuration>
                      <manifest>${basedir}/src/main/resources/META-INF/dal/model/topology-graph-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/topology-graph-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/bug-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/bug-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/service-report-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/heavy-report-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/utilization-report-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/domain-group-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/network-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/monitor-rules-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/alert-receiver-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/alert-summary-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/alert-policy-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/third-party-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/router-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/jar-report-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/heartbeat-display-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/topology-format-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/system-report-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/sender-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/exception-rule-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/activity-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/storage-group-config-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/storage-alert-info-manifest.xml,
-								${basedir}/src/main/resources/META-INF/dal/model/app-report-manifest.xml,</manifest>
+                        ${basedir}/src/main/resources/META-INF/dal/model/topology-graph-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/bug-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/bug-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/service-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/heavy-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/utilization-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/domain-group-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/network-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/monitor-rules-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-receiver-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-summary-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-policy-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/third-party-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/router-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/jar-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/heartbeat-display-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/topology-format-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/system-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/sender-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/exception-rule-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/activity-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/storage-group-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/storage-alert-info-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/app-report-manifest.xml,
+                     </manifest>
                   </configuration>
                </execution>
                <execution>
@@ -161,7 +164,8 @@
                      <goal>plexus</goal>
                   </goals>
                   <configuration>
-                     <className>com.dianping.cat.build.ComponentsConfigurator</className>
+                     <className>com.dianping.cat.build.ComponentsConfigurator
+                     </className>
                   </configuration>
                </execution>
             </executions>
@@ -170,6 +174,11 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
+               <archive>
+                  <manifest>
+                     <mainClass>com.dianping.cat.TestServer</mainClass>
+                  </manifest>
+               </archive>
                <webResources>
                   <resource>
                      <directory>src/main/resources</directory>
@@ -192,7 +201,8 @@
             <configuration>
                <scanIntervalSeconds>10</scanIntervalSeconds>
                <contextPath>/cat</contextPath>
-               <defaultsDescriptor>src/main/webapp/WEB-INF/web.xml</defaultsDescriptor>
+               <defaultsDescriptor>src/main/webapp/WEB-INF/web.xml
+               </defaultsDescriptor>
                <connectors>
                   <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
                      <port>2281</port>
@@ -205,6 +215,7 @@
    </build>
    <properties>
       <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+      <test.server.scope>test</test.server.scope>
    </properties>
 </project>
 

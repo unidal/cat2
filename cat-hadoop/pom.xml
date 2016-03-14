@@ -8,7 +8,7 @@
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>cat-hadoop</artifactId>
-	<name>cat-hadoop</name>
+	<name>CAT :: Hadoop storage</name>
 	<packaging>jar</packaging>
 	<dependencies>
 		<!-- use hadoop 2 -->
