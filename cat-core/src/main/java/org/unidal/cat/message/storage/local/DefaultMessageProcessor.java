@@ -1,5 +1,7 @@
 package org.unidal.cat.message.storage.local;
 
+import io.netty.buffer.ByteBuf;
+
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,6 +36,17 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	private ConcurrentHashMap<String, Block> m_blocks = new ConcurrentHashMap<String, Block>();
 
 	private AtomicBoolean m_enabled;
+
+	@Override
+	public ByteBuf findTree(MessageId messageId) {
+		String domain = messageId.getDomain();
+		Block block = m_blocks.get(domain);
+
+		if (block != null) {
+			return block.findTree(messageId);
+		}
+		return null;
+	}
 
 	@Override
 	public String getName() {
@@ -73,14 +86,15 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 					try {
 						pm.start();
-						block.pack(id, tree.getBuffer());
 
 						if (block.isFull()) {
 							block.finish();
 
 							m_dumper.dump(block);
-							m_blocks.put(domain, new DefaultBlock(domain, hour));
+							block = new DefaultBlock(domain, hour);
+							m_blocks.put(domain, block);
 						}
+						block.pack(id, tree.getBuffer());
 
 						pm.end();
 					} catch (Exception e) {
@@ -95,6 +109,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 		benchmark.print();
 	}
+	
 
 	@Override
 	public void shutdown() {
