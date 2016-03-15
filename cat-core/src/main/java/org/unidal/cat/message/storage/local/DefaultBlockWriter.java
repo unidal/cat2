@@ -18,7 +18,9 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.message.Transaction;
 
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
@@ -37,6 +39,8 @@ public class DefaultBlockWriter implements BlockWriter {
 	private CountDownLatch m_latch;
 
 	private long m_timestamp;
+
+	private int m_count;
 
 	@Override
 	public String getName() {
@@ -62,7 +66,7 @@ public class DefaultBlockWriter implements BlockWriter {
 		Block block;
 
 		try {
-			while (m_enabled.get()) {
+			while (true) {
 				metric.start();
 				block = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				metric.end();
@@ -75,10 +79,20 @@ public class DefaultBlockWriter implements BlockWriter {
 							((BenchmarkEnabled) bucket).setBenchmark(benchmark);
 						}
 
-						bucket.puts(block.getData(), block.getMappings());
+						if ((++m_count) % 100 == 0) {
+							Transaction t = Cat.newTransaction("Block", block.getDomain());
+
+							bucket.puts(block.getData(), block.getMappings());
+							t.setStatus(Transaction.SUCCESS);
+							t.complete();
+						} else {
+							bucket.puts(block.getData(), block.getMappings());
+						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						Cat.logError(e);
 					}
+				} else if (m_enabled.get() == false) {
+					break;
 				}
 			}
 		} catch (InterruptedException e) {
