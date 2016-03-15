@@ -58,15 +58,18 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
 		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
-		ByteBuf inMemory = dumper.find(id);
 		MessageTree tree = null;
 
-		if (inMemory != null) {
-			tree = m_plainText.decode(inMemory);
-		} else {
-			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), true);
+		if (dumper != null) {
+			ByteBuf memoryBuf = dumper.find(id);
 
-			bucket.flush();
+			if (memoryBuf != null) {
+				tree = m_plainText.decode(memoryBuf);
+			}
+		}
+
+		if (tree == null) {
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), true);
 			ByteBuf data = bucket.get(id);
 
 			if (data != null) {

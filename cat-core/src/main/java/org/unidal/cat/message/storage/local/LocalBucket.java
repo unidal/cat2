@@ -328,8 +328,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 					map.put(index, segmentId);
 
 					if (segmentId % ENTRY_PER_SEGMENT == 0) { // last segment is
-						// full, create
-						// new one
+						// full, create new one
 						m_segment.flush();
 						m_segment = new Segment(m_channel, segmentId * SEGMENT_SIZE);
 						m_offset = 0;
@@ -452,12 +451,10 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 				m_buf.putLong(offset, value);
 				m_dirty = true;
 
-				if (m_lastAccessTime + 1000L < System.currentTimeMillis()) { // idle
-					// after
-					// 1
-					// second
-					flush();
-				}
+				// if (m_lastAccessTime + 1000L < System.currentTimeMillis()) { // idle
+				// // after 1 second
+				// flush();
+				// }
 			}
 		}
 	}

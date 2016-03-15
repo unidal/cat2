@@ -1,5 +1,7 @@
 package org.unidal.cat.message.storage.local;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -34,13 +36,18 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	private CountDownLatch m_latch;
 
+	private long m_timestamp;
+
 	@Override
 	public String getName() {
-		return getClass().getSimpleName() + "-" + m_index;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss");
+
+		return getClass().getSimpleName() + " " + sdf.format(new Date(m_timestamp)) + "-" + m_index;
 	}
 
 	@Override
-	public void initialize(int index, BlockingQueue<Block> queue) {
+	public void initialize(long timestamp, int index, BlockingQueue<Block> queue) {
+		m_timestamp = timestamp;
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);

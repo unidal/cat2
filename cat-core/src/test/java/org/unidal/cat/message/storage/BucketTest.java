@@ -20,6 +20,7 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -102,7 +103,7 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		mc.start();
-		manager.closeBuckets();
+		manager.closeBuckets(404448 * TimeHelper.ONE_HOUR);
 		mc.end();
 
 		bm.print();
@@ -172,9 +173,9 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
-      public ByteBuf findTree(MessageId id) {
-	      // TODO Auto-generated method stub
-	      return null;
-      }
+		public ByteBuf findTree(MessageId id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }

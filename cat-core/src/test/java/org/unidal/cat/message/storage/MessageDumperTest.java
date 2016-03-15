@@ -16,6 +16,7 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -84,7 +85,7 @@ public class MessageDumperTest extends ComponentTestCase {
 		}
 
 		p.start();
-		dumper.awaitTermination();
+		dumper.awaitTermination(404259*TimeHelper.ONE_HOUR);
 		p.end();
 
 		sw.print();
