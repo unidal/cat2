@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -44,6 +45,8 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	private long m_timestamp;
 
+	private CountDownLatch m_latch;
+
 	@Override
 	public ByteBuf findTree(MessageId messageId) {
 		String domain = messageId.getDomain();
@@ -69,6 +72,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		m_enabled = new AtomicBoolean(true);
 		m_dumper = m_dumperManager.findOrCreateBlockDumper(timestamp);
 		m_timestamp = timestamp;
+		m_latch = new CountDownLatch(1);
 	}
 
 	@Override
@@ -79,7 +83,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		MessageTree tree;
 
 		try {
-			while (m_enabled.get()) {
+			while (true) {
 				wm.start();
 				tree = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				wm.end();
@@ -111,19 +115,13 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+				} else if (m_enabled.get() == false) {
+					break;
 				}
 			}
 		} catch (InterruptedException e) {
 			// ignore it
 		}
-
-		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
-		benchmark.print();
-	}
-
-	@Override
-	public void shutdown() {
-		m_enabled.set(false);
 
 		for (Block block : m_blocks.values()) {
 			try {
@@ -136,5 +134,19 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 
 		m_blocks.clear();
+
+		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
+		benchmark.print();
+	}
+
+	@Override
+	public void shutdown() {
+		m_enabled.set(false);
+
+		try {
+			m_latch.await();
+		} catch (InterruptedException e) {
+			// ignore it
+		}
 	}
 }
