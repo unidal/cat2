@@ -56,6 +56,10 @@
 				<requirement>
 					<role>org.unidal.cat.metric.BenchmarkManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.storage.FileBuilder</role>
+					<role-hint>local</role-hint>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

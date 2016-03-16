@@ -13,6 +13,7 @@ import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -69,11 +70,19 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		}
 
 		if (tree == null) {
-			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), true);
-			ByteBuf data = bucket.get(id);
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(),
+			      NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), id.getHour(), false);
 
-			if (data != null) {
-				tree = m_plainText.decode(data);
+			if (bucket != null) {
+				try {
+					ByteBuf data = bucket.get(id);
+
+					if (data != null) {
+						tree = m_plainText.decode(data);
+					}
+				} finally {
+					bucket.close();
+				}
 			}
 		}
 

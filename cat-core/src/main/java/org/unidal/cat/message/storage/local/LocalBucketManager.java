@@ -1,6 +1,8 @@
 package org.unidal.cat.message.storage.local;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,6 +10,8 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
+import org.unidal.cat.message.storage.FileBuilder;
+import org.unidal.cat.message.storage.FileBuilder.FileType;
 import org.unidal.cat.metric.Benchmark;
 import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.lookup.ContainerHolder;
@@ -20,6 +24,9 @@ import com.dianping.cat.helper.TimeHelper;
 public class LocalBucketManager extends ContainerHolder implements BucketManager, LogEnabled {
 	@Inject
 	private BenchmarkManager m_benchmarkManager;
+
+	@Inject("local")
+	private FileBuilder m_bulider;
 
 	private Map<Integer, Map<String, Bucket>> m_buckets = new LinkedHashMap<Integer, Map<String, Bucket>>();
 
@@ -58,6 +65,15 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 		return m;
 	}
 
+	private boolean exsitBucket(String domain, String ip, int hour) {
+		long timestamp = hour * 3600 * 1000L;
+		Date startTime = new Date(timestamp);
+		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
+		File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
+
+		return dataPath.exists() && indexPath.exists();
+	}
+
 	@Override
 	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException {
 		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour, createIfNotExists);
@@ -75,6 +91,11 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 					bucket.initialize(domain, ip, hour);
 					map.put(domain, bucket);
 				}
+			}
+		} else if (createIfNotExists == false) {
+			if (exsitBucket(domain, ip, hour)) {
+				bucket = lookup(Bucket.class, "local");
+				bucket.initialize(domain, ip, hour);
 			}
 		}
 
