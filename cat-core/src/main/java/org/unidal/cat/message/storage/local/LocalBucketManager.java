@@ -3,8 +3,11 @@ package org.unidal.cat.message.storage.local;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -34,17 +37,26 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 	@Override
 	public void closeBuckets(long timestamp) {
-		int hour = (int) (timestamp / TimeHelper.ONE_HOUR);
-		Map<String, Bucket> map = m_buckets.get(hour);
+		Set<Integer> removed = new HashSet<Integer>();
 
-		if (map != null) {
-			for (Bucket bucket : map.values()) {
-				bucket.close();
-				m_logger.info("close bucket " + bucket.toString());
-				super.release(bucket);
+		for (Entry<Integer, Map<String, Bucket>> entry : m_buckets.entrySet()) {
+			Integer hour = entry.getKey();
+			long time = hour * TimeHelper.ONE_HOUR;
+
+			if (time <= timestamp) {
+				removed.add(hour);
 			}
 		}
-		m_buckets.remove(hour);
+
+		for (Integer i : removed) {
+			Map<String, Bucket> buckets = m_buckets.remove(i);
+
+			for (Bucket bucket : buckets.values()) {
+				bucket.close();
+				super.release(bucket);
+				m_logger.info("close bucket " + bucket.toString());
+			}
+		}
 	}
 
 	private Map<String, Bucket> findOrCreateMap(Map<Integer, Map<String, Bucket>> map, int hour) {
