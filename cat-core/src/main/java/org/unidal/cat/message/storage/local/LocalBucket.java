@@ -404,14 +404,11 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 			private ByteBuffer m_buf;
 
-			private long m_lastAccessTime;
-
 			private boolean m_dirty;
 
 			private Segment(FileChannel channel, long address) throws IOException {
 				m_channel = channel;
 				m_address = address;
-				m_lastAccessTime = System.currentTimeMillis();
 				m_buf = ByteBuffer.allocate(SEGMENT_SIZE);
 				m_buf.mark();
 				m_channel.read(m_buf, address);

@@ -74,14 +74,10 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 			      NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), id.getHour(), false);
 
 			if (bucket != null) {
-				try {
-					ByteBuf data = bucket.get(id);
+				ByteBuf data = bucket.get(id);
 
-					if (data != null) {
-						tree = m_plainText.decode(data);
-					}
-				} finally {
-					bucket.close();
+				if (data != null) {
+					tree = m_plainText.decode(data);
 				}
 			}
 		}

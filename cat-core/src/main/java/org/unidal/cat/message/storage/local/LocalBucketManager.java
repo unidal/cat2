@@ -47,11 +47,10 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 		m_buckets.remove(hour);
 	}
 
-	private Map<String, Bucket> findOrCreateMap(Map<Integer, Map<String, Bucket>> map, int hour,
-	      boolean createIfNotExists) {
+	private Map<String, Bucket> findOrCreateMap(Map<Integer, Map<String, Bucket>> map, int hour) {
 		Map<String, Bucket> m = map.get(hour);
 
-		if (m == null && createIfNotExists) {
+		if (m == null) {
 			synchronized (map) {
 				m = map.get(hour);
 
@@ -65,7 +64,7 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 		return m;
 	}
 
-	private boolean exsitBucket(String domain, String ip, int hour) {
+	private boolean bucketExsit(String domain, String ip, int hour) {
 		long timestamp = hour * 3600 * 1000L;
 		Date startTime = new Date(timestamp);
 		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
@@ -76,8 +75,8 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 	@Override
 	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException {
-		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour, createIfNotExists);
-		Bucket bucket = map == null ? null : map.get(domain);
+		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour);
+		Bucket bucket = map.get(domain);
 
 		if (bucket == null && createIfNotExists) {
 			synchronized (map) {
@@ -93,9 +92,15 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 				}
 			}
 		} else if (createIfNotExists == false) {
-			if (exsitBucket(domain, ip, hour)) {
-				bucket = lookup(Bucket.class, "local");
-				bucket.initialize(domain, ip, hour);
+			if (bucketExsit(domain, ip, hour)) {
+				synchronized (map) {
+					bucket = map.get(domain);
+					if (bucket == null) {
+						bucket = lookup(Bucket.class, "local");
+						bucket.initialize(domain, ip, hour);
+						map.put(domain, bucket);
+					}
+				}
 			}
 		}
 
