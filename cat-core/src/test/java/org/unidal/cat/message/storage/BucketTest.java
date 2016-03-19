@@ -72,6 +72,288 @@ public class BucketTest extends ComponentTestCase {
 	}
 
 	@Test
+	public void testWriteAndReadInSequence() throws Exception {
+		String ip = "0a010203";
+		String domain = "mock";
+		int hour = 404857;
+		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				MessageTree tree = TreeHelper.tree(m_codec, id);
+
+				block.pack(id, tree.getBuffer());
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+
+		bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			}
+		}
+	}
+
+	@Test
+	public void testWriteAndReadManyIpsInSequence() throws Exception {
+		String domain = "mock";
+		int hour = 404857;
+		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, "0a010203", hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 10; index++) {
+				for (int j = 10; j < 15; j++) {
+					String ip = "0a0106" + j;
+					try {
+						MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+						MessageTree tree = TreeHelper.tree(m_codec, id);
+
+						block.pack(id, tree.getBuffer());
+					} catch (Exception e) {
+						e.printStackTrace();
+						break;
+					}
+				}
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+
+		bucket = manager.getBucket(domain, "0a010203", hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			for (int index = 0; index < 10; index++) {
+
+				for (int j = 10; j < 15; j++) {
+					String ip = "0a0106" + j;
+					try {
+						MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+						ByteBuf buf = bucket.get(id);
+						MessageTree tree = m_codec.decode(buf);
+
+						Assert.assertEquals(id.toString(), tree.getMessageId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testWriteAndReadManyIpsNotInSequence() throws Exception {
+		String domain = "mock";
+		int hour = 404857;
+		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, "0a010203", hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 9; index++) {
+				for (int j = 10; j < 15; j++) {
+					String ip = "0a0106" + j;
+					try {
+						int msgSeq = i * 10 + index;
+						MessageId id = new MessageId(domain, ip, hour, msgSeq);
+						MessageTree tree = TreeHelper.tree(m_codec, id);
+
+						block.pack(id, tree.getBuffer());
+					} catch (Exception e) {
+						e.printStackTrace();
+						break;
+					}
+				}
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 9; index < 10; index++) {
+				for (int j = 10; j < 15; j++) {
+					String ip = "0a0106" + j;
+					try {
+						int msgSeq = i * 10 + index;
+						MessageId id = new MessageId(domain, ip, hour, msgSeq);
+						MessageTree tree = TreeHelper.tree(m_codec, id);
+
+						block.pack(id, tree.getBuffer());
+					} catch (Exception e) {
+						e.printStackTrace();
+						break;
+					}
+				}
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+
+		bucket = manager.getBucket(domain, "0a010203", hour, true);
+
+		for (int i = 0; i < 1000; i++) {
+			for (int index = 0; index < 10; index++) {
+
+				for (int j = 10; j < 15; j++) {
+					String ip = "0a0106" + j;
+					try {
+						int msgSeq = i * 10 + index;
+						MessageId id = new MessageId(domain, ip, hour, msgSeq);
+						ByteBuf buf = bucket.get(id);
+						MessageTree tree = m_codec.decode(buf);
+
+						Assert.assertEquals(id.toString(), tree.getMessageId());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testWriteAndReadNotInSequence() throws Exception {
+		String ip = "0a010203";
+		String domain = "mock";
+		int hour = 404857;
+		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 9; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				MessageTree tree = TreeHelper.tree(m_codec, id);
+
+				block.pack(id, tree.getBuffer());
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		for (int i = 0; i < 10000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 9; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				MessageTree tree = TreeHelper.tree(m_codec, id);
+
+				block.pack(id, tree.getBuffer());
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+		}
+
+		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+
+		bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 10000; i++) {
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			}
+		}
+	}
+
+	@Test
+	public void testWriteAndReadReloadWriteAndRead() throws Exception {
+		String ip = "0a010203";
+		String domain = "mock";
+		int hour = 404857;
+		BucketManager manager = lookup(BucketManager.class, "local");
+		Bucket bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 500; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				MessageTree tree = TreeHelper.tree(m_codec, id);
+
+				block.pack(id, tree.getBuffer());
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+
+			for (MessageId id : block.getMappings().keySet()) {
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			}
+		}
+
+		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		bucket = manager.getBucket(domain, ip, hour, true);
+
+		for (int i = 0; i < 500; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (MessageId id : block.getMappings().keySet()) {
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			}
+		}
+
+		for (int i = 500; i < 1000; i++) {
+			Block block = new DefaultBlock(domain, hour);
+
+			for (int index = 0; index < 10; index++) {
+				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
+				MessageTree tree = TreeHelper.tree(m_codec, id);
+
+				block.pack(id, tree.getBuffer());
+			}
+
+			block.finish();
+			bucket.puts(block.getData(), block.getMappings());
+
+			for (MessageId id : block.getMappings().keySet()) {
+				ByteBuf buf = bucket.get(id);
+				MessageTree tree = m_codec.decode(buf);
+
+				Assert.assertEquals(id.toString(), tree.getMessageId());
+			}
+		}
+	}
+
+	@Test
 	public void testWritePerf() throws IOException {
 		BucketManager manager = lookup(BucketManager.class, "local");
 		Benchmark bm = m_benchmarkManager.get("bucket");
@@ -132,6 +414,12 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
+		public ByteBuf findTree(MessageId id) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
 		public void finish() {
 		}
 
@@ -170,12 +458,6 @@ public class BucketTest extends ComponentTestCase {
 		@Override
 		public ByteBuf unpack(MessageId id) throws IOException {
 			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public ByteBuf findTree(MessageId id) {
-			// TODO Auto-generated method stub
-			return null;
 		}
 	}
 }
