@@ -23,10 +23,9 @@ import com.dianping.cat.message.spi.MessageTree;
 
 @Named(type = MessageDumper.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultMessageDumper extends ContainerHolder implements MessageDumper {
-
 	@Inject
 	private BlockDumperManager m_blockDumperManager;
-	
+
 	@Inject
 	private BucketManager m_bucketManager;
 
@@ -37,7 +36,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	private int m_failCount = -1;
 
 	@Override
-	public void awaitTermination(long timestamp) throws InterruptedException {
+	public void awaitTermination(int hour) throws InterruptedException {
 		while (true) {
 			boolean allEmpty = true;
 
@@ -59,8 +58,8 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			processor.shutdown();
 		}
 
-		m_blockDumperManager.closeDumper(timestamp);
-		m_bucketManager.closeBuckets(timestamp);
+		m_blockDumperManager.closeDumper(hour);
+		m_bucketManager.closeBuckets(hour);
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 		return index;
 	}
 
-	public void initialize(long timestamp) {
+	public void initialize(int hour) {
 		for (int i = 0; i < 10; i++) {
 			BlockingQueue<MessageTree> queue = new LinkedBlockingQueue<MessageTree>(10000);
 			MessageProcessor processor = lookup(MessageProcessor.class);
@@ -93,7 +92,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			m_queues.add(queue);
 			m_processors.add(processor);
 
-			processor.initialize(timestamp, i, queue);
+			processor.initialize(hour, i, queue);
 			Threads.forGroup("Cat").start(processor);
 		}
 	}

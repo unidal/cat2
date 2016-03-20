@@ -7,11 +7,11 @@ import org.unidal.cat.message.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 
 public interface MessageDumper {
-	public void initialize(long timestamp);
-
-	public void awaitTermination(long timestamp) throws InterruptedException;
+	public void awaitTermination(int hour) throws InterruptedException;
 
 	public ByteBuf find(MessageId id);
+
+	public void initialize(int hour);
 
 	public void process(MessageTree tree);
 }

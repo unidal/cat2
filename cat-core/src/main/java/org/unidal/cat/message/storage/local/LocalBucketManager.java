@@ -21,8 +21,6 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.helper.TimeHelper;
-
 @Named(type = BucketManager.class, value = "local")
 public class LocalBucketManager extends ContainerHolder implements BucketManager, LogEnabled {
 	@Inject
@@ -35,28 +33,42 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 	private Logger m_logger;
 
+	private boolean bucketFilesExsits(String domain, String ip, int hour) {
+		long timestamp = hour * 3600 * 1000L;
+		Date startTime = new Date(timestamp);
+		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
+		File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
+
+		return dataPath.exists() && indexPath.exists();
+	}
+
 	@Override
-	public void closeBuckets(long timestamp) {
+	public void closeBuckets(int hour) {
 		Set<Integer> removed = new HashSet<Integer>();
 
-		for (Entry<Integer, Map<String, Bucket>> entry : m_buckets.entrySet()) {
-			Integer hour = entry.getKey();
-			long time = hour * TimeHelper.ONE_HOUR;
+		for (Entry<Integer, Map<String, Bucket>> e : m_buckets.entrySet()) {
+			int h = e.getKey().intValue();
 
-			if (time <= timestamp) {
-				removed.add(hour);
+			if (h <= hour) {
+				removed.add(h);
 			}
 		}
 
-		for (Integer i : removed) {
-			Map<String, Bucket> buckets = m_buckets.remove(i);
+		for (Integer h : removed) {
+			Map<String, Bucket> buckets = m_buckets.remove(h);
 
 			for (Bucket bucket : buckets.values()) {
 				bucket.close();
 				super.release(bucket);
-				m_logger.info("close bucket " + bucket.toString());
+
+				m_logger.info("Close " + bucket);
 			}
 		}
+	}
+
+	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
 	}
 
 	private Map<String, Bucket> findOrCreateMap(Map<Integer, Map<String, Bucket>> map, int hour) {
@@ -76,21 +88,14 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 		return m;
 	}
 
-	private boolean bucketExsit(String domain, String ip, int hour) {
-		long timestamp = hour * 3600 * 1000L;
-		Date startTime = new Date(timestamp);
-		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
-		File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
-
-		return dataPath.exists() && indexPath.exists();
-	}
-
 	@Override
 	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException {
 		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour);
 		Bucket bucket = map.get(domain);
+		boolean shouldCreate = createIfNotExists && bucket == null || !createIfNotExists
+		      && bucketFilesExsits(domain, ip, hour);
 
-		if (bucket == null && createIfNotExists) {
+		if (shouldCreate) {
 			synchronized (map) {
 				bucket = map.get(domain);
 
@@ -103,24 +108,8 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 					map.put(domain, bucket);
 				}
 			}
-		} else if (createIfNotExists == false) {
-			if (bucketExsit(domain, ip, hour)) {
-				synchronized (map) {
-					bucket = map.get(domain);
-					if (bucket == null) {
-						bucket = lookup(Bucket.class, "local");
-						bucket.initialize(domain, ip, hour);
-						map.put(domain, bucket);
-					}
-				}
-			}
 		}
 
 		return bucket;
-	}
-
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
 	}
 }

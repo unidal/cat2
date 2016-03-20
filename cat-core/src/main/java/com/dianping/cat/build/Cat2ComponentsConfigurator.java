@@ -3,6 +3,7 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.internals.DefaultStorageConfiguration;
 import org.unidal.cat.message.storage.local.DefaultBlockDumper;
 import org.unidal.cat.message.storage.local.DefaultBlockWriter;
@@ -26,6 +27,7 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(A(DefaultMessageDumper.class));
 		all.add(A(DefaultMessageProcessor.class));
+		all.add(A(BlockDumperManager.class));
 		all.add(A(DefaultBlockDumper.class));
 		all.add(A(DefaultBlockWriter.class));
 

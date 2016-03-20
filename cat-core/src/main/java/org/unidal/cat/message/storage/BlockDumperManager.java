@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -12,22 +13,20 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = BlockDumperManager.class)
 public class BlockDumperManager extends ContainerHolder implements LogEnabled {
-
-	private Map<Long, BlockDumper> m_dumpers = new LinkedHashMap<Long, BlockDumper>();
+	private Map<Integer, BlockDumper> m_dumpers = new LinkedHashMap<Integer, BlockDumper>();
 
 	private Logger m_logger;
 
-	public void closeDumper(long timestamp) {
-		BlockDumper dumper = m_dumpers.get(timestamp);
+	public void closeDumper(int hour) {
+		BlockDumper dumper = m_dumpers.remove(hour);
 
 		if (dumper != null) {
 			try {
 				dumper.awaitTermination();
 			} catch (InterruptedException e) {
-				// ingore
+				// ignore it
 			}
 		}
-		m_dumpers.remove(timestamp);
 	}
 
 	@Override
@@ -35,27 +34,29 @@ public class BlockDumperManager extends ContainerHolder implements LogEnabled {
 		m_logger = logger;
 	}
 
-	public BlockDumper findDumper(long timestamp) {
-		return m_dumpers.get(timestamp);
+	public BlockDumper findDumper(int hour) {
+		return m_dumpers.get(hour);
 	}
 
-	public BlockDumper findOrCreateBlockDumper(long timestamp) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		BlockDumper dumper = m_dumpers.get(timestamp);
+	public BlockDumper findOrCreateBlockDumper(int hour) {
+		BlockDumper dumper = m_dumpers.get(hour);
 
 		if (dumper == null) {
 			synchronized (this) {
-				dumper = m_dumpers.get(timestamp);
-				if (dumper == null) {
-					dumper = lookup(BlockDumper.class);
-					dumper.initialize(timestamp);
+				dumper = m_dumpers.get(hour);
 
-					m_dumpers.put(timestamp, dumper);
-					m_logger.info("create block dumper " + sdf.format(new Date(timestamp)));
+				if (dumper == null) {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+					dumper = lookup(BlockDumper.class);
+					dumper.initialize(hour);
+
+					m_dumpers.put(hour, dumper);
+					m_logger.info("Create block dumper " + sdf.format(new Date(TimeUnit.HOURS.toMillis(hour))));
 				}
 			}
 		}
+
 		return dumper;
 	}
-
 }

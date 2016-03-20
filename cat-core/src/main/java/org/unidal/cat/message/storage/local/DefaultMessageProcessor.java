@@ -43,7 +43,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	private AtomicBoolean m_enabled;
 
-	private long m_timestamp;
+	private int m_hour;
 
 	private CountDownLatch m_latch;
 
@@ -55,7 +55,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		if (block != null) {
 			return block.findTree(id);
 		}
-		
+
 		return null;
 	}
 
@@ -63,16 +63,16 @@ public class DefaultMessageProcessor implements MessageProcessor {
 	public String getName() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss");
 
-		return getClass().getSimpleName() + " " + sdf.format(new Date(m_timestamp)) + "-" + m_index;
+		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
 	}
 
 	@Override
-	public void initialize(long timestamp, int index, BlockingQueue<MessageTree> queue) {
+	public void initialize(int hour, int index, BlockingQueue<MessageTree> queue) {
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);
-		m_dumper = m_dumperManager.findOrCreateBlockDumper(timestamp);
-		m_timestamp = timestamp;
+		m_dumper = m_dumperManager.findOrCreateBlockDumper(hour);
+		m_hour = hour;
 		m_latch = new CountDownLatch(1);
 	}
 
@@ -110,7 +110,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 							block = new DefaultBlock(domain, hour);
 							m_blocks.put(domain, block);
 						}
-						
+
 						block.pack(id, tree.getBuffer());
 						pm.end();
 					} catch (Exception e) {
