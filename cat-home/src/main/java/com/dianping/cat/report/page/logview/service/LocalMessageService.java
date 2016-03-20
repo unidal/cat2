@@ -30,8 +30,10 @@ import com.dianping.cat.report.service.ModelResponse;
 import com.dianping.cat.report.service.ModelService;
 
 public class LocalMessageService extends LocalModelService<String> implements ModelService<String> {
-
 	public static final String ID = DumpAnalyzer.ID;
+	
+	@Inject
+	private MessageDumperManager m_dumperManager;
 
 	@Inject("local")
 	private BucketManager m_localBucketManager;
@@ -44,9 +46,6 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 
 	@Inject(PlainTextMessageCodec.ID)
 	private MessageCodec m_plainText;
-
-	@Inject
-	private MessageDumperManager m_dumperManager;
 
 	public LocalMessageService() {
 		super("logview");

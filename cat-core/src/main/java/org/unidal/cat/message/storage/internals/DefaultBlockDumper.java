@@ -1,4 +1,4 @@
-package org.unidal.cat.message.storage.local;
+package org.unidal.cat.message.storage.internals;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.cat.message.QueueFullException;
 import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BlockWriter;
@@ -57,12 +58,12 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
 		boolean success = queue.offer(block);
 
 		if (!success && (++m_failCount % 100) == 0) {
-			Cat.logError(new RuntimeException("Error when offer tree in block dumper"));
+			Cat.logError(new QueueFullException("Error when adding block to queue, fails: " + m_failCount));
 		}
 	}
 
 	@Override
-	public void initialize(long timestamp) {
+	public void initialize(int hour) {
 		for (int i = 0; i < 10; i++) {
 			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
 			BlockWriter writer = lookup(BlockWriter.class);
@@ -70,7 +71,7 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
 			m_queues.add(queue);
 			m_writers.add(writer);
 
-			writer.initialize(timestamp, i, queue);
+			writer.initialize(hour, i, queue);
 			Threads.forGroup("Cat").start(writer);
 		}
 	}

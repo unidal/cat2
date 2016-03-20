@@ -1,4 +1,4 @@
-package org.unidal.cat.message.storage.local;
+package org.unidal.cat.message.storage.internals;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,24 +34,24 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	private BlockingQueue<Block> m_queue;
 
+	private long m_hour;
+
+	private int m_count;
+
 	private AtomicBoolean m_enabled;
 
 	private CountDownLatch m_latch;
 
-	private long m_timestamp;
-
-	private int m_count;
-
 	@Override
 	public String getName() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		return getClass().getSimpleName() + " " + sdf.format(new Date(m_timestamp)) + "-" + m_index;
+		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
 	}
 
 	@Override
-	public void initialize(long timestamp, int index, BlockingQueue<Block> queue) {
-		m_timestamp = timestamp;
+	public void initialize(int hour, int index, BlockingQueue<Block> queue) {
+		m_hour = hour;
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);
@@ -66,7 +66,7 @@ public class DefaultBlockWriter implements BlockWriter {
 		Block block;
 
 		try {
-			while (true) {
+			while (m_enabled.get() || !m_queue.isEmpty()) {
 				metric.start();
 				block = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				metric.end();
@@ -91,16 +91,15 @@ public class DefaultBlockWriter implements BlockWriter {
 					} catch (Exception e) {
 						Cat.logError(e);
 					}
-				} else if (m_enabled.get() == false) {
-					break;
 				}
 			}
 		} catch (InterruptedException e) {
 			// ignore it
 		}
 
-		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 		m_latch.countDown();
+
+		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 		benchmark.print();
 	}
 

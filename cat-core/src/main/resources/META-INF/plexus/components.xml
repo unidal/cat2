@@ -1,8 +1,12 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.cat.message.storage.MessageDumperManager</role>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageDumperManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.message.storage.MessageDumper</role>
-			<implementation>org.unidal.cat.message.storage.local.DefaultMessageDumper</implementation>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageDumper</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
@@ -15,7 +19,7 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.MessageProcessor</role>
-			<implementation>org.unidal.cat.message.storage.local.DefaultMessageProcessor</implementation>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageProcessor</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
@@ -28,16 +32,16 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.BlockDumperManager</role>
-			<implementation>org.unidal.cat.message.storage.BlockDumperManager</implementation>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultBlockDumperManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.BlockDumper</role>
-			<implementation>org.unidal.cat.message.storage.local.DefaultBlockDumper</implementation>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultBlockDumper</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.storage.BlockWriter</role>
-			<implementation>org.unidal.cat.message.storage.local.DefaultBlockWriter</implementation>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultBlockWriter</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
@@ -335,10 +339,6 @@
 			<role>org.unidal.initialization.Module</role>
 			<role-hint>cat-core</role-hint>
 			<implementation>com.dianping.cat.CatCoreModule</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.message.storage.MessageDumperManager</role>
-			<implementation>org.unidal.cat.message.storage.MessageDumperManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.datasource.DataSourceProvider</role>

@@ -1,4 +1,4 @@
-package org.unidal.cat.message.storage.local;
+package org.unidal.cat.message.storage.internals;
 
 import io.netty.buffer.ByteBuf;
 
@@ -16,7 +16,6 @@ import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.MessageProcessor;
-import org.unidal.cat.message.storage.internals.DefaultBlock;
 import org.unidal.cat.metric.Benchmark;
 import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.cat.metric.Metric;
@@ -28,7 +27,7 @@ import com.dianping.cat.message.spi.MessageTree;
 @Named(type = MessageProcessor.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultMessageProcessor implements MessageProcessor {
 	@Inject
-	private BlockDumperManager m_dumperManager;
+	private BlockDumperManager m_blockDumperManager;
 
 	@Inject
 	private BenchmarkManager m_benchmarkManager;
@@ -41,9 +40,9 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	private ConcurrentHashMap<String, Block> m_blocks = new ConcurrentHashMap<String, Block>();
 
-	private AtomicBoolean m_enabled;
-
 	private int m_hour;
+
+	private AtomicBoolean m_enabled;
 
 	private CountDownLatch m_latch;
 
@@ -61,7 +60,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 
 	@Override
 	public String getName() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
 	}
@@ -71,7 +70,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);
-		m_dumper = m_dumperManager.findOrCreateBlockDumper(hour);
+		m_dumper = m_blockDumperManager.findOrCreateBlockDumper(hour);
 		m_hour = hour;
 		m_latch = new CountDownLatch(1);
 	}
@@ -84,7 +83,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		MessageTree tree;
 
 		try {
-			while (true) {
+			while (m_enabled.get() || !m_queue.isEmpty()) {
 				wm.start();
 				tree = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				wm.end();
@@ -116,8 +115,6 @@ public class DefaultMessageProcessor implements MessageProcessor {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				} else if (m_enabled.get() == false) {
-					break;
 				}
 			}
 		} catch (InterruptedException e) {
@@ -135,6 +132,7 @@ public class DefaultMessageProcessor implements MessageProcessor {
 		}
 
 		m_blocks.clear();
+		m_latch.countDown();
 
 		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
 		benchmark.print();

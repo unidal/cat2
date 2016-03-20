@@ -1,4 +1,4 @@
-package org.unidal.cat.message.storage.local;
+package org.unidal.cat.message.storage.internals;
 
 import io.netty.buffer.ByteBuf;
 
@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.unidal.cat.message.MessageId;
+import org.unidal.cat.message.QueueFullException;
 import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -108,7 +109,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			boolean success = last.offer(tree);
 
 			if (!success && (++m_failCount % 100) == 0) {
-				Cat.logError(new RuntimeException("Error when adding message to queue, fails: " + m_failCount));
+				Cat.logError(new QueueFullException("Error when adding message to queue, fails: " + m_failCount));
 			}
 		}
 	}

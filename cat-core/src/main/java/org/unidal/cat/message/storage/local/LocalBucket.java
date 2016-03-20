@@ -259,15 +259,18 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 		public void init(File indexPath) throws IOException {
 			m_path = indexPath;
 			m_path.getParentFile().mkdirs();
-			m_file = new RandomAccessFile(m_path, "rwd"); // read-write without
-			// meta sync
+
+			// read-write without meta sync
+			m_file = new RandomAccessFile(m_path, "rwd");
 			m_indexChannel = m_file.getChannel();
+
 			long size = m_file.length();
 			int totalHeaders = (int) Math.ceil((size * 1.0 / (ENTRY_PER_SEGMENT * SEGMENT_SIZE)));
 
 			if (totalHeaders == 0) {
 				totalHeaders = 1;
 			}
+
 			for (int i = 0; i < totalHeaders; i++) {
 				m_header.load(i);
 			}
@@ -295,6 +298,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 				}
 			} else {
 				m_file.seek(position);
+
 				long address = m_file.readLong();
 
 				return address;
@@ -390,15 +394,17 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 					throw new IOException("Invalid index file: " + m_path);
 				}
 
+				m_segment = segment;
 				m_nextSegment = 1 + ENTRY_PER_SEGMENT * headBlockIndex;
 				m_offset = 8;
 
 				int readerIndex = 1;
 
-				while (true && readerIndex < ENTRY_PER_SEGMENT) {
-					readerIndex++;
+				while (readerIndex < ENTRY_PER_SEGMENT) {
 					int ip = segment.readInt();
 					int index = segment.readInt();
+
+					readerIndex++;
 
 					if (ip != 0) {
 						Map<Integer, Integer> map = m_table.get(ip);
@@ -415,12 +421,12 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 							map.put(index, segmentNo);
 						}
+						
 						m_offset += 8;
 					} else {
 						break;
 					}
 				}
-				m_segment = segment;
 			}
 		}
 
@@ -431,14 +437,11 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 			private ByteBuffer m_buf;
 
-			private long m_lastAccessTime;
-
 			private boolean m_dirty;
 
 			private Segment(FileChannel channel, long address) throws IOException {
 				m_segmentChannel = channel;
 				m_address = address;
-				m_lastAccessTime = System.currentTimeMillis();
 				m_buf = ByteBuffer.allocate(SEGMENT_SIZE);
 				m_buf.mark();
 				m_segmentChannel.read(m_buf, address);
@@ -453,7 +456,6 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 					m_segmentChannel.write(m_buf, m_address);
 					m_buf.position(pos);
 					m_dirty = false;
-					m_lastAccessTime = System.currentTimeMillis();
 				}
 			}
 
@@ -477,12 +479,6 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			public void writeLong(int offset, long value) throws IOException {
 				m_buf.putLong(offset, value);
 				m_dirty = true;
-
-				if (m_lastAccessTime + 1000L < System.currentTimeMillis()) {
-					// idle after 1 second
-					// flush();
-					m_lastAccessTime = System.currentTimeMillis();
-				}
 			}
 		}
 

@@ -3,12 +3,13 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.message.storage.BlockDumperManager;
+import org.unidal.cat.message.storage.internals.DefaultBlockDumper;
+import org.unidal.cat.message.storage.internals.DefaultBlockDumperManager;
+import org.unidal.cat.message.storage.internals.DefaultBlockWriter;
+import org.unidal.cat.message.storage.internals.DefaultMessageDumper;
+import org.unidal.cat.message.storage.internals.DefaultMessageDumperManager;
+import org.unidal.cat.message.storage.internals.DefaultMessageProcessor;
 import org.unidal.cat.message.storage.internals.DefaultStorageConfiguration;
-import org.unidal.cat.message.storage.local.DefaultBlockDumper;
-import org.unidal.cat.message.storage.local.DefaultBlockWriter;
-import org.unidal.cat.message.storage.local.DefaultMessageDumper;
-import org.unidal.cat.message.storage.local.DefaultMessageProcessor;
 import org.unidal.cat.message.storage.local.LocalBucket;
 import org.unidal.cat.message.storage.local.LocalBucketManager;
 import org.unidal.cat.message.storage.local.LocalFileBuilder;
@@ -25,9 +26,10 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(A(DefaultMessageDumperManager.class));
 		all.add(A(DefaultMessageDumper.class));
 		all.add(A(DefaultMessageProcessor.class));
-		all.add(A(BlockDumperManager.class));
+		all.add(A(DefaultBlockDumperManager.class));
 		all.add(A(DefaultBlockDumper.class));
 		all.add(A(DefaultBlockWriter.class));
 

@@ -3,7 +3,6 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.dal.jdbc.configuration.AbstractJdbcResourceConfigurator;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.Component;
@@ -101,7 +100,6 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		all.add(C(Module.class, CatCoreModule.ID, CatCoreModule.class));
 
-		all.add(C(MessageDumperManager.class));
 		// database
 		all.add(defineJdbcDataSourceConfigurationManagerComponent("/data/appdatas/cat/datasources.xml"));
 		// all.add(C(JdbcDataSourceDescriptorManager.class) //
