@@ -13,6 +13,7 @@ import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.consumer.dump.DumpAnalyzer;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -58,19 +59,26 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
 		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
-		ByteBuf inMemory = dumper.find(id);
 		MessageTree tree = null;
 
-		if (inMemory != null) {
-			tree = m_plainText.decode(inMemory);
-		} else {
-			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), true);
+		if (dumper != null) {
+			ByteBuf memoryBuf = dumper.find(id);
 
-			bucket.flush();
-			ByteBuf data = bucket.get(id);
+			if (memoryBuf != null) {
+				tree = m_plainText.decode(memoryBuf);
+			}
+		}
 
-			if (data != null) {
-				tree = m_plainText.decode(data);
+		if (tree == null) {
+			Bucket bucket = m_localBucketManager.getBucket(id.getDomain(),
+			      NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), id.getHour(), false);
+
+			if (bucket != null) {
+				ByteBuf data = bucket.get(id);
+
+				if (data != null) {
+					tree = m_plainText.decode(data);
+				}
 			}
 		}
 

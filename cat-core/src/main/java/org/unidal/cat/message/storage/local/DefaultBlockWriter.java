@@ -1,5 +1,7 @@
 package org.unidal.cat.message.storage.local;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -16,7 +18,9 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.message.Transaction;
 
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
@@ -34,13 +38,20 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	private CountDownLatch m_latch;
 
+	private long m_timestamp;
+
+	private int m_count;
+
 	@Override
 	public String getName() {
-		return getClass().getSimpleName() + "-" + m_index;
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss");
+
+		return getClass().getSimpleName() + " " + sdf.format(new Date(m_timestamp)) + "-" + m_index;
 	}
 
 	@Override
-	public void initialize(int index, BlockingQueue<Block> queue) {
+	public void initialize(long timestamp, int index, BlockingQueue<Block> queue) {
+		m_timestamp = timestamp;
 		m_index = index;
 		m_queue = queue;
 		m_enabled = new AtomicBoolean(true);
@@ -55,7 +66,7 @@ public class DefaultBlockWriter implements BlockWriter {
 		Block block;
 
 		try {
-			while (m_enabled.get()) {
+			while (true) {
 				metric.start();
 				block = m_queue.poll(5, TimeUnit.MILLISECONDS);
 				metric.end();
@@ -68,10 +79,20 @@ public class DefaultBlockWriter implements BlockWriter {
 							((BenchmarkEnabled) bucket).setBenchmark(benchmark);
 						}
 
-						bucket.puts(block.getData(), block.getMappings());
+						if ((++m_count) % 100 == 0) {
+							Transaction t = Cat.newTransaction("Block", block.getDomain());
+
+							bucket.puts(block.getData(), block.getMappings());
+							t.setStatus(Transaction.SUCCESS);
+							t.complete();
+						} else {
+							bucket.puts(block.getData(), block.getMappings());
+						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						Cat.logError(e);
 					}
+				} else if (m_enabled.get() == false) {
+					break;
 				}
 			}
 		} catch (InterruptedException e) {

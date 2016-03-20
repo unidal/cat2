@@ -8,22 +8,28 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.message.MessageId;
-import org.unidal.cat.message.storage.BlockDumper;
+import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageProcessor;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.spi.MessageTree;
 
 @Named(type = MessageDumper.class, instantiationStrategy = Named.PER_LOOKUP)
-public class DefaultMessageDumper extends ContainerHolder implements MessageDumper, Initializable {
+public class DefaultMessageDumper extends ContainerHolder implements MessageDumper {
+
+	@Inject
+	private BlockDumperManager m_blockDumperManager;
+	
+	@Inject
+	private BucketManager m_bucketManager;
+
 	private List<BlockingQueue<MessageTree>> m_queues = new ArrayList<BlockingQueue<MessageTree>>();
 
 	private List<MessageProcessor> m_processors = new ArrayList<MessageProcessor>();
@@ -31,7 +37,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	private int m_failCount = -1;
 
 	@Override
-	public void awaitTermination() throws InterruptedException {
+	public void awaitTermination(long timestamp) throws InterruptedException {
 		while (true) {
 			boolean allEmpty = true;
 
@@ -53,13 +59,8 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			processor.shutdown();
 		}
 
-		BlockDumper dumper = lookup(BlockDumper.class);
-
-		dumper.awaitTermination();
-
-		BucketManager manager = lookup(BucketManager.class, "local");
-
-		manager.closeBuckets();
+		m_blockDumperManager.closeDumper(timestamp);
+		m_bucketManager.closeBuckets(timestamp);
 	}
 
 	@Override
@@ -84,8 +85,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 		return index;
 	}
 
-	@Override
-	public void initialize() throws InitializationException {
+	public void initialize(long timestamp) {
 		for (int i = 0; i < 10; i++) {
 			BlockingQueue<MessageTree> queue = new LinkedBlockingQueue<MessageTree>(10000);
 			MessageProcessor processor = lookup(MessageProcessor.class);
@@ -93,7 +93,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			m_queues.add(queue);
 			m_processors.add(processor);
 
-			processor.initialize(i, queue);
+			processor.initialize(timestamp, i, queue);
 			Threads.forGroup("Cat").start(processor);
 		}
 	}

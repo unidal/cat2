@@ -10,19 +10,19 @@ import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = MessageDumperManager.class)
-public class MessageDumperManager extends ContainerHolder implements LogEnabled {
+@Named(type = BlockDumperManager.class)
+public class BlockDumperManager extends ContainerHolder implements LogEnabled {
 
-	private Map<Long, MessageDumper> m_dumpers = new LinkedHashMap<Long, MessageDumper>();
+	private Map<Long, BlockDumper> m_dumpers = new LinkedHashMap<Long, BlockDumper>();
 
 	private Logger m_logger;
 
 	public void closeDumper(long timestamp) {
-		MessageDumper dumper = m_dumpers.get(timestamp);
+		BlockDumper dumper = m_dumpers.get(timestamp);
 
 		if (dumper != null) {
 			try {
-				dumper.awaitTermination(timestamp);
+				dumper.awaitTermination();
 			} catch (InterruptedException e) {
 				// ingore
 			}
@@ -35,23 +35,23 @@ public class MessageDumperManager extends ContainerHolder implements LogEnabled 
 		m_logger = logger;
 	}
 
-	public MessageDumper findDumper(long timestamp) {
+	public BlockDumper findDumper(long timestamp) {
 		return m_dumpers.get(timestamp);
 	}
 
-	public MessageDumper findOrCreateMessageDumper(long timestamp) {
+	public BlockDumper findOrCreateBlockDumper(long timestamp) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-		MessageDumper dumper = m_dumpers.get(timestamp);
+		BlockDumper dumper = m_dumpers.get(timestamp);
 
 		if (dumper == null) {
 			synchronized (this) {
 				dumper = m_dumpers.get(timestamp);
 				if (dumper == null) {
-					dumper = lookup(MessageDumper.class);
+					dumper = lookup(BlockDumper.class);
 					dumper.initialize(timestamp);
-				
+
 					m_dumpers.put(timestamp, dumper);
-					m_logger.info("create message dumper " + sdf.format(new Date(timestamp)));
+					m_logger.info("create block dumper " + sdf.format(new Date(timestamp)));
 				}
 			}
 		}
