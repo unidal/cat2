@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.Map;
 
-import org.unidal.cat.message.MessageId;
+import com.dianping.cat.message.internal.MessageId;
 
 public interface Block {
 	public ByteBuf find(MessageId id);

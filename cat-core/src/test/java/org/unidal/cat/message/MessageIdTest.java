@@ -5,8 +5,9 @@ import java.io.IOException;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.ComponentTestCase;
+
+import com.dianping.cat.message.internal.MessageId;
 
 public class MessageIdTest extends ComponentTestCase {
 	@Test

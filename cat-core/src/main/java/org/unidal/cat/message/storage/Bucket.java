@@ -5,8 +5,9 @@ import io.netty.buffer.ByteBuf;
 import java.io.IOException;
 import java.util.Map;
 
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.metric.BenchmarkEnabled;
+
+import com.dianping.cat.message.internal.MessageId;
 
 public interface Bucket extends BenchmarkEnabled {
 	public void close();

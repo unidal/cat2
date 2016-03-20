@@ -14,10 +14,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;

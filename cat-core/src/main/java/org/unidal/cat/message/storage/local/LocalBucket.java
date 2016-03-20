@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.FileBuilder;
 import org.unidal.cat.message.storage.FileBuilder.FileType;
@@ -29,6 +28,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.internal.MessageId;
 
 @Named(type = Bucket.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
 public class LocalBucket implements Bucket, BenchmarkEnabled {

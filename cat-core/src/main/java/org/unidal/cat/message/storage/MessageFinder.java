@@ -2,7 +2,7 @@ package org.unidal.cat.message.storage;
 
 import io.netty.buffer.ByteBuf;
 
-import org.unidal.cat.message.MessageId;
+import com.dianping.cat.message.internal.MessageId;
 
 public interface MessageFinder {
 	public ByteBuf find(MessageId id);

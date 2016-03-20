@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.FileBuilder;
 import org.unidal.cat.message.storage.FileBuilder.FileType;
 import org.unidal.cat.message.storage.Index;
@@ -22,6 +21,7 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.message.internal.MessageId;
 
 @Named(type = Index.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
 public class LocalIndex implements Index {

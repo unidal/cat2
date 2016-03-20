@@ -4,7 +4,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.cat.message.storage.MessageFinderManager;
@@ -14,6 +13,7 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.analysis.AbstractMessageAnalyzer;
 import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.helper.TimeHelper;
+import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.report.ReportManager;
 import com.dianping.cat.statistic.ServerStatisticManager;
