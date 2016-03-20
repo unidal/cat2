@@ -8,8 +8,7 @@ import java.nio.charset.Charset;
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
-import org.unidal.cat.message.storage.MessageDumper;
-import org.unidal.cat.message.storage.MessageDumperManager;
+import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
@@ -31,9 +30,9 @@ import com.dianping.cat.report.service.ModelService;
 
 public class LocalMessageService extends LocalModelService<String> implements ModelService<String> {
 	public static final String ID = DumpAnalyzer.ID;
-	
+
 	@Inject
-	private MessageDumperManager m_dumperManager;
+	private MessageFinderManager m_finderManager;
 
 	@Inject("local")
 	private BucketManager m_localBucketManager;
@@ -57,15 +56,11 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		String messageId = payload.getMessageId();
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
-		MessageDumper dumper = m_dumperManager.findDumper(id.getHour());
+		ByteBuf buf = m_finderManager.find(id);
 		MessageTree tree = null;
 
-		if (dumper != null) {
-			ByteBuf memoryBuf = dumper.find(id);
-
-			if (memoryBuf != null) {
-				tree = m_plainText.decode(memoryBuf);
-			}
+		if (buf != null) {
+			tree = m_plainText.decode(buf);
 		}
 
 		if (tree == null) {
@@ -73,6 +68,8 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 			      NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), id.getHour(), false);
 
 			if (bucket != null) {
+				bucket.flush();
+
 				ByteBuf data = bucket.get(id);
 
 				if (data != null) {
@@ -82,21 +79,22 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		}
 
 		if (tree != null) {
-			ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
+			ByteBuf content = ByteBufAllocator.DEFAULT.buffer(8192);
 
 			if (tree.getMessage() instanceof Transaction && waterfull) {
-				m_waterfall.encode(tree, buf);
+				m_waterfall.encode(tree, content);
 			} else {
-				m_html.encode(tree, buf);
+				m_html.encode(tree, content);
 			}
 
 			try {
-				buf.readInt(); // get rid of length
-				return buf.toString(Charset.forName("utf-8"));
+				content.readInt(); // get rid of length
+				return content.toString(Charset.forName("utf-8"));
 			} catch (Exception e) {
 				// ignore it
 			}
 		}
+
 		return null;
 	}
 

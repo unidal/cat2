@@ -66,7 +66,7 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public ByteBuf findTree(MessageId id) {
+	public ByteBuf find(MessageId id) {
 		Integer offset = m_mappings.get(id);
 
 		if (offset != null) {

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.cat.plugin.event.EventReportAggregator;
 import org.unidal.cat.plugin.event.EventReportAnalyzer;
 import org.unidal.cat.plugin.event.EventReportDelegate;
@@ -166,8 +165,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private Collection<Component> defineDumpComponents() {
 		final List<Component> all = new ArrayList<Component>();
-		all.add(C(MessageAnalyzer.class, DumpAnalyzer.ID, DumpAnalyzer.class).is(PER_LOOKUP) //
-		      .req(ServerStatisticManager.class, ServerConfigManager.class, MessageDumperManager.class));
+
+		all.add(A(DumpAnalyzer.class));
 
 		all.add(C(MessageBucketManager.class, LocalMessageBucketManager.ID, LocalMessageBucketManager.class) //
 		      .req(ServerConfigManager.class, PathBuilder.class, ServerStatisticManager.class)//

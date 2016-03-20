@@ -7,14 +7,18 @@ import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageDumperManager;
+import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.analysis.AbstractMessageAnalyzer;
+import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.report.ReportManager;
 import com.dianping.cat.statistic.ServerStatisticManager;
 
+@Named(type = MessageAnalyzer.class, value = DumpAnalyzer.ID, instantiationStrategy = Named.PER_LOOKUP)
 public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements LogEnabled {
 	public static final String ID = "dump";
 
@@ -23,6 +27,9 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 
 	@Inject
 	private MessageDumperManager m_dumperManager;
+
+	@Inject
+	private MessageFinderManager m_finderManager;
 
 	private MessageDumper m_dumper;
 
@@ -33,7 +40,8 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 		try {
 			int hour = (int) TimeUnit.MILLISECONDS.toHours(m_startTime);
 
-			m_dumperManager.closeDumper(hour);
+			m_dumperManager.close(hour);
+			m_finderManager.close(hour);
 		} catch (Exception e) {
 			m_logger.error(e.getMessage(), e);
 		}
@@ -45,6 +53,11 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	}
 
 	@Override
+	public int getAnanlyzerCount() {
+		return 2;
+	}
+
+	@Override
 	public Object getReport(String domain) {
 		throw new UnsupportedOperationException("This should not be called!");
 	}
@@ -52,6 +65,16 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	@Override
 	public ReportManager<?> getReportManager() {
 		return null;
+	}
+
+	@Override
+	public void initialize(long startTime, long duration, long extraTime) {
+		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime);
+
+		m_extraTime = extraTime;
+		m_startTime = startTime;
+		m_duration = duration;
+		m_dumper = m_dumperManager.findOrCreate(hour);
 	}
 
 	@Override
@@ -83,20 +106,5 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 
 	public void setServerStateManager(ServerStatisticManager serverStateManager) {
 		m_serverStateManager = serverStateManager;
-	}
-
-	@Override
-	public int getAnanlyzerCount() {
-		return 2;
-	}
-
-	@Override
-	public void initialize(long startTime, long duration, long extraTime) {
-		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime);
-
-		m_extraTime = extraTime;
-		m_startTime = startTime;
-		m_duration = duration;
-		m_dumper = m_dumperManager.findOrCreateMessageDumper(hour);
 	}
 }

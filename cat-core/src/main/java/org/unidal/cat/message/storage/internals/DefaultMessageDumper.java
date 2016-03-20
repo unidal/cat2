@@ -1,14 +1,11 @@
 package org.unidal.cat.message.storage.internals;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.QueueFullException;
 import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.BucketManager;
@@ -57,25 +54,11 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 
 		for (MessageProcessor processor : m_processors) {
 			processor.shutdown();
+			super.release(processor);
 		}
 
-		m_blockDumperManager.closeDumper(hour);
+		m_blockDumperManager.close(hour);
 		m_bucketManager.closeBuckets(hour);
-	}
-
-	@Override
-	public ByteBuf find(MessageId id) {
-		int index = getIndex(id.getDomain());
-		MessageProcessor process = m_processors.get(index);
-		ByteBuf tree = process.findTree(id);
-
-		if (tree == null) {
-			process = m_processors.get(m_processors.size() - 1); // last one
-
-			tree = process.findTree(id);
-		}
-
-		return tree;
 	}
 
 	private int getIndex(String domain) {

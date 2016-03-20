@@ -20,7 +20,7 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 	private Logger m_logger;
 
 	@Override
-	public void closeDumper(int hour) {
+	public void close(int hour) {
 		MessageDumper dumper = m_dumpers.remove(hour);
 
 		if (dumper != null) {
@@ -38,12 +38,12 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 	}
 
 	@Override
-	public MessageDumper findDumper(int hour) {
+	public MessageDumper find(int hour) {
 		return m_dumpers.get(hour);
 	}
 
 	@Override
-	public MessageDumper findOrCreateMessageDumper(int hour) {
+	public MessageDumper findOrCreate(int hour) {
 		MessageDumper dumper = m_dumpers.get(hour);
 
 		if (dumper == null) {

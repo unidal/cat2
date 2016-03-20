@@ -5,6 +5,10 @@
 			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageDumperManager</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.message.storage.MessageFinderManager</role>
+			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageFinderManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.message.storage.MessageDumper</role>
 			<implementation>org.unidal.cat.message.storage.internals.DefaultMessageDumper</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
@@ -27,6 +31,9 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.metric.BenchmarkManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.storage.MessageFinderManager</role>
 				</requirement>
 			</requirements>
 		</component>

@@ -413,7 +413,7 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		@Override
-		public ByteBuf findTree(MessageId id) {
+		public ByteBuf find(MessageId id) {
 			// TODO Auto-generated method stub
 			return null;
 		}

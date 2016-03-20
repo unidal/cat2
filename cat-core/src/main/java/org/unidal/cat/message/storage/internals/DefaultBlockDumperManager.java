@@ -15,13 +15,13 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = BlockDumperManager.class)
 public class DefaultBlockDumperManager extends ContainerHolder implements LogEnabled, BlockDumperManager {
-	private Map<Integer, BlockDumper> m_dumpers = new LinkedHashMap<Integer, BlockDumper>();
+	private Map<Integer, BlockDumper> m_map = new LinkedHashMap<Integer, BlockDumper>();
 
 	private Logger m_logger;
 
 	@Override
-	public void closeDumper(int hour) {
-		BlockDumper dumper = m_dumpers.remove(hour);
+	public void close(int hour) {
+		BlockDumper dumper = m_map.remove(hour);
 
 		if (dumper != null) {
 			try {
@@ -39,17 +39,12 @@ public class DefaultBlockDumperManager extends ContainerHolder implements LogEna
 	}
 
 	@Override
-	public BlockDumper findDumper(int hour) {
-		return m_dumpers.get(hour);
-	}
-
-	@Override
-	public BlockDumper findOrCreateBlockDumper(int hour) {
-		BlockDumper dumper = m_dumpers.get(hour);
+	public BlockDumper findOrCreate(int hour) {
+		BlockDumper dumper = m_map.get(hour);
 
 		if (dumper == null) {
 			synchronized (this) {
-				dumper = m_dumpers.get(hour);
+				dumper = m_map.get(hour);
 
 				if (dumper == null) {
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -57,7 +52,7 @@ public class DefaultBlockDumperManager extends ContainerHolder implements LogEna
 					dumper = lookup(BlockDumper.class);
 					dumper.initialize(hour);
 
-					m_dumpers.put(hour, dumper);
+					m_map.put(hour, dumper);
 					m_logger.info("Create block dumper " + sdf.format(new Date(TimeUnit.HOURS.toMillis(hour))));
 				}
 			}
