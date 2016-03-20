@@ -16,10 +16,10 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.message.storage.Block;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.internal.MessageId;
 
 public class DefaultBlock implements Block {
 	private static final int MAX_SIZE = 256 * 1024;
@@ -66,7 +66,7 @@ public class DefaultBlock implements Block {
 	}
 
 	@Override
-	public ByteBuf findTree(MessageId id) {
+	public ByteBuf find(MessageId id) {
 		Integer offset = m_mappings.get(id);
 
 		if (offset != null) {

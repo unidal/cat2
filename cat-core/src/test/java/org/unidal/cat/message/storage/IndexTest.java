@@ -6,8 +6,9 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.message.MessageId;
 import org.unidal.lookup.ComponentTestCase;
+
+import com.dianping.cat.message.internal.MessageId;
 
 public class IndexTest extends ComponentTestCase {
 	@Before

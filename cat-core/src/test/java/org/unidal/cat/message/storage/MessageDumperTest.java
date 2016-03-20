@@ -8,7 +8,6 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.message.MessageId;
 import org.unidal.cat.metric.Benchmark;
 import org.unidal.cat.metric.BenchmarkManager;
 import org.unidal.cat.metric.Metric;
@@ -16,6 +15,7 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;

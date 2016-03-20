@@ -563,10 +563,13 @@
 					<role>com.dianping.cat.statistic.ServerStatisticManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+					<role>org.unidal.cat.message.storage.MessageDumperManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.message.storage.MessageDumperManager</role>
+					<role>org.unidal.cat.message.storage.MessageFinderManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
 			</requirements>
 		</component>

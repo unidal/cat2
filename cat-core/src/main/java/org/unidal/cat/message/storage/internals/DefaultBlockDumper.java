@@ -46,6 +46,7 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
 
 		for (BlockWriter writer : m_writers) {
 			writer.shutdown();
+			super.release(writer);
 		}
 	}
 

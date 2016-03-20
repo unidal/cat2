@@ -1,4 +1,4 @@
-package org.unidal.cat.message;
+package com.dianping.cat.message.internal;
 
 public class MessageId {
 	private String m_domain;
