@@ -12,7 +12,6 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.analysis.AbstractMessageAnalyzer;
 import com.dianping.cat.analysis.MessageAnalyzer;
-import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.report.ReportManager;
@@ -30,8 +29,6 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 
 	@Inject
 	private MessageFinderManager m_finderManager;
-
-	private MessageDumper m_dumper;
 
 	private Logger m_logger;
 
@@ -53,11 +50,6 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	}
 
 	@Override
-	public int getAnanlyzerCount() {
-		return 2;
-	}
-
-	@Override
 	public Object getReport(String domain) {
 		throw new UnsupportedOperationException("This should not be called!");
 	}
@@ -65,16 +57,6 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	@Override
 	public ReportManager<?> getReportManager() {
 		return null;
-	}
-
-	@Override
-	public void initialize(long startTime, long duration, long extraTime) {
-		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime);
-
-		m_extraTime = extraTime;
-		m_startTime = startTime;
-		m_duration = duration;
-		m_dumper = m_dumperManager.findOrCreate(hour);
 	}
 
 	@Override
@@ -90,14 +72,11 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 			return;
 		} else {
 			MessageId messageId = MessageId.parse(tree.getMessageId());
+			int hour = messageId.getHour();
+			MessageDumper dumper = m_dumperManager.find(hour);
 
-			long time = tree.getMessage().getTimestamp();
-			long fixedTime = time - time % (TimeHelper.ONE_HOUR);
-			long idTime = messageId.getTimestamp();
-			long duration = fixedTime - idTime;
-
-			if (duration == 0 || duration == ONE_HOUR || duration == -ONE_HOUR) {
-				m_dumper.process(tree);
+			if (dumper != null) {
+				dumper.process(tree);
 			} else {
 				m_serverStateManager.addPigeonTimeError(1);
 			}
@@ -107,4 +86,13 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	public void setServerStateManager(ServerStatisticManager serverStateManager) {
 		m_serverStateManager = serverStateManager;
 	}
+
+	@Override
+	public void initialize(long startTime, long duration, long extraTime) {
+		super.initialize(startTime, duration, extraTime);
+
+		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime);
+		m_dumperManager.findOrCreate(hour);
+	}
+
 }

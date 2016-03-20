@@ -116,7 +116,11 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 							m_blocks.put(domain, block);
 						}
 
-						block.pack(id, tree.getBuffer());
+						ByteBuf buffer = tree.getBuffer();
+
+						block.pack(id, buffer);
+
+						buffer.release();
 						pm.end();
 					} catch (Exception e) {
 						e.printStackTrace();
