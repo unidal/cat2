@@ -28,6 +28,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
 import com.dianping.cat.message.internal.MessageId;
 
 @Named(type = Bucket.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
@@ -317,6 +318,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			if (segment != null) {
 				segment.writeLong(offset, value);
 			} else {
+				Cat.logEvent("Block", "Abnormal:" + id.getDomain(), Event.SUCCESS, id.toString());
 				m_indexChannel.position(position);
 
 				ByteBuffer buf = ByteBuffer.allocate(8);
@@ -421,7 +423,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 							map.put(index, segmentNo);
 						}
-						
+
 						m_offset += 8;
 					} else {
 						break;
@@ -501,6 +503,8 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 					m_latestSegments.put(segmentId, segment);
 					m_maxSegmentId = segmentId;
+				} else {
+					Cat.logEvent("OldSegment", String.valueOf(segmentId) + ",max:" + String.valueOf(m_maxSegmentId));
 				}
 
 				return segment;
