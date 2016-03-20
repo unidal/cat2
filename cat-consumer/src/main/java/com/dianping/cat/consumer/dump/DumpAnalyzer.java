@@ -8,13 +8,16 @@ import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.analysis.AbstractMessageAnalyzer;
+import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.report.ReportManager;
 import com.dianping.cat.statistic.ServerStatisticManager;
 
+@Named(type = MessageAnalyzer.class, value = DumpAnalyzer.ID, instantiationStrategy = Named.PER_LOOKUP)
 public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements LogEnabled {
 	public static final String ID = "dump";
 
