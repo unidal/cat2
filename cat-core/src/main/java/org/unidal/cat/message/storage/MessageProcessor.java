@@ -11,7 +11,7 @@ import com.dianping.cat.message.spi.MessageTree;
 
 public interface MessageProcessor extends Task {
 	public ByteBuf findTree(MessageId messageId);
-	
-	public void initialize(int index, BlockingQueue<MessageTree> queue);
+
+	public void initialize(long timestamp, int index, BlockingQueue<MessageTree> queue);
 
 }
