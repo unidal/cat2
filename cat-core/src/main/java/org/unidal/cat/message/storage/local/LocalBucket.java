@@ -503,7 +503,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 					m_latestSegments.put(segmentId, segment);
 					m_maxSegmentId = segmentId;
-				} else {
+				} else if (segmentId < m_maxSegmentId) {
 					Cat.logEvent("OldSegment", String.valueOf(segmentId) + ",max:" + String.valueOf(m_maxSegmentId));
 				}
 
