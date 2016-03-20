@@ -20,7 +20,6 @@ import org.unidal.cat.metric.Metric;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -93,7 +92,7 @@ public class BucketTest extends ComponentTestCase {
 			bucket.puts(block.getData(), block.getMappings());
 		}
 
-		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(hour);
 
 		bucket = manager.getBucket(domain, ip, hour, true);
 
@@ -137,7 +136,7 @@ public class BucketTest extends ComponentTestCase {
 			bucket.puts(block.getData(), block.getMappings());
 		}
 
-		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(hour);
 
 		bucket = manager.getBucket(domain, "0a010203", hour, true);
 
@@ -213,7 +212,7 @@ public class BucketTest extends ComponentTestCase {
 			bucket.puts(block.getData(), block.getMappings());
 		}
 
-		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(hour);
 
 		bucket = manager.getBucket(domain, "0a010203", hour, true);
 
@@ -273,7 +272,7 @@ public class BucketTest extends ComponentTestCase {
 			bucket.puts(block.getData(), block.getMappings());
 		}
 
-		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(hour);
 
 		bucket = manager.getBucket(domain, ip, hour, true);
 
@@ -317,7 +316,7 @@ public class BucketTest extends ComponentTestCase {
 			}
 		}
 
-		manager.closeBuckets(hour * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(hour);
 		bucket = manager.getBucket(domain, ip, hour, true);
 
 		for (int i = 0; i < 500; i++) {
@@ -385,7 +384,7 @@ public class BucketTest extends ComponentTestCase {
 		}
 
 		mc.start();
-		manager.closeBuckets(404448 * TimeHelper.ONE_HOUR);
+		manager.closeBuckets(404448);
 		mc.end();
 
 		bm.print();

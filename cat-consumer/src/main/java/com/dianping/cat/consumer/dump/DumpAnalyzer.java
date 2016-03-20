@@ -1,5 +1,7 @@
 package com.dianping.cat.consumer.dump;
 
+import java.util.concurrent.TimeUnit;
+
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.MessageId;
@@ -29,7 +31,9 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 	@Override
 	public synchronized void doCheckpoint(boolean atEnd) {
 		try {
-			m_dumperManager.closeDumper(m_startTime);
+			int hour = (int) TimeUnit.MILLISECONDS.toHours(m_startTime);
+
+			m_dumperManager.closeDumper(hour);
 		} catch (Exception e) {
 			m_logger.error(e.getMessage(), e);
 		}
@@ -88,12 +92,11 @@ public class DumpAnalyzer extends AbstractMessageAnalyzer<Object> implements Log
 
 	@Override
 	public void initialize(long startTime, long duration, long extraTime) {
+		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime);
+
 		m_extraTime = extraTime;
 		m_startTime = startTime;
 		m_duration = duration;
-
-		loadReports();
-		m_dumper = m_dumperManager.findOrCreateMessageDumper(m_startTime);
+		m_dumper = m_dumperManager.findOrCreateMessageDumper(hour);
 	}
-
 }

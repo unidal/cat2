@@ -58,7 +58,7 @@ public class LocalMessageService extends LocalModelService<String> implements Mo
 		String messageId = payload.getMessageId();
 		boolean waterfull = payload.isWaterfall();
 		MessageId id = MessageId.parse(messageId);
-		MessageDumper dumper = m_dumperManager.findDumper(id.getTimestamp());
+		MessageDumper dumper = m_dumperManager.findDumper(id.getHour());
 		MessageTree tree = null;
 
 		if (dumper != null) {

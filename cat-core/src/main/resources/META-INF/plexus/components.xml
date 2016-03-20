@@ -27,6 +27,10 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.message.storage.BlockDumperManager</role>
+			<implementation>org.unidal.cat.message.storage.BlockDumperManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.message.storage.BlockDumper</role>
 			<implementation>org.unidal.cat.message.storage.local.DefaultBlockDumper</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
