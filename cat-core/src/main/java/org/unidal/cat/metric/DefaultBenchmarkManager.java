@@ -28,6 +28,11 @@ public class DefaultBenchmarkManager implements BenchmarkManager {
 	}
 
 	@Override
+	public void remove(String type) {
+		m_benchmarks.remove(type);
+	}
+
+	@Override
 	public boolean isEnabled() {
 		return m_enabled.get();
 	}

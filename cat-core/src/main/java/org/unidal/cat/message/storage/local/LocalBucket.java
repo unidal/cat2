@@ -46,6 +46,8 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 	private IndexHelper m_index = new IndexHelper();
 
+	private Benchmark m_benchmark;
+
 	@Override
 	public void close() {
 		if (m_index.isOpen()) {
@@ -90,6 +92,11 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 	}
 
 	@Override
+   public Benchmark getBechmark() {
+		return m_benchmark;
+   }
+
+	@Override
 	public void initialize(String domain, String ip, int hour) throws IOException {
 		long timestamp = hour * 3600 * 1000L;
 		Date startTime = new Date(timestamp);
@@ -125,6 +132,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 	@Override
 	public void setBenchmark(Benchmark benchmark) {
+		m_benchmark = benchmark;
 		m_indexMetric = benchmark.get("index");
 		m_dataMetric = benchmark.get("data");
 	}
