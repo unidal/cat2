@@ -29,8 +29,8 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 			} catch (InterruptedException e) {
 				// ignore
 			}
+			super.release(dumper);
 		}
-		super.release(dumper);
 	}
 
 	@Override
