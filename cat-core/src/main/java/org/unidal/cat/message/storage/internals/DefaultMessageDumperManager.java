@@ -30,6 +30,7 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 				// ignore
 			}
 		}
+		super.release(dumper);
 	}
 
 	@Override
