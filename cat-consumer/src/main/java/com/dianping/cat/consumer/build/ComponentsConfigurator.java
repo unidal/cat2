@@ -18,25 +18,6 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.cat.service.internals.DefaultCompressionService;
-import org.unidal.cat.service.internals.GzipCompressionService;
-import org.unidal.cat.service.internals.ZlibCompressionService;
-import org.unidal.cat.spi.DefaultReportConfiguration;
-import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
-import org.unidal.cat.spi.remote.DefaultRemoteStub;
-import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
-import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
-import org.unidal.cat.spi.report.internals.DefaultReportManagerManager;
-import org.unidal.cat.spi.report.provider.DefaultReportProvider;
-import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
-import org.unidal.cat.spi.report.provider.RecentReportProvider;
-import org.unidal.cat.spi.report.storage.DefaultReportStorage;
-import org.unidal.cat.spi.report.storage.FileReportStorage;
-import org.unidal.cat.spi.report.storage.MysqlReportStorage;
-import org.unidal.cat.spi.task.internals.DefaultTaskManager;
-import org.unidal.cat.spi.task.internals.TaskDispatcher;
-import org.unidal.cat.spi.task.internals.TaskQueue;
-import org.unidal.cat.spi.task.internals.TaskRegistry;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -327,31 +308,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private List<Component> defineReportComponents() {
 		final List<Component> all = new ArrayList<Component>();
-
-		all.add(A(DefaultReportConfiguration.class));
-		all.add(A(DefaultReportManagerManager.class));
-		all.add(A(DefaultReportFilterManager.class));
-		all.add(A(DefaultReportDelegateManager.class));
-
-		all.add(A(DefaultRemoteStub.class));
-		all.add(A(DefaultRemoteSkeleton.class));
-
-		all.add(A(DefaultReportProvider.class));
-		all.add(A(RecentReportProvider.class));
-		all.add(A(HistoricalReportProvider.class));
-
-		all.add(A(DefaultReportStorage.class));
-		all.add(A(MysqlReportStorage.class));
-		all.add(A(FileReportStorage.class));
-
-		all.add(A(DefaultCompressionService.class));
-		all.add(A(GzipCompressionService.class));
-		all.add(A(ZlibCompressionService.class));
-
-		all.add(A(DefaultTaskManager.class));
-		all.add(A(TaskRegistry.class));
-		all.add(A(TaskDispatcher.class));
-		all.add(A(TaskQueue.class));
 
 		all.add(A(TransactionReportManager.class));
 		all.add(A(TransactionReportAggregator.class));

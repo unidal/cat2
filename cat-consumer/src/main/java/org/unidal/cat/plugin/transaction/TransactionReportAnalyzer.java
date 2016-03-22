@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -26,8 +24,8 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 
-@Named(type = MessageAnalyzer.class, value = TransactionConstants.NAME)
-public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> implements LogEnabled {
+@Named(type = MessageAnalyzer.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
+public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> {
 	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_reportManager;
 
@@ -83,11 +81,6 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		} catch (IOException e) {
 			Cat.logError(e);
 		}
-	}
-
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
 	}
 
 	@Deprecated

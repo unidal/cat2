@@ -34,7 +34,7 @@ public class DefaultReportManagerManager extends ContainerHolder implements Repo
 
 				m_cachedManagers.put(id, manager);
 			} catch (RuntimeException e) {
-				throw new IllegalStateException(String.format("No ReportManager(%s) defined!", id), e);
+				throw new IllegalStateException(String.format("No ReportManager(%s) registered!", id), e);
 			}
 		}
 

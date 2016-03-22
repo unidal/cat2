@@ -19,6 +19,25 @@ import org.unidal.cat.message.storage.local.LocalIndexManager;
 import org.unidal.cat.message.storage.local.LocalTokenMapping;
 import org.unidal.cat.message.storage.local.LocalTokenMappingManager;
 import org.unidal.cat.metric.DefaultBenchmarkManager;
+import org.unidal.cat.service.internals.DefaultCompressionService;
+import org.unidal.cat.service.internals.GzipCompressionService;
+import org.unidal.cat.service.internals.ZlibCompressionService;
+import org.unidal.cat.spi.DefaultReportConfiguration;
+import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
+import org.unidal.cat.spi.remote.DefaultRemoteStub;
+import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
+import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
+import org.unidal.cat.spi.report.internals.DefaultReportManagerManager;
+import org.unidal.cat.spi.report.provider.DefaultReportProvider;
+import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
+import org.unidal.cat.spi.report.provider.RecentReportProvider;
+import org.unidal.cat.spi.report.storage.DefaultReportStorage;
+import org.unidal.cat.spi.report.storage.FileReportStorage;
+import org.unidal.cat.spi.report.storage.MysqlReportStorage;
+import org.unidal.cat.spi.task.internals.DefaultTaskManager;
+import org.unidal.cat.spi.task.internals.TaskDispatcher;
+import org.unidal.cat.spi.task.internals.TaskQueue;
+import org.unidal.cat.spi.task.internals.TaskRegistry;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -26,6 +45,31 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
+
+		all.add(A(DefaultReportConfiguration.class));
+		all.add(A(DefaultReportManagerManager.class));
+		all.add(A(DefaultReportFilterManager.class));
+		all.add(A(DefaultReportDelegateManager.class));
+
+		all.add(A(DefaultRemoteStub.class));
+		all.add(A(DefaultRemoteSkeleton.class));
+
+		all.add(A(DefaultReportProvider.class));
+		all.add(A(RecentReportProvider.class));
+		all.add(A(HistoricalReportProvider.class));
+
+		all.add(A(DefaultReportStorage.class));
+		all.add(A(MysqlReportStorage.class));
+		all.add(A(FileReportStorage.class));
+
+		all.add(A(DefaultCompressionService.class));
+		all.add(A(GzipCompressionService.class));
+		all.add(A(ZlibCompressionService.class));
+
+		all.add(A(DefaultTaskManager.class));
+		all.add(A(TaskRegistry.class));
+		all.add(A(TaskDispatcher.class));
+		all.add(A(TaskQueue.class));
 
 		all.add(A(DefaultMessageDumperManager.class));
 		all.add(A(DefaultMessageFinderManager.class));
@@ -36,7 +80,7 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultBlockWriter.class));
 
 		all.add(A(DefaultBenchmarkManager.class));
-		
+
 		all.add(A(LocalBucketManager.class));
 		all.add(A(LocalBucket.class));
 		all.add(A(LocalIndexManager.class));
