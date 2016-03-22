@@ -39,8 +39,8 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		List<Message> children = t.getChildren();
 		int size = children.size();
 
-		if (tree.getMessage() == t && size > 0) { // root transaction with
-			// children
+		// root transaction with children
+		if (tree.getMessage() == t && size > 0) {
 			Message last = children.get(size - 1);
 
 			if (last instanceof Event) {
@@ -119,13 +119,11 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 
 	@Override
 	public void process(MessageTree tree) {
-		String domain = tree.getDomain();
-		TransactionReport report = m_reportManager.getLocalReport(domain, new Date(getStartTime()), m_index, true);
 		Message message = tree.getMessage();
 
-		report.addIp(tree.getIpAddress());
-
 		if (message instanceof Transaction) {
+			String domain = tree.getDomain();
+			TransactionReport report = m_reportManager.getLocalReport(domain, new Date(getStartTime()), m_index, true);
 			Transaction root = (Transaction) message;
 
 			processTransaction(report, tree, root);
@@ -167,6 +165,8 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 			return;
 		} else {
 			Pair<Boolean, Long> pair = checkForTruncatedMessage(tree, t);
+
+			report.addIp(tree.getIpAddress());
 
 			if (pair.getKey().booleanValue()) {
 				String ip = tree.getIpAddress();
