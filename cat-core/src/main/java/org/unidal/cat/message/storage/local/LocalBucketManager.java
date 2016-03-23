@@ -59,9 +59,13 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 			for (Bucket bucket : buckets.values()) {
 				bucket.close();
+
+				Benchmark benchmark = bucket.getBechmark();
+				m_benchmarkManager.remove(benchmark.getType());
+
 				super.release(bucket);
 
-				m_logger.info("Close " + bucket);
+				m_logger.info("Close bucket " + bucket);
 			}
 		}
 	}
@@ -100,7 +104,8 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 				bucket = map.get(domain);
 
 				if (bucket == null) {
-					Benchmark benchmark = m_benchmarkManager.get(domain + ":" + hour);
+					String benchmarkId = domain + ":" + hour;
+					Benchmark benchmark = m_benchmarkManager.get(benchmarkId);
 
 					bucket = lookup(Bucket.class, "local");
 					bucket.setBenchmark(benchmark);
