@@ -28,6 +28,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
 import com.dianping.cat.message.internal.MessageId;
 
 @Named(type = Bucket.class, value = "local", instantiationStrategy = Named.PER_LOOKUP)
@@ -44,6 +45,8 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 	private DataHelper m_data = new DataHelper();
 
 	private IndexHelper m_index = new IndexHelper();
+
+	private Benchmark m_benchmark;
 
 	@Override
 	public void close() {
@@ -89,6 +92,11 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 	}
 
 	@Override
+   public Benchmark getBechmark() {
+		return m_benchmark;
+   }
+
+	@Override
 	public void initialize(String domain, String ip, int hour) throws IOException {
 		long timestamp = hour * 3600 * 1000L;
 		Date startTime = new Date(timestamp);
@@ -124,6 +132,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 	@Override
 	public void setBenchmark(Benchmark benchmark) {
+		m_benchmark = benchmark;
 		m_indexMetric = benchmark.get("index");
 		m_dataMetric = benchmark.get("data");
 	}
@@ -317,6 +326,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			if (segment != null) {
 				segment.writeLong(offset, value);
 			} else {
+				Cat.logEvent("Block", "Abnormal:" + id.getDomain(), Event.SUCCESS, id.toString());
 				m_indexChannel.position(position);
 
 				ByteBuffer buf = ByteBuffer.allocate(8);
@@ -421,7 +431,7 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 
 							map.put(index, segmentNo);
 						}
-						
+
 						m_offset += 8;
 					} else {
 						break;
@@ -492,15 +502,19 @@ public class LocalBucket implements Bucket, BenchmarkEnabled {
 			public Segment findOrCreateNextSegment(long segmentId) throws IOException {
 				Segment segment = m_latestSegments.get(segmentId);
 
-				if (segment == null && segmentId > m_maxSegmentId) {
-					if (m_latestSegments.size() >= CACHE_SIZE) {
-						removeOldSegment();
+				if (segment == null) {
+					if (segmentId > m_maxSegmentId) {
+						if (m_latestSegments.size() >= CACHE_SIZE) {
+							removeOldSegment();
+						}
+
+						segment = new Segment(m_indexChannel, segmentId * SEGMENT_SIZE);
+
+						m_latestSegments.put(segmentId, segment);
+						m_maxSegmentId = segmentId;
+					} else {
+						Cat.logEvent("OldSegment", String.valueOf(segmentId) + ",max:" + String.valueOf(m_maxSegmentId));
 					}
-
-					segment = new Segment(m_indexChannel, segmentId * SEGMENT_SIZE);
-
-					m_latestSegments.put(segmentId, segment);
-					m_maxSegmentId = segmentId;
 				}
 
 				return segment;
