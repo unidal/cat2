@@ -96,7 +96,11 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 				wm.end();
 
 				if (tree != null) {
-					MessageId id = MessageId.parse(tree.getMessageId());
+					MessageId id = tree.getFormatMessageId();
+
+					if (id == null) {
+						id = MessageId.parse(tree.getMessageId());
+					}
 					String domain = id.getDomain();
 					int hour = id.getHour();
 					Block block = m_blocks.get(domain);

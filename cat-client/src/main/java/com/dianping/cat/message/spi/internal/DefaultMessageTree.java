@@ -6,6 +6,7 @@ import io.netty.buffer.ByteBufAllocator;
 import java.nio.charset.Charset;
 
 import com.dianping.cat.message.Message;
+import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 
@@ -22,6 +23,8 @@ public class DefaultMessageTree implements MessageTree {
 	private Message m_message;
 
 	private String m_messageId;
+	
+	private MessageId m_formatMessageId;
 
 	private String m_parentMessageId;
 
@@ -65,6 +68,11 @@ public class DefaultMessageTree implements MessageTree {
 	public String getDomain() {
 		return m_domain;
 	}
+
+	@Override
+   public MessageId getFormatMessageId() {
+	   return m_formatMessageId;
+   }
 
 	@Override
 	public String getHostName() {
@@ -131,6 +139,11 @@ public class DefaultMessageTree implements MessageTree {
 	}
 
 	@Override
+   public void setFormatMessageId(MessageId messageId) {
+		m_formatMessageId = messageId;
+   }
+
+	@Override
 	public void setHostName(String hostName) {
 		m_hostName = hostName;
 	}
@@ -180,6 +193,7 @@ public class DefaultMessageTree implements MessageTree {
 	public void setThreadGroupName(String threadGroupName) {
 		m_threadGroupName = threadGroupName;
 	}
+	
 
 	@Override
 	public void setThreadId(String threadId) {
