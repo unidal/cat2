@@ -23,7 +23,7 @@ public class DefaultMessageTree implements MessageTree {
 	private Message m_message;
 
 	private String m_messageId;
-	
+
 	private MessageId m_formatMessageId;
 
 	private String m_parentMessageId;
@@ -70,9 +70,9 @@ public class DefaultMessageTree implements MessageTree {
 	}
 
 	@Override
-   public MessageId getFormatMessageId() {
-	   return m_formatMessageId;
-   }
+	public MessageId getFormatMessageId() {
+		return m_formatMessageId;
+	}
 
 	@Override
 	public String getHostName() {
@@ -139,9 +139,9 @@ public class DefaultMessageTree implements MessageTree {
 	}
 
 	@Override
-   public void setFormatMessageId(MessageId messageId) {
+	public void setFormatMessageId(MessageId messageId) {
 		m_formatMessageId = messageId;
-   }
+	}
 
 	@Override
 	public void setHostName(String hostName) {
@@ -193,7 +193,6 @@ public class DefaultMessageTree implements MessageTree {
 	public void setThreadGroupName(String threadGroupName) {
 		m_threadGroupName = threadGroupName;
 	}
-	
 
 	@Override
 	public void setThreadId(String threadId) {
