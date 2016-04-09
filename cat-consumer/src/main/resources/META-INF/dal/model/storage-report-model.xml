@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model model-package="com.dianping.cat.consumer.storage.model" enable-merger="true" enable-sax-parser="true"  
 	enable-base-visitor="true"  enable-native-parser="true"  enable-native-builder="true">
-  <entity name="storage-report" root="true">
+  <entity name="storage-report" root="true" implements="org.unidal.cat.spi.Report">
+	<attribute name="period" value-type="org.unidal.cat.spi.ReportPeriod" enum="true"/>
     <attribute name="id" key="true" />
-    <attribute name="id" value-type="String" />
     <attribute name="name" value-type="String" />
     <attribute name="type" value-type="String" />
-    <attribute name="startTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-    <attribute name="endTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
     <element name="id" value-type="String" type="set" names="ids" />
     <element name="ip" value-type="String" type="set" names="ips" />
 	<element name="op" value-type="String" type="set" names="ops" />
     <entity-ref name="machine" type="map" names="machines" method-find-or-create="true"/>
+    <snippet>
+@Override
+public String getDomain() {
+   return m_id;
+}
+    </snippet>
   </entity>
   <entity name="machine">
     <attribute name="id" value-type="String" key="true"/>

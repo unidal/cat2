@@ -2,12 +2,17 @@
 <model model-package="com.dianping.cat.consumer.metric.model"
 	enable-merger="true" enable-sax-parser="true"   enable-native-parser="true"  enable-native-builder="true"
 	enable-base-visitor="true" >
-  <entity name="metric-report" root="true">
+  <entity name="metric-report" root="true" implements="org.unidal.cat.spi.Report">
+	<attribute name="period" value-type="org.unidal.cat.spi.ReportPeriod" enum="true"/>
     <attribute name="product" value-type="String" key="true"/>
-    <attribute name="startTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
-    <attribute name="endTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
     <entity-ref name="metric-item" type="map" names="metric-items" method-find-or-create="true" />
     <entity-ref name="statistic" type="map" names="statistics" method-find-or-create="true" />
+    <snippet>
+@Override
+public String getDomain() {
+   return m_product;
+}
+    </snippet>
   </entity>
   <entity name="metric-item">
     <attribute name="id" value-type="String" key="true"/>
