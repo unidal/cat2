@@ -68,7 +68,7 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	protected R getLocalReport(String domain) {
-		return m_reportManager.getLocalReport(domain, null, m_index, true);
+		return m_reportManager.getLocalReport(domain, new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index, true);
 	}
 
 	public String getName() {

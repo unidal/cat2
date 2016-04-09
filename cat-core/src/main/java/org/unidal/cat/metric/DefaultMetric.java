@@ -20,7 +20,7 @@ public class DefaultMetric implements Metric {
 	@Override
 	public void end() {
 		if (m_start == -1) {
-			throw new IllegalStateException(String.format("Metric(%s) is not started yet", m_name));
+			//throw new IllegalStateException(String.format("Metric(%s) is not started yet", m_name));
 		} else {
 			long durationInMicro = (System.nanoTime() - m_start) / 1000L;
 
