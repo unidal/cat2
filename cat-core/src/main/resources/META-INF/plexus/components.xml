@@ -333,6 +333,37 @@
 			<implementation>org.unidal.cat.message.storage.internals.DefaultStorageConfiguration</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzerManager</role>
+			<implementation>org.unidal.cat.spi.analysis.DefaultMessageAnalyzerManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.analysis.MessageDispatcher</role>
+			<implementation>org.unidal.cat.spi.analysis.DefaultMessageDispatcher</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.analysis.MessageAnalyzerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.statistic.ServerStatisticManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
+			<implementation>org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager</implementation>
+		</component>
+		<component>
 			<role>com.dianping.cat.analysis.MessageConsumer</role>
 			<implementation>com.dianping.cat.analysis.RealtimeConsumer</implementation>
 			<requirements>
