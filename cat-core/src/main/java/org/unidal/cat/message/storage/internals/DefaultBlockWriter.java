@@ -1,5 +1,6 @@
 package org.unidal.cat.message.storage.internals;
 
+import java.util.Calendar;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +43,10 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	@Override
 	public String getName() {
-		return getClass().getSimpleName() + "-" + (m_hour % 24) + "-" + m_index;
+		Calendar cal = Calendar.getInstance();
+
+		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
+		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
 	}
 
 	@Override

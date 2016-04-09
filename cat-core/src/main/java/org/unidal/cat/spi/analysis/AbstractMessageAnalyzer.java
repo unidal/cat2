@@ -1,6 +1,7 @@
 package org.unidal.cat.spi.analysis;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -71,7 +72,10 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	public String getName() {
-		return getClass().getSimpleName() + "-" + (m_hour % 24) + "-" + m_index;
+		Calendar cal = Calendar.getInstance();
+
+		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
+		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
 	}
 
 	@Override
