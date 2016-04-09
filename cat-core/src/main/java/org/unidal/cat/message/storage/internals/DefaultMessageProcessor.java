@@ -3,8 +3,6 @@ package org.unidal.cat.message.storage.internals;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -66,9 +64,7 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 
 	@Override
 	public String getName() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
+		return getClass().getSimpleName() + "-" + (m_hour % 24) + "-" + m_index;
 	}
 
 	@Override
