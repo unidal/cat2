@@ -4,21 +4,21 @@ import java.io.File;
 import java.util.Map;
 
 public interface ReportConfiguration {
+	public int getAnanlyzerCount(String name);
 
-	public int getRemoteCallThreads();
+	public File getBaseDataDir();
 
 	public int getRemoteCallConnectTimeoutInMillis();
 
 	public int getRemoteCallReadTimeoutInMillis();
 
-	public String getServerUriPrefix(String server);
+	public int getRemoteCallThreads();
 
 	public Map<String, Boolean> getServers();
 
+	public String getServerUriPrefix(String server);
+	
 	public boolean isLocalMode();
 
-	public File getBaseDataDir();
-	
 	public void setBaseDataDir(File baseDataDir);
-
 }
