@@ -42,20 +42,13 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
-					<role-hint>transaction</role-hint>
-				</requirement>
-				<requirement>
 					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -145,21 +138,10 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
 			<role-hint>event</role-hint>
 			<implementation>org.unidal.cat.plugin.event.EventReportAnalyzer</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
-					<role-hint>event</role-hint>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-			</requirements>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportFilter</role>

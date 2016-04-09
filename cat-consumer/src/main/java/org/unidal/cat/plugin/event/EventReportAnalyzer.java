@@ -1,19 +1,11 @@
 package org.unidal.cat.plugin.event;
 
-import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
-import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.lookup.annotation.Inject;
+import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
+import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
-import com.dianping.cat.analysis.AbstractMessageAnalyzer;
-import com.dianping.cat.analysis.MessageAnalyzer;
-import com.dianping.cat.config.server.ServerFilterConfigManager;
 import com.dianping.cat.consumer.event.model.entity.EventName;
 import com.dianping.cat.consumer.event.model.entity.EventReport;
 import com.dianping.cat.consumer.event.model.entity.EventType;
@@ -23,59 +15,12 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 
-@Named(type = MessageAnalyzer.class, value = EventConstants.ID)
-public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> implements LogEnabled {
-	@Inject(EventConstants.ID)
-	private ReportManager<EventReport> m_reportManager;
-
-	@Inject
-	private ServerFilterConfigManager m_serverFilterConfigManager;
-
-	@Override
-	public synchronized void doCheckpoint(boolean atEnd) {
-		try {
-			m_reportManager.doCheckpoint(new Date(getStartTime()), m_index, atEnd);
-		} catch (IOException e) {
-			Cat.logError(e);
-		}
-	}
-
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
-
-	@Deprecated
-	@Override
-	public int getAnanlyzerCount() {
-		return 2;
-	}
-
-	@Deprecated
-	@Override
-	public EventReport getReport(String domain) {
-		return null;
-	}
-
-	@Deprecated
-	@Override
-	public com.dianping.cat.report.ReportManager<EventReport> getReportManager() {
-		return null;
-	}
-
-	@Override
-	protected void loadReports() {
-		try {
-			m_reportManager.doInitLoad(new Date(getStartTime()), m_index);
-		} catch (IOException e) {
-			Cat.logError(e);
-		}
-	}
-
+@Named(type = MessageAnalyzer.class, value = EventConstants.ID, instantiationStrategy = Named.PER_LOOKUP)
+public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
 	@Override
 	public void process(MessageTree tree) {
 		String domain = tree.getDomain();
-		EventReport report = m_reportManager.getLocalReport(domain, new Date(getStartTime()), m_index, true);
+		EventReport report = getLocalReport(domain);
 		Message message = tree.getMessage();
 		String ip = tree.getIpAddress();
 

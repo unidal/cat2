@@ -147,8 +147,10 @@ public class DefaultMessageAnalyzerManager extends ContainerHolder implements Me
 		Map<String, MessageAnalyzer> map = lookupMap(MessageAnalyzer.class);
 		Map<String, Integer> weights = getAnalyzerWeights(map);
 
-		m_names = getSortedAnalyzerNames(map, weights);
 		m_timeWindowManager.register(this);
+		m_names = getSortedAnalyzerNames(map, weights);
+
+		m_logger.info("Following reports configured: " + m_names);
 	}
 
 	@Override

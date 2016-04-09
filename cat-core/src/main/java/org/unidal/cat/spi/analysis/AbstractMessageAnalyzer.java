@@ -1,7 +1,9 @@
 package org.unidal.cat.spi.analysis;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,17 +11,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
-import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.extension.RoleHintEnabled;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.io.DefaultMessageQueue;
 import com.dianping.cat.message.spi.MessageQueue;
 import com.dianping.cat.message.spi.MessageTree;
 
-public abstract class AbstractMessageAnalyzer<R extends Report> implements MessageAnalyzer {
-	@Inject
-	private ReportManagerManager m_reportManagerManager;
-
+public abstract class AbstractMessageAnalyzer<R extends Report> extends ContainerHolder implements MessageAnalyzer,
+      RoleHintEnabled {
 	private String m_name;
 
 	private int m_hour;
@@ -32,16 +33,21 @@ public abstract class AbstractMessageAnalyzer<R extends Report> implements Messa
 
 	private ReportManager<R> m_reportManager;
 
+	private MessageFilter m_filter;
+
 	private MessageQueue m_queue;
 
 	private CountDownLatch m_latch = new CountDownLatch(1);
 
 	private AtomicBoolean m_enabled = new AtomicBoolean(true);
 
-	public AbstractMessageAnalyzer(String name, String... dependencies) {
-		m_name = name;
+	public AbstractMessageAnalyzer(String... dependencies) {
 		m_dependencies = dependencies;
 		m_queue = new DefaultMessageQueue(getQueueSize());
+	}
+
+	@Override
+	public void configure(Map<String, String> properties) {
 	}
 
 	@Override
@@ -52,16 +58,24 @@ public abstract class AbstractMessageAnalyzer<R extends Report> implements Messa
 	}
 
 	@Override
+	public void enableRoleHint(String name) {
+		m_name = name;
+	}
+
+	@Override
 	public String[] getDependencies() {
 		return m_dependencies;
 	}
 
 	protected R getLocalReport(String domain) {
-		return m_reportManager.getLocalReport(domain, null, m_index, true);
+		return m_reportManager.getLocalReport(domain, new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index, true);
 	}
 
 	public String getName() {
-		return getClass().getSimpleName();
+		Calendar cal = Calendar.getInstance();
+
+		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
+		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
 	}
 
 	@Override
@@ -71,10 +85,6 @@ public abstract class AbstractMessageAnalyzer<R extends Report> implements Messa
 
 	protected int getQueueSize() {
 		return 30000;
-	}
-
-	protected ReportManager<R> getReportManager() {
-		return m_reportManager;
 	}
 
 	protected void handleException(Throwable e) {
@@ -90,7 +100,14 @@ public abstract class AbstractMessageAnalyzer<R extends Report> implements Messa
 	public void initialize(int index, int hour) throws IOException {
 		m_index = index;
 		m_hour = hour;
-		m_reportManager = m_reportManagerManager.getReportManager(m_name);
+
+		if (super.hasComponent(MessageFilter.class, m_name)) {
+			m_filter = lookup(MessageFilter.class, m_name);
+		}
+
+		ReportManagerManager rmm = lookup(ReportManagerManager.class);
+
+		m_reportManager = rmm.getReportManager(m_name);
 		m_reportManager.doInitLoad(new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index);
 	}
 
@@ -103,7 +120,9 @@ public abstract class AbstractMessageAnalyzer<R extends Report> implements Messa
 
 			if (tree != null) {
 				try {
-					process(tree);
+					if (m_filter == null || m_filter.apply(tree)) {
+						process(tree);
+					}
 				} catch (Throwable e) {
 					handleException(e);
 				}
