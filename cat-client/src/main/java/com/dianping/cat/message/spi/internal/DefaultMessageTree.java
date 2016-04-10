@@ -186,7 +186,9 @@ public class DefaultMessageTree implements MessageTree {
 
 	@Override
 	public void setSessionToken(String sessionToken) {
-		m_sessionToken = sessionToken;
+		if (sessionToken != null && sessionToken.length() > 0) {
+			m_sessionToken = sessionToken;
+		}
 	}
 
 	@Override

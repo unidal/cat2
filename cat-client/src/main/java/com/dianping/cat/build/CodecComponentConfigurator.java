@@ -3,6 +3,7 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.message.codec.BinaryMessageCodec;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -16,6 +17,8 @@ class CodecComponentConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(A(BinaryMessageCodec.class));
+		
 		all.add(C(BufferWriter.class, EscapingBufferWriter.ID, EscapingBufferWriter.class));
 
 		all.add(C(MessageCodec.class, PlainTextMessageCodec.ID, PlainTextMessageCodec.class) //
