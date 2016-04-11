@@ -30,19 +30,17 @@ public class MessageCodecPerfTest extends ComponentTestCase {
 			MessageCodec codec = codecs[i];
 
 			// warm up
-			doCodec(tree, codec);
-
-			int size = 0;
+			int size = doCodec(tree, codec);
 			long start = System.currentTimeMillis();
 
 			for (int j = 0; j < times; j++) {
-				size = doCodec(tree, codec);
+				doCodec(tree, codec);
 			}
 
 			long end = System.currentTimeMillis();
 
-			System.out.println(String.format("%s: %sms, each: %sus, size: %s", types[i], end - start, (end - start)
-			      * 1000L / times, size));
+			long each = (end - start) * 1000L / times;
+			System.out.println(String.format("%s: %sms, each: %sus, size: %s", types[i], end - start, each, size));
 		}
 	}
 
