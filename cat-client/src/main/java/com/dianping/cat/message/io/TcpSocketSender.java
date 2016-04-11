@@ -208,12 +208,18 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 		ChannelFuture future = m_manager.channel();
 		ByteBuf buf = PooledByteBufAllocator.DEFAULT.buffer(10 * 1024); // 10K
 
+		buf.writeInt(0); // placeholder of length
+
 		m_codec.encode(tree, buf);
 
 		int size = buf.readableBytes();
+
+		buf.setInt(0, size - 4); // length
+
 		Channel channel = future.channel();
 
 		channel.writeAndFlush(buf);
+
 		if (m_statistics != null) {
 			m_statistics.onBytes(size);
 		}

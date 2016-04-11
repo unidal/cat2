@@ -255,125 +255,110 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 
 	@Override
 	public void encode(MessageTree tree, ByteBuf buf) {
-		int count = 0;
-		int index = buf.writerIndex();
-
-		buf.writeInt(0); // place-holder
-		count += encodeHeader(tree, buf);
+		encodeHeader(tree, buf);
 
 		if (tree.getMessage() != null) {
-			count += encodeMessage(tree.getMessage(), buf);
+			encodeMessage(tree.getMessage(), buf);
 		}
-
-		buf.setInt(index, count);
 	}
 
-	protected int encodeHeader(MessageTree tree, ByteBuf buf) {
+	protected void encodeHeader(MessageTree tree, ByteBuf buf) {
 		BufferHelper helper = m_bufferHelper;
-		int count = 0;
 
-		count += helper.write(buf, VERSION);
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getDomain());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getHostName());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getIpAddress());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getThreadGroupName());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getThreadId());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getThreadName());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getMessageId());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getParentMessageId());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getRootMessageId());
-		count += helper.write(buf, TAB);
-		count += helper.write(buf, tree.getSessionToken());
-		count += helper.write(buf, LF);
-
-		return count;
+		helper.write(buf, VERSION);
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getDomain());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getHostName());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getIpAddress());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getThreadGroupName());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getThreadId());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getThreadName());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getMessageId());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getParentMessageId());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getRootMessageId());
+		helper.write(buf, TAB);
+		helper.write(buf, tree.getSessionToken());
+		helper.write(buf, LF);
 	}
 
-	protected int encodeLine(Message message, ByteBuf buf, char type, Policy policy) {
+	protected void encodeLine(Message message, ByteBuf buf, char type, Policy policy) {
 		BufferHelper helper = m_bufferHelper;
-		int count = 0;
 
-		count += helper.write(buf, (byte) type);
+		helper.write(buf, (byte) type);
 
 		if (type == 'T' && message instanceof Transaction) {
 			long duration = ((Transaction) message).getDurationInMillis();
 
-			count += helper.write(buf, m_dateHelper.format(message.getTimestamp() + duration));
+			helper.write(buf, m_dateHelper.format(message.getTimestamp() + duration));
 		} else {
-			count += helper.write(buf, m_dateHelper.format(message.getTimestamp()));
+			helper.write(buf, m_dateHelper.format(message.getTimestamp()));
 		}
 
-		count += helper.write(buf, TAB);
-		count += helper.writeRaw(buf, message.getType());
-		count += helper.write(buf, TAB);
-		count += helper.writeRaw(buf, message.getName());
-		count += helper.write(buf, TAB);
+		helper.write(buf, TAB);
+		helper.writeRaw(buf, message.getType());
+		helper.write(buf, TAB);
+		helper.writeRaw(buf, message.getName());
+		helper.write(buf, TAB);
 
 		if (policy != Policy.WITHOUT_STATUS) {
-			count += helper.writeRaw(buf, message.getStatus());
-			count += helper.write(buf, TAB);
+			helper.writeRaw(buf, message.getStatus());
+			helper.write(buf, TAB);
 
 			Object data = message.getData();
 
 			if (policy == Policy.WITH_DURATION && message instanceof Transaction) {
 				long duration = ((Transaction) message).getDurationInMicros();
 
-				count += helper.write(buf, String.valueOf(duration));
-				count += helper.write(buf, "us");
-				count += helper.write(buf, TAB);
+				helper.write(buf, String.valueOf(duration));
+				helper.write(buf, "us");
+				helper.write(buf, TAB);
 			}
 
-			count += helper.writeRaw(buf, String.valueOf(data));
-			count += helper.write(buf, TAB);
+			helper.writeRaw(buf, String.valueOf(data));
+			helper.write(buf, TAB);
 		}
 
-		count += helper.write(buf, LF);
-
-		return count;
+		helper.write(buf, LF);
 	}
 
-	public int encodeMessage(Message message, ByteBuf buf) {
+	public void encodeMessage(Message message, ByteBuf buf) {
 		if (message instanceof Transaction) {
 			Transaction transaction = (Transaction) message;
 			List<Message> children = transaction.getChildren();
 
 			if (children.isEmpty()) {
-				return encodeLine(transaction, buf, 'A', Policy.WITH_DURATION);
+				encodeLine(transaction, buf, 'A', Policy.WITH_DURATION);
 			} else {
-				int count = 0;
 				int len = children.size();
 
-				count += encodeLine(transaction, buf, 't', Policy.WITHOUT_STATUS);
+				encodeLine(transaction, buf, 't', Policy.WITHOUT_STATUS);
 
 				for (int i = 0; i < len; i++) {
 					Message child = children.get(i);
 
 					if (child != null) {
-						count += encodeMessage(child, buf);
+						encodeMessage(child, buf);
 					}
 				}
 
-				count += encodeLine(transaction, buf, 'T', Policy.WITH_DURATION);
-
-				return count;
+				encodeLine(transaction, buf, 'T', Policy.WITH_DURATION);
 			}
 		} else if (message instanceof Event) {
-			return encodeLine(message, buf, 'E', Policy.DEFAULT);
+			encodeLine(message, buf, 'E', Policy.DEFAULT);
 		} else if (message instanceof Trace) {
-			return encodeLine(message, buf, 'L', Policy.DEFAULT);
+			encodeLine(message, buf, 'L', Policy.DEFAULT);
 		} else if (message instanceof Metric) {
-			return encodeLine(message, buf, 'M', Policy.DEFAULT);
+			encodeLine(message, buf, 'M', Policy.DEFAULT);
 		} else if (message instanceof Heartbeat) {
-			return encodeLine(message, buf, 'H', Policy.DEFAULT);
+			encodeLine(message, buf, 'H', Policy.DEFAULT);
 		} else {
 			throw new RuntimeException(String.format("Unsupported message type: %s.", message));
 		}
@@ -465,12 +450,11 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			}
 		}
 
-		public int write(ByteBuf buf, byte b) {
+		public void write(ByteBuf buf, byte b) {
 			buf.writeByte(b);
-			return 1;
 		}
 
-		public int write(ByteBuf buf, String str) {
+		public void write(ByteBuf buf, String str) {
 			if (str == null) {
 				str = "null";
 			}
@@ -478,10 +462,9 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			byte[] data = str.getBytes();
 
 			buf.writeBytes(data);
-			return data.length;
 		}
 
-		public int writeRaw(ByteBuf buf, String str) {
+		public void writeRaw(ByteBuf buf, String str) {
 			if (str == null) {
 				str = "null";
 			}
@@ -494,7 +477,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 				data = str.getBytes();
 			}
 
-			return m_writer.writeTo(buf, data);
+			m_writer.writeTo(buf, data);
 		}
 	}
 

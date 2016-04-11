@@ -212,9 +212,7 @@ public class DefaultMessageTree implements MessageTree {
 		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
 
 		codec.encode(this, buf);
-		buf.readInt(); // get rid of length
 		codec.reset();
 		return buf.toString(Charset.forName("utf-8"));
 	}
-
 }

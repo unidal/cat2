@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.unidal.cat.message.MessageIdFactoryTest;
+import org.unidal.cat.message.codec.BinaryMessageCodecTest;
 
 import com.dianping.cat.configuration.ConfigTest;
 import com.dianping.cat.configuration.NetworkInterfaceManagerTest;
@@ -47,7 +48,11 @@ CatTest.class,
 
 ApiTest.class,
 
-MessageIdFactoryTest.class
+/* .message */
+
+MessageIdFactoryTest.class,
+
+BinaryMessageCodecTest.class,
 
 })
 public class AllTests {
