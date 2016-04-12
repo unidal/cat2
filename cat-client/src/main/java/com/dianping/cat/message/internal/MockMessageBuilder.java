@@ -59,20 +59,8 @@ public abstract class MockMessageBuilder {
 		return h;
 	}
 
-	protected MetricHolder m(String type, String name) {
-		MetricHolder e = new MetricHolder(type, name);
-
-		TransactionHolder parent = m_stack.isEmpty() ? null : m_stack.peek();
-
-		if (parent != null) {
-			e.setTimestampInMicros(parent.getCurrentTimestampInMicros());
-		}
-
-		return e;
-	}
-
-	protected MetricHolder m(String type, String name, String data) {
-		MetricHolder e = new MetricHolder(type, name, data);
+	protected MetricHolder m(String name, String status, String data) {
+		MetricHolder e = new MetricHolder(name, status, data);
 
 		TransactionHolder parent = m_stack.isEmpty() ? null : m_stack.peek();
 
@@ -233,13 +221,10 @@ public abstract class MockMessageBuilder {
 	protected static class MetricHolder extends AbstractMessageHolder {
 		private DefaultMetric m_metric;
 
-		public MetricHolder(String type, String name) {
-			super(type, name);
-		}
-
-		public MetricHolder(String type, String name, String data) {
-			super(type, name, data);
-
+		public MetricHolder(String name, String status, String data) {
+			super("", name, data);
+			
+			setStatus(status);
 		}
 
 		@Override
@@ -250,11 +235,6 @@ public abstract class MockMessageBuilder {
 			m_metric.addData(getData());
 			m_metric.complete();
 			return m_metric;
-		}
-
-		public MetricHolder status(String status) {
-			setStatus(status);
-			return this;
 		}
 	}
 

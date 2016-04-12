@@ -186,7 +186,9 @@ public class DefaultMessageTree implements MessageTree {
 
 	@Override
 	public void setSessionToken(String sessionToken) {
-		m_sessionToken = sessionToken;
+		if (sessionToken != null && sessionToken.length() > 0) {
+			m_sessionToken = sessionToken;
+		}
 	}
 
 	@Override
@@ -210,9 +212,7 @@ public class DefaultMessageTree implements MessageTree {
 		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer();
 
 		codec.encode(this, buf);
-		buf.readInt(); // get rid of length
 		codec.reset();
 		return buf.toString(Charset.forName("utf-8"));
 	}
-
 }
