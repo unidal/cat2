@@ -18,25 +18,6 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.cat.service.internals.DefaultCompressionService;
-import org.unidal.cat.service.internals.GzipCompressionService;
-import org.unidal.cat.service.internals.ZlibCompressionService;
-import org.unidal.cat.spi.DefaultReportConfiguration;
-import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
-import org.unidal.cat.spi.remote.DefaultRemoteStub;
-import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
-import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
-import org.unidal.cat.spi.report.internals.DefaultReportManagerManager;
-import org.unidal.cat.spi.report.provider.DefaultReportProvider;
-import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
-import org.unidal.cat.spi.report.provider.RecentReportProvider;
-import org.unidal.cat.spi.report.storage.DefaultReportStorage;
-import org.unidal.cat.spi.report.storage.FileReportStorage;
-import org.unidal.cat.spi.report.storage.MysqlReportStorage;
-import org.unidal.cat.spi.task.internals.DefaultTaskManager;
-import org.unidal.cat.spi.task.internals.TaskDispatcher;
-import org.unidal.cat.spi.task.internals.TaskQueue;
-import org.unidal.cat.spi.task.internals.TaskRegistry;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -105,10 +86,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		all.addAll(defineReportComponents());
+		all.addAll(defineTransactionComponents());
+		all.addAll(defineEventComponents());
 
-		// all.addAll(defineTransactionComponents());
-		// all.addAll(defineEventComponents());
 		all.addAll(defineProblemComponents());
 		all.addAll(defineHeartbeatComponents());
 		all.addAll(defineTopComponents());
@@ -171,24 +151,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(MessageBucketManager.class, LocalMessageBucketManager.ID, LocalMessageBucketManager.class) //
 		      .req(ServerConfigManager.class, PathBuilder.class, ServerStatisticManager.class)//
 		      .req(HdfsUploader.class));
-
-		return all;
-	}
-
-	Collection<Component> defineEventComponents() {
-		final List<Component> all = new ArrayList<Component>();
-		final String ID = EventAnalyzer.ID;
-
-		all.add(C(MessageAnalyzer.class, ID, EventAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
-		      .req(ReportDelegate.class, ID).req(ServerConfigManager.class, ServerFilterConfigManager.class));
-		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
-		//
-		      .req(ReportDelegate.class, ID)
-		      //
-		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
-		      .config(E("name").value(ID)));
-		all.add(C(ReportDelegate.class, ID, EventDelegate.class).req(TaskManager.class, ServerFilterConfigManager.class,
-		      AllReportConfigManager.class));
 
 		return all;
 	}
@@ -270,6 +232,36 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		return all;
 	}
 
+	private List<Component> defineTransactionComponents() {
+		final List<Component> all = new ArrayList<Component>();
+
+		all.add(A(TransactionReportManager.class));
+		all.add(A(TransactionReportAggregator.class));
+		all.add(A(TransactionReportDelegate.class));
+		all.add(A(TransactionReportAnalyzer.class));
+
+		all.add(A(TransactionReportHelper.class));
+		all.add(A(TransactionTypeFilter.class));
+		all.add(A(TransactionTypeGraphFilter.class));
+		all.add(A(TransactionNameFilter.class));
+		all.add(A(TransactionNameGraphFilter.class));
+
+		return all;
+	}
+
+	private List<Component> defineEventComponents() {
+		final List<Component> all = new ArrayList<Component>();
+
+		all.add(A(EventReportManager.class));
+		all.add(A(EventReportAggregator.class));
+		all.add(A(EventReportDelegate.class));
+		all.add(A(EventReportAnalyzer.class));
+
+		all.add(A(EventReportFilter.class));
+
+		return all;
+	}
+
 	private Collection<Component> defineStateComponents() {
 		final List<Component> all = new ArrayList<Component>();
 		final String ID = StateAnalyzer.ID;
@@ -285,90 +277,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		      .config(E("name").value(ID)));
 		all.add(C(ReportDelegate.class, ID, StateDelegate.class) //
 		      .req(TaskManager.class, ReportBucketManager.class));
-
-		return all;
-	}
-
-	private Collection<Component> defineTopComponents() {
-		final List<Component> all = new ArrayList<Component>();
-		final String ID = TopAnalyzer.ID;
-
-		all.add(C(MessageAnalyzer.class, ID, TopAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
-		      .req(ServerConfigManager.class, ServerFilterConfigManager.class)
-		      .config(E("errorType").value("Error,RuntimeException,Exception")));
-		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
-		//
-		      .req(ReportDelegate.class, ID)
-		      //
-		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
-		      .config(E("name").value(ID)));
-		all.add(C(ReportDelegate.class, ID, TopDelegate.class));
-
-		return all;
-	}
-
-	Collection<Component> defineTransactionComponents() {
-		final List<Component> all = new ArrayList<Component>();
-		final String ID = TransactionAnalyzer.ID;
-
-		all.add(C(MessageAnalyzer.class, ID, TransactionAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
-		      .req(ReportDelegate.class, ID).req(ServerConfigManager.class, ServerFilterConfigManager.class));
-		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
-		//
-		      .req(ReportDelegate.class, ID)
-		      //
-		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
-		      .config(E("name").value(ID)));
-		all.add(C(ReportDelegate.class, ID, TransactionDelegate.class).req(TaskManager.class,
-		      ServerFilterConfigManager.class, AllReportConfigManager.class));
-
-		return all;
-	}
-
-	private List<Component> defineReportComponents() {
-		final List<Component> all = new ArrayList<Component>();
-
-		all.add(A(DefaultReportConfiguration.class));
-		all.add(A(DefaultReportManagerManager.class));
-		all.add(A(DefaultReportFilterManager.class));
-		all.add(A(DefaultReportDelegateManager.class));
-
-		all.add(A(DefaultRemoteStub.class));
-		all.add(A(DefaultRemoteSkeleton.class));
-
-		all.add(A(DefaultReportProvider.class));
-		all.add(A(RecentReportProvider.class));
-		all.add(A(HistoricalReportProvider.class));
-
-		all.add(A(DefaultReportStorage.class));
-		all.add(A(MysqlReportStorage.class));
-		all.add(A(FileReportStorage.class));
-
-		all.add(A(DefaultCompressionService.class));
-		all.add(A(GzipCompressionService.class));
-		all.add(A(ZlibCompressionService.class));
-
-		all.add(A(DefaultTaskManager.class));
-		all.add(A(TaskRegistry.class));
-		all.add(A(TaskDispatcher.class));
-		all.add(A(TaskQueue.class));
-
-		all.add(A(TransactionReportManager.class));
-		all.add(A(TransactionReportAggregator.class));
-		all.add(A(TransactionReportDelegate.class));
-		all.add(A(TransactionReportAnalyzer.class));
-
-		all.add(A(TransactionReportHelper.class));
-		all.add(A(TransactionTypeFilter.class));
-		all.add(A(TransactionTypeGraphFilter.class));
-		all.add(A(TransactionNameFilter.class));
-		all.add(A(TransactionNameGraphFilter.class));
-
-		all.add(A(EventReportManager.class));
-		all.add(A(EventReportAggregator.class));
-		all.add(A(EventReportDelegate.class));
-		all.add(A(EventReportAnalyzer.class));
-		all.add(A(EventReportFilter.class));
 
 		return all;
 	}
@@ -393,6 +301,60 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		// database
 		// all.add(C(JdbcDataSourceDescriptorManager.class) //
 		// .config(E("datasourceFile").value("/data/appdatas/cat/datasources.xml")));
+
+		return all;
+	}
+
+	private Collection<Component> defineTopComponents() {
+		final List<Component> all = new ArrayList<Component>();
+		final String ID = TopAnalyzer.ID;
+
+		all.add(C(MessageAnalyzer.class, ID, TopAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
+		      .req(ServerConfigManager.class, ServerFilterConfigManager.class)
+		      .config(E("errorType").value("Error,RuntimeException,Exception")));
+		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
+		//
+		      .req(ReportDelegate.class, ID)
+		      //
+		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
+		      .config(E("name").value(ID)));
+		all.add(C(ReportDelegate.class, ID, TopDelegate.class));
+
+		return all;
+	}
+
+	Collection<Component> oldEventComponents() {
+		final List<Component> all = new ArrayList<Component>();
+		final String ID = EventAnalyzer.ID;
+
+		all.add(C(MessageAnalyzer.class, ID, EventAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
+		      .req(ReportDelegate.class, ID).req(ServerConfigManager.class, ServerFilterConfigManager.class));
+		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
+		//
+		      .req(ReportDelegate.class, ID)
+		      //
+		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
+		      .config(E("name").value(ID)));
+		all.add(C(ReportDelegate.class, ID, EventDelegate.class).req(TaskManager.class, ServerFilterConfigManager.class,
+		      AllReportConfigManager.class));
+
+		return all;
+	}
+
+	Collection<Component> oldTransactionComponents() {
+		final List<Component> all = new ArrayList<Component>();
+		final String ID = TransactionAnalyzer.ID;
+
+		all.add(C(MessageAnalyzer.class, ID, TransactionAnalyzer.class).is(PER_LOOKUP).req(ReportManager.class, ID)
+		      .req(ReportDelegate.class, ID).req(ServerConfigManager.class, ServerFilterConfigManager.class));
+		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
+		//
+		      .req(ReportDelegate.class, ID)
+		      //
+		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
+		      .config(E("name").value(ID)));
+		all.add(C(ReportDelegate.class, ID, TransactionDelegate.class).req(TaskManager.class,
+		      ServerFilterConfigManager.class, AllReportConfigManager.class));
 
 		return all;
 	}

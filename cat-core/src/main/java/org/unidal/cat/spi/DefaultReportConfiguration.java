@@ -18,6 +18,11 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	private File m_baseDataDir;
 
 	@Override
+	public int getAnanlyzerCount(String name) {
+		return 1; // TODO
+	}
+
+	@Override
 	public File getBaseDataDir() {
 		return m_baseDataDir;
 	}

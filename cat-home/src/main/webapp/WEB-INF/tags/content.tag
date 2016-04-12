@@ -1,4 +1,5 @@
 <%@ tag trimDirectiveWhitespaces="true" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ attribute name="subtitle" fragment="true"%>
 
@@ -20,9 +21,9 @@
 	<div class="nav-search nav" id="nav-search">
 		<span class="text-danger switch">【<a class="switch" href="${model.baseUri}?op=history&domain=${model.domain}&ip=${model.ipAddress}"><span class="text-danger">切到历史模式</span></a>】</span>
 		<c:forEach var="nav" items="${model.navs}">
-				&nbsp;[ <a href="${model.baseUri}?date=${model.date}&ip=${model.ipAddress}&step=${nav.hours}&${navUrlPrefix}">${nav.title}</a> ]
-			</c:forEach>
-			&nbsp;[ <a href="${model.baseUri}?${navUrlPrefix}">now</a> ]&nbsp;
+			&nbsp;[ <a href="${model.baseUri}?date=${model.date}&ip=${model.ipAddress}&step=${nav.hours}&${navUrlPrefix}">${nav.title}</a> ]
+		</c:forEach>
+		&nbsp;[ <a href="${model.baseUri}?${navUrlPrefix}">now</a> ]&nbsp;
 	</div><!-- /.nav-search -->
 </div>
 

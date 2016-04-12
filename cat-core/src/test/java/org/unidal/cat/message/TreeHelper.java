@@ -1,4 +1,4 @@
-package org.unidal.cat.message.storage;
+package org.unidal.cat.message;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -9,14 +9,14 @@ import com.dianping.cat.message.internal.MockMessageBuilder;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
-class TreeHelper {
-	public static DefaultMessageTree tree(MessageCodec codec, MessageId id) {
+public class TreeHelper {
+	public static DefaultMessageTree tree(MessageCodec codec, final MessageId id) {
 		Message message = new MockMessageBuilder() {
 			@Override
 			public MessageHolder define() {
 				TransactionHolder t = t("WEBCLUSTER", "GET",
 				      "This&123123&1231&3&\n\n\n\n&\t\t\t\n\n\n\n\n\n is test data\t\t\n\n", 112819) //
-				      .at(1455333904000L) //
+				      .at(id.getTimestamp() + 1234000L) //
 				      .after(1300).child(t("QUICKIESERVICE", "gimme_stuff", 1571)) //
 				      .after(100).child(e("SERVICE", "event1", "This\n\n\n\n\n\n is test data\t\t\n\n")) //
 				      .after(100).child(h("SERVICE", "heartbeat1")) //
