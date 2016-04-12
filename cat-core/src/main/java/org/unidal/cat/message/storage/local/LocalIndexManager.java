@@ -9,8 +9,6 @@ import org.unidal.cat.message.storage.IndexManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.message.internal.MessageId;
-
 @Named(type = IndexManager.class, value = "local")
 public class LocalIndexManager extends ContainerHolder implements IndexManager {
 	private Map<Integer, Map<String, Index>> m_indexes = new LinkedHashMap<Integer, Map<String, Index>>();
@@ -33,9 +31,7 @@ public class LocalIndexManager extends ContainerHolder implements IndexManager {
 	}
 
 	@Override
-	public Index getIndex(MessageId from, boolean createIfNotExists) throws IOException {
-		int hour = from.getHour();
-		String domain = from.getDomain();
+	public Index getIndex(String domain, int hour, boolean createIfNotExists) throws IOException {
 		Map<String, Index> map = findOrCreateMap(m_indexes, hour, createIfNotExists);
 		Index index = map == null ? null : map.get(domain);
 

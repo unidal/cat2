@@ -15,7 +15,7 @@ public class IndexManagerTest extends ComponentTestCase {
 		IndexManager manager = lookup(IndexManager.class, "local");
 		MessageId id = MessageId.parse("mock-0a260014-403890-12345");
 
-		Assert.assertNull(manager.getIndex(id, false));
-		Assert.assertNotNull(manager.getIndex(id, true));
+		Assert.assertNull(manager.getIndex(id.getDomain(), id.getHour(), false));
+		Assert.assertNotNull(manager.getIndex(id.getDomain(), id.getHour(), true));
 	}
 }
