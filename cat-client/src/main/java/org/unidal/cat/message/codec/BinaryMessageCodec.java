@@ -11,9 +11,13 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Metric;
+import com.dianping.cat.message.Trace;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultEvent;
 import com.dianping.cat.message.internal.DefaultHeartbeat;
+import com.dianping.cat.message.internal.DefaultMetric;
+import com.dianping.cat.message.internal.DefaultTrace;
 import com.dianping.cat.message.internal.DefaultTransaction;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
@@ -62,10 +66,20 @@ public class BinaryMessageCodec implements MessageCodec {
 
 				ctx.addChild(e);
 				break;
+			case 'M':
+				Message m = Codec.METRIC.decode(ctx, buf);
+				
+				ctx.addChild(m);
+				break;
 			case 'H':
 				Message h = Codec.HEARTBEAT.decode(ctx, buf);
 
 				ctx.addChild(h);
+				break;
+			case 'L':
+				Message l = Codec.TRACE.decode(ctx, buf);
+				
+				ctx.addChild(l);
 				break;
 			default:
 				throw new RuntimeException(String.format("Unsupported message type(%s).", ch));
@@ -77,11 +91,12 @@ public class BinaryMessageCodec implements MessageCodec {
 
 	@Override
 	public void encode(MessageTree tree, ByteBuf buf) {
-		Message msg = tree.getMessage();
 		Context ctx = new Context(tree);
 
 		Codec.HEADER.encode(ctx, buf, null);
 
+		Message msg = tree.getMessage();
+		
 		if (msg != null) {
 			encodeMessage(ctx, buf, msg);
 		}
@@ -103,8 +118,12 @@ public class BinaryMessageCodec implements MessageCodec {
 			Codec.TRANSACTION_END.encode(ctx, buf, msg);
 		} else if (msg instanceof Event) {
 			Codec.EVENT.encode(ctx, buf, msg);
+		} else if (msg instanceof Metric) {
+			Codec.METRIC.encode(ctx, buf, msg);
 		} else if (msg instanceof Heartbeat) {
 			Codec.HEARTBEAT.encode(ctx, buf, msg);
+		} else if (msg instanceof Trace) {
+			Codec.TRACE.encode(ctx, buf, msg);
 		} else {
 			throw new RuntimeException(String.format("Unsupported message(%s).", msg));
 		}
@@ -226,6 +245,33 @@ public class BinaryMessageCodec implements MessageCodec {
 				ctx.writeString(buf, msg.getData().toString());
 			}
 		},
+		
+		METRIC {
+			@Override
+			protected Message decode(Context ctx, ByteBuf buf) {
+				long timestamp = ctx.readTimestamp(buf);
+				String type = ctx.readString(buf);
+				String name = ctx.readString(buf);
+				String status = ctx.readString(buf);
+				String data = ctx.readString(buf);
+				DefaultMetric m = new DefaultMetric(type, name);
+				
+				m.setTimestamp(timestamp);
+				m.setStatus(status);
+				m.addData(data);
+				return m;
+			}
+			
+			@Override
+			protected void encode(Context ctx, ByteBuf buf, Message msg) {
+				ctx.writeId(buf, 'M');
+				ctx.writeTimestamp(buf, msg.getTimestamp());
+				ctx.writeString(buf, msg.getType());
+				ctx.writeString(buf, msg.getName());
+				ctx.writeString(buf, msg.getStatus());
+				ctx.writeString(buf, msg.getData().toString());
+			}
+		},
 
 		HEARTBEAT {
 			@Override
@@ -246,6 +292,33 @@ public class BinaryMessageCodec implements MessageCodec {
 			@Override
 			protected void encode(Context ctx, ByteBuf buf, Message msg) {
 				ctx.writeId(buf, 'H');
+				ctx.writeTimestamp(buf, msg.getTimestamp());
+				ctx.writeString(buf, msg.getType());
+				ctx.writeString(buf, msg.getName());
+				ctx.writeString(buf, msg.getStatus());
+				ctx.writeString(buf, msg.getData().toString());
+			}
+		},
+
+		TRACE {
+			@Override
+			protected Message decode(Context ctx, ByteBuf buf) {
+				long timestamp = ctx.readTimestamp(buf);
+				String type = ctx.readString(buf);
+				String name = ctx.readString(buf);
+				String status = ctx.readString(buf);
+				String data = ctx.readString(buf);
+				DefaultTrace t = new DefaultTrace(type, name);
+
+				t.setTimestamp(timestamp);
+				t.setStatus(status);
+				t.addData(data);
+				return t;
+			}
+
+			@Override
+			protected void encode(Context ctx, ByteBuf buf, Message msg) {
+				ctx.writeId(buf, 'L');
 				ctx.writeTimestamp(buf, msg.getTimestamp());
 				ctx.writeString(buf, msg.getType());
 				ctx.writeString(buf, msg.getName());

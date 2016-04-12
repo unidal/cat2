@@ -16,6 +16,7 @@ public class TreeHelper {
 				      .after(1300).child(t("QUICKIESERVICE", "gimme_stuff", 1571)) //
 				      .after(100).child(e("SERVICE", "event1", "This\n\n\n\n\n\n is test data\t\t\n\n")) //
 				      .after(100).child(h("SERVICE", "heartbeat1")) //
+				      .after(100).child(m("ORDER", "C", "1")) //
 				      .after(100).child(t("WEB SERVER", "GET", 109358) //
 				            .after(1000).child(t("SOME SERVICE", "get", 4345) //
 				                  .after(4000).child(t("MEMCACHED", "Get", 279))) //
