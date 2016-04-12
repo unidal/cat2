@@ -195,7 +195,7 @@ public class LocalIndex implements Index {
 			int s1 = ((data[0] << 8) + data[1]) & 0XFFFF;
 			int s2 = ((data[2] << 8) + data[3]) & 0XFFFF;
 			int s3 = ((data[4] << 8) + data[5]) & 0XFFFF;
-			int s4 = ((data[6] << 8) + data[7]) & 0XFFFF;
+			int s4 = ((data[6] << 8) + (data[7] & 0X00FF)) & 0XFFFF;
 
 			String domain = m_mapping.lookup(s1);
 			String ipAddressInHex = m_mapping.lookup(s2);
@@ -215,7 +215,7 @@ public class LocalIndex implements Index {
 
 			buf.writeShort(domainIndex);
 			buf.writeShort(ipIndex);
-			buf.writeShort((hour & 0x03) << 14 + (seq >> 16) & 0xFFFF);
+			buf.writeShort(((hour & 0x03) << 14) + ((seq >> 16) & 0xFFFF));
 			buf.writeShort(seq & 0xFFFF);
 			byte[] data = buf.array();
 
