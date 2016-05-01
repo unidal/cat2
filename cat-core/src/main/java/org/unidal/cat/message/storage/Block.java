@@ -8,6 +8,8 @@ import java.util.Map;
 import com.dianping.cat.message.internal.MessageId;
 
 public interface Block {
+	public void clear();
+
 	public ByteBuf find(MessageId id);
 
 	public void finish();
@@ -18,12 +20,12 @@ public interface Block {
 
 	public int getHour();
 
-	public Map<MessageId, Integer> getMappings();
+	public Map<MessageId, Integer> getOffsets();
 
 	public boolean isFull();
 
 	public void pack(MessageId id, ByteBuf buf) throws IOException;
-	
+
 	public ByteBuf unpack(MessageId id) throws IOException;
 
 }
