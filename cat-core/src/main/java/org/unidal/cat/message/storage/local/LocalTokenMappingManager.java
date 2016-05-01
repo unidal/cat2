@@ -1,9 +1,11 @@
 package org.unidal.cat.message.storage.local;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.unidal.cat.message.storage.TokenMapping;
 import org.unidal.cat.message.storage.TokenMappingManager;
@@ -13,11 +15,38 @@ import org.unidal.tuple.Pair;
 
 @Named(type = TokenMappingManager.class, value = "local")
 public class LocalTokenMappingManager extends ContainerHolder implements TokenMappingManager {
-	private Map<Pair<Date, String>, TokenMapping> m_cache = new HashMap<Pair<Date, String>, TokenMapping>();
+	private Map<Pair<Integer, String>, TokenMapping> m_cache = new HashMap<Pair<Integer, String>, TokenMapping>();
 
 	@Override
-	public TokenMapping getTokenMapping(Date startTime, String ip) throws IOException {
-		Pair<Date, String> pair = new Pair<Date, String>(startTime, ip);
+	public void close(int hour) {
+		Set<Pair<Integer, String>> removes = new HashSet<Pair<Integer, String>>();
+
+		for (Entry<Pair<Integer, String>, TokenMapping> entry : m_cache.entrySet()) {
+			Pair<Integer, String> entryKey = entry.getKey();
+			Integer key = entryKey.getKey();
+
+			if (key <= hour) {
+				removes.add(entryKey);
+			}
+		}
+
+		for (Pair<Integer, String> pair : removes) {
+			TokenMapping mapping = null;
+
+			synchronized (this) {
+				mapping = m_cache.remove(pair);
+			}
+
+			if (mapping != null) {
+				mapping.close();
+			}
+			super.release(mapping);
+		}
+	}
+
+	@Override
+	public TokenMapping getTokenMapping(int hour, String ip) throws IOException {
+		Pair<Integer, String> pair = new Pair<Integer, String>(hour, ip);
 		TokenMapping mapping = m_cache.get(pair);
 
 		if (mapping == null) {
@@ -26,7 +55,7 @@ public class LocalTokenMappingManager extends ContainerHolder implements TokenMa
 
 				if (mapping == null) {
 					mapping = lookup(TokenMapping.class, "local");
-					mapping.open(startTime, ip);
+					mapping.open(hour, ip);
 					m_cache.put(pair, mapping);
 				}
 			}
@@ -34,4 +63,5 @@ public class LocalTokenMappingManager extends ContainerHolder implements TokenMa
 
 		return mapping;
 	}
+
 }

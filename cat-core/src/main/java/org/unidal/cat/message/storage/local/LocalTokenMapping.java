@@ -12,13 +12,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.message.storage.FileBuilder;
-import org.unidal.cat.message.storage.FileBuilder.FileType;
+import org.unidal.cat.message.storage.FileType;
+import org.unidal.cat.message.storage.PathBuilder;
 import org.unidal.cat.message.storage.TokenMapping;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.helper.TimeHelper;
 
 /**
  * Supports up to 64K tokens mapping from <code>String</code> to <code>int</code>, or reverse by local file system.
@@ -30,7 +31,7 @@ public class LocalTokenMapping implements TokenMapping {
 	private static final String MAGIC_CODE = "TokenMapping"; // token mapping
 
 	@Inject("local")
-	private FileBuilder m_bulider;
+	private PathBuilder m_bulider;
 
 	private RandomAccessFile m_file;
 
@@ -64,6 +65,19 @@ public class LocalTokenMapping implements TokenMapping {
 
 		m_tokens.clear();
 		m_map.clear();
+	}
+
+	@Override
+	public String find(int index) throws IOException {
+		int len = m_tokens.size();
+
+		if (index < len) {
+			m_lastAccessTime = System.currentTimeMillis();
+
+			return m_tokens.get(index);
+		} else {
+			return null;
+		}
 	}
 
 	private void flush() throws IOException {
@@ -105,50 +119,41 @@ public class LocalTokenMapping implements TokenMapping {
 	}
 
 	@Override
-	public String lookup(int index) throws IOException {
-		int len = m_tokens.size();
-
-		if (index < len) {
-			m_lastAccessTime = System.currentTimeMillis();
-
-			return m_tokens.get(index);
-		} else {
-			return null;
-		}
-	}
-
-	@Override
 	public int map(String token) throws IOException {
 		Integer index = m_map.get(token);
 
 		if (index == null) {
-			byte[] ba = token.getBytes("utf-8");
-			int len = ba.length;
+			synchronized (m_map) {
+				index = m_map.get(token);
 
-			if (!m_data.isWritable(2 + len)) { // no enough space
-				flush();
+				if (index == null) {
+					byte[] ba = token.getBytes("utf-8");
+					int len = ba.length;
 
-				m_data.clear();
-				m_data.setZero(0, m_data.capacity());
-				m_block++;
+					if (!m_data.isWritable(2 + len)) { // no enough space
+						flush();
+						m_data.clear();
+						m_data.setZero(0, m_data.capacity());
+						m_block++;
+					}
+
+					index = m_tokens.size();
+
+					m_data.writeShort(len);
+					m_data.writeBytes(ba);
+					m_tokens.add(token);
+					m_map.put(token, index);
+					m_dirty = true;
+					m_lastAccessTime = System.currentTimeMillis();
+				}
 			}
-
-			index = m_tokens.size();
-
-			m_data.writeShort(len);
-			m_data.writeBytes(ba);
-			m_tokens.add(token);
-			m_map.put(token, index);
-			m_dirty = true;
-			m_lastAccessTime = System.currentTimeMillis();
 		}
-
 		return index.intValue();
 	}
 
 	@Override
-	public void open(Date startTime, String ip) throws IOException {
-		m_path = m_bulider.getFile(null, startTime, ip, FileType.MAPPING);
+	public void open(int hour, String ip) throws IOException {
+		m_path = new File(m_bulider.getPath(null, new Date(hour * TimeHelper.ONE_HOUR), ip, FileType.TOKEN));
 		m_path.getParentFile().mkdirs();
 		m_file = new RandomAccessFile(m_path, "rwd"); // read-write without meta sync
 		m_data = Unpooled.buffer(BLOCK_SIZE);
