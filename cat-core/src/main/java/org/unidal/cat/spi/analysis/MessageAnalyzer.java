@@ -3,6 +3,7 @@ package org.unidal.cat.spi.analysis;
 import java.io.IOException;
 import java.util.Map;
 
+import com.dianping.cat.message.spi.MessageTree;
 import org.unidal.helper.Threads.Task;
 
 import com.dianping.cat.message.spi.MessageQueue;
@@ -23,4 +24,6 @@ public interface MessageAnalyzer extends Task {
 	public String[] getDependencies();
 
 	public void initialize(int index, int hour) throws IOException;
+
+    public boolean isEligible(MessageTree tree);
 }

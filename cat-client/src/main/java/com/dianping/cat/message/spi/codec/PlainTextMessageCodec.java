@@ -106,7 +106,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 		}
 	}
 
-	protected Message decodeLine(Context ctx, DefaultTransaction parent, Stack<DefaultTransaction> stack) {
+	protected Message decodeLine(Context ctx, DefaultTransaction parent, Stack<DefaultTransaction> stack, MessageTree tree) {
 		BufferHelper helper = m_bufferHelper;
 		byte identifier = ctx.getBuffer().readByte();
 		String timestamp = helper.read(ctx, TAB);
@@ -116,6 +116,11 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 		switch (identifier) {
 		case 't':
 			DefaultTransaction transaction = new DefaultTransaction(type, name, null);
+
+            // ctrip yj.huang Add into index
+            if (tree instanceof DefaultMessageTree) {
+                ((DefaultMessageTree)tree).getTransactions().add(transaction);
+            }
 
 			helper.read(ctx, LF); // get rid of line feed
 			transaction.setTimestamp(m_dateHelper.parse(timestamp));
@@ -128,6 +133,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			return transaction;
 		case 'A':
 			DefaultTransaction tran = new DefaultTransaction(type, name, null);
+
+            // ctrip yj.huang Add into index
+            if (tree instanceof DefaultMessageTree) {
+                ((DefaultMessageTree)tree).getTransactions().add(tran);
+            }
+
 			String status = helper.read(ctx, TAB);
 			String duration = helper.read(ctx, TAB);
 			String data = helper.read(ctx, TAB);
@@ -162,6 +173,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			return stack.pop();
 		case 'E':
 			DefaultEvent event = new DefaultEvent(type, name);
+
+            // ctrip yj.huang Add into index
+            if (tree instanceof DefaultMessageTree) {
+                ((DefaultMessageTree)tree).getEvents().add(event);
+            }
+
 			String eventStatus = helper.read(ctx, TAB);
 			String eventData = helper.read(ctx, TAB);
 
@@ -178,6 +195,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			}
 		case 'M':
 			DefaultMetric metric = new DefaultMetric(type, name);
+
+            // ctrip yj.huang Add into index
+            if (tree instanceof DefaultMessageTree) {
+                ((DefaultMessageTree)tree).getMetrics().add(metric);
+            }
+
 			String metricStatus = helper.read(ctx, TAB);
 			String metricData = helper.read(ctx, TAB);
 
@@ -210,6 +233,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 			}
 		case 'H':
 			DefaultHeartbeat heartbeat = new DefaultHeartbeat(type, name);
+
+            // ctrip yj.huang Add into index
+            if (tree instanceof DefaultMessageTree) {
+                ((DefaultMessageTree)tree).getHeartbeats().add(heartbeat);
+            }
+
 			String heartbeatStatus = helper.read(ctx, TAB);
 			String heartbeatData = helper.read(ctx, TAB);
 
@@ -233,12 +262,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 
 	protected void decodeMessage(Context ctx, MessageTree tree) {
 		Stack<DefaultTransaction> stack = new Stack<DefaultTransaction>();
-		Message parent = decodeLine(ctx, null, stack);
+		Message parent = decodeLine(ctx, null, stack, tree);
 
 		tree.setMessage(parent);
 
 		while (ctx.getBuffer().readableBytes() > 0) {
-			Message message = decodeLine(ctx, (DefaultTransaction) parent, stack);
+			Message message = decodeLine(ctx, (DefaultTransaction) parent, stack, tree);
 
 			if (message instanceof DefaultTransaction) {
 				parent = message;

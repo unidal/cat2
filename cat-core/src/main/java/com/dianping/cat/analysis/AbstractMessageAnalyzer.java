@@ -36,6 +36,11 @@ public abstract class AbstractMessageAnalyzer<R> extends ContainerHolder impleme
 
 	protected int m_index;
 
+    @Override
+    public boolean isEligible(MessageTree tree){
+        return true;
+    }
+
 	@Override
 	public void analyze(MessageQueue queue) {
 		while (!isTimeout() && isActive()) {
