@@ -1,11 +1,13 @@
 package com.dianping.cat.message.spi.internal;
 
+import com.dianping.cat.message.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
-import com.dianping.cat.message.Message;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
@@ -39,6 +41,30 @@ public class DefaultMessageTree implements MessageTree {
 	private String m_threadName;
 
 	private boolean m_sample = true;
+
+    public List<Event> getEvents() {
+        return events;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public List<Heartbeat> getHeartbeats() {
+        return heartbeats;
+    }
+
+    public List<Metric> getMetrics() {
+        return metrics;
+    }
+
+    // yj.huang
+    // Quick index to all descendant events.
+    // So that analyzers for events do not need to look for events recursively in the tree.
+    private List<Event> events = new ArrayList<Event>();
+    private List<Transaction> transactions = new ArrayList<Transaction>();
+    private List<Heartbeat> heartbeats = new ArrayList<Heartbeat>();
+    private List<Metric> metrics = new ArrayList<Metric>();
 
 	@Override
 	public MessageTree copy() {

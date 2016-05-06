@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Inject;
 
@@ -29,8 +30,20 @@ public class DefaultProblemHandler extends ProblemHandler {
 	public void handle(Machine machine, MessageTree tree) {
 		Message message = tree.getMessage();
 
-		if (message instanceof Transaction) {
-			processTransaction(machine, (Transaction) message, tree);
+        // ctrip yj.huang Utilize the transaction/event/heartbeat index to improve performance.
+        if (tree instanceof DefaultMessageTree) {
+            for (Transaction t : ((DefaultMessageTree)tree).getTransactions()) {
+                processTransaction(machine, t, tree, false);
+            }
+            for (Event e : ((DefaultMessageTree)tree).getEvents()) {
+                processEvent(machine, e, tree);
+            }
+            for (Heartbeat h : ((DefaultMessageTree)tree).getHeartbeats()) {
+                processHeartbeat(machine, h, tree);
+            }
+        }
+		else if (message instanceof Transaction) {
+			processTransaction(machine, (Transaction) message, tree, true);
 		} else if (message instanceof Event) {
 			processEvent(machine, (Event) message, tree);
 		} else if (message instanceof Heartbeat) {
@@ -59,7 +72,7 @@ public class DefaultProblemHandler extends ProblemHandler {
 		}
 	}
 
-	private void processTransaction(Machine machine, Transaction transaction, MessageTree tree) {
+	private void processTransaction(Machine machine, Transaction transaction, MessageTree tree, boolean recursive) {
 		String transactionStatus = transaction.getStatus();
 
 		if (!transactionStatus.equals(Transaction.SUCCESS)) {
@@ -72,15 +85,17 @@ public class DefaultProblemHandler extends ProblemHandler {
 
 		List<Message> children = transaction.getChildren();
 
-		for (Message message : children) {
-			if (message instanceof Transaction) {
-				processTransaction(machine, (Transaction) message, tree);
-			} else if (message instanceof Event) {
-				processEvent(machine, (Event) message, tree);
-			} else if (message instanceof Heartbeat) {
-				processHeartbeat(machine, (Heartbeat) message, tree);
-			}
-		}
+        if (recursive) {
+            for (Message message : children) {
+                if (message instanceof Transaction) {
+                    processTransaction(machine, (Transaction) message, tree, recursive);
+                } else if (message instanceof Event) {
+                    processEvent(machine, (Event) message, tree);
+                } else if (message instanceof Heartbeat) {
+                    processHeartbeat(machine, (Heartbeat) message, tree);
+                }
+            }
+        }
 	}
 
 	public void setErrorType(String type) {
