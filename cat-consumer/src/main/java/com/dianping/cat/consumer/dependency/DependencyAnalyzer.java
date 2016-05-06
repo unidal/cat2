@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -117,8 +118,17 @@ public class DependencyAnalyzer extends AbstractMessageAnalyzer<DependencyReport
 		DependencyReport report = findOrCreateReport(tree.getDomain());
 		Message message = tree.getMessage();
 
-		if (message instanceof Transaction) {
-			processTransaction(report, tree, (Transaction) message);
+        // ctrip yj.huang Utilize the transaction/event index to improve performance.
+        if (tree instanceof DefaultMessageTree) {
+            for (Transaction transaction : ((DefaultMessageTree)tree).getTransactions()) {
+                processTransaction(report, tree, transaction,false);
+            }
+            for (Event event : ((DefaultMessageTree)tree).getEvents()) {
+                processEvent(report, tree, event);
+            }
+        }
+        else if (message instanceof Transaction) {
+			processTransaction(report, tree, (Transaction) message, true);
 		} else if (message instanceof Event) {
 			processEvent(report, tree, (Event) message);
 		}
@@ -162,7 +172,7 @@ public class DependencyAnalyzer extends AbstractMessageAnalyzer<DependencyReport
 		}
 	}
 
-	private void processTransaction(DependencyReport report, MessageTree tree, Transaction t) {
+	private void processTransaction(DependencyReport report, MessageTree tree, Transaction t, boolean recursive) {
 		String type = t.getType();
 		String name = t.getName();
 
@@ -175,13 +185,15 @@ public class DependencyAnalyzer extends AbstractMessageAnalyzer<DependencyReport
 
 			List<Message> children = t.getChildren();
 
-			for (Message child : children) {
-				if (child instanceof Transaction) {
-					processTransaction(report, tree, (Transaction) child);
-				} else if (child instanceof Event) {
-					processEvent(report, tree, (Event) child);
-				}
-			}
+            if (recursive) {
+                for (Message child : children) {
+                    if (child instanceof Transaction) {
+                        processTransaction(report, tree, (Transaction) child, recursive);
+                    } else if (child instanceof Event) {
+                        processEvent(report, tree, (Event) child);
+                    }
+                }
+            }
 		}
 	}
 

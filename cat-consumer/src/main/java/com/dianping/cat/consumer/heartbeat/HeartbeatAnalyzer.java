@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -123,7 +124,13 @@ public class HeartbeatAnalyzer extends AbstractMessageAnalyzer<HeartbeatReport> 
 			HeartbeatReport report = findOrCreateReport(domain);
 			report.addIp(tree.getIpAddress());
 
-			if (message instanceof Transaction) {
+            // ctirp yj.huang Utilize the heartbeat index to improve performance
+            if (tree instanceof DefaultMessageTree) {
+                for (Heartbeat h : ((DefaultMessageTree)tree).getHeartbeats()) {
+                    processHeartbeat(report, h, tree);
+                }
+            }
+            else if (message instanceof Transaction) {
 				processTransaction(report, tree, (Transaction) message);
 			}
 		}

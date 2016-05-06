@@ -3,6 +3,7 @@ package com.dianping.cat.consumer.event;
 import java.util.List;
 import java.util.Map;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -97,7 +98,12 @@ public class EventAnalyzer extends AbstractMessageAnalyzer<EventReport> implemen
 			Message message = tree.getMessage();
 			String ip = tree.getIpAddress();
 
-			if (message instanceof Transaction) {
+            // ctrip yj.huang Utilize the event index to improve performance.
+            if (tree instanceof DefaultMessageTree) {
+                for (Event event : ((DefaultMessageTree)tree).getEvents()) {
+                    processEvent(report, tree, event, ip);
+                }
+            } if (message instanceof Transaction) {
 				processTransaction(report, tree, (Transaction) message, ip);
 			} else if (message instanceof Event) {
 				processEvent(report, tree, (Event) message, ip);
