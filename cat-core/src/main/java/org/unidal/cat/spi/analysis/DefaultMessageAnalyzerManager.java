@@ -27,9 +27,6 @@ public class DefaultMessageAnalyzerManager extends ContainerHolder implements Me
 	@Inject
 	private TimeWindowManager m_timeWindowManager;
 
-	@Inject
-	private ReportConfiguration m_configuration;
-
 	private Map<Integer, List<MessageAnalyzer>> m_analyzers = new HashMap<Integer, List<MessageAnalyzer>>();
 
 	private List<String> m_names = new ArrayList<String>();
@@ -68,18 +65,14 @@ public class DefaultMessageAnalyzerManager extends ContainerHolder implements Me
 					analyzers = new ArrayList<MessageAnalyzer>();
 
 					for (String name : m_names) {
-						int count = m_configuration.getAnanlyzerCount(name);
 
-						for (int i = 0; i < count; i++) {
+						if(name.contains("group")){
 							MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, name);
-
 							try {
-								analyzer.initialize(i, hour);
-								Threads.forGroup("Cat").start(analyzer);
+								analyzer.initialize(0,hour);
 								analyzers.add(analyzer);
 							} catch (Throwable e) {
 								String msg = String.format("Error when starting %s!", analyzer);
-
 								e.printStackTrace();
 								m_logger.error(msg, e);
 							}

@@ -73,4 +73,6 @@ public class Constants {
 
 	public static final String APP = "app";
 
+	public static final String DUMP = "dump";
+
 }

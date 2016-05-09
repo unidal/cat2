@@ -9,6 +9,7 @@ import org.unidal.cat.plugin.event.EventReportAnalyzer;
 import org.unidal.cat.plugin.event.EventReportDelegate;
 import org.unidal.cat.plugin.event.EventReportManager;
 import org.unidal.cat.plugin.event.filter.EventReportFilter;
+import org.unidal.cat.plugin.group.GroupMessageAnalyzer;
 import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
@@ -18,6 +19,7 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
+import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -99,6 +101,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.addAll(defineDependencyComponents());
 		all.addAll(defineMetricComponents());
 		all.addAll(defineStorageComponents());
+		all.addAll(defineGroupComponents());
 
 		all.add(C(AllReportConfigManager.class).req(ConfigDao.class, ContentFetcher.class));
 		all.add(C(Module.class, CatConsumerModule.ID, CatConsumerModule.class));
@@ -258,6 +261,17 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(EventReportAnalyzer.class));
 
 		all.add(A(EventReportFilter.class));
+
+		return all;
+	}
+
+	private List<Component> defineGroupComponents() {
+		final List<Component> all = new ArrayList<Component>();
+
+		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"transaction-group",GroupMessageAnalyzer.class)
+				.req(ReportConfiguration.class).config(E("type").value("transaction")).is(PER_LOOKUP));
+		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"event-group",GroupMessageAnalyzer.class)
+				.req(ReportConfiguration.class).config(E("type").value("event")).is(PER_LOOKUP));
 
 		return all;
 	}

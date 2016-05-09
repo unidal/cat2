@@ -15,7 +15,7 @@ import com.dianping.cat.message.spi.MessageQueue;
  * For each hour, there is one instance will be instantiated and be assigned with a specific queue.
  */
 public interface MessageAnalyzer extends Task {
-	public MessageQueue getQueue();
+	public boolean handle(MessageTree tree);
 
 	public void configure(Map<String, String> properties);
 
