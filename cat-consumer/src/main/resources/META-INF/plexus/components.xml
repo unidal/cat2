@@ -770,6 +770,34 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
+			<role-hint>transaction-group</role-hint>
+			<implementation>org.unidal.cat.plugin.group.GroupMessageAnalyzer</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<configuration>
+				<type>transaction</type>
+			</configuration>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
+			<role-hint>event-group</role-hint>
+			<implementation>org.unidal.cat.plugin.group.GroupMessageAnalyzer</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<configuration>
+				<type>event</type>
+			</configuration>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.cat.consumer.config.AllReportConfigManager</role>
 			<implementation>com.dianping.cat.consumer.config.AllReportConfigManager</implementation>
 			<requirements>

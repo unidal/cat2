@@ -37,7 +37,7 @@ public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHa
 			m_stateManager.addMessageTotal(domain, 1);
 
             if (analyzer.isEligible(tree)){
-                boolean success = analyzer.getQueue().offer(tree);
+                boolean success = analyzer.handle(tree);
 
                 if (!success) {
                     m_stateManager.addMessageTotalLoss(domain, 1);

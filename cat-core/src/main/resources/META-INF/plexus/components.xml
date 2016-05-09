@@ -202,9 +202,6 @@
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
 				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
-				</requirement>
 			</requirements>
 		</component>
 		<component>
