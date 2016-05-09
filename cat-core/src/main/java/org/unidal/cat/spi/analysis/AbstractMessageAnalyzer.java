@@ -76,6 +76,16 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 		return m_reportManager.getLocalReport(domain, new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index, true);
 	}
 
+    @Override
+    public Map<String, ? extends Report> getLocalReports() {
+        try {
+            return m_reportManager.getPerThreadLocalReports(new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 	public String getName() {
 		Calendar cal = Calendar.getInstance();
 

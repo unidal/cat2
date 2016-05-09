@@ -33,20 +33,11 @@ public class DefaultMessageAnalyzerManager extends ContainerHolder implements Me
 
 	private Logger m_logger;
 
-	@Override
-	public void doCheckpoint(int hour, boolean atEnd) {
-		List<MessageAnalyzer> analyzers = m_analyzers.remove(hour);
-
-		if (analyzers != null) {
-			for (MessageAnalyzer analyzer : analyzers) {
-				try {
-					analyzer.doCheckpoint(atEnd);
-				} catch (IOException e) {
-					m_logger.error(String.format("Error when doing checkpoint of %s!", analyzer), e);
-				}
-			}
-		}
-	}
+    @Override
+    public List<MessageAnalyzer> removeAnalyzers(int hour) {
+        List<MessageAnalyzer> analyzers = m_analyzers.remove(hour);
+        return analyzers;
+    }
 
 	@Override
 	public void enableLogging(Logger logger) {

@@ -14,6 +14,7 @@ import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.spi.ReportConfiguration;
+import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -262,10 +263,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	private List<Component> defineGroupComponents() {
 		final List<Component> all = new ArrayList<Component>();
 
-		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"transaction-group",GroupMessageAnalyzer.class)
-				.req(ReportConfiguration.class).config(E("type").value(TransactionConstants.NAME)).is(PER_LOOKUP));
+		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class, "transaction-group", GroupMessageAnalyzer.class)
+                .req(ReportConfiguration.class).req(ReportAggregator.class, "transaction").config(E("type").value(TransactionConstants.NAME)).is(PER_LOOKUP));
 		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"event-group",GroupMessageAnalyzer.class)
-				.req(ReportConfiguration.class).config(E("type").value(EventConstants.ID)).is(PER_LOOKUP));
+				.req(ReportConfiguration.class).req(ReportAggregator.class, "event").config(E("type").value(EventConstants.ID)).is(PER_LOOKUP));
 
 		return all;
 	}

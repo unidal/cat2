@@ -4,8 +4,11 @@ import com.dianping.cat.Constants;
 import com.dianping.cat.message.spi.MessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
+import org.unidal.cat.spi.report.ReportAggregator;
+import org.unidal.cat.spi.report.ReportAggregatorUtil;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
@@ -20,6 +23,9 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
 
     @Inject
     private ReportConfiguration m_configuration;
+
+    @Inject
+    private ReportAggregator m_aggregator;
 
     private static final ArrayList<String> roundRobinTask = new ArrayList<String>(Arrays.asList(Constants.DUMP));
 
@@ -92,6 +98,16 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
     @Override
     public boolean isEligible(MessageTree tree){
         return m_analyzers.get(0).isEligible(tree);
+    }
+
+    @Override
+    public Map<String, Report> getLocalReports() {
+        List<Map<String, ? extends Report>> reportMaps = new ArrayList<Map<String, ? extends Report>>(m_analyzers.size());
+        for (MessageAnalyzer analyzer : m_analyzers) {
+            Map<String, ? extends Report> reports = analyzer.getLocalReports();
+            reportMaps.add(reports);
+        }
+        return ReportAggregatorUtil.aggregateMapsOfReports(m_aggregator, reportMaps);
     }
 
     @Override
