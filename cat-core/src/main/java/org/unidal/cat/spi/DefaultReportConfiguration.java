@@ -19,7 +19,7 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 
 	@Override
 	public int getAnanlyzerCount(String name) {
-		return 4; // TODO
+		return 1; // TODO
 	}
 
 	@Override

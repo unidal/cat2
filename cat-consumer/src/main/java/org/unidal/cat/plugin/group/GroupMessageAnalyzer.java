@@ -9,15 +9,12 @@ import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.extension.RoleHintEnabled;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnalyzer, RoleHintEnabled, LogEnabled {
+public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnalyzer, LogEnabled {
     @Inject
     String m_type;
 
@@ -26,16 +23,35 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
 
     private static final ArrayList<String> roundRobinTask = new ArrayList<String>(Arrays.asList(Constants.DUMP));
 
+    private int analyzerIndex;
+
     private Logger m_logger;
 
     private List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
 
+    private int length;
+
+    private int m_hour;
+
+    private int m_index;
+
+    private boolean manyTasks = false;
+
+    private boolean isRoundRobinTask = false;
+
     @Override
     public boolean handle(MessageTree tree) {
-
-        // Pick one analyzer out of m_analyzers
-        // call analyzer.handle(tree);
-        return true;
+        int index = 0;
+        if (manyTasks) {
+            if (isRoundRobinTask) {
+                index = analyzerIndex;
+                analyzerIndex++;
+            } else {
+                index = Math.abs(tree.getDomain().hashCode()) % length;
+            }
+        }
+        MessageAnalyzer analyzer = m_analyzers.get(index);
+        return analyzer.handle(tree);
     }
 
     @Override
@@ -52,6 +68,8 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
 
     @Override
     public void initialize(int index, int hour) throws IOException {
+        m_hour = hour;
+        m_index = index;
         int count = m_configuration.getAnanlyzerCount(m_type);
         for (int i = 0; i < count; i++) {
             MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, m_type);
@@ -66,11 +84,14 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
                 m_logger.error(msg, e);
             }
         }
+        length = count;
+        manyTasks = length > 1;
+        isRoundRobinTask = roundRobinTask.contains(m_type);
     }
 
     @Override
     public boolean isEligible(MessageTree tree){
-        return true;
+        return m_analyzers.get(0).isEligible(tree);
     }
 
     @Override
@@ -80,12 +101,22 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
 
     @Override
     public String getName() {
-        return null;
+        Calendar cal = Calendar.getInstance();
+
+        cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
+        return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_type + "-" + m_index;
     }
 
     @Override
     public void shutdown() {
-
+        for(MessageAnalyzer analyzer : m_analyzers){
+            try {
+                super.release(analyzer);
+                analyzer.shutdown();
+            } catch (Throwable e) {
+                m_logger.error(String.format("Error when stopping %s!", analyzer), e);
+            }
+        }
     }
 
     @Override
@@ -95,11 +126,6 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
 
     public void setType(String m_type) {
         this.m_type = m_type;
-    }
-
-    @Override
-    public void enableRoleHint(String roleHint) {
-
     }
 
     @Override

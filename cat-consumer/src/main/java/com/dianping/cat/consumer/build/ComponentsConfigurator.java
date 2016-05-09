@@ -4,16 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.unidal.cat.plugin.event.EventReportAggregator;
-import org.unidal.cat.plugin.event.EventReportAnalyzer;
-import org.unidal.cat.plugin.event.EventReportDelegate;
-import org.unidal.cat.plugin.event.EventReportManager;
+import org.unidal.cat.plugin.event.*;
 import org.unidal.cat.plugin.event.filter.EventReportFilter;
 import org.unidal.cat.plugin.group.GroupMessageAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.*;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
@@ -269,9 +263,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		final List<Component> all = new ArrayList<Component>();
 
 		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"transaction-group",GroupMessageAnalyzer.class)
-				.req(ReportConfiguration.class).config(E("type").value("transaction")).is(PER_LOOKUP));
+				.req(ReportConfiguration.class).config(E("type").value(TransactionConstants.NAME)).is(PER_LOOKUP));
 		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"event-group",GroupMessageAnalyzer.class)
-				.req(ReportConfiguration.class).config(E("type").value("event")).is(PER_LOOKUP));
+				.req(ReportConfiguration.class).config(E("type").value(EventConstants.ID)).is(PER_LOOKUP));
 
 		return all;
 	}
