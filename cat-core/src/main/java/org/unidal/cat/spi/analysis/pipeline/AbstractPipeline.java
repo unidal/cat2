@@ -1,20 +1,24 @@
 package org.unidal.cat.spi.analysis.pipeline;
 
 import com.dianping.cat.message.spi.MessageTree;
-import org.unidal.cat.spi.Report;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
-import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageRoutingStrategy;
+import org.unidal.helper.Threads;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.Map;
 
-public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEnabled {
+public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
     @Inject
     private ReportManagerManager m_rmm;
 
@@ -25,10 +29,26 @@ public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEna
 
     private int m_hour;
 
+    private Logger m_logger;
+
+    List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
 
     @Override
     public void initialize(int hour) {
         m_hour = hour;
+        int size = getAnalyzerSize();
+        for (int i = 0; i < size; i++) {
+            MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, m_name);
+            try {
+                analyzer.initialize(i, hour);
+                Threads.forGroup("Cat").start(analyzer);
+                m_analyzers.add(analyzer);
+            } catch (Throwable e) {
+                String msg = String.format("Error when starting %s!", analyzer);
+                e.printStackTrace();
+                m_logger.error(msg, e);
+            }
+        }
     }
 
     @Override
@@ -41,6 +61,7 @@ public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEna
         beforeCheckpoint();
         doCheckpoint(true);
         afterCheckpoint();
+        finish();
     }
 
     protected String getName() {
@@ -51,9 +72,7 @@ public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEna
         return m_strategy;
     }
 
-    protected void beforeCheckpoint() throws IOException {
-
-    }
+    abstract protected void beforeCheckpoint() throws IOException;
 
     protected void doCheckpoint(boolean atEnd) throws IOException {
         ReportManager reportManager = m_rmm.getReportManager(m_name);
@@ -63,8 +82,12 @@ public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEna
         }
     }
 
-    protected void afterCheckpoint() {
+    abstract protected void afterCheckpoint();
 
+    protected void finish(){
+        for(MessageAnalyzer messageAnalyzer : m_analyzers){
+            super.release(messageAnalyzer);
+        }
     }
 
     @Override
@@ -74,5 +97,10 @@ public class AbstractPipeline<T extends Report> implements Pipeline, RoleHintEna
 
     protected int getAnalyzerSize() {
         return 1;
+    }
+
+    @Override
+    public void enableLogging(Logger logger) {
+        m_logger = logger;
     }
 }

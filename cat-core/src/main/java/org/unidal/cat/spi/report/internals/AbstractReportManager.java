@@ -1,12 +1,9 @@
 package org.unidal.cat.spi.report.internals;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.Map;
 
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportFilterManager;
@@ -115,12 +112,25 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return report;
 	}
 
-    @Override
-    public Map<String, T> getPerThreadLocalReports(Date startTime, int index) throws IOException {
+    public Map<String, T> getLocalReports(Date startTime, int index) throws IOException {
         long key = startTime.getTime() + index;
         ConcurrentMap<String, T> map = m_reports.get(key);
         return map;
     }
+
+	@Override
+	public Map<String, T> getLocalReports(ReportPeriod report, Date startTime) throws IOException{
+		Map<String, T> map = new ConcurrentHashMap<String, T>();
+		int index = 0;
+		Map<String, T> reportMap;
+		do {
+			reportMap = getLocalReports(startTime, index);
+			if (reportMap != null) {
+				map.putAll(reportMap);
+			}
+		} while (reportMap != null);
+		return map;
+	}
 
 	@Override
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
