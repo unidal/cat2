@@ -7,6 +7,7 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.spi.analysis.event.TimeWindowHandler;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
+import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -16,7 +17,7 @@ import com.dianping.cat.statistic.ServerStatisticManager;
 @Named(type = MessageDispatcher.class)
 public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHandler, Initializable {
 	@Inject
-	private MessageAnalyzerManager m_analyzerManager;
+	private PipelineManager m_pipelineManager;
 
 	@Inject
 	private TimeWindowManager m_timeWindowManager;
@@ -26,41 +27,39 @@ public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHa
 
 	private int m_currentHour;
 
-	private List<MessageAnalyzer> m_currentAnalyzers;
+	private List<Pipeline> m_currentPipelines;
 
-	private List<MessageAnalyzer> m_lastAnalyzers;
+	private List<Pipeline> m_lastPipelines;
 
-	private void dispatch(List<MessageAnalyzer> analyzers, MessageTree tree) {
-		for (MessageAnalyzer analyzer : analyzers) {
+	private void dispatch(List<Pipeline> pipelines, MessageTree tree) {
+		for (Pipeline pipeline : pipelines) {
 			String domain = tree.getDomain();
 
 			m_stateManager.addMessageTotal(domain, 1);
 
-            if (analyzer.isEligible(tree)){
-                boolean success = analyzer.handle(tree);
+			boolean success = pipeline.analyze(tree);
 
-                if (!success) {
-                    m_stateManager.addMessageTotalLoss(domain, 1);
-                }
-            }
+			if (!success) {
+				m_stateManager.addMessageTotalLoss(domain, 1);
+			}
 		}
 	}
 
 	@Override
 	public void dispatch(MessageTree tree) {
 		int hour = (int) TimeUnit.MILLISECONDS.toHours(tree.getMessage().getTimestamp());
-		List<MessageAnalyzer> analyzers = null;
+		List<Pipeline> pipelines = null;
 
 		synchronized (this) {
 			if (hour == m_currentHour) {
-				analyzers = m_currentAnalyzers;
+				pipelines = m_currentPipelines;
 			} else if (hour == m_currentHour - 1) {
-				analyzers = m_lastAnalyzers;
+				pipelines = m_lastPipelines;
 			}
 		}
 
-		if (analyzers != null) {
-			dispatch(analyzers, tree);
+		if (pipelines != null) {
+			dispatch(pipelines, tree);
 		} else {
 			// discard it
 			m_stateManager.addNetworkTimeError(1);
@@ -74,13 +73,13 @@ public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHa
 
 	@Override
 	public void onTimeWindowEnter(int hour) {
-		List<MessageAnalyzer> currentAnalyzers = m_analyzerManager.getAnalyzers(hour);
-		List<MessageAnalyzer> lastAnalyzers = m_analyzerManager.getAnalyzers(hour - 1);
+		List<Pipeline> currentPipelines = m_pipelineManager.getPipelines(hour);
+		List<Pipeline> lastPipelines = m_pipelineManager.getPipelines(hour - 1);
 
 		synchronized (this) {
 			m_currentHour = hour;
-			m_currentAnalyzers = currentAnalyzers;
-			m_lastAnalyzers = lastAnalyzers;
+			m_currentPipelines = currentPipelines;
+			m_lastPipelines = lastPipelines;
 		}
 	}
 
