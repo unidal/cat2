@@ -12,11 +12,13 @@ import org.unidal.cat.spi.report.ReportAggregatorUtil;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+@Named(type = MessageAnalyzer.class, instantiationStrategy = Named.PER_LOOKUP)
 public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnalyzer, LogEnabled {
     @Inject
     String m_type;
@@ -70,6 +72,9 @@ public class GroupMessageAnalyzer extends ContainerHolder implements MessageAnal
     @Override
     public String[] getDependencies() {
         return new String[0];
+    }
+
+    public void initialize(int hour, String name, int count) throws IOException {
     }
 
     @Override
