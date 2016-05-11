@@ -12,6 +12,17 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.analysis.pipeline.Pipeline</role>
+			<role-hint>event</role-hint>
+			<implementation>org.unidal.cat.plugin.event.EventPipeline</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 			<implementation>org.unidal.cat.plugin.routing.DomainHashStrategy</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
