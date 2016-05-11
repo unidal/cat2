@@ -1,6 +1,7 @@
 package org.unidal.cat.message.storage.internals;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -10,24 +11,22 @@ import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockWriter;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
-import org.unidal.cat.metric.Benchmark;
-import org.unidal.cat.metric.BenchmarkEnabled;
-import org.unidal.cat.metric.BenchmarkManager;
-import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.Transaction;
+import com.dianping.cat.statistic.ServerStatisticManager;
 
 @Named(type = BlockWriter.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DefaultBlockWriter implements BlockWriter {
-	@Inject
+
+	@Inject("local")
 	private BucketManager m_bucketManager;
 
 	@Inject
-	private BenchmarkManager m_benchmarkManager;
+	private ServerStatisticManager m_statisticManager;
 
 	private int m_index;
 
@@ -43,10 +42,9 @@ public class DefaultBlockWriter implements BlockWriter {
 
 	@Override
 	public String getName() {
-		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
-		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
+		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
 	}
 
 	@Override
@@ -58,39 +56,44 @@ public class DefaultBlockWriter implements BlockWriter {
 		m_latch = new CountDownLatch(1);
 	}
 
+	private void processBlock(String ip, Block block) {
+		try {
+			Bucket bucket = m_bucketManager.getBucket(block.getDomain(), ip, block.getHour(), true);
+			boolean monitor = (++m_count) % 100 == 0;
+
+			if (monitor) {
+				Transaction t = Cat.newTransaction("Block", block.getDomain());
+
+				bucket.puts(block.getData(), block.getOffsets());
+
+				t.setStatus(Transaction.SUCCESS);
+				t.complete();
+			} else {
+				bucket.puts(block.getData(), block.getOffsets());
+			}
+		} catch (Exception e) {
+			Cat.logError(e);
+		} catch (Error e) {
+			Cat.logError(e);
+		} finally {
+			block.clear();
+		}
+	}
+
 	@Override
 	public void run() {
 		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
-		Benchmark benchmark = m_benchmarkManager.get("BlockWriter-" + m_index);
-		Metric metric = benchmark.get("wait");
-		Block block;
 
 		try {
 			while (m_enabled.get() || !m_queue.isEmpty()) {
-				metric.start();
-				block = m_queue.poll(5, TimeUnit.MILLISECONDS);
-				metric.end();
+				Block block = m_queue.poll(5, TimeUnit.MILLISECONDS);
 
 				if (block != null) {
-					try {
-						Bucket bucket = m_bucketManager.getBucket(block.getDomain(), ip, block.getHour(), true);
+					long time = System.currentTimeMillis();
+					processBlock(ip, block);
+					long duration = System.currentTimeMillis() - time;
 
-						if (bucket instanceof BenchmarkEnabled) {
-							((BenchmarkEnabled) bucket).setBenchmark(benchmark);
-						}
-
-						if ((++m_count) % 100 == 0) {
-							Transaction t = Cat.newTransaction("Block", block.getDomain());
-
-							bucket.puts(block.getData(), block.getMappings());
-							t.setStatus(Transaction.SUCCESS);
-							t.complete();
-						} else {
-							bucket.puts(block.getData(), block.getMappings());
-						}
-					} catch (Exception e) {
-						Cat.logError(e);
-					}
+					m_statisticManager.addBlockTime(duration);
 				}
 			}
 		} catch (InterruptedException e) {
@@ -98,9 +101,6 @@ public class DefaultBlockWriter implements BlockWriter {
 		}
 
 		m_latch.countDown();
-
-		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
-		benchmark.print();
 	}
 
 	@Override
@@ -112,5 +112,15 @@ public class DefaultBlockWriter implements BlockWriter {
 		} catch (InterruptedException e) {
 			// ignore it
 		}
+		while (true) {
+			Block block = m_queue.poll();
+
+			if (block != null) {
+				processBlock(NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), block);
+			} else {
+				break;
+			}
+		}
 	}
+
 }

@@ -13,31 +13,29 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
-import org.unidal.cat.message.storage.FileBuilder;
-import org.unidal.cat.message.storage.FileBuilder.FileType;
-import org.unidal.cat.metric.Benchmark;
-import org.unidal.cat.metric.BenchmarkManager;
+import org.unidal.cat.message.storage.FileType;
+import org.unidal.cat.message.storage.PathBuilder;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+
 @Named(type = BucketManager.class, value = "local")
 public class LocalBucketManager extends ContainerHolder implements BucketManager, LogEnabled {
-	@Inject
-	private BenchmarkManager m_benchmarkManager;
 
 	@Inject("local")
-	private FileBuilder m_bulider;
+	private PathBuilder m_bulider;
 
 	private Map<Integer, Map<String, Bucket>> m_buckets = new LinkedHashMap<Integer, Map<String, Bucket>>();
 
-	private Logger m_logger;
+	protected Logger m_logger;
 
 	private boolean bucketFilesExsits(String domain, String ip, int hour) {
 		long timestamp = hour * 3600 * 1000L;
 		Date startTime = new Date(timestamp);
-		File dataPath = m_bulider.getFile(domain, startTime, ip, FileType.DATA);
-		File indexPath = m_bulider.getFile(domain, startTime, ip, FileType.INDEX);
+		File dataPath = new File(m_bulider.getPath(domain, startTime, ip, FileType.DATA));
+		File indexPath = new File(m_bulider.getPath(domain, startTime, ip, FileType.INDEX));
 
 		return dataPath.exists() && indexPath.exists();
 	}
@@ -58,14 +56,13 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 			Map<String, Bucket> buckets = m_buckets.remove(h);
 
 			for (Bucket bucket : buckets.values()) {
-				bucket.close();
-
-				Benchmark benchmark = bucket.getBechmark();
-				m_benchmarkManager.remove(benchmark.getType());
-
-				super.release(bucket);
-
-				m_logger.info("Close bucket " + bucket);
+				try {
+					bucket.close();
+				} catch (Exception e) {
+					Cat.logError(e);
+				} finally {
+					super.release(bucket);
+				}
 			}
 		}
 	}
@@ -96,19 +93,15 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException {
 		Map<String, Bucket> map = findOrCreateMap(m_buckets, hour);
 		Bucket bucket = map.get(domain);
-		boolean shouldCreate = createIfNotExists && bucket == null || !createIfNotExists
-		      && bucketFilesExsits(domain, ip, hour);
+		boolean shouldCreate = (createIfNotExists && bucket == null)
+		      || (!createIfNotExists && bucketFilesExsits(domain, ip, hour));
 
 		if (shouldCreate) {
 			synchronized (map) {
 				bucket = map.get(domain);
 
 				if (bucket == null) {
-					String benchmarkId = domain + ":" + hour;
-					Benchmark benchmark = m_benchmarkManager.get(benchmarkId);
-
 					bucket = lookup(Bucket.class, "local");
-					bucket.setBenchmark(benchmark);
 					bucket.initialize(domain, ip, hour);
 					map.put(domain, bucket);
 				}
@@ -117,4 +110,5 @@ public class LocalBucketManager extends ContainerHolder implements BucketManager
 
 		return bucket;
 	}
+
 }

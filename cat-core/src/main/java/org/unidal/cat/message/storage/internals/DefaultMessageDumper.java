@@ -1,41 +1,79 @@
 package org.unidal.cat.message.storage.internals;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.unidal.cat.message.QueueFullException;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageProcessor;
+import org.unidal.cat.message.storage.exception.MessageQueueFullException;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.CatConstants;
+import com.dianping.cat.config.server.ServerConfigManager;
+import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
+import com.dianping.cat.statistic.ServerStatisticManager;
 
 @Named(type = MessageDumper.class, instantiationStrategy = Named.PER_LOOKUP)
-public class DefaultMessageDumper extends ContainerHolder implements MessageDumper {
+public class DefaultMessageDumper extends ContainerHolder implements MessageDumper, LogEnabled {
 	@Inject
 	private BlockDumperManager m_blockDumperManager;
 
-	@Inject
+	@Inject("local")
 	private BucketManager m_bucketManager;
+
+	@Inject
+	private ServerStatisticManager m_statisticManager;
+
+	@Inject
+	private ServerConfigManager m_configManager;
 
 	private List<BlockingQueue<MessageTree>> m_queues = new ArrayList<BlockingQueue<MessageTree>>();
 
 	private List<MessageProcessor> m_processors = new ArrayList<MessageProcessor>();
 
-	private int m_failCount = -1;
+	private AtomicInteger m_failCount = new AtomicInteger(-1);
+
+	private Logger m_logger;
+
+	private long m_total;
+
+	private int m_processThreads;
 
 	@Override
 	public void awaitTermination(int hour) throws InterruptedException {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+		String date = sdf.format(new Date(hour * TimeHelper.ONE_HOUR));
+
+		m_logger.info("starting close message processor " + date);
+		closeMessageProcessor();
+		m_logger.info("end close dumper processor " + date);
+
+		m_logger.info("starting close dumper manager " + date);
+		m_blockDumperManager.close(hour);
+		m_logger.info("end close dumper manager " + date);
+
+		m_logger.info("starting close bucket manager " + date);
+		m_bucketManager.closeBuckets(hour);
+		m_logger.info("end close bucket manager " + date);
+	}
+
+	private void closeMessageProcessor() throws InterruptedException {
 		while (true) {
 			boolean allEmpty = true;
 
@@ -57,21 +95,31 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			processor.shutdown();
 			super.release(processor);
 		}
-
-		m_blockDumperManager.close(hour);
-		m_bucketManager.closeBuckets(hour);
 	}
 
-	private int getIndex(String domain) {
-		int hash = Math.abs(domain.hashCode());
-		int index = hash % (m_processors.size() - 1); // last one for message overflow
+	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
+	}
 
-		return index;
+	private int getIndex(String key) {
+		return (Math.abs(key.hashCode())) % (m_processThreads);
 	}
 
 	public void initialize(int hour) {
-		for (int i = 0; i < 10; i++) {
-			BlockingQueue<MessageTree> queue = new LinkedBlockingQueue<MessageTree>(10000);
+		DefaultBlock.COMMPRESS_TYPE = CompressTye.getCompressTye(m_configManager.getStorageCompressType());
+		DefaultBlock.DEFLATE_LEVEL = m_configManager.getStorageDeflateLevel();
+		DefaultBlock.MAX_SIZE = m_configManager.getStorageMaxBlockSize();
+
+		m_logger.info("set compress type :" + DefaultBlock.COMMPRESS_TYPE.toString());
+		m_logger.info("set compress level:" + DefaultBlock.DEFLATE_LEVEL);
+		m_logger.info("set default block size:" + DefaultBlock.MAX_SIZE);
+
+		int processThreads = m_configManager.getMessageProcessorThreads();
+		m_processThreads = processThreads;
+
+		for (int i = 0; i < processThreads; i++) {
+			BlockingQueue<MessageTree> queue = new ArrayBlockingQueue<MessageTree>(10000);
 			MessageProcessor processor = lookup(MessageProcessor.class);
 
 			m_queues.add(queue);
@@ -85,21 +133,28 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 	@Override
 	public void process(MessageTree tree) {
 		MessageId id = tree.getFormatMessageId();
-
-		if (id == null) {
-			id = MessageId.parse(tree.getMessageId());
-		}
-		
 		String domain = id.getDomain();
-		int index = getIndex(domain);
+		// hash by ip address and block hash by domain
+		// int index = getIndex(id.getDomain());
+		int index = getIndex(id.getIpAddressInHex());
+
 		BlockingQueue<MessageTree> queue = m_queues.get(index);
+		boolean success = queue.offer(tree);
 
-		if (!queue.offer(tree)) { // overflow
-			BlockingQueue<MessageTree> last = m_queues.get(m_queues.size() - 1);
-			boolean success = last.offer(tree);
+		if (!success) {
+			m_statisticManager.addMessageDumpLoss(1);
 
-			if (!success && (++m_failCount % 100) == 0) {
-				Cat.logError(new QueueFullException("Error when adding message to queue, fails: " + m_failCount));
+			if ((m_failCount.incrementAndGet() % 100) == 0) {
+				Cat.logError(new MessageQueueFullException("Error when adding message to queue, fails: " + m_failCount));
+
+				m_logger.info("message tree queue is full " + m_failCount + " index " + index);
+				// tree.getBuffer().release();
+			}
+		} else {
+			m_statisticManager.addMessageSize(domain, tree.getBuffer().readableBytes());
+
+			if ((++m_total) % CatConstants.SUCCESS_COUNT == 0) {
+				m_statisticManager.addMessageDump(CatConstants.SUCCESS_COUNT);
 			}
 		}
 	}

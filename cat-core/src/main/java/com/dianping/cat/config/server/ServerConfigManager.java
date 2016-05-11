@@ -180,7 +180,7 @@ public class ServerConfigManager implements LogEnabled {
 			return 30;
 		}
 	}
-	
+
 	public int getHdfsUploadThreadCount() {
 		if (m_config != null) {
 			StorageConfig storage = m_config.getStorage();
@@ -334,6 +334,42 @@ public class ServerConfigManager implements LogEnabled {
 		} else {
 			return defaultValue;
 		}
+	}
+
+	public String getStorageCompressType() {
+		return getProperty("storage-compress-type", "snappy");
+	}
+
+	public int getStorageDeflateLevel() {
+		return Integer.parseInt(getProperty("storage-deflate-level", "5"));
+	}
+
+	public int getStorageMaxBlockSize() {
+		return Integer.parseInt(getProperty("storage-max-block-size", "131072"));
+	}
+
+	public boolean getStroargeNioEnable() {
+		return Boolean.parseBoolean(getProperty("storage-nio-enable", "true"));
+	}
+
+	public int getThreadsOfRealtimeAnalyzer(String name) {
+		return Integer.parseInt(getProperty(name + "-analyzer-threads", "1"));
+	}
+
+	public String getProperty(String name, String defaultValue) {
+		return defaultValue;
+	}
+
+	public int getMessageDumpThreads() {
+		return Integer.parseInt(getProperty("message-dumper-thread", "5"));
+	}
+
+	public int getMessageProcessorThreads() {
+		return Integer.parseInt(getProperty("message-processor-thread", "20"));
+	}
+
+	public int getHdfsUploadThreadsCount() {
+		return 5;
 	}
 
 	public boolean validateIp(String str) {

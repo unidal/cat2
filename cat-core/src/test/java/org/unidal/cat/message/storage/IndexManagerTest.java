@@ -7,6 +7,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
+import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.internal.MessageId;
 
 public class IndexManagerTest extends ComponentTestCase {
@@ -14,8 +15,8 @@ public class IndexManagerTest extends ComponentTestCase {
 	public void test() throws IOException {
 		IndexManager manager = lookup(IndexManager.class, "local");
 		MessageId id = MessageId.parse("mock-0a260014-403890-12345");
+		String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
-		Assert.assertNull(manager.getIndex(id, false));
-		Assert.assertNotNull(manager.getIndex(id, true));
+		Assert.assertNotNull(manager.getIndex(id.getDomain(), ip, id.getHour(), true));
 	}
 }

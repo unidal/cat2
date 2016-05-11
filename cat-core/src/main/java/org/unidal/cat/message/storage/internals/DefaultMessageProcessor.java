@@ -3,7 +3,8 @@ package org.unidal.cat.message.storage.internals;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -16,13 +17,12 @@ import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.MessageFinder;
 import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.cat.message.storage.MessageProcessor;
-import org.unidal.cat.metric.Benchmark;
-import org.unidal.cat.metric.BenchmarkManager;
-import org.unidal.cat.metric.Metric;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 
@@ -30,9 +30,6 @@ import com.dianping.cat.message.spi.MessageTree;
 public class DefaultMessageProcessor implements MessageProcessor, MessageFinder {
 	@Inject
 	private BlockDumperManager m_blockDumperManager;
-
-	@Inject
-	private BenchmarkManager m_benchmarkManager;
 
 	@Inject
 	private MessageFinderManager m_finderManager;
@@ -51,6 +48,8 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 
 	private CountDownLatch m_latch;
 
+	private int m_count;
+
 	@Override
 	public ByteBuf find(MessageId id) {
 		String domain = id.getDomain();
@@ -65,10 +64,9 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 
 	@Override
 	public String getName() {
-		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
-		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
+		return getClass().getSimpleName() + " " + sdf.format(new Date(TimeUnit.HOURS.toMillis(m_hour))) + "-" + m_index;
 	}
 
 	@Override
@@ -82,58 +80,70 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 		m_finderManager.register(hour, this);
 	}
 
+	private boolean isMonitor() {
+		return (++m_count) % 1000 == 0;
+	}
+
+	private MessageTree pollMessage() throws InterruptedException {
+		return m_queue.poll(5, TimeUnit.MILLISECONDS);
+	}
+
+	private void processMessage(MessageTree tree) {
+		MessageId id = tree.getFormatMessageId();
+		String domain = id.getDomain();
+		int hour = id.getHour();
+		Block block = m_blocks.get(domain);
+
+		if (block == null) {
+			block = new DefaultBlock(domain, hour);
+			m_blocks.put(domain, block);
+		}
+
+		ByteBuf buffer = tree.getBuffer();
+
+		try {
+			if (block.isFull()) {
+				block.finish();
+
+				m_dumper.dump(block);
+
+				block = new DefaultBlock(domain, hour);
+				m_blocks.put(domain, block);
+			}
+
+			block.pack(id, buffer);
+		} catch (Exception e) {
+			Cat.logError(e);
+		} finally {
+			// buffer.release();
+		}
+	}
+
 	@Override
 	public void run() {
-		Benchmark benchmark = m_benchmarkManager.get("MessageProcessor-" + m_index);
-		Metric wm = benchmark.get("wait");
-		Metric pm = benchmark.get("pack");
 		MessageTree tree;
 
 		try {
 			while (m_enabled.get() || !m_queue.isEmpty()) {
-				wm.start();
-				tree = m_queue.poll(5, TimeUnit.MILLISECONDS);
-				wm.end();
+				tree = pollMessage();
 
 				if (tree != null) {
-					MessageId id = tree.getFormatMessageId();
+					if (isMonitor()) {
+						Transaction t = Cat.newTransaction("Processor", "index-" + m_index);
 
-					if (id == null) {
-						id = MessageId.parse(tree.getMessageId());
-					}
-					String domain = id.getDomain();
-					int hour = id.getHour();
-					Block block = m_blocks.get(domain);
-
-					if (block == null) {
-						block = new DefaultBlock(domain, hour);
-						m_blocks.put(domain, block);
-					}
-
-					ByteBuf buffer = tree.getBuffer();
-					try {
-						pm.start();
-
-						if (block.isFull()) {
-							block.finish();
-
-							m_dumper.dump(block);
-							block = new DefaultBlock(domain, hour);
-							m_blocks.put(domain, block);
-						}
-
-						block.pack(id, buffer);
-						pm.end();
-					} catch (Exception e) {
-						Cat.logError(e);
-					} finally {
-						buffer.release();
+						processMessage(tree);
+						t.setStatus(Transaction.SUCCESS);
+						t.complete();
+					} else {
+						processMessage(tree);
 					}
 				}
 			}
 		} catch (InterruptedException e) {
 			// ignore it
 		}
+
+		Cat.logEvent("BlockSize", String.valueOf(m_blocks.size()), Event.SUCCESS, m_blocks.keySet().toString());
 
 		for (Block block : m_blocks.values()) {
 			try {
@@ -147,9 +157,6 @@ public class DefaultMessageProcessor implements MessageProcessor, MessageFinder 
 
 		m_blocks.clear();
 		m_latch.countDown();
-
-		System.out.println(getClass().getSimpleName() + "-" + m_index + " is shutdown");
-		benchmark.print();
 	}
 
 	@Override

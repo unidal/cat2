@@ -6,4 +6,5 @@ public interface BucketManager {
 	public void closeBuckets(int hour);
 
 	public Bucket getBucket(String domain, String ip, int hour, boolean createIfNotExists) throws IOException;
+
 }

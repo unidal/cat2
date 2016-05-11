@@ -3,31 +3,48 @@ package org.unidal.cat.message.storage.internals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.message.QueueFullException;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BlockWriter;
+import org.unidal.cat.message.storage.exception.BlockQueueFullException;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.config.server.ServerConfigManager;
+import com.dianping.cat.statistic.ServerStatisticManager;
 
 @Named(type = BlockDumper.class, instantiationStrategy = Named.PER_LOOKUP)
-public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
+public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, LogEnabled {
+
+	@Inject
+	private ServerStatisticManager m_statisticManager;
+
+	@Inject
+	private ServerConfigManager m_configManager;
+
 	private List<BlockingQueue<Block>> m_queues = new ArrayList<BlockingQueue<Block>>();
 
 	private List<BlockWriter> m_writers = new ArrayList<BlockWriter>();
 
 	private int m_failCount = -1;
 
+	private Logger m_logger;
+
 	@Override
 	public void awaitTermination() throws InterruptedException {
-		while (true) {
+		int index = 0;
+
+		//TODO fix it
+		while (true && index < 100) {
 			boolean allEmpty = true;
 
 			for (BlockingQueue<Block> queue : m_queues) {
@@ -41,10 +58,12 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
 				break;
 			}
 
-			TimeUnit.MILLISECONDS.sleep(1);
+			TimeUnit.MILLISECONDS.sleep(100);
+
+			index++;
 		}
 
-		for (BlockWriter writer : m_writers) {
+		for (final BlockWriter writer : m_writers) {
 			writer.shutdown();
 			super.release(writer);
 		}
@@ -58,15 +77,29 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper {
 		BlockingQueue<Block> queue = m_queues.get(index);
 		boolean success = queue.offer(block);
 
-		if (!success && (++m_failCount % 100) == 0) {
-			Cat.logError(new QueueFullException("Error when adding block to queue, fails: " + m_failCount));
+		if (!success) {
+			m_statisticManager.addBlockLoss(1);
+
+			if ((++m_failCount % 100) == 0) {
+				Cat.logError(new BlockQueueFullException("Error when adding block to queue, fails: " + m_failCount));
+				m_logger.info("block dump queue is full " + m_failCount + " index:" + index);
+			}
+		} else {
+			m_statisticManager.addBlockTotal(1);
 		}
 	}
 
 	@Override
+	public void enableLogging(Logger logger) {
+		m_logger = logger;
+	}
+
+	@Override
 	public void initialize(int hour) {
-		for (int i = 0; i < 10; i++) {
-			BlockingQueue<Block> queue = new LinkedBlockingQueue<Block>(10000);
+		int threads = m_configManager.getMessageDumpThreads();
+
+		for (int i = 0; i < threads; i++) {
+			BlockingQueue<Block> queue = new ArrayBlockingQueue<Block>(10000);
 			BlockWriter writer = lookup(BlockWriter.class);
 
 			m_queues.add(queue);

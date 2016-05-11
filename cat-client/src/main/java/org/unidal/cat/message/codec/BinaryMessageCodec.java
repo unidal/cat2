@@ -182,6 +182,13 @@ public class BinaryMessageCodec implements MessageCodec {
 
 				t.setTimestamp(timestamp);
 				ctx.pushTransaction(t);
+
+                // ctrip yj.huang Add into index
+                MessageTree tree = ctx.getMessageTree();
+                if (tree instanceof DefaultMessageTree) {
+                    ((DefaultMessageTree)tree).getTransactions().add(t);
+                }
+
 				return t;
 			}
 
@@ -232,6 +239,12 @@ public class BinaryMessageCodec implements MessageCodec {
 				e.setTimestamp(timestamp);
 				e.setStatus(status);
 				e.addData(data);
+
+                MessageTree tree = ctx.getMessageTree();
+                if (tree instanceof DefaultMessageTree) {
+                    ((DefaultMessageTree)tree).getEvents().add(e);
+                }
+
 				return e;
 			}
 
@@ -259,6 +272,12 @@ public class BinaryMessageCodec implements MessageCodec {
 				m.setTimestamp(timestamp);
 				m.setStatus(status);
 				m.addData(data);
+
+                MessageTree tree = ctx.getMessageTree();
+                if (tree instanceof DefaultMessageTree) {
+                    ((DefaultMessageTree)tree).getMetrics().add(m);
+                }
+
 				return m;
 			}
 			
@@ -286,6 +305,12 @@ public class BinaryMessageCodec implements MessageCodec {
 				h.setTimestamp(timestamp);
 				h.setStatus(status);
 				h.addData(data);
+
+                MessageTree tree = ctx.getMessageTree();
+                if (tree instanceof DefaultMessageTree) {
+                    ((DefaultMessageTree)tree).getHeartbeats().add(h);
+                }
+
 				return h;
 			}
 
