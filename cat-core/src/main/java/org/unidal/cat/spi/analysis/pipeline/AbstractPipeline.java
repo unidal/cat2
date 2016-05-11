@@ -1,5 +1,6 @@
 package org.unidal.cat.spi.analysis.pipeline;
 
+import com.dianping.cat.Constants;
 import com.dianping.cat.message.spi.MessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -17,7 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
-    @Inject
+    @Inject(Constants.DEFAULT)
     private MessageRoutingStrategy m_strategy;
 
     private String m_name;

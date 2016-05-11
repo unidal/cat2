@@ -19,7 +19,6 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
-			<role-hint>roundrobin</role-hint>
 			<implementation>org.unidal.cat.plugin.routing.RoundRobinStrategy</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
