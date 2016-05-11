@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.dianping.cat.build.*;
 import org.unidal.cat.plugin.event.*;
 import org.unidal.cat.plugin.event.filter.EventReportFilter;
 import org.unidal.cat.plugin.transaction.*;
@@ -80,6 +81,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+        all.addAll(new Cat2ComponentsConfigurator().defineComponents());
+
 		all.addAll(defineTransactionComponents());
 		all.addAll(defineEventComponents());
 
@@ -97,6 +100,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(AllReportConfigManager.class).req(ConfigDao.class, ContentFetcher.class));
 		all.add(C(Module.class, CatConsumerModule.ID, CatConsumerModule.class));
 		all.addAll(new CatDatabaseConfigurator().defineComponents());
+
 		return all;
 	}
 

@@ -41,7 +41,7 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
         List<Pipeline> pipelines = m_pipelines.get(hour);
 
         if (pipelines == null) {
-            synchronized (pipelines) {
+            synchronized (this) {
                 pipelines = m_pipelines.get(hour);
 
                 if (pipelines == null) {

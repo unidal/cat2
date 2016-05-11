@@ -9,7 +9,7 @@ import org.unidal.lookup.configuration.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cat2ComponentsConfiguration extends AbstractResourceConfigurator {
+public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
     @Override
     public List<Component> defineComponents() {
         List<Component> all = new ArrayList<Component>();

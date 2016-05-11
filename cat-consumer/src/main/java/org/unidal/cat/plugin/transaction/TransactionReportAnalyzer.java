@@ -199,8 +199,4 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		range.setSum(range.getSum() + d);
 	}
 
-    @Override
-    public Map<String, ? extends Report> getLocalReports() {
-        return null;
-    }
 }
