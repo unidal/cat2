@@ -57,9 +57,9 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     }
 
     @Override
-    public void checkpoint() throws IOException {
+    public void checkpoint(boolean atEnd) throws IOException {
         beforeCheckpoint();
-        doCheckpoint(true);
+        doCheckpoint(atEnd);
         afterCheckpoint();
         finish();
     }
@@ -75,10 +75,8 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     abstract protected void beforeCheckpoint() throws IOException;
 
     protected void doCheckpoint(boolean atEnd) throws IOException {
-        ReportManager reportManager = m_rmm.getReportManager(m_name);
-        int size = getAnalyzerSize();
-        for (int i = 0; i < size; i++) {
-            reportManager.doCheckpoint(new Date(TimeUnit.HOURS.toMillis(m_hour)), i, atEnd);
+        for(MessageAnalyzer messageAnalyzer : m_analyzers){
+            messageAnalyzer.doCheckpoint(atEnd);
         }
     }
 

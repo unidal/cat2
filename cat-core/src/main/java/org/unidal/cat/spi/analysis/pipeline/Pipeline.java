@@ -9,5 +9,5 @@ public interface Pipeline {
 
     public boolean analyze(MessageTree tree);
 
-    public void checkpoint() throws IOException;
+    public void checkpoint(boolean atEnd) throws IOException;
 }

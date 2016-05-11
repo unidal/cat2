@@ -86,7 +86,7 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
         for(Pipeline pipeline : pipelines){
             try {
                 super.release(pipeline);
-                pipeline.checkpoint();
+                pipeline.checkpoint(true);
             } catch (IOException e) {
                 e.printStackTrace();
                 String msg = String.format("Error when TimeWindowExit %s!", pipeline);
