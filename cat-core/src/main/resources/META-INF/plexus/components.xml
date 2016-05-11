@@ -196,8 +196,8 @@
 			<implementation>org.unidal.cat.metric.DefaultBenchmarkManager</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.analysis.MessageAnalyzerManager</role>
-			<implementation>org.unidal.cat.spi.analysis.DefaultMessageAnalyzerManager</implementation>
+			<role>org.unidal.cat.spi.analysis.PipelineManager</role>
+			<implementation>org.unidal.cat.spi.analysis.DefaultPipelineManager</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
@@ -209,7 +209,7 @@
 			<implementation>org.unidal.cat.spi.analysis.DefaultMessageDispatcher</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.analysis.MessageAnalyzerManager</role>
+					<role>org.unidal.cat.spi.analysis.PipelineManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
