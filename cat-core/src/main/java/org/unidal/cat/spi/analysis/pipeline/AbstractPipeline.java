@@ -13,6 +13,8 @@ import org.unidal.lookup.extension.RoleHintEnabled;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
     @Inject
@@ -29,7 +31,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     @Override
     public void initialize(int hour) {
         m_hour = hour;
-        int size = getAnalyzerSize();
+        int size = getAnalyzerCount();
         for (int i = 0; i < size; i++) {
             MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, m_name);
             try {
@@ -67,9 +69,25 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
 
     abstract protected void beforeCheckpoint() throws IOException;
 
-    protected void doCheckpoint(boolean atEnd) throws IOException {
-        for(MessageAnalyzer messageAnalyzer : m_analyzers){
-            messageAnalyzer.doCheckpoint(atEnd);
+    protected void doCheckpoint(final boolean atEnd) throws IOException {
+        ExecutorService service = Threads.forPool().getFixedThreadPool("Pipeline-" + m_name + "-doCheckPoint", m_analyzers.size());
+        for(final MessageAnalyzer messageAnalyzer : m_analyzers){
+            service.submit(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        messageAnalyzer.doCheckpoint(atEnd);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        service.shutdown();
+        try {
+            service.awaitTermination(5, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -86,8 +104,8 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
         m_name = roleHint;
     }
 
-    protected int getAnalyzerSize() {
-        return 1;
+    protected int getAnalyzerCount() {
+        return 2;
     }
 
     @Override
