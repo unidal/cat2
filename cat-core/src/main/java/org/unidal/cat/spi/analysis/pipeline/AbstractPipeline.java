@@ -3,8 +3,6 @@ package org.unidal.cat.spi.analysis.pipeline;
 import com.dianping.cat.message.spi.MessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageRoutingStrategy;
 import org.unidal.helper.Threads;
@@ -14,14 +12,9 @@ import org.unidal.lookup.extension.RoleHintEnabled;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
-    @Inject
-    private ReportManagerManager m_rmm;
-
     @Inject
     private MessageRoutingStrategy m_strategy;
 
