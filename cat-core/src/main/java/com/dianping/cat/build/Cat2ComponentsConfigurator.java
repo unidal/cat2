@@ -35,8 +35,8 @@ import org.unidal.cat.service.internals.DefaultCompressionService;
 import org.unidal.cat.service.internals.GzipCompressionService;
 import org.unidal.cat.service.internals.ZlibCompressionService;
 import org.unidal.cat.spi.DefaultReportConfiguration;
-import org.unidal.cat.spi.analysis.DefaultMessageAnalyzerManager;
 import org.unidal.cat.spi.analysis.DefaultMessageDispatcher;
+import org.unidal.cat.spi.analysis.DefaultPipelineManager;
 import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
@@ -88,7 +88,7 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(A(DefaultBenchmarkManager.class));
 
-		all.add(A(DefaultMessageAnalyzerManager.class));
+		all.add(A(DefaultPipelineManager.class));
 		all.add(A(DefaultMessageDispatcher.class));
 		all.add(A(DefaultTimeWindowManager.class));
 		

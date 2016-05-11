@@ -84,8 +84,8 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	@Override
-	public MessageQueue getQueue() {
-		return m_queue;
+	public boolean handle(MessageTree tree) {
+		return m_queue.offer(tree);
 	}
 
 	protected int getQueueSize() {

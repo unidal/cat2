@@ -4,15 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.unidal.cat.plugin.event.EventReportAggregator;
-import org.unidal.cat.plugin.event.EventReportAnalyzer;
-import org.unidal.cat.plugin.event.EventReportDelegate;
-import org.unidal.cat.plugin.event.EventReportManager;
+import com.dianping.cat.build.*;
+import org.unidal.cat.plugin.event.*;
 import org.unidal.cat.plugin.event.filter.EventReportFilter;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.*;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
@@ -86,6 +81,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+        all.addAll(new Cat2ComponentsConfigurator().defineComponents());
+
 		all.addAll(defineTransactionComponents());
 		all.addAll(defineEventComponents());
 
@@ -103,6 +100,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(AllReportConfigManager.class).req(ConfigDao.class, ContentFetcher.class));
 		all.add(C(Module.class, CatConsumerModule.ID, CatConsumerModule.class));
 		all.addAll(new CatDatabaseConfigurator().defineComponents());
+
 		return all;
 	}
 

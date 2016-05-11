@@ -1,12 +1,11 @@
 package org.unidal.cat.spi.report.internals;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.dianping.cat.helper.TimeHelper;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.ReportManager;
@@ -58,6 +57,13 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 				}
 			}
 		}
+
+		removeReport(new Date(startTime.getTime() - TimeHelper.ONE_HOUR ) , index);
+	}
+
+	private void removeReport(Date time, int index){
+		long key = time.getTime() + index;
+		m_reports.remove(key);
 	}
 
 	@Override
@@ -112,6 +118,26 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		}
 
 		return report;
+	}
+
+    public Map<String, T> getLocalReports(Date startTime, int index) throws IOException {
+        long key = startTime.getTime() + index;
+        ConcurrentMap<String, T> map = m_reports.get(key);
+        return map;
+    }
+
+	@Override
+	public List<Map<String, T>> getLocalReports(ReportPeriod report, Date startTime) throws IOException{
+		List<Map<String, T>> mapList = new ArrayList<Map<String, T>>();
+		int index = 0;
+		Map<String, T> reportMap;
+		do {
+			reportMap = getLocalReports(startTime, index);
+			if (reportMap != null) {
+				mapList.add(reportMap);
+			}
+		} while (reportMap != null);
+		return mapList;
 	}
 
 	@Override
