@@ -75,25 +75,25 @@ public class TransactionAlert implements Task, LogEnabled {
 	      TransactionReport report) {
 		TransactionType t = report.findOrCreateMachine(Constants.ALL).findOrCreateType(type);
 		TransactionName transactionName = t.findOrCreateName(name);
-		Map<Integer, Range> range = transactionName.getRanges();
+		List<Range> range = transactionName.getRanges();
 		int length = end - start + 1;
 		double[] datas = new double[60];
 		double[] result = new double[length];
 
 		if (AVG.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				datas[entry.getKey()] = entry.getValue().getAvg();
+			for (int i = 0; i < range.size(); i++) {
+				datas[i] = range.get(i).getAvg();
 			}
 		} else if (COUNT.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				datas[entry.getKey()] = entry.getValue().getCount();
+            for (int i = 0; i < range.size(); i++) {
+                datas[i] = range.get(i).getCount();
 			}
 		} else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				Range value = entry.getValue();
+            for (int i = 0; i < range.size(); i++) {
+				Range value = range.get(i);
 
 				if (value.getCount() > 0) {
-					datas[entry.getKey()] = value.getFails() * 1.0 / value.getCount();
+					datas[i] = value.getFails() * 1.0 / value.getCount();
 				}
 			}
 		}

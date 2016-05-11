@@ -98,7 +98,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		}
 
 		Duration duration = name.findOrCreateDuration(dk);
-		Range range = name.findOrCreateRange(min);
+		Range range = findOrCreateRange(name.getRanges(), min);
 
 		duration.incCount();
 		range.incCount();
@@ -189,7 +189,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 	}
 
 	private void processTypeRange(Transaction t, TransactionType type, int min, double d) {
-		Range2 range = type.findOrCreateRange2(min);
+		Range2 range = findOrCreateRange2(type.getRange2s(), min);
 
 		if (!t.isSuccess()) {
 			range.incFails();
@@ -199,4 +199,31 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		range.setSum(range.getSum() + d);
 	}
 
+    private Range findOrCreateRange(List<Range> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range(i));
+                    }
+                }
+            }
+        }
+        Range range = ranges.get(min);
+        return range;
+    }
+
+    private Range2 findOrCreateRange2(List<Range2> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range2(i));
+                    }
+                }
+            }
+        }
+        Range2 range = ranges.get(min);
+        return range;
+    }
 }

@@ -10,6 +10,8 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 
+import java.util.List;
+
 public class AllNameMerger extends BaseVisitor {
 
 	public TransactionReport m_report;
@@ -72,13 +74,15 @@ public class AllNameMerger extends BaseVisitor {
 	@Override
 	public void visitRange(Range range) {
 		m_currentRange = range.getValue();
-		Range temp = m_report.findOrCreateMachine(m_currentIp).findOrCreateType(m_currentType)
-		      .findOrCreateName(m_currentName).findOrCreateRange(m_currentRange);
+        TransactionName transactionName = m_report.findOrCreateMachine(m_currentIp).findOrCreateType(m_currentType)
+                .findOrCreateName(m_currentName);
+		Range temp = findOrCreateRange(transactionName.getRanges(), m_currentRange);
 
 		m_merger.mergeRange(temp, range);
 
-		Range all = m_report.findOrCreateMachine(m_currentIp).findOrCreateType(m_currentType)
-		      .findOrCreateName(Constants.ALL).findOrCreateRange(m_currentRange);
+        transactionName =  m_report.findOrCreateMachine(m_currentIp).findOrCreateType(m_currentType)
+                .findOrCreateName(Constants.ALL);
+		Range all = findOrCreateRange(transactionName.getRanges(), m_currentRange);
 
 		m_merger.mergeRange(all, range);
 		super.visitRange(range);
@@ -104,4 +108,17 @@ public class AllNameMerger extends BaseVisitor {
 		super.visitType(type);
 	}
 
+    private Range findOrCreateRange(List<Range> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range(i));
+                    }
+                }
+            }
+        }
+        Range range = ranges.get(min);
+        return range;
+    }
 }
