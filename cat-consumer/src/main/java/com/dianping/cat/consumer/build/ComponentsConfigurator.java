@@ -6,15 +6,12 @@ import java.util.List;
 
 import org.unidal.cat.plugin.event.*;
 import org.unidal.cat.plugin.event.filter.EventReportFilter;
-import org.unidal.cat.plugin.group.GroupMessageAnalyzer;
 import org.unidal.cat.plugin.transaction.*;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.cat.spi.ReportConfiguration;
-import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -96,7 +93,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.addAll(defineDependencyComponents());
 		all.addAll(defineMetricComponents());
 		all.addAll(defineStorageComponents());
-		all.addAll(defineGroupComponents());
 
 		all.add(C(AllReportConfigManager.class).req(ConfigDao.class, ContentFetcher.class));
 		all.add(C(Module.class, CatConsumerModule.ID, CatConsumerModule.class));
@@ -256,17 +252,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(EventReportAnalyzer.class));
 
 		all.add(A(EventReportFilter.class));
-
-		return all;
-	}
-
-	private List<Component> defineGroupComponents() {
-		final List<Component> all = new ArrayList<Component>();
-
-		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class, "transaction-group", GroupMessageAnalyzer.class)
-                .req(ReportConfiguration.class).req(ReportAggregator.class, "transaction").config(E("type").value(TransactionConstants.NAME)).is(PER_LOOKUP));
-		all.add(C(org.unidal.cat.spi.analysis.MessageAnalyzer.class,"event-group",GroupMessageAnalyzer.class)
-				.req(ReportConfiguration.class).req(ReportAggregator.class, "event").config(E("type").value(EventConstants.ID)).is(PER_LOOKUP));
 
 		return all;
 	}

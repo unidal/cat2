@@ -119,17 +119,17 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
     }
 
 	@Override
-	public Map<String, T> getLocalReports(ReportPeriod report, Date startTime) throws IOException{
-		Map<String, T> map = new ConcurrentHashMap<String, T>();
+	public List<Map<String, T>> getLocalReports(ReportPeriod report, Date startTime) throws IOException{
+		List<Map<String, T>> mapList = new ArrayList<Map<String, T>>();
 		int index = 0;
 		Map<String, T> reportMap;
 		do {
 			reportMap = getLocalReports(startTime, index);
 			if (reportMap != null) {
-				map.putAll(reportMap);
+				mapList.add(reportMap);
 			}
 		} while (reportMap != null);
-		return map;
+		return mapList;
 	}
 
 	@Override

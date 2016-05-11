@@ -89,7 +89,6 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(A(DefaultBenchmarkManager.class));
 
-		all.add(A(DefaultMessageAnalyzerManager.class));
 		all.add(A(DefaultPipelineManager.class));
 		all.add(A(DefaultMessageDispatcher.class));
 		all.add(A(DefaultTimeWindowManager.class));
