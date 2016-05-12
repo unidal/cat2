@@ -14,8 +14,6 @@ import org.unidal.lookup.extension.RoleHintEnabled;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
     @Inject
@@ -63,7 +61,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     }
 
     @Override
-    public void checkpoint(boolean atEnd) {
+    public void checkpoint(boolean atEnd) throws IOException {
         beforeCheckpoint();
         doCheckpoint(atEnd);
         afterCheckpoint();
@@ -86,25 +84,9 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
         // to be overridden
     }
 
-    protected void doCheckpoint(final boolean atEnd) {
-        ExecutorService service = Threads.forPool().getFixedThreadPool("Pipeline-" + m_name + "-doCheckPoint", m_analyzers.size());
-        for (final MessageAnalyzer messageAnalyzer : m_analyzers) {
-            service.submit(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        messageAnalyzer.doCheckpoint(atEnd);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-        service.shutdown();
-        try {
-            service.awaitTermination(5, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    protected void doCheckpoint(final boolean atEnd) throws IOException {
+        for(MessageAnalyzer analyzer : m_analyzers){
+            analyzer.doCheckpoint(atEnd);
         }
     }
 
