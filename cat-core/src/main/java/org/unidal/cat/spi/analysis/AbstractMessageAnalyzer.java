@@ -41,11 +41,6 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 
 	private AtomicBoolean m_enabled = new AtomicBoolean(true);
 
-    @Override
-    public boolean isEligible(MessageTree tree){
-        return true;
-    }
-
 	public AbstractMessageAnalyzer(String... dependencies) {
 		m_dependencies = dependencies;
 		m_queue = new DefaultMessageQueue(getQueueSize());

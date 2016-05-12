@@ -67,4 +67,9 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 	public void setBaseDataDir(File baseDataDir) {
 		m_baseDataDir = baseDataDir;
 	}
+
+	@Override
+	public int getCheckpointThreads() {
+		return 3;
+	}
 }
