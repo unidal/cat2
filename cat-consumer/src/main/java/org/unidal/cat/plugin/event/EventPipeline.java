@@ -9,7 +9,7 @@ import java.io.IOException;
 @Named(type = Pipeline.class, value = EventConstants.ID, instantiationStrategy = Named.PER_LOOKUP)
 public class EventPipeline extends AbstractPipeline {
     @Override
-    protected void beforeCheckpoint() throws IOException {
+    protected void beforeCheckpoint(){
 
     }
 

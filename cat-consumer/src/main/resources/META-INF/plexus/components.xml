@@ -9,6 +9,9 @@
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -19,6 +22,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>

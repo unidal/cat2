@@ -7,7 +7,11 @@ import java.io.IOException;
 public interface Pipeline {
     public void initialize(int hour);
 
+    public void destroy();
+
     public boolean analyze(MessageTree tree);
 
-    public void checkpoint(boolean atEnd) throws IOException;
+    public void checkpoint(boolean atEnd);
+
+    public String getName();
 }

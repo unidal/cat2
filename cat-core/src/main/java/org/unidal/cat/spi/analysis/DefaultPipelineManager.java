@@ -11,87 +11,76 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 @Named(type = PipelineManager.class)
 public class DefaultPipelineManager extends ContainerHolder implements PipelineManager,
         TimeWindowHandler, Initializable, LogEnabled {
-
-    private Logger m_logger;
-
-    private List<String> m_names = new ArrayList<String>();
-
-    private Map<Integer, List<Pipeline>> m_pipelines = new HashMap<Integer, List<Pipeline>>();
-
     @Inject
     private TimeWindowManager m_timeWindowManager;
 
+    private ExecutorService m_executor;
+
+    private Map<Integer, List<Pipeline>> m_map = new HashMap<Integer, List<Pipeline>>();
+
+    private Logger m_logger;
+
     @Override
     public List<Pipeline> removePipelines(int hour) {
-        List<Pipeline> pipelines = m_pipelines.remove(hour);
+        List<Pipeline> pipelines = m_map.remove(hour);
         return pipelines;
     }
 
     @Override
     public List<Pipeline> getPipelines(int hour) {
-        List<Pipeline> pipelines = m_pipelines.get(hour);
-
-        if (pipelines == null) {
-            synchronized (this) {
-                pipelines = m_pipelines.get(hour);
-
-                if (pipelines == null) {
-                    pipelines = new ArrayList<Pipeline>();
-
-                    for (String name : m_names) {
-
-                        Pipeline pipeline = lookup(Pipeline.class, name);
-                            try {
-                                pipeline.initialize(hour);
-                                pipelines.add(pipeline);
-                            } catch (Throwable e) {
-                                String msg = String.format("Error when starting %s!", pipeline);
-                                e.printStackTrace();
-                                m_logger.error(msg, e);
-                            }
-                        }
-                    }
-
-                m_pipelines.put(hour, pipelines);
-                }
-            }
-        return pipelines;
+        return m_map.get(hour);
     }
 
     @Override
     public void initialize() throws InitializationException {
         m_timeWindowManager.register(this);
-        Map<String, Pipeline> map = lookupMap(Pipeline.class);
-        m_names.addAll(map.keySet());
-        m_logger.info("Following report pipeline configured: " + m_names);
     }
 
     @Override
     public void onTimeWindowEnter(int hour) {
+        List<Pipeline> pipelines = new ArrayList<Pipeline>(super.lookupList(Pipeline.class));
 
+        List<String> names = new ArrayList<String>();
+
+        for (Pipeline pipeline : pipelines) {
+            try {
+                pipeline.initialize(hour);
+                names.add(pipeline.getName());
+            } catch (Throwable e) {
+                String msg = String.format("Error when starting %s!", pipeline);
+
+                m_logger.error(msg, e);
+            }
+        }
+
+        m_map.put(hour, pipelines);
+        m_logger.info("Following report pipelines configured: " + names);
     }
 
     @Override
     public void onTimeWindowExit(int hour) {
         List<Pipeline> pipelines = removePipelines(hour);
-        for(Pipeline pipeline : pipelines){
+
+        for (Pipeline pipeline : pipelines) {
             try {
-                super.release(pipeline);
                 pipeline.checkpoint(true);
-            } catch (IOException e) {
-                e.printStackTrace();
-                String msg = String.format("Error when TimeWindowExit %s!", pipeline);
-                m_logger.error(msg, e);
+            } catch (Exception e) {
+                m_logger.error(String.format("Error when TimeWindowExit %s!", pipeline), e);
             }
+        }
+
+        for (Pipeline pipeline : pipelines) {
+            super.release(pipeline);
+            pipeline.destroy();
         }
     }
 
