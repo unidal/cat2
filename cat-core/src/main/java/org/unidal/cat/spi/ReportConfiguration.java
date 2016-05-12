@@ -21,4 +21,6 @@ public interface ReportConfiguration {
 	public boolean isLocalMode();
 
 	public void setBaseDataDir(File baseDataDir);
+
+	public int getCheckpointThreads();
 }
