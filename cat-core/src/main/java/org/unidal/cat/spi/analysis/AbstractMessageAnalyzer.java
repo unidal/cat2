@@ -59,7 +59,12 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	public void doCheckpoint(boolean atEnd) throws IOException {
 		shutdown();
 
-		m_reportManager.doCheckpoint(new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index, atEnd);
+		m_reportManager.doCheckpoint(m_hour, m_index, atEnd);
+	}
+
+	@Override
+	public void destroy(){
+		m_reportManager.removeReport(m_hour, m_index);
 	}
 
 	@Override
@@ -73,7 +78,7 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	protected R getLocalReport(String domain) {
-		return m_reportManager.getLocalReport(domain, new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index, true);
+		return m_reportManager.getLocalReport(domain, m_hour, m_index, true);
 	}
 
 	public String getName() {
@@ -84,8 +89,8 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	@Override
-	public MessageQueue getQueue() {
-		return m_queue;
+	public boolean handle(MessageTree tree) {
+		return m_queue.offer(tree);
 	}
 
 	protected int getQueueSize() {
@@ -113,7 +118,7 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 		ReportManagerManager rmm = lookup(ReportManagerManager.class);
 
 		m_reportManager = rmm.getReportManager(m_name);
-		m_reportManager.doInitLoad(new Date(TimeUnit.HOURS.toMillis(m_hour)), m_index);
+		m_reportManager.doInitLoad(m_hour, m_index);
 	}
 
 	protected abstract void process(MessageTree tree);

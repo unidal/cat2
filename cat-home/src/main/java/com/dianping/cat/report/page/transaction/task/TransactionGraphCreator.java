@@ -124,7 +124,7 @@ public class TransactionGraphCreator {
 				Map<String, TransactionName> names = transactionType.getNames();
 				for (Entry<String, TransactionName> nameEntry : names.entrySet()) {
 					TransactionName transactionName = nameEntry.getValue();
-					List<Range> ranges = new ArrayList<Range>(transactionName.getRanges().values());
+					List<Range> ranges = transactionName.getRanges();
 
 					detailBuilder.append(transactionType.getId());
 					detailBuilder.append('\t');

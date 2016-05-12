@@ -3,11 +3,7 @@ package org.unidal.cat.spi.remote;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -355,18 +351,19 @@ public class RemoteIntegrationTest extends JettyServer {
 
 	@Named(type = ReportManager.class, value = "mock")
 	public static final class MockReportManager implements ReportManager<MockReport> {
+
 		@Override
-		public void doCheckpoint(Date date, int index, boolean atEnd) throws IOException {
+		public void doCheckpoint(int hour, int index, boolean atEnd) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public void doInitLoad(Date date, int index) throws IOException {
+		public void doInitLoad(int hour, int index) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public MockReport getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist) {
+		public MockReport getLocalReport(String domain, int hour, int index, boolean createIfNotExist) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -376,8 +373,23 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
+		public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, int hour) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Map<String, MockReport> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
 		      String... keyValuePairs) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void removeReport(int hour, int index) {
 			throw new UnsupportedOperationException();
 		}
 	}
