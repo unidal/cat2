@@ -68,6 +68,10 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
         return m_name;
     }
 
+    public int getHour() {
+        return m_hour;
+    }
+
     protected MessageRoutingStrategy getRoutingStrategy() {
         return m_strategy;
     }

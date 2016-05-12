@@ -120,23 +120,22 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return report;
 	}
 
-    public Map<String, T> getLocalReports(Date startTime, int index) throws IOException {
+	@Override
+    public Map<String, T> getLocalReports(ReportPeriod period, Date startTime, int index) throws IOException {
         long key = startTime.getTime() + index;
-        ConcurrentMap<String, T> map = m_reports.get(key);
-        return map;
+        return m_reports.get(key);
     }
 
 	@Override
-	public List<Map<String, T>> getLocalReports(ReportPeriod report, Date startTime) throws IOException{
+	public List<Map<String, T>> getLocalReports(ReportPeriod period, Date startTime) throws IOException{
 		List<Map<String, T>> mapList = new ArrayList<Map<String, T>>();
-		int index = 0;
-		Map<String, T> reportMap;
-		do {
-			reportMap = getLocalReports(startTime, index);
+		int size = getThreadsCount();
+		for (int i = 0; i < size; i++){
+			Map<String, T> reportMap = getLocalReports(period, startTime, i);
 			if (reportMap != null) {
 				mapList.add(reportMap);
 			}
-		} while (reportMap != null);
+		}
 		return mapList;
 	}
 
