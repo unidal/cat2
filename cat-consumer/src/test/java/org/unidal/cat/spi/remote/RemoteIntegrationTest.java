@@ -351,18 +351,19 @@ public class RemoteIntegrationTest extends JettyServer {
 
 	@Named(type = ReportManager.class, value = "mock")
 	public static final class MockReportManager implements ReportManager<MockReport> {
+
 		@Override
-		public void doCheckpoint(Date date, int index, boolean atEnd) throws IOException {
+		public void doCheckpoint(int hour, int index, boolean atEnd) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public void doInitLoad(Date date, int index) throws IOException {
+		public void doInitLoad(int hour, int index) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public MockReport getLocalReport(String domain, Date startTime, int index, boolean createIfNotExist) {
+		public MockReport getLocalReport(String domain, int hour, int index, boolean createIfNotExist) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -371,19 +372,24 @@ public class RemoteIntegrationTest extends JettyServer {
 			return Arrays.asList(new MockReport(period, startTime, domain));
 		}
 
-        @Override
-        public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, Date startTime) throws IOException {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, int hour) throws IOException {
+			throw new UnsupportedOperationException();
+		}
 
 		@Override
-		public Map<String, MockReport> getLocalReports(ReportPeriod period, Date startTime, int index) throws IOException {
+		public Map<String, MockReport> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
 		public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
 		      String... keyValuePairs) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void removeReport(int hour, int index) {
 			throw new UnsupportedOperationException();
 		}
 	}

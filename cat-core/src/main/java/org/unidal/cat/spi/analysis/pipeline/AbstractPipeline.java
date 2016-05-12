@@ -116,6 +116,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     public void destroy() {
         for (MessageAnalyzer messageAnalyzer : m_analyzers) {
             super.release(messageAnalyzer);
+            messageAnalyzer.destroy();
         }
     }
 

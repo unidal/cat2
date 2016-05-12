@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transaction;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 
@@ -38,15 +39,16 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 		ReportDelegate<TransactionReport> delegate = delegateManager.getDelegate(TransactionConstants.NAME);
 		ReportManager<TransactionReport> rm = rmm.getReportManager(TransactionConstants.NAME);
 		Date startTime = ReportPeriod.HOUR.getStartTime(new Date(1452313569760L));
+		int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
 
 		for (int i = 0; i < 2; i++) {
-			TransactionReport r1 = rm.getLocalReport("test1", startTime, i, true);
-			TransactionReport r2 = rm.getLocalReport("test2", startTime, i, true);
+			TransactionReport r1 = rm.getLocalReport("test1", hour, i, true);
+			TransactionReport r2 = rm.getLocalReport("test2", hour, i, true);
 
 			r1.addIp("ip" + i);
 			r2.addIp("IP" + i);
 
-			rm.doCheckpoint(startTime, i, false);
+			rm.doCheckpoint(hour, i, false);
 		}
 
 		List<TransactionReport> reports = storage.loadAll(delegate, ReportPeriod.HOUR, startTime, "test1");

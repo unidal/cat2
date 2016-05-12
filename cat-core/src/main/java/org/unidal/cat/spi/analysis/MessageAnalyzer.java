@@ -29,4 +29,6 @@ public interface MessageAnalyzer extends Task {
 	public void initialize(int index, int hour) throws IOException;
 
     public boolean isEligible(MessageTree tree);
+
+	public void destroy();
 }
