@@ -1,5 +1,6 @@
 package org.unidal.cat.plugin.transaction.filter;
 
+import java.util.List;
 import java.util.Map;
 
 import org.unidal.lookup.annotation.Named;
@@ -72,15 +73,15 @@ public class TransactionReportHelper {
 		}
 	}
 
-	public void mergeRanges(Map<Integer, Range> dst, Map<Integer, Range> src) {
-		for (Map.Entry<Integer, Range> e : src.entrySet()) {
-			Integer key = e.getKey();
-			Range duration = e.getValue();
+	public void mergeRanges(List<Range> dst, List<Range> src) {
+		for (int i = 0; i < src.size(); i++) {
+			Integer key = i;
+			Range duration = src.get(i);
 			Range oldRange = dst.get(key);
 
 			if (oldRange == null) {
 				oldRange = new Range(duration.getValue());
-				dst.put(key, oldRange);
+				dst.set(key, oldRange);
 			}
 
 			oldRange.setCount(oldRange.getCount() + duration.getCount());
