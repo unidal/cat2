@@ -376,7 +376,12 @@ public class RemoteIntegrationTest extends JettyServer {
             throw new UnsupportedOperationException();
         }
 
-        @Override
+		@Override
+		public Map<String, MockReport> getLocalReports(ReportPeriod period, Date startTime, int index) throws IOException {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
 		      String... keyValuePairs) throws IOException {
 			throw new UnsupportedOperationException();

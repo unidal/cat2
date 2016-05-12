@@ -27,7 +27,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
 
     private Logger m_logger;
 
-    List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
+    private List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
 
     @Override
     public void initialize(int hour) {
