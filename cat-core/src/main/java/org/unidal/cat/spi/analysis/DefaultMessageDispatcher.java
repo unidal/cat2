@@ -32,17 +32,23 @@ public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHa
 	private List<Pipeline> m_lastPipelines;
 
 	private void dispatch(List<Pipeline> pipelines, MessageTree tree) {
+        boolean hasFailure = false;
+        String domain = tree.getDomain();
 		for (Pipeline pipeline : pipelines) {
-			String domain = tree.getDomain();
 
 			m_stateManager.addMessageTotal(domain, 1);
 
 			boolean success = pipeline.analyze(tree);
 
 			if (!success) {
-				m_stateManager.addMessageTotalLoss(domain, 1);
+                hasFailure = true;
 			}
 		}
+
+        // If multiple analyzers drop the same message tree, we only add 1 to the message loss count.
+        if (hasFailure) {
+            m_stateManager.addMessageTotalLoss(domain, 1);
+        }
 	}
 
 	@Override
