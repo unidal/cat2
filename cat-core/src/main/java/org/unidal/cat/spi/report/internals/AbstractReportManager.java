@@ -124,8 +124,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return report;
 	}
 
-	@Override
-    public Map<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
+    private Map<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
 		Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
         long key = startTime.getTime() + index;
         return m_reports.get(key);
@@ -137,7 +136,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		int size = getThreadsCount();
 		for (int i = 0; i < size; i++){
 			Map<String, T> reportMap = getLocalReports(period, hour, i);
-			if (reportMap != null) {
+			if (reportMap != null && reportMap.size() > 0) {
 				mapList.add(reportMap);
 			}
 		}
@@ -145,8 +144,13 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	}
 
 	@Override
+	public List<T> getLocalFileReport(ReportPeriod period, Date startTime, String domain) throws IOException {
+		return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
+	}
+
+	@Override
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
-		if (period == ReportPeriod.HOUR && period.isCurrent(startTime)) {
+		if (period == ReportPeriod.HOUR) {
 			int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
 			int count = getThreadsCount();
 			List<T> reports = new ArrayList<T>(count);
@@ -159,7 +163,11 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 				}
 			}
 
-			return reports;
+			if(reports.size() > 0){
+				return reports;
+			} else {
+				return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
+			}
 		} else {
 			return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
 		}

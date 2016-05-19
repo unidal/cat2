@@ -28,6 +28,11 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	}
 
 	@Override
+	public EventReport makeAllReport(ReportPeriod period, Collection<EventReport> reports) {
+		return null;
+	}
+
+	@Override
 	public String buildXml(EventReport report) {
 		String xml = new DefaultXmlBuilder().buildXml(report);
 

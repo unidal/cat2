@@ -16,9 +16,9 @@ public interface ReportManager<T extends Report> {
 
     public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException;
 
-    public List<Map<String, T>> getLocalReports(ReportPeriod report, int hour) throws IOException;
+    public List<T> getLocalFileReport(ReportPeriod period, Date startTime, String domain) throws IOException;
 
-    public Map<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException;
+    public List<Map<String, T>> getLocalReports(ReportPeriod period, int hour) throws IOException;
 
     public T getReport(ReportPeriod period, Date startTime, String domain, String filterId, String... keyValuePairs)
             throws IOException;

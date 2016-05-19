@@ -77,7 +77,7 @@ public class TransactionReportHelper {
 		for (int i = 0; i < src.size(); i++) {
 			Integer key = i;
 			Range duration = src.get(i);
-			Range oldRange = dst.get(key);
+			Range oldRange = findOrCreateRange(dst, i);
 
 			if (oldRange == null) {
 				oldRange = new Range(duration.getValue());
@@ -150,5 +150,19 @@ public class TransactionReportHelper {
 		} else {
 			return Math.sqrt(value);
 		}
+	}
+
+	private Range findOrCreateRange(List<Range> ranges, int min) {
+		if (min > ranges.size() - 1) {
+			synchronized (ranges) {
+				if (min > ranges.size() - 1) {
+					for (int i = ranges.size(); i < 60; i++) {
+						ranges.add(new Range(i));
+					}
+				}
+			}
+		}
+		Range range = ranges.get(min);
+		return range;
 	}
 }

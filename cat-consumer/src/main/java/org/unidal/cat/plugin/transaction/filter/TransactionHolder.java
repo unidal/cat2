@@ -7,7 +7,7 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 
-class TransactionHolder {
+public class TransactionHolder {
 	private TransactionReport m_report;
 
 	private Machine m_machine;

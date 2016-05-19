@@ -1,22 +1,5 @@
 package com.dianping.cat.consumer.build;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.dianping.cat.build.*;
-import org.unidal.cat.plugin.event.*;
-import org.unidal.cat.plugin.event.filter.EventReportFilter;
-import org.unidal.cat.plugin.transaction.*;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.initialization.Module;
-import org.unidal.lookup.configuration.AbstractResourceConfigurator;
-import org.unidal.lookup.configuration.Component;
-
 import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.config.content.ContentFetcher;
 import com.dianping.cat.config.content.DefaultContentFetcher;
@@ -42,11 +25,7 @@ import com.dianping.cat.consumer.matrix.MatrixAnalyzer;
 import com.dianping.cat.consumer.matrix.MatrixDelegate;
 import com.dianping.cat.consumer.metric.MetricAnalyzer;
 import com.dianping.cat.consumer.metric.MetricConfigManager;
-import com.dianping.cat.consumer.problem.DefaultProblemHandler;
-import com.dianping.cat.consumer.problem.LongExecutionProblemHandler;
-import com.dianping.cat.consumer.problem.ProblemAnalyzer;
-import com.dianping.cat.consumer.problem.ProblemDelegate;
-import com.dianping.cat.consumer.problem.ProblemHandler;
+import com.dianping.cat.consumer.problem.*;
 import com.dianping.cat.consumer.state.StateAnalyzer;
 import com.dianping.cat.consumer.state.StateDelegate;
 import com.dianping.cat.consumer.storage.StorageAnalyzer;
@@ -63,14 +42,27 @@ import com.dianping.cat.core.dal.ProjectDao;
 import com.dianping.cat.hadoop.hdfs.HdfsUploader;
 import com.dianping.cat.message.PathBuilder;
 import com.dianping.cat.message.storage.MessageBucketManager;
-import com.dianping.cat.report.DefaultReportManager;
-import com.dianping.cat.report.DomainValidator;
-import com.dianping.cat.report.ReportBucketManager;
-import com.dianping.cat.report.ReportDelegate;
-import com.dianping.cat.report.ReportManager;
+import com.dianping.cat.report.*;
 import com.dianping.cat.service.ProjectService;
 import com.dianping.cat.statistic.ServerStatisticManager;
 import com.dianping.cat.task.TaskManager;
+import org.unidal.cat.plugin.event.EventReportAggregator;
+import org.unidal.cat.plugin.event.EventReportAnalyzer;
+import org.unidal.cat.plugin.event.EventReportDelegate;
+import org.unidal.cat.plugin.event.EventReportManager;
+import org.unidal.cat.plugin.event.filter.EventReportFilter;
+import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
+import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
+import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
+import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.filter.*;
+import org.unidal.initialization.Module;
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -243,6 +235,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionTypeGraphFilter.class));
 		all.add(A(TransactionNameFilter.class));
 		all.add(A(TransactionNameGraphFilter.class));
+		all.add(A(TransactionAllDomainTypeFilter.class));
+		all.add(A(TransactionAllDomainTypeGraphFilter.class));
+		all.add(A(TransactionAllDomainNameFilter.class));
+		all.add(A(TransactionAllDomainNameGraphFilter.class));
 
 		return all;
 	}

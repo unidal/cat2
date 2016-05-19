@@ -40,6 +40,22 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</role>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.service.ProjectService</role>
+			<implementation>com.dianping.cat.service.ProjectService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.core.dal.ProjectDao</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.ReportManager</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.TransactionReportManager</implementation>
@@ -68,6 +84,14 @@
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAggregator</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
@@ -129,6 +153,46 @@
 			<role>org.unidal.cat.spi.report.ReportFilter</role>
 			<role-hint>transaction:name-graph</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transaction:all-domain-type</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllDomainTypeFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transaction:all-domain-type-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllDomainTypeGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transaction:all-domain-name</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllDomainNameFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transaction:all-domain-name-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllDomainNameGraphFilter</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>

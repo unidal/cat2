@@ -28,4 +28,9 @@ public class EventReportAggregator implements ReportAggregator<EventReport> {
 
 		return aggregated;
 	}
+
+	@Override
+	public EventReport makeAllReport(ReportPeriod period, Collection<EventReport> reports) {
+		return null;
+	}
 }

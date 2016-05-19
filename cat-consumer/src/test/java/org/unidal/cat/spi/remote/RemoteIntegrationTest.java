@@ -292,6 +292,11 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
+		public MockReport makeAllReport(ReportPeriod period, Collection<MockReport> reports) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		public String buildXml(MockReport report) {
 			throw new UnsupportedOperationException();
 		}
@@ -373,12 +378,12 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-		public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, int hour) throws IOException {
+		public List<MockReport> getLocalFileReport(ReportPeriod period, Date startTime, String domain) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Map<String, MockReport> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
+		public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, int hour) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
