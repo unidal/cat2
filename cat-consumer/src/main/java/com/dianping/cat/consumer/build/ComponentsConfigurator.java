@@ -235,10 +235,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionTypeGraphFilter.class));
 		all.add(A(TransactionNameFilter.class));
 		all.add(A(TransactionNameGraphFilter.class));
-		all.add(A(TransactionAllDomainTypeFilter.class));
-		all.add(A(TransactionAllDomainTypeGraphFilter.class));
-		all.add(A(TransactionAllDomainNameFilter.class));
-		all.add(A(TransactionAllDomainNameGraphFilter.class));
+		all.add(A(TransactionAllTypeFilter.class));
+		all.add(A(TransactionAllTypeGraphFilter.class));
+		all.add(A(TransactionAllNameFilter.class));
+		all.add(A(TransactionAllNameGraphFilter.class));
 
 		return all;
 	}

@@ -4,7 +4,6 @@ import com.dianping.cat.Constants;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
-import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
@@ -29,11 +28,14 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 
     @Override
     public boolean handleReport(RemoteContext ctx, OutputStream out) throws IOException {
+        // for All report
         if (ctx.getDomain().equals(Constants.ALL)) {
-            return handleAllReport(ctx, out);
-        } else {
-            return handleNormalReport(ctx, out);
+            if (buildAllReport(ctx, out)) {
+                return true;
+            }
         }
+
+        return handleNormalReport(ctx, out);
     }
 
     private boolean handleNormalReport(RemoteContext ctx, OutputStream out) throws IOException {
@@ -74,7 +76,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
         return true;
     }
 
-    private boolean handleAllReport(RemoteContext ctx, OutputStream out) throws IOException {
+    private boolean buildAllReport(RemoteContext ctx, OutputStream out) throws IOException {
         String id = ctx.getName();
         ReportManager<Report> rm = m_rmm.getReportManager(id);
         ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
@@ -82,7 +84,8 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 
         //find all reports in memory
         int hour = (int) TimeUnit.MILLISECONDS.toHours(ctx.getStartTime().getTime());
-        List<Map<String, Report>> reportMapList = rm.getLocalReports(ReportPeriod.HOUR, hour);
+        List<Map<String, Report>> reportMapList = rm.getLocalReports(ctx.getPeriod(), hour);
+
         if (reportMapList.size() > 0) {
             List<Report> reportList = new ArrayList<Report>();
 
@@ -90,12 +93,15 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
                 for (Report report : map.values()) {
                     //filter report
                     Report screenedReport = filter == null ? report : filter.screen(ctx, report);
-                    reportList.add(screenedReport);
+
+                    if (screenedReport != null) {
+                        reportList.add(screenedReport);
+                    }
                 }
             }
 
             //make all report
-            Report allReport = delegate.makeAllReport(ReportPeriod.HOUR, reportList);
+            Report allReport = delegate.makeAll(ctx.getPeriod(), reportList);
 
             // tailor it if necessary
             if (filter != null) {
@@ -107,7 +113,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
 
             return true;
         } else {
-            return handleNormalReport(ctx, out);
+            return false;
         }
     }
 }

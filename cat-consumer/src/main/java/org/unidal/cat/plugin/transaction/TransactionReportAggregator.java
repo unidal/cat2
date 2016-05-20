@@ -40,7 +40,7 @@ public class TransactionReportAggregator implements ReportAggregator<Transaction
 	}
 
 	@Override
-	public TransactionReport makeAllReport(ReportPeriod period, Collection<TransactionReport> reports) {
+	public TransactionReport makeAll(ReportPeriod period, Collection<TransactionReport> reports) {
 		TransactionReport all = new TransactionReport();
 
 		if (reports.size() > 0) {
