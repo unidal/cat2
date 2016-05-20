@@ -28,6 +28,11 @@ public class TransactionReportDelegate implements ReportDelegate<TransactionRepo
 	}
 
 	@Override
+	public TransactionReport makeAll(ReportPeriod period, Collection<TransactionReport> reports) {
+		return m_aggregator.makeAll(period, reports);
+	}
+
+	@Override
 	public String buildXml(TransactionReport report) {
 		String xml = new DefaultXmlBuilder().buildXml(report);
 

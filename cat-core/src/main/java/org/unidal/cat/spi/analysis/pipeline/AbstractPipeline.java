@@ -11,7 +11,6 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +60,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
     }
 
     @Override
-    public void checkpoint(boolean atEnd) throws IOException {
+    public void checkpoint(boolean atEnd) throws Exception {
         beforeCheckpoint();
         doCheckpoint(atEnd);
         afterCheckpoint();
@@ -80,17 +79,17 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
         return m_strategy;
     }
 
-    protected void beforeCheckpoint() {
+    protected void beforeCheckpoint() throws Exception {
         // to be overridden
     }
 
-    protected void doCheckpoint(final boolean atEnd) throws IOException {
+    protected void doCheckpoint(final boolean atEnd) throws Exception {
         for(MessageAnalyzer analyzer : m_analyzers){
             analyzer.doCheckpoint(atEnd);
         }
     }
 
-    protected void afterCheckpoint() {
+    protected void afterCheckpoint() throws Exception {
         // to be overridden
     }
 

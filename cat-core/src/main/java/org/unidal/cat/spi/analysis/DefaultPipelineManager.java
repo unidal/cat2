@@ -1,5 +1,7 @@
 package org.unidal.cat.spi.analysis;
 
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Transaction;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -121,12 +123,16 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
 
         @Override
         public void run() {
+            Transaction t = Cat.newTransaction("CheckpointTask",m_pipeline.getName());
             try {
                 m_pipeline.checkpoint(true);
             } catch (Throwable e) {
                 m_logger.error(String.format("Error when doing checkpoint of %s!", m_pipeline), e);
+                Cat.logError(e);
+                t.setStatus(e);
             } finally {
                 m_latch.countDown();
+                t.complete();
             }
         }
     }

@@ -1,10 +1,6 @@
 package org.unidal.cat.spi.remote;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-
+import com.dianping.cat.Constants;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
@@ -15,50 +11,109 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 @Named(type = RemoteSkeleton.class)
 public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkeleton {
-	@Inject
-	private ReportManagerManager m_rmm;
+    @Inject
+    private ReportManagerManager m_rmm;
 
-	@Inject
-	private ReportDelegateManager m_rdg;
+    @Inject
+    private ReportDelegateManager m_rdg;
 
-	@Override
-	public boolean handleReport(RemoteContext ctx, OutputStream out) throws IOException {
-		String id = ctx.getName();
-		ReportManager<Report> rm = m_rmm.getReportManager(id);
-		ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
-		ReportFilter<Report> filter = ctx.getFilter();
+    @Override
+    public boolean handleReport(RemoteContext ctx, OutputStream out) throws IOException {
+        // for All report
+        if (ctx.getDomain().equals(Constants.ALL)) {
+            if (buildAllReport(ctx, out)) {
+                return true;
+            }
+        }
 
-		// find local reports
-		List<Report> reports = rm.getLocalReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
+        return handleNormalReport(ctx, out);
+    }
 
-		if (reports == null || reports.isEmpty()) {
-			return false;
-		}
+    private boolean handleNormalReport(RemoteContext ctx, OutputStream out) throws IOException {
+        String id = ctx.getName();
+        ReportManager<Report> rm = m_rmm.getReportManager(id);
+        ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
+        ReportFilter<Report> filter = ctx.getFilter();
 
-		// screen the reports
-		List<Report> screenedReports = new ArrayList<Report>();
+        // find local reports
+        List<Report> reports = rm.getLocalReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
 
-		for (Report report : reports) {
-			Report screenedReport = filter == null ? report : filter.screen(ctx, report);
+        if (reports == null || reports.isEmpty()) {
+            return false;
+        }
 
-			if (screenedReport != null) {
-				screenedReports.add(screenedReport);
-			}
-		}
+        // screen the reports
+        List<Report> screenedReports = new ArrayList<Report>();
 
-		// aggregate the reports
-		Report report = delegate.aggregate(ctx.getPeriod(), screenedReports);
+        for (Report report : reports) {
+            Report screenedReport = filter == null ? report : filter.screen(ctx, report);
 
-		// tailor it if necessary
-		if (filter != null) {
-			filter.tailor(ctx, report);
-		}
+            if (screenedReport != null) {
+                screenedReports.add(screenedReport);
+            }
+        }
 
-		// write out
-		delegate.writeStream(out, report);
+        // aggregate the reports
+        Report report = delegate.aggregate(ctx.getPeriod(), screenedReports);
 
-		return true;
-	}
+        // tailor it if necessary
+        if (filter != null) {
+            filter.tailor(ctx, report);
+        }
+
+        // write out
+        delegate.writeStream(out, report);
+
+        return true;
+    }
+
+    private boolean buildAllReport(RemoteContext ctx, OutputStream out) throws IOException {
+        String id = ctx.getName();
+        ReportManager<Report> rm = m_rmm.getReportManager(id);
+        ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
+        ReportFilter<Report> filter = ctx.getFilter();
+
+        //find all reports in memory
+        int hour = (int) TimeUnit.MILLISECONDS.toHours(ctx.getStartTime().getTime());
+        List<Map<String, Report>> reportMapList = rm.getLocalReports(ctx.getPeriod(), hour);
+
+        if (reportMapList.size() > 0) {
+            List<Report> reportList = new ArrayList<Report>();
+
+            for (Map<String, Report> map : reportMapList) {
+                for (Report report : map.values()) {
+                    //filter report
+                    Report screenedReport = filter == null ? report : filter.screen(ctx, report);
+
+                    if (screenedReport != null) {
+                        reportList.add(screenedReport);
+                    }
+                }
+            }
+
+            //make all report
+            Report allReport = delegate.makeAll(ctx.getPeriod(), reportList);
+
+            // tailor it if necessary
+            if (filter != null) {
+                filter.tailor(ctx, allReport);
+            }
+
+            // write out
+            delegate.writeStream(out, allReport);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
