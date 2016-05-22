@@ -12,6 +12,7 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.ServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -20,28 +21,21 @@ import java.util.List;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.spi.decode.DecodeHandler;
+import org.unidal.cat.spi.decode.DecodeHandlerManager;
+import org.unidal.cat.transport.TransportConfiguration;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.CatConstants;
-import com.dianping.cat.config.server.ServerConfigManager;
-import com.dianping.cat.message.spi.MessageCodec;
-import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
-import com.dianping.cat.message.spi.internal.DefaultMessageTree;
-import com.dianping.cat.statistic.ServerStatisticManager;
-
-public final class TcpSocketReceiver implements LogEnabled {
-
-	@Inject(type = MessageCodec.class, value = PlainTextMessageCodec.ID)
-	private MessageCodec m_codec;
+@Named(type = TcpSocketReceiver.class)
+public final class TcpSocketReceiver implements Initializable, LogEnabled {
+	@Inject
+	private DecodeHandlerManager m_manager;
 
 	@Inject
-	private MessageHandler m_handler;
-
-	@Inject
-	protected ServerConfigManager m_serverConfigManager;
-
-	@Inject
-	private ServerStatisticManager m_serverStateManager;
+	private TransportConfiguration m_config;
 
 	private ChannelFuture m_future;
 
@@ -49,19 +43,18 @@ public final class TcpSocketReceiver implements LogEnabled {
 
 	private EventLoopGroup m_workerGroup;
 
+	private int m_port;
+
+	private Class<? extends ServerSocketChannel> m_channelClass;
+
 	private Logger m_logger;
-
-	private int m_port = 2280; // default port number from phone, C:2, A:2, T:8
-
-	private volatile long m_processCount;
 
 	public synchronized void destory() {
 		try {
-			m_logger.info("start shutdown socket, port " + m_port);
 			m_future.channel().closeFuture();
 			m_bossGroup.shutdownGracefully();
 			m_workerGroup.shutdownGracefully();
-			m_logger.info("shutdown socket success");
+			m_logger.info(String.format("Netty server stopped on port %s", m_port));
 		} catch (Exception e) {
 			m_logger.warn(e.getMessage(), e);
 		}
@@ -72,33 +65,32 @@ public final class TcpSocketReceiver implements LogEnabled {
 		m_logger = logger;
 	}
 
-	protected boolean getOSMatches(String osNamePrefix) {
+	private boolean getOSMatches(String osNamePrefix) {
 		String os = System.getProperty("os.name");
 
 		if (os == null) {
 			return false;
 		}
+
 		return os.startsWith(osNamePrefix);
 	}
 
-	public void init() {
-		try {
-			startServer(m_port);
-		} catch (Exception e) {
-			m_logger.error(e.getMessage(), e);
-		}
+	@Override
+	public void initialize() throws InitializationException {
+		int bossThreads = m_config.getBossThreads();
+		int workerThreads = m_config.getWorkerThreads();
+		boolean linux = getOSMatches("Linux") || getOSMatches("LINUX");
+
+		m_port = m_config.getTcpPort();
+		m_bossGroup = linux ? new EpollEventLoopGroup(bossThreads) : new NioEventLoopGroup(bossThreads);
+		m_workerGroup = linux ? new EpollEventLoopGroup(workerThreads) : new NioEventLoopGroup(workerThreads);
+		m_channelClass = linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
 	}
 
-	public synchronized void startServer(int port) throws InterruptedException {
-		boolean linux = getOSMatches("Linux") || getOSMatches("LINUX");
-		int threads = 24;
+	public synchronized void init() throws Exception {
 		ServerBootstrap bootstrap = new ServerBootstrap();
 
-		m_bossGroup = linux ? new EpollEventLoopGroup(threads) : new NioEventLoopGroup(threads);
-		m_workerGroup = linux ? new EpollEventLoopGroup(threads) : new NioEventLoopGroup(threads);
-		bootstrap.group(m_bossGroup, m_workerGroup);
-		bootstrap.channel(linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class);
-
+		bootstrap.group(m_bossGroup, m_workerGroup).channel(m_channelClass);
 		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
 			@Override
 			protected void initChannel(SocketChannel ch) throws Exception {
@@ -114,55 +106,37 @@ public final class TcpSocketReceiver implements LogEnabled {
 		bootstrap.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 
 		try {
-			m_future = bootstrap.bind(port).sync();
-			m_logger.info("start netty server!");
+			m_future = bootstrap.bind(m_port).sync();
+			m_logger.info(String.format("CAT is listening on port %s", m_port));
 		} catch (Exception e) {
-			m_logger.error("Started Netty Server Failed:" + port, e);
+			m_logger.error(String.format("Error when binding to port %s!", m_port), e);
+
+			throw e;
 		}
 	}
 
 	public class MessageDecoder extends ByteToMessageDecoder {
-
 		@Override
 		protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
 			if (buffer.readableBytes() < 4) {
 				return;
 			}
 
-			buffer.markReaderIndex();
-
-			int length = buffer.readInt();
-
-			buffer.resetReaderIndex();
+			int length = buffer.getInt(0);
 
 			if (buffer.readableBytes() < length + 4) {
 				return;
 			}
 
-			try {
-				ByteBuf readBytes = buffer.readSlice(length + 4);
-				
-				readBytes.markReaderIndex();
-				readBytes.readInt();
+			buffer.readInt(); // get rid of length
 
-				DefaultMessageTree tree = (DefaultMessageTree) m_codec.decode(readBytes);
+			ByteBuf buf = buffer.readSlice(length);
+			DecodeHandler handler = m_manager.getHandler(buf);
 
-				readBytes.retain();
-				readBytes.resetReaderIndex();
-				tree.setBuffer(readBytes);
-				m_handler.handle(tree);
-				m_processCount++;
-
-				long flag = m_processCount % CatConstants.SUCCESS_COUNT;
-
-				if (flag == 0) {
-					m_serverStateManager.addMessageTotal(CatConstants.SUCCESS_COUNT);
-				}
-			} catch (Exception e) {
-				m_serverStateManager.addMessageTotalLoss(1);
-				m_logger.error(e.getMessage(), e);
+			if (handler != null) {
+				buf.retain(); // hold reference to avoid being GC, the buf will be released in dump analyzer
+				handler.handle(buf);
 			}
 		}
 	}
-
 }

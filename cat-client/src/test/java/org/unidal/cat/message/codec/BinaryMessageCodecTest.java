@@ -5,7 +5,6 @@ import io.netty.buffer.Unpooled;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.codec.NativeMessageCodec;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.internal.MessageId;

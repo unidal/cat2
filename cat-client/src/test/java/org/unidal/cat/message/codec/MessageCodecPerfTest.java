@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.junit.Test;
-import org.unidal.cat.codec.NativeMessageCodec;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.internal.MessageId;

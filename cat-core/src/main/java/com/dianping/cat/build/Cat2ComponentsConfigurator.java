@@ -38,6 +38,13 @@ import org.unidal.cat.spi.DefaultReportConfiguration;
 import org.unidal.cat.spi.analysis.DefaultMessageDispatcher;
 import org.unidal.cat.spi.analysis.DefaultPipelineManager;
 import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
+import org.unidal.cat.spi.analysis.pipeline.DomainHashStrategy;
+import org.unidal.cat.spi.analysis.pipeline.RoundRobinStrategy;
+import org.unidal.cat.spi.command.DefaultCommandDispatcher;
+import org.unidal.cat.spi.decode.internals.DefaultDecodeHandlerManager;
+import org.unidal.cat.spi.decode.internals.NativeCommandDecodeHandler;
+import org.unidal.cat.spi.decode.internals.NativeMessageDecodeHandler;
+import org.unidal.cat.spi.decode.internals.PlainTextMessageDecodeHandler;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
 import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
@@ -53,8 +60,11 @@ import org.unidal.cat.spi.task.internals.DefaultTaskManager;
 import org.unidal.cat.spi.task.internals.TaskDispatcher;
 import org.unidal.cat.spi.task.internals.TaskQueue;
 import org.unidal.cat.spi.task.internals.TaskRegistry;
+import org.unidal.cat.transport.DefaultTransportConfiugration;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
+
+import com.dianping.cat.analysis.TcpSocketReceiver;
 
 class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override
@@ -91,11 +101,24 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultPipelineManager.class));
 		all.add(A(DefaultMessageDispatcher.class));
 		all.add(A(DefaultTimeWindowManager.class));
-		
+
+		all.add(A(DomainHashStrategy.class));
+		all.add(A(RoundRobinStrategy.class));
+
+		all.add(A(DefaultCommandDispatcher.class));
+
+		all.add(A(DefaultDecodeHandlerManager.class));
+		all.add(A(NativeCommandDecodeHandler.class));
+		all.add(A(NativeMessageDecodeHandler.class));
+		all.add(A(PlainTextMessageDecodeHandler.class));
+
+		all.add(A(DefaultTransportConfiugration.class));
+		all.add(A(TcpSocketReceiver.class));
+
 		all.addAll(defineLocalComponents());
 		return all;
 	}
-	
+
 	public List<Component> defineLocalComponents() {
 		List<Component> all = new ArrayList<Component>();
 
@@ -106,16 +129,16 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultBlockDumperManager.class));
 		all.add(A(DefaultBlockDumper.class));
 		all.add(A(DefaultBlockWriter.class));
-		
+
 		all.add(A(HdfsSystemManager.class));
-		
+
 		all.add(A(HdfsMessageConsumerFinder.class));
 
 		all.add(A(LocalBucket.class));
 		all.add(A(LocalBucketManager.class));
 		all.add(A(HdfsBucket.class));
 		all.add(A(HdfsBucketManager.class));
-		
+
 		all.add(A(LocalIndex.class));
 		all.add(A(LocalIndexManager.class));
 		all.add(A(HdfsIndex.class));
