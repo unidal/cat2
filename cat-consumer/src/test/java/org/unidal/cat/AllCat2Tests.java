@@ -4,7 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.unidal.cat.plugin.transaction.AllTransactionTests;
-import org.unidal.cat.service.CompressionServiceTest;
 import org.unidal.cat.spi.ReportFilterManagerTest;
 import org.unidal.cat.spi.ReportManagerManagerTest;
 import org.unidal.cat.spi.ReportPeriodTest;
@@ -14,9 +13,6 @@ import org.unidal.cat.spi.report.storage.ReportStorageTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
-/** service **/
-CompressionServiceTest.class,
 
 /** report **/
 ReportFilterManagerTest.class,
