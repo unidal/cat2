@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.codec.NativeMessageCodec;
+import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.cat.spi.analysis.MessageDispatcher;
 import org.unidal.cat.spi.decode.DecodeHandler;
 import org.unidal.lookup.annotation.Inject;

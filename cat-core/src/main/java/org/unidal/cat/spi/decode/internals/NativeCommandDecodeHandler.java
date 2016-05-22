@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.codec.CommandCodec;
-import org.unidal.cat.codec.NativeCommandCodec;
+import org.unidal.cat.message.codec.CommandCodec;
+import org.unidal.cat.message.codec.NativeCommandCodec;
 import org.unidal.cat.message.command.Command;
 import org.unidal.cat.spi.command.CommandDispatcher;
 import org.unidal.cat.spi.decode.DecodeHandler;
