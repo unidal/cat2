@@ -1,15 +1,15 @@
 package org.unidal.cat.plugin.transaction;
 
+import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
+import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.lookup.annotation.Named;
+
 import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.service.ProjectService;
-import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
 
 @Named(type = TransactionAllReportMaker.class)
 public class TransactionAllReportMaker extends BaseVisitor {

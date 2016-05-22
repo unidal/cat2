@@ -1,7 +1,14 @@
 package org.unidal.cat.spi.analysis;
 
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Transaction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
@@ -11,18 +18,13 @@ import org.unidal.cat.spi.analysis.event.TimeWindowHandler;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.helper.Threads;
+import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Transaction;
 
 @Named(type = PipelineManager.class)
 public class DefaultPipelineManager extends ContainerHolder implements PipelineManager,
@@ -40,6 +42,11 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
     private Logger m_logger;
 
     @Override
+    public void enableLogging(Logger logger) {
+        m_logger = logger;
+    }
+
+    @Override
     public List<Pipeline> getPipelines(int hour) {
         return m_map.get(hour);
     }
@@ -53,7 +60,6 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
     @Override
     public void onTimeWindowEnter(int hour) {
         List<Pipeline> pipelines = new ArrayList<Pipeline>(super.lookupList(Pipeline.class));
-
         List<String> names = new ArrayList<String>();
 
         for (Pipeline pipeline : pipelines) {
@@ -97,12 +103,7 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
         }
     }
 
-    @Override
-    public void enableLogging(Logger logger) {
-        m_logger = logger;
-    }
-
-    class CheckpointTask implements Threads.Task {
+    class CheckpointTask implements Task {
         private Pipeline m_pipeline;
 
         private CountDownLatch m_latch;
@@ -118,10 +119,6 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
         }
 
         @Override
-        public void shutdown() {
-        }
-
-        @Override
         public void run() {
             Transaction t = Cat.newTransaction("CheckpointTask",m_pipeline.getName());
             try {
@@ -134,6 +131,10 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
                 m_latch.countDown();
                 t.complete();
             }
+        }
+
+        @Override
+        public void shutdown() {
         }
     }
 }
