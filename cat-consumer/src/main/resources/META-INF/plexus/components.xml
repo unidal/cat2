@@ -14,6 +14,7 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
+					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
@@ -28,22 +29,12 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
+					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
-			<implementation>org.unidal.cat.plugin.routing.DomainHashStrategy</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
-			<role-hint>roundrobin</role-hint>
-			<implementation>org.unidal.cat.plugin.routing.RoundRobinStrategy</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</role>
