@@ -11,7 +11,7 @@ public interface Pipeline {
 
     public boolean analyze(MessageTree tree);
 
-    public void checkpoint(boolean atEnd) throws IOException;
+    public void checkpoint(boolean atEnd) throws Exception;
 
     public String getName();
 }

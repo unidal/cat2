@@ -12,6 +12,8 @@ import org.unidal.cat.spi.ReportPeriod;
 public interface ReportDelegate<T extends Report> {
 	public T aggregate(ReportPeriod period, Collection<T> reports);
 
+	public T makeAll(ReportPeriod period, Collection<T> reports);
+
 	public String buildXml(T report);
 
 	public String getName();

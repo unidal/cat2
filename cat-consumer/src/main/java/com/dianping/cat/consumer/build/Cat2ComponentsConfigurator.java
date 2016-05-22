@@ -1,8 +1,10 @@
 package com.dianping.cat.consumer.build;
 
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.event.EventPipeline;
 import org.unidal.cat.plugin.routing.DomainHashStrategy;
 import org.unidal.cat.plugin.routing.RoundRobinStrategy;
+import org.unidal.cat.plugin.transaction.TransactionAllReportMaker;
 import org.unidal.cat.plugin.transaction.TransactionPipeline;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -21,6 +23,9 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
         all.add(A(DomainHashStrategy.class));
         all.add(A(RoundRobinStrategy.class));
+
+        all.add(A(TransactionAllReportMaker.class));
+        all.add(A(ProjectService.class));
 
         return all;
     }
