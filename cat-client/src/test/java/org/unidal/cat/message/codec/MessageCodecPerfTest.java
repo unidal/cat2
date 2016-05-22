@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
 import org.junit.Test;
+import org.unidal.cat.codec.NativeMessageCodec;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.internal.MessageId;
@@ -14,8 +15,8 @@ import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 public class MessageCodecPerfTest extends ComponentTestCase {
 	@Test
 	public void compares() {
-		String[] types = { PlainTextMessageCodec.ID, BinaryMessageCodec.ID, PlainTextMessageCodec.ID,
-		      BinaryMessageCodec.ID, PlainTextMessageCodec.ID, BinaryMessageCodec.ID };
+		String[] types = { PlainTextMessageCodec.ID, NativeMessageCodec.ID, PlainTextMessageCodec.ID,
+		      NativeMessageCodec.ID, PlainTextMessageCodec.ID, NativeMessageCodec.ID };
 		int len = types.length;
 		MessageCodec[] codecs = new MessageCodec[len];
 
