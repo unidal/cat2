@@ -23,7 +23,7 @@ public class ZlibCompressionService implements CompressionService {
 	public OutputStream compress(OutputStream out) throws IOException {
 		Deflater deflater = new Deflater(m_level, true);
 
-		return new DeflaterOutputStream(out, deflater, m_bufferSize);
+		return new DeflaterOutputStream(out, deflater, m_bufferSize, true);
 	}
 
 	@Override

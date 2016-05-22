@@ -466,8 +466,8 @@ public class LocalIndex implements Index {
 			int ipIndex = m_mapping.map(id.getIpAddressInHex());
 			int hour = id.getHour() - currentHour;
 			int seq = id.getIndex();
-			ByteBuf buf = Unpooled.buffer(8);
 			int value = (domainIndex << 17) + (ipIndex << 2) + (hour);
+			ByteBuf buf = Unpooled.buffer(8);
 
 			buf.writeInt(value);
 			buf.writeInt(seq);

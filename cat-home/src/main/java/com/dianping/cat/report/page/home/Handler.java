@@ -8,6 +8,7 @@ import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.spi.transport.TcpSocketReceiver;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -16,7 +17,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.analysis.MessageConsumer;
 import com.dianping.cat.analysis.RealtimeConsumer;
-import com.dianping.cat.analysis.TcpSocketReceiver;
 import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
