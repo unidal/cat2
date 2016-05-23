@@ -28,7 +28,7 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 	}
 
 	@Override
-	public EventReport makeAllReport(ReportPeriod period, Collection<EventReport> reports) {
+	public EventReport makeAll(ReportPeriod period, Collection<EventReport> reports) {
 		return null;
 	}
 

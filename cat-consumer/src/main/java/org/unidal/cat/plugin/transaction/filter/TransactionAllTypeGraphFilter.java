@@ -12,9 +12,9 @@ import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionAllDomainTypeGraphFilter.ID)
-public class TransactionAllDomainTypeGraphFilter implements ReportFilter<TransactionReport> {
-    public static final String ID = "all-domain-type-graph";
+@Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionAllTypeGraphFilter.ID)
+public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionReport> {
+    public static final String ID = "all-type-graph";
 
     @Inject
     private TransactionReportHelper m_helper;

@@ -2,7 +2,6 @@ package org.unidal.cat.spi.analysis;
 
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +57,7 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	@Override
-	public void destroy(){
+	public void destroy() {
 		m_reportManager.removeReport(m_hour, m_index);
 	}
 

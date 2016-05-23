@@ -125,7 +125,7 @@ public class Handler implements PageHandler<Context> {
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
 		String filterId;
 		if(payload.getDomain().equals(Constants.ALL)){
-			filterId = payload.getName() == null ? TransactionAllDomainTypeGraphFilter.ID : TransactionAllDomainNameGraphFilter.ID;
+			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
 		} else {
 			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
 		}
@@ -164,7 +164,7 @@ public class Handler implements PageHandler<Context> {
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
 		String filterId;
 		if(payload.getDomain().equals(Constants.ALL)){
-			filterId = payload.getType() == null ? TransactionAllDomainTypeFilter.ID : TransactionAllDomainNameFilter.ID;
+			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {
 			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
 		}
@@ -185,7 +185,7 @@ public class Handler implements PageHandler<Context> {
 	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
 		String filterId;
 		if(payload.getDomain().equals(Constants.ALL)){
-			filterId = payload.getName() == null ? TransactionAllDomainTypeGraphFilter.ID : TransactionAllDomainNameGraphFilter.ID;
+			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
 		} else {
 			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
 		}
@@ -214,7 +214,7 @@ public class Handler implements PageHandler<Context> {
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId;
 		if(payload.getDomain().equals(Constants.ALL)){
-			filterId = payload.getType() == null ? TransactionAllDomainTypeFilter.ID : TransactionAllDomainNameFilter.ID;
+			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {
 			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
 		}

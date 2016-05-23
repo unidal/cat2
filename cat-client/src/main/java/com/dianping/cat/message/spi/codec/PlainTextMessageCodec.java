@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Heartbeat;
@@ -33,10 +34,9 @@ import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
+@Named(type = MessageCodec.class, value = PlainTextMessageCodec.ID)
 public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
-	public static final String ID = "plain-text";
-
-	private static final String VERSION = "PT1"; // plain text version 1
+	public static final String ID = "PT1"; // plain text version 1
 
 	private static final byte TAB = '\t'; // tab character
 
@@ -59,9 +59,10 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 
 	@Override
 	public MessageTree decode(ByteBuf buf) {
-		MessageTree tree = new DefaultMessageTree();
+		DefaultMessageTree tree = new DefaultMessageTree();
 
 		decode(buf, tree);
+		tree.setBuffer(buf);
 		return tree;
 	}
 
@@ -90,7 +91,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 		String rootMessageId = helper.read(ctx, TAB);
 		String sessionToken = helper.read(ctx, LF);
 
-		if (VERSION.equals(id)) {
+		if (ID.equals(id)) {
 			tree.setDomain(domain);
 			tree.setHostName(hostName);
 			tree.setIpAddress(ipAddress);
@@ -294,7 +295,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 	protected void encodeHeader(MessageTree tree, ByteBuf buf) {
 		BufferHelper helper = m_bufferHelper;
 
-		helper.write(buf, VERSION);
+		helper.write(buf, ID);
 		helper.write(buf, TAB);
 		helper.write(buf, tree.getDomain());
 		helper.write(buf, TAB);

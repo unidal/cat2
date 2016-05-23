@@ -292,7 +292,7 @@ public class RemoteIntegrationTest extends JettyServer {
 		}
 
 		@Override
-		public MockReport makeAllReport(ReportPeriod period, Collection<MockReport> reports) {
+		public MockReport makeAll(ReportPeriod period, Collection<MockReport> reports) {
 			throw new UnsupportedOperationException();
 		}
 

@@ -8,5 +8,5 @@ import org.unidal.cat.spi.ReportPeriod;
 public interface ReportAggregator<T extends Report> {
 	public T aggregate(ReportPeriod period, Collection<T> reports);
 
-	public T makeAllReport(ReportPeriod period, Collection<T> reports);
+	public T makeAll(ReportPeriod period, Collection<T> reports);
 }

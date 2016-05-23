@@ -1,15 +1,11 @@
 package org.unidal.cat.spi.analysis;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 
-import com.dianping.cat.message.spi.MessageTree;
-import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.helper.Threads.Task;
 
-import com.dianping.cat.message.spi.MessageQueue;
+import com.dianping.cat.message.spi.MessageTree;
 
 /**
  * Message analyzer is responsible of processing each message in the queue, and producing a report normally.

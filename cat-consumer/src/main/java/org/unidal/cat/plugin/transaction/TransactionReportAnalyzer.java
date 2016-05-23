@@ -1,9 +1,7 @@
 package org.unidal.cat.plugin.transaction;
 
 import java.util.List;
-import java.util.Map;
 
-import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.lookup.annotation.Inject;
@@ -70,6 +68,34 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		}
 	}
 
+	private Range findOrCreateRange(List<Range> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range(i));
+                    }
+                }
+            }
+        }
+        Range range = ranges.get(min);
+        return range;
+    }
+
+	private Range2 findOrCreateRange2(List<Range2> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range2(i));
+                    }
+                }
+            }
+        }
+        Range2 range = ranges.get(min);
+        return range;
+    }
+
 	@Override
 	public void process(MessageTree tree) {
 		Message message = tree.getMessage();
@@ -110,7 +136,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		range.setSum(range.getSum() + d);
 	}
 
-	private void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
+    private void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
 		String type = t.getType();
 		String name = t.getName();
 
@@ -140,7 +166,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		}
 	}
 
-	private void processTypeAndName(Transaction t, TransactionType type, TransactionName name, String messageId,
+    private void processTypeAndName(Transaction t, TransactionType type, TransactionName name, String messageId,
 	      double duration) {
 		type.incTotalCount();
 		name.incTotalCount();
@@ -198,32 +224,4 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 		range.incCount();
 		range.setSum(range.getSum() + d);
 	}
-
-    private Range findOrCreateRange(List<Range> ranges, int min) {
-        if (min > ranges.size() - 1) {
-            synchronized (ranges) {
-                if (min > ranges.size() - 1) {
-                    for (int i = ranges.size(); i < 60; i++) {
-                        ranges.add(new Range(i));
-                    }
-                }
-            }
-        }
-        Range range = ranges.get(min);
-        return range;
-    }
-
-    private Range2 findOrCreateRange2(List<Range2> ranges, int min) {
-        if (min > ranges.size() - 1) {
-            synchronized (ranges) {
-                if (min > ranges.size() - 1) {
-                    for (int i = ranges.size(); i < 60; i++) {
-                        ranges.add(new Range2(i));
-                    }
-                }
-            }
-        }
-        Range2 range = ranges.get(min);
-        return range;
-    }
 }

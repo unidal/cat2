@@ -30,7 +30,7 @@ public class EventReportAggregator implements ReportAggregator<EventReport> {
 	}
 
 	@Override
-	public EventReport makeAllReport(ReportPeriod period, Collection<EventReport> reports) {
+	public EventReport makeAll(ReportPeriod period, Collection<EventReport> reports) {
 		return null;
 	}
 }

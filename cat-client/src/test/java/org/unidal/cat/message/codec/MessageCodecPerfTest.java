@@ -14,8 +14,8 @@ import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 public class MessageCodecPerfTest extends ComponentTestCase {
 	@Test
 	public void compares() {
-		String[] types = { PlainTextMessageCodec.ID, BinaryMessageCodec.ID, PlainTextMessageCodec.ID,
-		      BinaryMessageCodec.ID, PlainTextMessageCodec.ID, BinaryMessageCodec.ID };
+		String[] types = { PlainTextMessageCodec.ID, NativeMessageCodec.ID, PlainTextMessageCodec.ID,
+		      NativeMessageCodec.ID, PlainTextMessageCodec.ID, NativeMessageCodec.ID };
 		int len = types.length;
 		MessageCodec[] codecs = new MessageCodec[len];
 
