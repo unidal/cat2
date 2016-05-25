@@ -3732,10 +3732,10 @@
 					<role>org.unidal.cat.plugin.transaction.page.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
+					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+					<role>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.ReportManager</role>
@@ -3765,8 +3765,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
-			<implementation>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</implementation>
+			<role>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</role>
+			<implementation>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.event.Handler</role>
@@ -4025,6 +4025,10 @@
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
+			<implementation>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.matrix.Handler</role>

@@ -1,10 +1,7 @@
 package org.unidal.cat.plugin.transaction.filter;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
@@ -168,25 +165,33 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
         }
 
         @Override
-        public void visitTransactionReport(TransactionReport transactionReport) {
+        public void visitTransactionReport(TransactionReport report) {
             boolean all = m_ip == null || m_ip.equals(Constants.ALL);
 
             if (all) {
                 Machine machine = new Machine(Constants.ALL);
 
                 m_holder.setMachine(machine);
+
+                report.getTypeDomains().clear();
             } else {
                 Machine machine = new Machine(m_ip);
-                Machine m = transactionReport.findMachine(m_ip);
+                Machine m = report.findMachine(m_ip);
 
-                transactionReport.getMachines().clear();
-                transactionReport.addMachine(m);
+                report.getMachines().clear();
+                report.addMachine(m);
                 m_holder.setMachine(machine);
+
+                TypeDomain typeDomain = report.findOrCreateTypeDomain(m_type);
+                report.getTypeDomains().clear();
+                if (typeDomain != null) {
+                    report.addTypeDomain(typeDomain);
+                }
             }
 
-            super.visitTransactionReport(transactionReport);
+            super.visitTransactionReport(report);
 
-            transactionReport.addMachine(m_holder.getMachine());
+            report.addMachine(m_holder.getMachine());
         }
 
         @Override
@@ -195,25 +200,49 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
             TransactionName n = t.findOrCreateName(m_name);
             TransactionName name = type.findName(m_name);
 
+            t.setSuccessMessageUrl(null);
+            t.setFailMessageUrl(null);
+            type.setSuccessMessageUrl(null);
+            type.setFailMessageUrl(null);
+            type.getNames().clear();
+
             if (name != null) {
                 m_helper.mergeName(n, name);
                 n.setSuccessMessageUrl(null);
                 n.setFailMessageUrl(null);
                 m_helper.mergeDurations(n.getDurations(), name.getDurations());
                 m_helper.mergeRanges(n.getRanges(), name.getRanges());
+
+                type.addName(name);
+                name.getRanges().clear();
+                name.getDurations().clear();
+                name.setSuccessMessageUrl(null);
+                name.setFailMessageUrl(null);
+            }
+        }
+
+        @Override
+        public void visitTypeDomain(TypeDomain typeDomain) {
+            typeDomain.getBus().clear();
+
+            NameDomain nameDomain = typeDomain.findNameDomain(m_name);
+            typeDomain.getNameDomains().clear();
+
+            if (nameDomain != null) {
+                typeDomain.addNameDomain(nameDomain);
             }
 
-            t.setSuccessMessageUrl(null);
-            t.setFailMessageUrl(null);
-            type.setSuccessMessageUrl(null);
-            type.setFailMessageUrl(null);
-            type.getNames().clear();
-            type.addName(name);
+            super.visitTypeDomain(typeDomain);
+        }
 
-            name.getRanges().clear();
-            name.getDurations().clear();
-            name.setSuccessMessageUrl(null);
-            name.setFailMessageUrl(null);
+        @Override
+        public void visitNameDomain(NameDomain nameDomain) {
+            Bu bu = nameDomain.findBu(m_ip);
+
+            nameDomain.getBus().clear();
+            if (bu != null) {
+                nameDomain.addBu(bu);
+            }
         }
     }
 }
