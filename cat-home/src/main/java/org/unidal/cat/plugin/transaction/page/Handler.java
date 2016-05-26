@@ -14,6 +14,7 @@ import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.FailurePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.HitPayload;
+import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -48,10 +49,10 @@ public class Handler implements PageHandler<Context> {
 	private JspViewer m_jspViewer;
 
 	@Inject
-	private TransactionMergeHelper m_mergeHelper;
+	private PayloadNormalizer m_normalizer;
 
 	@Inject
-	private PayloadNormalizer m_normalizer;
+	private AllReportDistributionBuilder m_distributionBuilder;
 
 	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_manager;
@@ -64,6 +65,10 @@ public class Handler implements PageHandler<Context> {
 		detailVisitor.visitTransactionReport(report);
 		model.setDistributionChart(chartVisitor.getPieChart().getJsonString());
 		model.setDistributionDetails(detailVisitor.getDetails());
+	}
+
+	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip, TransactionReport report) {
+		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
 	}
 
 	private void buildTransactionMetaInfo(Model model, Payload payload, TransactionReport report) {
@@ -149,11 +154,14 @@ public class Handler implements PageHandler<Context> {
 		model.setReport(current);
 
 		if (current != null) {
-			if (Constants.ALL.equalsIgnoreCase(payload.getIpAddress())) {
-				String type = payload.getType();
-				String name = payload.getName();
+			String type = payload.getType();
+			String name = payload.getName();
+			String ip = payload.getIpAddress();
 
+			if (Constants.ALL.equalsIgnoreCase(ip)) {
 				buildDistributionInfo(model, type, name, current);
+			} else if (Constants.ALL.equals(payload.getDomain())) {
+				buildAllReportDistributionInfo(model, type, name, ip, current);
 			}
 		}
 
@@ -203,6 +211,8 @@ public class Handler implements PageHandler<Context> {
 
 			if (Constants.ALL.equalsIgnoreCase(ip)) {
 				buildDistributionInfo(model, type, name, report);
+			} else if (Constants.ALL.equals(payload.getDomain())) {
+				buildAllReportDistributionInfo(model, type, name, ip, report);
 			}
 
 			buildTransactionNameGraph(model, report, type, name, ip);
@@ -225,8 +235,6 @@ public class Handler implements PageHandler<Context> {
 		      "type", payload.getType());
 
 		if (report != null) {
-			report = m_mergeHelper.mergeAllMachines(report, payload.getIpAddress());
-
 			buildTransactionMetaInfo(model, payload, report);
 		} else {
 			report = new TransactionReport(payload.getDomain());

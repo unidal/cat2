@@ -2,6 +2,8 @@ package com.dianping.cat.report.page.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,7 +43,11 @@ public class Handler implements PageHandler<Context> {
 
 		for (String name : names) {
 			String value = req.getParameter(name);
-
+			try {
+				value = URLDecoder.decode(value,"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Cat.logError(e);
+			}
 			ctx.setProperty(name, value);
 		}
 

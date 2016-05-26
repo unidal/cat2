@@ -52,7 +52,7 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>plain-text</role-hint>
+					<role-hint>PT1</role-hint>
 					<field-name>m_codec</field-name>
 				</requirement>
 			</requirements>
@@ -102,7 +102,7 @@
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.MessageCodec</role>
-			<role-hint>plain-text</role-hint>
+			<role-hint>PT1</role-hint>
 			<implementation>com.dianping.cat.message.spi.codec.PlainTextMessageCodec</implementation>
 			<requirements>
 				<requirement>
