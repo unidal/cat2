@@ -12,6 +12,8 @@ public interface ClientConfigManager {
 
 	public int getMaxMessageLength();
 
+	public long getServerAddressRefreshInterval();
+
 	public String getServerConfigUrl();
 
 	public List<Server> getServers();
@@ -23,5 +25,4 @@ public interface ClientConfigManager {
 	public boolean isCatEnabled();
 
 	public boolean isDumpLocked();
-
 }

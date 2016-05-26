@@ -9,8 +9,19 @@
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.message.MessageIdFactory</role>
-			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
+			<role>com.dianping.cat.message.spi.MessageCodec</role>
+			<role-hint>PT1</role-hint>
+			<implementation>com.dianping.cat.message.spi.codec.PlainTextMessageCodec</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.spi.MessageCodec</role>
+			<role-hint>NT1</role-hint>
+			<implementation>org.unidal.cat.message.codec.NativeMessageCodec</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.codec.CommandCodec</role>
+			<role-hint>NC1</role-hint>
+			<implementation>org.unidal.cat.message.codec.NativeCommandCodec</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.MessageManager</role>
@@ -89,27 +100,6 @@
 			<role>org.unidal.initialization.Module</role>
 			<role-hint>cat-client</role-hint>
 			<implementation>com.dianping.cat.CatClientModule</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.message.spi.MessageCodec</role>
-			<role-hint>binary</role-hint>
-			<implementation>org.unidal.cat.message.codec.BinaryMessageCodec</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
-			<role-hint>escape</role-hint>
-			<implementation>com.dianping.cat.message.spi.codec.EscapingBufferWriter</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.message.spi.MessageCodec</role>
-			<role-hint>PT1</role-hint>
-			<implementation>com.dianping.cat.message.spi.codec.PlainTextMessageCodec</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
-					<role-hint>escape</role-hint>
-				</requirement>
-			</requirements>
 		</component>
 	</components>
 </plexus>
