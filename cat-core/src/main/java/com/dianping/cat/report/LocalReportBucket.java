@@ -144,8 +144,7 @@ public class LocalReportBucket implements ReportBucket, LogEnabled {
 		final File dir = dataFile.getParentFile();
 
 		if (!dir.exists() && !dir.mkdirs()) {
-			// throw new IOException(String.format("Fail to create directory(%s)!", dir));
-            System.out.println(String.format("Fail to create directory(%s)!", dir.getAbsolutePath()));
+			throw new IOException(String.format("Fail to create directory(%s)!", dir));
 		}
 
 		m_logicalPath = logicalPath;
