@@ -43,17 +43,17 @@ public class TransactionAllReportMaker extends BaseVisitor {
 
     @Override
     public void visitType(TransactionType type) {
-        String typeName = type.getId();
+        m_currentType = type.getId();
 
-        if (validateType(typeName)) {
+        if (validateType(m_currentType)) {
             TransactionReport report = m_holder.getReport();
             Machine machine = report.findOrCreateMachine(m_currentBu);
-            TransactionType result = machine.findOrCreateType(typeName);
+            TransactionType result = machine.findOrCreateType(m_currentType);
 
             m_holder.setType(result);
             m_helper.mergeType(result, type);
 
-            DomainCount domainCount = report.findOrCreateTypeDomain(typeName)
+            DomainCount domainCount = report.findOrCreateTypeDomain(m_currentType)
                     .findOrCreateBu(m_currentBu).findOrCreateDomainCount(m_currentDomain);
 
             updateDomainCount(domainCount, type);
