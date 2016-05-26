@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transaction.page.transform;
 import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
 import org.unidal.cat.plugin.transaction.page.Model;
+import org.unidal.lookup.annotation.Named;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import static com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor.DistributionDetail;
 
+@Named(type = AllReportDistributionBuilder.class)
 public class AllReportDistributionBuilder {
 
     public void buildAllReportDistributionInfo(Model model, String type, String name, String ip, TransactionReport report) {
