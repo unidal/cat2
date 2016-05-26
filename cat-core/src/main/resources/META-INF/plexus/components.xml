@@ -252,7 +252,7 @@
 			<implementation>org.unidal.cat.spi.decode.internals.NativeCommandDecodeHandler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.codec.CommandCodec</role>
+					<role>org.unidal.cat.message.codec.CommandCodec</role>
 					<role-hint>NC1</role-hint>
 				</requirement>
 				<requirement>

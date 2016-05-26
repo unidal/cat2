@@ -10,7 +10,6 @@ import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.CatClientModule;
 import com.dianping.cat.configuration.ClientConfigManager;
-import com.dianping.cat.configuration.DefaultClientConfigManager;
 import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.cat.message.internal.DefaultMessageProducer;
@@ -33,9 +32,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		all.add(C(ClientConfigManager.class, DefaultClientConfigManager.class));
-		all.add(C(MessageIdFactory.class)); // TODO remove it later
-		all.add(A(MessageIdFactory.class));
+		all.addAll(new Cat2ComponentsConfigurator().defineComponents());
 
 		all.add(C(MessageManager.class, DefaultMessageManager.class) //
 		      .req(ClientConfigManager.class, TransportManager.class, MessageIdFactory.class));
@@ -54,8 +51,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		      .req(MessageStatistics.class, ClientConfigManager.class));
 
 		all.add(C(Module.class, CatClientModule.ID, CatClientModule.class));
-
-		all.addAll(new CodecComponentConfigurator().defineComponents());
 
 		return all;
 	}
