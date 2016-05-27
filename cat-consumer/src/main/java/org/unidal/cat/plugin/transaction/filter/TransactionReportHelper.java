@@ -53,6 +53,7 @@ public class TransactionReportHelper {
 
 		if (src.getMax() > dst.getMax()) {
 			dst.setMax(src.getMax());
+			dst.setSlowestMessageUrl(src.getSlowestMessageUrl());
 		}
 
 		dst.setSum(dst.getSum() + src.getSum());
@@ -120,6 +121,7 @@ public class TransactionReportHelper {
 
 		if (src.getMax() > dst.getMax()) {
 			dst.setMax(src.getMax());
+			dst.setSlowestMessageUrl(src.getSlowestMessageUrl());
 		}
 
 		dst.setSum(dst.getSum() + src.getSum());
