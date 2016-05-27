@@ -278,6 +278,8 @@ public class Handler implements PageHandler<Context> {
 
 		TransactionReport report = model.getReport();
 		Date startTime = report.getStartTime();
+
+        // TODO for history report, endTime should not be startTime + HOUR
 		Date endTime = ReportPeriod.HOUR.getNextStartTime(startTime);
 
 		report.setEndTime(new Date(endTime.getTime() - 1000));

@@ -1,5 +1,5 @@
 package org.unidal.cat.plugin.event;
 
 public interface EventConstants {
-	public String ID = "event";
+	public String NAME = "event";
 }

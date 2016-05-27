@@ -6,7 +6,7 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.consumer.event.model.entity.EventReport;
 
-@Named(type = ReportManager.class, value = EventConstants.ID)
+@Named(type = ReportManager.class, value = EventConstants.NAME)
 public class EventReportManager extends AbstractReportManager<EventReport> {
 	@Override
 	public int getThreadsCount() {

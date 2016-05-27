@@ -44,7 +44,7 @@
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 					<role-hint>recent</role-hint>
-					<field-name>m_rencent</field-name>
+					<field-name>m_recent</field-name>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>

@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.event;
+package org.unidal.cat.plugin.event.page;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -16,7 +16,7 @@ public class DisplayNames {
 
 	private List<EventNameModel> m_results = new ArrayList<EventNameModel>();
 
-	public DisplayNames display(String sorted, String type, String ip, EventReport report) {
+	public DisplayNames display(String sorted, String type, String ip, EventReport report, String queryName) {
 		Map<String, EventType> types = report.findOrCreateMachine(ip).getTypes();
 		EventName all = new EventName("TOTAL");
 		all.setTotalPercent(1);
@@ -25,8 +25,12 @@ public class DisplayNames {
 
 			if (names != null) {
 				for (Entry<String, EventName> entry : names.getNames().entrySet()) {
-					m_results.add(new EventNameModel(entry.getKey(), entry.getValue()));
-					mergeName(all, entry.getValue());
+                    String eventTypeName = entry.getValue().getId();
+                    boolean isAdd = (queryName == null || queryName.length() == 0 || isFit(queryName, eventTypeName));
+                    if (isAdd) {
+					    m_results.add(new EventNameModel(entry.getKey(), entry.getValue()));
+					    mergeName(all, entry.getValue());
+                    }
 				}
 			}
 		}
@@ -47,6 +51,19 @@ public class DisplayNames {
 	public List<EventNameModel> getResults() {
 		return m_results;
 	}
+
+    private boolean isFit(String queryName, String transactionName) {
+        String[] args = queryName.split("\\|");
+
+        if (args != null) {
+            for (String str : args) {
+                if (str.length() > 0 && transactionName.toLowerCase().contains(str.trim().toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 	public void mergeName(EventName old, EventName other) {
 		old.setTotalCount(old.getTotalCount() + other.getTotalCount());

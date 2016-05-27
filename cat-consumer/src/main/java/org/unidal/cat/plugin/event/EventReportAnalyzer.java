@@ -15,7 +15,7 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 
-@Named(type = MessageAnalyzer.class, value = EventConstants.ID, instantiationStrategy = Named.PER_LOOKUP)
+@Named(type = MessageAnalyzer.class, value = EventConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
 	@Override
 	public void process(MessageTree tree) {
@@ -72,7 +72,7 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
 	private void processEventGraph(EventName name, Event t, int count) {
 		long current = t.getTimestamp() / 1000 / 60;
 		int min = (int) (current % (60));
-		Range range = name.findOrCreateRange(min);
+		Range range = findOrCreateRange(name.getRanges(), min);
 
 		range.incCount(count);
 		if (!t.isSuccess()) {
@@ -91,4 +91,18 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
 			}
 		}
 	}
+
+    private Range findOrCreateRange(List<Range> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range(i));
+                    }
+                }
+            }
+        }
+        Range range = ranges.get(min);
+        return range;
+    }
 }

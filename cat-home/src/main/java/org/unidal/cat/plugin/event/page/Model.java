@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.event;
+package org.unidal.cat.plugin.event.page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +40,8 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 	private String m_mobileResponse;
 
 	private String m_distributionChart;
+
+    private String m_queryName;
 
 	@EntityMeta
 	private EventReport m_report;
@@ -155,6 +157,10 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		return m_type;
 	}
 
+    public String getQueryName() {
+        return m_queryName;
+    }
+
 	public void setDisplayNameReport(DisplayNames displayNameReport) {
 		m_displayNameReport = displayNameReport;
 	}
@@ -218,5 +224,9 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 	public void setType(String type) {
 		m_type = type;
 	}
+
+    public void setQueryName(String queryName) {
+        m_queryName = queryName;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.dianping.cat.report;
 
+import org.unidal.cat.plugin.event.page.Handler;
 import org.unidal.web.mvc.AbstractModule;
 import org.unidal.web.mvc.annotation.ModuleMeta;
 import org.unidal.web.mvc.annotation.ModulePagesMeta;
@@ -13,7 +14,7 @@ com.dianping.cat.report.page.problem.Handler.class,
 
 org.unidal.cat.plugin.transaction.page.Handler.class,
 
-com.dianping.cat.report.page.event.Handler.class,
+Handler.class,
 
 com.dianping.cat.report.page.heartbeat.Handler.class,
 

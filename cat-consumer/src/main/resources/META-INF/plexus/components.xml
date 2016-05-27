@@ -244,9 +244,48 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+			<implementation>org.unidal.cat.plugin.event.filter.EventReportHelper</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>event:report</role-hint>
-			<implementation>org.unidal.cat.plugin.event.filter.EventReportFilter</implementation>
+			<role-hint>event:type</role-hint>
+			<implementation>org.unidal.cat.plugin.event.filter.EventTypeFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>event:type-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.event.filter.EventTypeGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>event:name</role-hint>
+			<implementation>org.unidal.cat.plugin.event.filter.EventNameFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>event:name-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.event.filter.EventNameGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.cat.consumer.problem.ProblemHandler</role>

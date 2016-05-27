@@ -9,7 +9,7 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.consumer.event.EventReportMerger;
 import com.dianping.cat.consumer.event.model.entity.EventReport;
 
-@Named(type = ReportAggregator.class, value = EventConstants.ID)
+@Named(type = ReportAggregator.class, value = EventConstants.NAME)
 public class EventReportAggregator implements ReportAggregator<EventReport> {
 	@Override
 	public EventReport aggregate(ReportPeriod period, Collection<EventReport> reports) {

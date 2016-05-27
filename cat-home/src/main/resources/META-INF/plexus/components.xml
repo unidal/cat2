@@ -2388,6 +2388,10 @@
 			<implementation>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</role>
+			<implementation>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</implementation>
+		</component>
+		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
 			<role-hint>app-command-data</role-hint>
 			<implementation>com.dianping.cat.config.app.AppCommandTableProvider</implementation>
@@ -3749,47 +3753,36 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.event.Handler</role>
-			<implementation>com.dianping.cat.report.page.event.Handler</implementation>
+			<role>org.unidal.cat.plugin.event.page.Handler</role>
+			<implementation>org.unidal.cat.plugin.event.page.Handler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.report.graph.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.event.HistoryGraphs</role>
+					<role>org.unidal.cat.plugin.event.page.HistoryGraphs</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.event.JspViewer</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.page.event.service.EventReportService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.page.event.transform.EventMergeHelper</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.service.ModelService</role>
-					<role-hint>event</role-hint>
-					<field-name>m_service</field-name>
+					<role>org.unidal.cat.plugin.event.page.JspViewer</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.page.DomainGroupConfigManager</role>
+					<role>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.report.ReportDelegate</role>
+					<role>com.dianping.cat.report.page.event.service.EventReportService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportManager</role>
 					<role-hint>event</role-hint>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.event.HistoryGraphs</role>
-			<implementation>com.dianping.cat.report.page.event.HistoryGraphs</implementation>
+			<role>org.unidal.cat.plugin.event.page.HistoryGraphs</role>
+			<implementation>org.unidal.cat.plugin.event.page.HistoryGraphs</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.core.dal.GraphDao</role>
@@ -3800,8 +3793,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.event.JspViewer</role>
-			<implementation>com.dianping.cat.report.page.event.JspViewer</implementation>
+			<role>org.unidal.cat.plugin.event.page.JspViewer</role>
+			<implementation>org.unidal.cat.plugin.event.page.JspViewer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
@@ -3837,10 +3830,6 @@
 					<role>com.dianping.cat.core.dal.MonthlyReportContentDao</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.report.page.event.transform.EventMergeHelper</role>
-			<implementation>com.dianping.cat.report.page.event.transform.EventMergeHelper</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.heartbeat.Handler</role>
@@ -4009,6 +3998,10 @@
 		<component>
 			<role>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</role>
 			<implementation>com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.report.page.event.transform.EventMergeHelper</role>
+			<implementation>com.dianping.cat.report.page.event.transform.EventMergeHelper</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.matrix.Handler</role>

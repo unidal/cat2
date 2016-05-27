@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.event;
+package org.unidal.cat.plugin.event.page;
 
 import com.dianping.cat.report.ReportContext;
 

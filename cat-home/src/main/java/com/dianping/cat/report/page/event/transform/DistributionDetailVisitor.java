@@ -82,7 +82,7 @@ public class DistributionDetailVisitor extends BaseVisitor {
 		}
 	}
 
-	public class DistributionDetail {
+	public static class DistributionDetail {
 
 		private String m_ip;
 

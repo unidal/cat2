@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.dianping.cat.message.Event;
 import org.unidal.cat.plugin.event.EventReportAggregator;
 import org.unidal.cat.plugin.event.EventReportAnalyzer;
 import org.unidal.cat.plugin.event.EventReportDelegate;
 import org.unidal.cat.plugin.event.EventReportManager;
-import org.unidal.cat.plugin.event.filter.EventReportFilter;
+import org.unidal.cat.plugin.event.filter.*;
 import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
@@ -268,7 +269,15 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(EventReportDelegate.class));
 		all.add(A(EventReportAnalyzer.class));
 
-		all.add(A(EventReportFilter.class));
+        all.add(A(EventReportHelper.class));
+        all.add(A(EventTypeFilter.class));
+        all.add(A(EventTypeGraphFilter.class));
+        all.add(A(EventNameFilter.class));
+        all.add(A(EventNameGraphFilter.class));
+        /* all.add(A(EventAllTypeFilter.class));
+        all.add(A(EventAllTypeGraphFilter.class));
+        all.add(A(EventAllNameFilter.class));
+        all.add(A(EventAllNameGraphFilter.class)); */
 
 		return all;
 	}

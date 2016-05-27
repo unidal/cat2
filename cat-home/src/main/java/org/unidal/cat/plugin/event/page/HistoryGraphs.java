@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.event;
+package org.unidal.cat.plugin.event.page;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.dianping.cat.consumer.event.model.entity.EventReport;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
@@ -21,8 +22,8 @@ import com.dianping.cat.core.dal.GraphEntity;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.report.graph.LineChart;
 import com.dianping.cat.report.page.BaseHistoryGraphs;
-import com.dianping.cat.report.page.event.Handler.DetailOrder;
-import com.dianping.cat.report.page.event.Handler.SummaryOrder;
+import org.unidal.cat.plugin.event.page.Handler.DetailOrder;
+import org.unidal.cat.plugin.event.page.Handler.SummaryOrder;
 
 public class HistoryGraphs extends BaseHistoryGraphs {
 
@@ -228,6 +229,11 @@ public class HistoryGraphs extends BaseHistoryGraphs {
 		item.setSubTitles(buildSubTitle(start, size, step, queryType));
 		return item;
 	}
+
+    public void buildTrend(Model model, EventReport current, EventReport last, EventReport baseline) {
+        // TODO Auto-generated method stub
+
+    }
 
 	public void buildTrendGraph(Model model, Payload payload) {
 		Date start = payload.getHistoryStartDate();
