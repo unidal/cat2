@@ -192,6 +192,13 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
 			}
 		}
 
+		if (type.getMax() < duration) {
+			type.setSlowestMessageUrl(messageId);
+		}
+		if (name.getMax() < duration) {
+			name.setSlowestMessageUrl(messageId);
+		}
+
 		int allDuration = ((int) computeDuration(duration));
 		double sum = duration * duration;
 

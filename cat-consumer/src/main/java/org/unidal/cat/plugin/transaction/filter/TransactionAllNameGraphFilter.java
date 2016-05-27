@@ -202,14 +202,17 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
 
             t.setSuccessMessageUrl(null);
             t.setFailMessageUrl(null);
+            t.setSlowestMessageUrl(null);
             type.setSuccessMessageUrl(null);
             type.setFailMessageUrl(null);
+            type.setSlowestMessageUrl(null);
             type.getNames().clear();
 
             if (name != null) {
                 m_helper.mergeName(n, name);
                 n.setSuccessMessageUrl(null);
                 n.setFailMessageUrl(null);
+                n.setSlowestMessageUrl(null);
                 m_helper.mergeDurations(n.getDurations(), name.getDurations());
                 m_helper.mergeRanges(n.getRanges(), name.getRanges());
 
@@ -218,6 +221,7 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
                 name.getDurations().clear();
                 name.setSuccessMessageUrl(null);
                 name.setFailMessageUrl(null);
+                name.setSlowestMessageUrl(null);
             }
         }
 

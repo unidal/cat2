@@ -42,6 +42,7 @@ public class TransactionReportMerger extends DefaultMerger {
 
 		if (other.getMax() > old.getMax()) {
 			old.setMax(other.getMax());
+			old.setSlowestMessageUrl(other.getSlowestMessageUrl());
 		}
 
 		old.setSum(old.getSum() + other.getSum());
@@ -108,6 +109,7 @@ public class TransactionReportMerger extends DefaultMerger {
 
 		if (other.getMax() > old.getMax()) {
 			old.setMax(other.getMax());
+			old.setSlowestMessageUrl(other.getSlowestMessageUrl());
 		}
 
 		old.setSum(old.getSum() + other.getSum());
