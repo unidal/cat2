@@ -53,10 +53,10 @@ public class TransactionAllReportMaker extends BaseVisitor {
             m_holder.setType(result);
             m_helper.mergeType(result, type);
 
-            DomainCount domainCount = report.findOrCreateTypeDomain(m_currentType)
-                    .findOrCreateBu(m_currentBu).findOrCreateDomainCount(m_currentDomain);
+            DomainStat domainStat = report.findOrCreateDistributionInType(m_currentType)
+                    .findOrCreateBu(m_currentBu).findOrCreateDomainStat(m_currentDomain);
 
-            updateDomainCount(domainCount, type);
+            updateDomainStat(domainStat, type);
 
             super.visitType(type);
         }
@@ -75,9 +75,10 @@ public class TransactionAllReportMaker extends BaseVisitor {
             m_helper.mergeRanges(trName.getRanges(), name.getRanges());
 
             TransactionReport report = m_holder.getReport();
-            DomainCount domainCount = report.findOrCreateTypeDomain(trType.getId()).findOrCreateNameDomain(nameId)
-                    .findOrCreateBu(m_currentBu).findOrCreateDomainCount(m_currentDomain);
-            updateDomainCount(domainCount, name);
+            DomainStat DomainStat = report.findOrCreateDistributionInType(trType.getId())
+                    .findOrCreateDistributionInName(nameId)
+                    .findOrCreateBu(m_currentBu).findOrCreateDomainStat(m_currentDomain);
+            updateDomainStat(DomainStat, name);
         }
     }
 
@@ -90,39 +91,39 @@ public class TransactionAllReportMaker extends BaseVisitor {
         return "Service".equals(type);
     }
 
-    private void updateDomainCount(DomainCount domainCount, TransactionType type) {
-        domainCount.setTotalCount(domainCount.getTotalCount() + type.getTotalCount());
-        domainCount.setFailCount(domainCount.getFailCount() + type.getFailCount());
+    private void updateDomainStat(DomainStat domainStat, TransactionType type) {
+        domainStat.setTotalCount(domainStat.getTotalCount() + type.getTotalCount());
+        domainStat.setFailCount(domainStat.getFailCount() + type.getFailCount());
 
-        if (type.getMin() < domainCount.getMin()) {
-            domainCount.setMin(type.getMin());
+        if (type.getMin() < domainStat.getMin()) {
+            domainStat.setMin(type.getMin());
         }
-        if (type.getMax() > domainCount.getMax()) {
-            domainCount.setMax(type.getMax());
+        if (type.getMax() > domainStat.getMax()) {
+            domainStat.setMax(type.getMax());
         }
-        domainCount.setSum(domainCount.getSum() + type.getSum());
-        domainCount.setSum2(domainCount.getSum2() + type.getSum2());
-        domainCount.setTps(domainCount.getTps() + type.getTps());
-        if (domainCount.getTotalCount() > 0) {
-            domainCount.setAvg(domainCount.getSum() / domainCount.getTotalCount());
+        domainStat.setSum(domainStat.getSum() + type.getSum());
+        domainStat.setSum2(domainStat.getSum2() + type.getSum2());
+        domainStat.setTps(domainStat.getTps() + type.getTps());
+        if (domainStat.getTotalCount() > 0) {
+            domainStat.setAvg(domainStat.getSum() / domainStat.getTotalCount());
         }
     }
 
-    private void updateDomainCount(DomainCount domainCount, TransactionName name) {
-        domainCount.setTotalCount(domainCount.getTotalCount() + name.getTotalCount());
-        domainCount.setFailCount(domainCount.getFailCount() + name.getFailCount());
+    private void updateDomainStat(DomainStat DomainStat, TransactionName name) {
+        DomainStat.setTotalCount(DomainStat.getTotalCount() + name.getTotalCount());
+        DomainStat.setFailCount(DomainStat.getFailCount() + name.getFailCount());
 
-        if (name.getMin() < domainCount.getMin()) {
-            domainCount.setMin(name.getMin());
+        if (name.getMin() < DomainStat.getMin()) {
+            DomainStat.setMin(name.getMin());
         }
-        if (name.getMax() > domainCount.getMax()) {
-            domainCount.setMax(name.getMax());
+        if (name.getMax() > DomainStat.getMax()) {
+            DomainStat.setMax(name.getMax());
         }
-        domainCount.setSum(domainCount.getSum() + name.getSum());
-        domainCount.setSum2(domainCount.getSum2() + name.getSum2());
-        domainCount.setTps(domainCount.getTps() + name.getTps());
-        if (domainCount.getTotalCount() > 0) {
-            domainCount.setAvg(domainCount.getSum() / domainCount.getTotalCount());
+        DomainStat.setSum(DomainStat.getSum() + name.getSum());
+        DomainStat.setSum2(DomainStat.getSum2() + name.getSum2());
+        DomainStat.setTps(DomainStat.getTps() + name.getTps());
+        if (DomainStat.getTotalCount() > 0) {
+            DomainStat.setAvg(DomainStat.getSum() / DomainStat.getTotalCount());
         }
     }
 }

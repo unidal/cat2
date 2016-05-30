@@ -129,7 +129,7 @@ public class TransactionAllTypeFilter implements ReportFilter<TransactionReport>
 
             transactionReport.getMachines().clear();
             transactionReport.addMachine(m_machine);
-            transactionReport.getTypeDomains().clear();
+            transactionReport.getDistributionInType().clear();
         }
 
         @Override

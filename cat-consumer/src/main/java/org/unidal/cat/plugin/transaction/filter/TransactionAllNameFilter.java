@@ -174,7 +174,7 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
 
             transactionReport.getMachines().clear();
             transactionReport.addMachine(m_machine);
-            transactionReport.getTypeDomains().clear();
+            transactionReport.getDistributionInType().clear();
         }
 
         @Override

@@ -18,20 +18,20 @@ public class AllReportDistributionBuilder {
     public void buildAllReportDistributionInfo(Model model, String type, String name, String ip, TransactionReport report) {
         List<DistributionDetailVisitor.DistributionDetail> distributionDetails = new ArrayList<DistributionDetailVisitor.DistributionDetail>();
         if (name == null || name.length() == 0) {
-            if (report.getTypeDomains().size() > 0) {
-                TypeDomain typeDomain = report.findTypeDomain(type);
-                if (typeDomain != null) {
-                    Bu bu = typeDomain.findBu(ip);
+            if (report.getDistributionInType().size() > 0) {
+                DistributionInType istributionInType = report.findDistributionInType(type);
+                if (istributionInType != null) {
+                    Bu bu = istributionInType.findBu(ip);
                     addDistributionDetail(distributionDetails, bu);
                 }
             }
         } else {
-            if (report.getTypeDomains().size() > 0) {
-                TypeDomain typeDomain = report.findTypeDomain(type);
-                if (typeDomain != null) {
-                    NameDomain nameDomain = typeDomain.findNameDomain(name);
-                    if (nameDomain != null) {
-                        Bu bu = nameDomain.findBu(ip);
+            if (report.getDistributionInType().size() > 0) {
+                DistributionInType distributionInType = report.findDistributionInType(type);
+                if (distributionInType != null) {
+                    DistributionInName distributionInName = distributionInType.findDistributionInName(name);
+                    if (distributionInName != null) {
+                        Bu bu = distributionInName.findBu(ip);
                         addDistributionDetail(distributionDetails, bu);
                     }
                 }
@@ -57,15 +57,15 @@ public class AllReportDistributionBuilder {
 
     private void addDistributionDetail(List<DistributionDetail> distributionDetails, Bu bu) {
         if (bu != null) {
-            for (DomainCount domainCount : bu.getTypeDomainCounts().values()) {
+            for (DomainStat domainStat : bu.getTypeDomainCounts().values()) {
                 DistributionDetail distributionDetail = new DistributionDetail();
-                distributionDetail.setIp(domainCount.getDomain());
-                distributionDetail.setTotalCount(domainCount.getTotalCount());
-                distributionDetail.setFailCount(domainCount.getFailCount());
-                distributionDetail.setMin(domainCount.getMin());
-                distributionDetail.setMax(domainCount.getMax());
-                distributionDetail.setAvg(domainCount.getAvg());
-                distributionDetail.setQps(domainCount.getTps());
+                distributionDetail.setIp(domainStat.getDomain());
+                distributionDetail.setTotalCount(domainStat.getTotalCount());
+                distributionDetail.setFailCount(domainStat.getFailCount());
+                distributionDetail.setMin(domainStat.getMin());
+                distributionDetail.setMax(domainStat.getMax());
+                distributionDetail.setAvg(domainStat.getAvg());
+                distributionDetail.setQps(domainStat.getTps());
                 distributionDetails.add(distributionDetail);
             }
         }

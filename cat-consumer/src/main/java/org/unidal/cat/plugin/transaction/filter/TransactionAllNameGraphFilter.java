@@ -173,7 +173,7 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
 
                 m_holder.setMachine(machine);
 
-                report.getTypeDomains().clear();
+                report.getDistributionInType().clear();
             } else {
                 Machine machine = new Machine(m_ip);
                 Machine m = report.findMachine(m_ip);
@@ -182,10 +182,10 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
                 report.addMachine(m);
                 m_holder.setMachine(machine);
 
-                TypeDomain typeDomain = report.findOrCreateTypeDomain(m_type);
-                report.getTypeDomains().clear();
-                if (typeDomain != null) {
-                    report.addTypeDomain(typeDomain);
+                DistributionInType distributionInType = report.findOrCreateDistributionInType(m_type);
+                report.getDistributionInType().clear();
+                if (distributionInType != null) {
+                    report.addDistributionInType(distributionInType);
                 }
             }
 
@@ -226,26 +226,26 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
         }
 
         @Override
-        public void visitTypeDomain(TypeDomain typeDomain) {
-            typeDomain.getBus().clear();
+        public void visitDistributionInType(DistributionInType DistributionInType) {
+            DistributionInType.getBus().clear();
 
-            NameDomain nameDomain = typeDomain.findNameDomain(m_name);
-            typeDomain.getNameDomains().clear();
+            DistributionInName distributionInName = DistributionInType.findDistributionInName(m_name);
+            DistributionInType.getDistributionInName().clear();
 
-            if (nameDomain != null) {
-                typeDomain.addNameDomain(nameDomain);
+            if (distributionInName != null) {
+                DistributionInType.addDistributionInName(distributionInName);
             }
 
-            super.visitTypeDomain(typeDomain);
+            super.visitDistributionInType(DistributionInType);
         }
 
         @Override
-        public void visitNameDomain(NameDomain nameDomain) {
-            Bu bu = nameDomain.findBu(m_ip);
+        public void visitDistributionInName(DistributionInName DistributionInName) {
+            Bu bu = DistributionInName.findBu(m_ip);
 
-            nameDomain.getBus().clear();
+            DistributionInName.getBus().clear();
             if (bu != null) {
-                nameDomain.addBu(bu);
+                DistributionInName.addBu(bu);
             }
         }
     }

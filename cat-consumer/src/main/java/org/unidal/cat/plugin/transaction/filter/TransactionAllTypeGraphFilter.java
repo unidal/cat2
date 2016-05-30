@@ -167,7 +167,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
 
                 m_holder.setMachine(m);
 
-                report.getTypeDomains().clear();
+                report.getDistributionInType().clear();
             } else {
                 Machine machine = report.findMachine(m_ip);
                 Machine m = new Machine(m_ip);
@@ -179,10 +179,10 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
                     report.addMachine(machine);
                 }
 
-                TypeDomain typeDomain = report.findOrCreateTypeDomain(m_type);
-                report.getTypeDomains().clear();
-                if (typeDomain != null) {
-                    report.addTypeDomain(typeDomain);
+                DistributionInType distributionInType = report.findOrCreateDistributionInType(m_type);
+                report.getDistributionInType().clear();
+                if (distributionInType != null) {
+                    report.addDistributionInType(distributionInType);
                 }
             }
 
@@ -216,14 +216,14 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
         }
 
         @Override
-        public void visitTypeDomain(TypeDomain typeDomain) {
-            typeDomain.getNameDomains().clear();
+        public void visitDistributionInType(DistributionInType distributionInType) {
+            distributionInType.getDistributionInName().clear();
 
-            Bu bu = typeDomain.findBu(m_ip);
+            Bu bu = distributionInType.findBu(m_ip);
 
-            typeDomain.getBus().clear();
+            distributionInType.getBus().clear();
             if (bu != null) {
-                typeDomain.addBu(bu);
+                distributionInType.addBu(bu);
             }
         }
     }
