@@ -1,20 +1,19 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.spi.remote.RemoteContext;
-import org.unidal.cat.spi.report.ReportFilter;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
-
 import com.dianping.cat.Constants;
 import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.spi.remote.RemoteContext;
+import org.unidal.cat.spi.report.ReportFilter;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionNameGraphFilter.ID)
 public class TransactionNameGraphFilter implements ReportFilter<TransactionReport> {
@@ -252,25 +251,26 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 			TransactionName n = t.findOrCreateName(m_name);
 			TransactionName name = type.findName(m_name);
 
+			t.setSuccessMessageUrl(null);
+			t.setFailMessageUrl(null);
+			type.setSuccessMessageUrl(null);
+			type.setFailMessageUrl(null);
+			type.getNames().clear();
+
 			if (name != null) {
 				m_helper.mergeName(n, name);
 				n.setSuccessMessageUrl(null);
 				n.setFailMessageUrl(null);
 				m_helper.mergeDurations(n.getDurations(), name.getDurations());
 				m_helper.mergeRanges(n.getRanges(), name.getRanges());
+
+				type.addName(name);
+
+				name.getRanges().clear();
+				name.getDurations().clear();
+				name.setSuccessMessageUrl(null);
+				name.setFailMessageUrl(null);
 			}
-
-			t.setSuccessMessageUrl(null);
-			t.setFailMessageUrl(null);
-			type.setSuccessMessageUrl(null);
-			type.setFailMessageUrl(null);
-			type.getNames().clear();
-			type.addName(name);
-
-			name.getRanges().clear();
-			name.getDurations().clear();
-			name.setSuccessMessageUrl(null);
-			name.setFailMessageUrl(null);
 		}
 	}
 }

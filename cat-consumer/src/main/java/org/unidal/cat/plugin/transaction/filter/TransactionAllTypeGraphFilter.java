@@ -1,10 +1,7 @@
 package org.unidal.cat.plugin.transaction.filter;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
@@ -169,6 +166,8 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
                 Machine m = new Machine(Constants.ALL);
 
                 m_holder.setMachine(m);
+
+                report.getTypeDomains().clear();
             } else {
                 Machine machine = report.findMachine(m_ip);
                 Machine m = new Machine(m_ip);
@@ -178,6 +177,12 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
 
                 if (machine != null) {
                     report.addMachine(machine);
+                }
+
+                TypeDomain typeDomain = report.findOrCreateTypeDomain(m_type);
+                report.getTypeDomains().clear();
+                if (typeDomain != null) {
+                    report.addTypeDomain(typeDomain);
                 }
             }
 
@@ -205,6 +210,18 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
             type.setSuccessMessageUrl(null);
             type.setFailMessageUrl(null);
             type.getNames().clear();
+        }
+
+        @Override
+        public void visitTypeDomain(TypeDomain typeDomain) {
+            typeDomain.getNameDomains().clear();
+
+            Bu bu = typeDomain.findBu(m_ip);
+
+            typeDomain.getBus().clear();
+            if (bu != null) {
+                typeDomain.addBu(bu);
+            }
         }
     }
 }

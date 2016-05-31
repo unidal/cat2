@@ -100,9 +100,8 @@ public class CatHomeModule extends AbstractModule {
 	protected void setup(ModuleContext ctx) throws Exception {
 		File serverConfigFile = ctx.getAttribute("cat-server-config-file");
 		ServerConfigManager serverConfigManager = ctx.lookup(ServerConfigManager.class);
-		final TcpSocketReceiver receiver = ctx.lookup(TcpSocketReceiver.class);
-
-		serverConfigManager.initialize(serverConfigFile);
+        serverConfigManager.initialize(serverConfigFile);
+        final TcpSocketReceiver receiver = ctx.lookup(TcpSocketReceiver.class);
 		receiver.init();
 
 		Runtime.getRuntime().addShutdownHook(new Thread() {

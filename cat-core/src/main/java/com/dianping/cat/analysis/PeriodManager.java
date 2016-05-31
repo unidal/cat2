@@ -3,6 +3,7 @@ package com.dianping.cat.analysis;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.dianping.cat.config.server.ServerConfigManager;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;

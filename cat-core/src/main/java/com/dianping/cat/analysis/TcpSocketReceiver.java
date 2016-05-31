@@ -122,7 +122,9 @@ public final class TcpSocketReceiver implements Initializable, LogEnabled {
 				return;
 			}
 
-			int length = buffer.getInt(0);
+            buffer.markReaderIndex();
+			int length = buffer.readInt();
+            buffer.resetReaderIndex();
 
 			if (buffer.readableBytes() < length + 4) {
 				return;

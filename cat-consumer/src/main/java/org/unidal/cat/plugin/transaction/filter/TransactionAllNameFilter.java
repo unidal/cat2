@@ -164,13 +164,17 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
 
                 Machine m = transactionReport.findMachine(m_ip);
                 transactionReport.getMachines().clear();
-                transactionReport.addMachine(m);
+
+                if (m != null) {
+                    transactionReport.addMachine(m);
+                }
             }
 
             super.visitTransactionReport(transactionReport);
 
             transactionReport.getMachines().clear();
             transactionReport.addMachine(m_machine);
+            transactionReport.getTypeDomains().clear();
         }
 
         @Override

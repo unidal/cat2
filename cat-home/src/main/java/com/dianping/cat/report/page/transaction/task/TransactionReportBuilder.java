@@ -114,7 +114,7 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 
 	@Override
 	public boolean buildMonthlyTask(String name, String domain, Date period) {
-		Date end = null;
+		Date end;
 
 		if (period.equals(TimeHelper.getCurrentMonth())) {
 			end = TimeHelper.getCurrentDay();
@@ -136,7 +136,7 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 
 	@Override
 	public boolean buildWeeklyTask(String name, String domain, Date period) {
-		Date end = null;
+		Date end;
 
 		if (period.equals(TimeHelper.getCurrentWeek())) {
 			end = TimeHelper.getCurrentDay();
@@ -175,6 +175,8 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 				TransactionReport reportModel = m_reportService.queryReport(domain, new Date(startTime),
 				      new Date(startTime + TimeHelper.ONE_DAY));
 
+				//do not keep type domain in monthly or weekly report
+				reportModel.getTypeDomains().clear();
 				reportModel.accept(merger);
 			} catch (Exception e) {
 				Cat.logError(e);
@@ -200,6 +202,8 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 			TransactionReport report = m_reportService.queryReport(domain, new Date(startTime), new Date(
 			      startTime + TimeHelper.ONE_HOUR));
 
+			//do not keep type domain in daily report
+			report.getTypeDomains().clear();
 			reports.add(report);
 		}
 		return m_transactionMerger.mergeForDaily(domain, reports, domainSet, duration);
