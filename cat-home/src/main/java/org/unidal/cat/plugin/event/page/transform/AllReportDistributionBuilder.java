@@ -16,18 +16,18 @@ public class AllReportDistributionBuilder {
     public void buildAllReportDistributionInfo(Model model, String type, String name, String ip, EventReport report) {
         List<DistributionDetailVisitor.DistributionDetail> distributionDetails = new ArrayList<DistributionDetailVisitor.DistributionDetail>();
         if (name == null || name.length() == 0) {
-            if (report.getTypeDomains().size() > 0) {
-                TypeDomain typeDomain = report.findTypeDomain(type);
-                if (typeDomain != null) {
-                    Bu bu = typeDomain.findBu(ip);
+            if (report.getDistributionInTypes().size() > 0) {
+                DistributionInType distributionInType = report.findDistributionInType(type);
+                if (distributionInType != null) {
+                    Bu bu = distributionInType.findBu(ip);
                     addDistributionDetail(distributionDetails, bu);
                 }
             }
         } else {
-            if (report.getTypeDomains().size() > 0) {
-                TypeDomain typeDomain = report.findTypeDomain(type);
-                if (typeDomain != null) {
-                    NameDomain nameDomain = typeDomain.findNameDomain(name);
+            if (report.getDistributionInTypes().size() > 0) {
+                DistributionInType distributionInType = report.findDistributionInType(type);
+                if (distributionInType != null) {
+                    DistributionInName nameDomain = distributionInType.findDistributionInName(name);
                     if (nameDomain != null) {
                         Bu bu = nameDomain.findBu(ip);
                         addDistributionDetail(distributionDetails, bu);
@@ -55,11 +55,11 @@ public class AllReportDistributionBuilder {
 
     private void addDistributionDetail(List<DistributionDetailVisitor.DistributionDetail> distributionDetails, Bu bu) {
         if (bu != null) {
-            for (DomainCount domainCount : bu.getTypeDomainCounts().values()) {
+            for (DomainStat domainStat : bu.getTypeDomainCounts().values()) {
                 DistributionDetailVisitor.DistributionDetail distributionDetail = new DistributionDetailVisitor.DistributionDetail();
-                distributionDetail.setIp(domainCount.getDomain());
-                distributionDetail.setTotalCount(domainCount.getTotalCount());
-                distributionDetail.setFailCount(domainCount.getFailCount());
+                distributionDetail.setIp(domainStat.getDomain());
+                distributionDetail.setTotalCount(domainStat.getTotalCount());
+                distributionDetail.setFailCount(domainStat.getFailCount());
                 distributionDetails.add(distributionDetail);
             }
         }

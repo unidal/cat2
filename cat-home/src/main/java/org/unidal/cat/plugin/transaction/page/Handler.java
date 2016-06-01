@@ -36,7 +36,6 @@ import com.dianping.cat.report.graph.PieChart.Item;
 import com.dianping.cat.report.graph.svg.GraphBuilder;
 import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
 import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
-import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper;
 
 public class Handler implements PageHandler<Context> {
 	@Inject

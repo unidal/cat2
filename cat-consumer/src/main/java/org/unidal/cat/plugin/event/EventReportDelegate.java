@@ -29,7 +29,7 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
 
 	@Override
 	public EventReport makeAll(ReportPeriod period, Collection<EventReport> reports) {
-		return null;
+        return m_aggregator.makeAll(period, reports);
 	}
 
 	@Override

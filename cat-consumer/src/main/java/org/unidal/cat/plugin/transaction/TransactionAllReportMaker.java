@@ -84,10 +84,12 @@ public class TransactionAllReportMaker extends BaseVisitor {
 
 
     private boolean validateName(String type, String name) {
+        // TODO make it configurable
         return "Service".equals(type);
     }
 
     private boolean validateType(String type) {
+        // TODO make it configurable
         return "Service".equals(type);
     }
 

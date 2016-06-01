@@ -274,10 +274,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
         all.add(A(EventTypeGraphFilter.class));
         all.add(A(EventNameFilter.class));
         all.add(A(EventNameGraphFilter.class));
-        /* all.add(A(EventAllTypeFilter.class));
+        all.add(A(EventAllTypeFilter.class));
         all.add(A(EventAllTypeGraphFilter.class));
         all.add(A(EventAllNameFilter.class));
-        all.add(A(EventAllNameGraphFilter.class)); */
+        all.add(A(EventAllNameGraphFilter.class));
 
 		return all;
 	}

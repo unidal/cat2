@@ -64,11 +64,6 @@ public class GraphPayload {
 		}
 
 		@Override
-		public int getOffsetY() {
-			return getDisplayHeight() + 20;
-		}
-
-		@Override
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
@@ -85,11 +80,6 @@ public class GraphPayload {
 	final static class HitPayload extends AbstractPayload {
 		public HitPayload(String title, String axisXLabel, String axisYLabel, EventName name) {
 			super(title, axisXLabel, axisYLabel, name);
-		}
-
-		@Override
-		public int getOffsetX() {
-			return getDisplayWidth();
 		}
 
 		@Override

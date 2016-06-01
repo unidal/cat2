@@ -7,13 +7,10 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.plugin.event.filter.*;
 import org.unidal.cat.plugin.event.page.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.event.page.GraphPayload.FailurePayload;
 import org.unidal.cat.plugin.event.EventConstants;
-import org.unidal.cat.plugin.event.filter.EventNameFilter;
-import org.unidal.cat.plugin.event.filter.EventNameGraphFilter;
-import org.unidal.cat.plugin.event.filter.EventTypeFilter;
-import org.unidal.cat.plugin.event.filter.EventTypeGraphFilter;
 import org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
@@ -55,9 +52,6 @@ public class Handler implements PageHandler<Context> {
 
     @Inject
     private AllReportDistributionBuilder m_distributionBuilder;
-
-	@Inject
-	private EventReportService m_reportService;
 
     @Inject(EventConstants.NAME)
     private ReportManager<EventReport> m_manager;
@@ -130,9 +124,7 @@ public class Handler implements PageHandler<Context> {
     private void handleHourlyReport(Model model, Payload payload) throws IOException {
         String filterId;
         if(payload.getDomain().equals(Constants.ALL)){
-            // TODO implement event all filters
-            // filterId = payload.getType() == null ? EventAllTypeFilter.ID : EventAllNameFilter.ID;
-            filterId = null;
+            filterId = payload.getType() == null ? EventAllTypeFilter.ID : EventAllNameFilter.ID;
         } else {
             filterId = payload.getType() == null ? EventTypeFilter.ID : EventNameFilter.ID;
         }
@@ -156,9 +148,7 @@ public class Handler implements PageHandler<Context> {
     private void handleHourlyGraph(Model model, Payload payload) throws IOException {
         String filterId;
         if(payload.getDomain().equals(Constants.ALL)){
-            // TODO implement event all filters
-            // filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
-            filterId = null;
+            filterId = payload.getName() == null ? EventAllTypeGraphFilter.ID : EventAllNameGraphFilter.ID;
         } else {
             filterId = payload.getName() == null ? EventTypeGraphFilter.ID : EventNameGraphFilter.ID;
         }
@@ -189,9 +179,7 @@ public class Handler implements PageHandler<Context> {
     private void handleHistoryReport(Model model, Payload payload) throws IOException {
         String filterId;
         if(payload.getDomain().equals(Constants.ALL)){
-            // TODO implement event all filters
-            // filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
-            filterId = null;
+            filterId = payload.getType() == null ? EventAllTypeFilter.ID : EventAllNameFilter.ID;
         } else {
             filterId = payload.getType() == null ? EventTypeFilter.ID : EventNameFilter.ID;
         }
@@ -212,9 +200,7 @@ public class Handler implements PageHandler<Context> {
     private void handleHistoryGraph(Model model, Payload payload) throws IOException {
         String filterId;
         if(payload.getDomain().equals(Constants.ALL)){
-            // TODO implement event all filters
-            // filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
-            filterId = null;
+            filterId = payload.getName() == null ? EventAllTypeGraphFilter.ID : EventAllNameGraphFilter.ID;
         } else {
             filterId = payload.getName() == null ? EventTypeGraphFilter.ID : EventNameGraphFilter.ID;
         }
