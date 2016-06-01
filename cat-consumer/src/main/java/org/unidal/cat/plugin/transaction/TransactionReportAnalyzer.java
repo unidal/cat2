@@ -1,7 +1,9 @@
 package org.unidal.cat.plugin.transaction;
 
 import java.util.List;
+import java.util.Map;
 
+import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.lookup.annotation.Inject;

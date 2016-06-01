@@ -34,7 +34,6 @@ public class DefaultMessageDispatcher implements MessageDispatcher, TimeWindowHa
 	private void dispatch(List<Pipeline> pipelines, MessageTree tree) {
 		String domain = tree.getDomain();
 		boolean hasFailure = false;
-
 		for (Pipeline pipeline : pipelines) {
 			m_stateManager.addMessageTotal(domain, 1);
 
