@@ -1,8 +1,8 @@
-package com.dianping.cat.report.page.problem;
+package org.unidal.cat.plugin.problem.page;
 
 public enum JspFile {
 
-	ALL("/jsp/report/problem/problemStatics.jsp"),
+	HOURLY_REPORT("/jsp/report/problem/problemStatics.jsp"),
 
 	DETAIL("/jsp/report/problem/problemDetail.jsp"),
 
@@ -16,19 +16,11 @@ public enum JspFile {
 
 	MOBILE("/jsp/report/problem/problem_mobile.jsp"),
 
-	THREAD("/jsp/report/problem/problemThread.jsp"),
-
-	GROUP_GRAPHS("/jsp/report/problem/problemHourlyGraphs.jsp"),
-
-	HISTORY_GROUP_GRAPH("/jsp/report/problem/problemHistoryGraphs.jsp"),
-
-	HISTORY_GROUP_REPORT("/jsp/report/problem/problemHistoryGroupReport.jsp"),
-
-	HOURLY_GROUP_REPORT("/jsp/report/problem/problemGroupStatics.jsp");
+	THREAD("/jsp/report/problem/problemThread.jsp");
 
 	private String m_path;
 
-	private JspFile(String path) {
+	JspFile(String path) {
 		m_path = path;
 	}
 
