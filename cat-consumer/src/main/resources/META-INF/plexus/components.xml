@@ -58,10 +58,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</role>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</implementation>
-		</component>
-		<component>
 			<role>com.dianping.cat.service.ProjectService</role>
 			<implementation>com.dianping.cat.service.ProjectService</implementation>
 			<requirements>

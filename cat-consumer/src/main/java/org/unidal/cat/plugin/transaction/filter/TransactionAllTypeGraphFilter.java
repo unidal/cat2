@@ -167,7 +167,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
 
                 m_holder.setMachine(m);
 
-                report.getDistributionInType().clear();
+                report.getDistributionInTypes().clear();
             } else {
                 Machine machine = report.findMachine(m_ip);
                 Machine m = new Machine(m_ip);
@@ -180,7 +180,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
                 }
 
                 DistributionInType distributionInType = report.findOrCreateDistributionInType(m_type);
-                report.getDistributionInType().clear();
+                report.getDistributionInTypes().clear();
                 if (distributionInType != null) {
                     report.addDistributionInType(distributionInType);
                 }

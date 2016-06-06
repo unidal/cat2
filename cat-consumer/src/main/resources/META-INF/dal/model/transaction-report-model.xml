@@ -7,7 +7,7 @@
         <element name="domain" value-type="String" type="set" names="domain-names" />
         <element name="ip" value-type="String" type="set" names="ips" />
         <entity-ref name="machine" type="map" names="machines" method-find-or-create="true"  keep-order="false"/>
-        <entity-ref name="distribution-in-type" type="map" names="distribution-in-type" method-find-or-create="true"  keep-order="false"/>
+        <entity-ref name="distribution-in-type" type="map" names="distribution-in-types" method-find-or-create="true"  keep-order="false"/>
     </entity>
     <entity name="machine">
         <attribute name="ip" value-type="String" key="true"/>

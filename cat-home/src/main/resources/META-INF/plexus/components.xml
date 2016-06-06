@@ -3733,38 +3733,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.core.dal.HourlyReportDao</role>
-			<implementation>com.dianping.cat.core.dal.HourlyReportDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.HourlyReportContentDao</role>
-			<implementation>com.dianping.cat.core.dal.HourlyReportContentDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.DailyReportDao</role>
-			<implementation>com.dianping.cat.core.dal.DailyReportDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.DailyReportContentDao</role>
-			<implementation>com.dianping.cat.core.dal.DailyReportContentDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.WeeklyReportDao</role>
-			<implementation>com.dianping.cat.core.dal.WeeklyReportDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.WeeklyReportContentDao</role>
-			<implementation>com.dianping.cat.core.dal.WeeklyReportContentDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.MonthlyReportDao</role>
-			<implementation>com.dianping.cat.core.dal.MonthlyReportDao</implementation>
-		</component>
-		<component>
-			<role>com.dianping.cat.core.dal.MonthlyReportContentDao</role>
-			<implementation>com.dianping.cat.core.dal.MonthlyReportContentDao</implementation>
-		</component>
-		<component>
 			<role>com.dianping.cat.report.page.heartbeat.Handler</role>
 			<implementation>com.dianping.cat.report.page.heartbeat.Handler</implementation>
 			<requirements>
@@ -3834,6 +3802,38 @@
 					<role>com.dianping.cat.core.dal.MonthlyReportContentDao</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.HourlyReportDao</role>
+			<implementation>com.dianping.cat.core.dal.HourlyReportDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.HourlyReportContentDao</role>
+			<implementation>com.dianping.cat.core.dal.HourlyReportContentDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.DailyReportDao</role>
+			<implementation>com.dianping.cat.core.dal.DailyReportDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.DailyReportContentDao</role>
+			<implementation>com.dianping.cat.core.dal.DailyReportContentDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.WeeklyReportDao</role>
+			<implementation>com.dianping.cat.core.dal.WeeklyReportDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.WeeklyReportContentDao</role>
+			<implementation>com.dianping.cat.core.dal.WeeklyReportContentDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.MonthlyReportDao</role>
+			<implementation>com.dianping.cat.core.dal.MonthlyReportDao</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.MonthlyReportContentDao</role>
+			<implementation>com.dianping.cat.core.dal.MonthlyReportContentDao</implementation>
 		</component>
 		<component>
 			<role>com.dianping.cat.report.page.heartbeat.config.HeartbeatDisplayPolicyManager</role>

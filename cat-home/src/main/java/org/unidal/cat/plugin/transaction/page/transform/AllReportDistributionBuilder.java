@@ -18,7 +18,7 @@ public class AllReportDistributionBuilder {
     public void buildAllReportDistributionInfo(Model model, String type, String name, String ip, TransactionReport report) {
         List<DistributionDetailVisitor.DistributionDetail> distributionDetails = new ArrayList<DistributionDetailVisitor.DistributionDetail>();
         if (name == null || name.length() == 0) {
-            if (report.getDistributionInType().size() > 0) {
+            if (report.getDistributionInTypes().size() > 0) {
                 DistributionInType istributionInType = report.findDistributionInType(type);
                 if (istributionInType != null) {
                     Bu bu = istributionInType.findBu(ip);
@@ -26,7 +26,7 @@ public class AllReportDistributionBuilder {
                 }
             }
         } else {
-            if (report.getDistributionInType().size() > 0) {
+            if (report.getDistributionInTypes().size() > 0) {
                 DistributionInType distributionInType = report.findDistributionInType(type);
                 if (distributionInType != null) {
                     DistributionInName distributionInName = distributionInType.findDistributionInName(name);

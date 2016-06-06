@@ -20,7 +20,6 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(EventPipeline.class));
 		all.add(A(ProblemPipeline.class));
 
-		all.add(A(TransactionAllReportMaker.class));
 		all.add(A(ProjectService.class));
 
 		return all;
