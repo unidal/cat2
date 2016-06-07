@@ -6,9 +6,7 @@ import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.lookup.annotation.Named;
 
-@Named(type = TransactionAllReportMaker.class)
 public class TransactionAllReportMaker extends BaseVisitor {
 
     private TransactionHolder m_holder = new TransactionHolder();

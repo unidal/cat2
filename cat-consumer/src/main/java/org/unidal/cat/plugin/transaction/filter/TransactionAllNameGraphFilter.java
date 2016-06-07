@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transaction.filter;
 import com.dianping.cat.Constants;
 import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -15,6 +16,9 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
 
     @Inject
     private TransactionReportHelper m_helper;
+
+    @Inject
+    private ProjectService m_projectService;
 
     @Override
     public String getReportName() {
@@ -30,7 +34,8 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
     public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
         String type = ctx.getProperty("type", null);
         String name = ctx.getProperty("name", null);
-        NameGraphScreener visitor = new NameGraphScreener(report.getDomain(), type, name);
+        String ip = ctx.getProperty("ip", null);
+        NameGraphScreener visitor = new NameGraphScreener(report.getDomain(), ip, type, name);
 
         report.accept(visitor);
         return visitor.getReport();
@@ -51,9 +56,12 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
 
         private String m_name;
 
+        private String m_ip;
+
         private TransactionHolder m_holder = new TransactionHolder();
 
-        public NameGraphScreener(String domain, String type, String name) {
+        public NameGraphScreener(String domain, String ip, String type, String name) {
+            m_ip = ip;
             m_type = type;
             m_name = name;
             m_holder.setReport(new TransactionReport(domain));
@@ -107,6 +115,10 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
             TransactionReport r = m_holder.getReport();
 
             m_helper.mergeReport(r, report);
+
+            if (m_ip != null && !m_ip.equals(Constants.ALL) && !m_ip.equals(m_projectService.findBu(report.getDomain()))) {
+                return;
+            }
 
             Machine machineAll = r.findOrCreateMachine(Constants.ALL);
 

@@ -5,6 +5,7 @@ import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -21,6 +22,9 @@ public class TransactionAllTypeFilter implements ReportFilter<TransactionReport>
     @Inject
     private TransactionReportHelper m_helper;
 
+    @Inject
+    private ProjectService m_projectService;
+
     @Override
     public String getReportName() {
         return TransactionConstants.NAME;
@@ -33,7 +37,8 @@ public class TransactionAllTypeFilter implements ReportFilter<TransactionReport>
 
     @Override
     public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
-        TypeScreener visitor = new TypeScreener(report.getDomain());
+        String ip = ctx.getProperty("ip", null);
+        TypeScreener visitor = new TypeScreener(report.getDomain(), ip);
 
         report.accept(visitor);
         return visitor.getReport();
@@ -48,10 +53,12 @@ public class TransactionAllTypeFilter implements ReportFilter<TransactionReport>
     }
 
     private class TypeScreener extends BaseVisitor {
+        private String m_ip;
 
         private TransactionHolder m_holder = new TransactionHolder();
 
-        public TypeScreener(String domain) {
+        public TypeScreener(String domain, String ip) {
+            m_ip = ip;
             m_holder.setReport(new TransactionReport(domain));
         }
 
@@ -80,6 +87,10 @@ public class TransactionAllTypeFilter implements ReportFilter<TransactionReport>
             TransactionReport r = m_holder.getReport();
 
             m_helper.mergeReport(r, report);
+
+            if (m_ip != null && !m_ip.equals(Constants.ALL) && !m_ip.equals(m_projectService.findBu(report.getDomain()))) {
+                return;
+            }
 
             Machine m = r.findOrCreateMachine(Constants.ALL);
             Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());

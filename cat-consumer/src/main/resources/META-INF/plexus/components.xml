@@ -181,6 +181,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -190,6 +193,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -201,6 +207,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -210,6 +219,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
 				</requirement>
 			</requirements>
 		</component>
