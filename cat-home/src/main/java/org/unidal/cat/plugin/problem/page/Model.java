@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.problem;
+package org.unidal.cat.plugin.problem.page;
 
 import java.util.ArrayList;
 import java.util.List;

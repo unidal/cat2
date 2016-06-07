@@ -43,8 +43,42 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.analysis.pipeline.Pipeline</role>
+			<role-hint>problem</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.ProblemPipeline</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
+					<role-hint>domain-hash</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</role>
 			<implementation>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ConfigProvider</role>
+			<role-hint>transaction</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.internal.DBConfigManager</role>
+			<implementation>org.unidal.cat.config.internal.DBConfigManager</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.core.config.ConfigDao</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.cat.service.ProjectService</role>
@@ -342,43 +376,54 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.consumer.problem.ProblemHandler</role>
-			<role-hint>default-problem</role-hint>
-			<implementation>com.dianping.cat.consumer.problem.DefaultProblemHandler</implementation>
-			<configuration>
-				<errorType>Error,RuntimeException,Exception</errorType>
-			</configuration>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.consumer.problem.ProblemHandler</role>
-			<role-hint>long-execution</role-hint>
-			<implementation>com.dianping.cat.consumer.problem.LongExecutionProblemHandler</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.analysis.MessageAnalyzer</role>
+			<role>org.unidal.cat.spi.ReportManager</role>
 			<role-hint>problem</role-hint>
-			<implementation>com.dianping.cat.consumer.problem.ProblemAnalyzer</implementation>
+			<implementation>org.unidal.cat.plugin.problem.ProblemReportManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<field-name>m_storage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>file</role-hint>
+					<field-name>m_fileStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportFilterManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportAggregator</role>
+			<role-hint>problem</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.ProblemReportAggregator</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportDelegate</role>
+			<role-hint>problem</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.ProblemReportDelegate</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportAggregator</role>
+					<role-hint>problem</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
+			<role-hint>problem</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.ProblemReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.report.ReportManager</role>
-					<role-hint>problem</role-hint>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.consumer.problem.ProblemHandler</role>
+					<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
 					<role-hints>
 						<role-hint>default-problem</role-hint>
 						<role-hint>long-execution</role-hint>
@@ -388,42 +433,69 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.ReportManager</role>
-			<role-hint>problem</role-hint>
-			<implementation>com.dianping.cat.report.DefaultReportManager</implementation>
-			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<configuration>
-				<name>problem</name>
-			</configuration>
+			<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
+			<role-hint>default-problem</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.DefaultAbstractProblemHandler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.report.ReportDelegate</role>
-					<role-hint>problem</role-hint>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.report.ReportBucketManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportContentDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.DomainValidator</role>
+					<role>java.util.Set</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.ReportDelegate</role>
-			<role-hint>problem</role-hint>
-			<implementation>com.dianping.cat.consumer.problem.ProblemDelegate</implementation>
+			<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
+			<role-hint>long-execution</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.LongExecutionAbstractProblemHandler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.task.TaskManager</role>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
 				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</role>
+			<implementation>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>problem:homepage</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.filter.ProblemHomePageFilter</implementation>
+			<requirements>
 				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
+					<role>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>problem:graph</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.filter.ProblemGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>problem:thread</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.filter.ProblemThreadFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>problem:detail</role-hint>
+			<implementation>org.unidal.cat.plugin.problem.filter.ProblemDetailFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.problem.filter.ProblemReportHelper</role>
 				</requirement>
 			</requirements>
 		</component>

@@ -1,10 +1,14 @@
-package com.dianping.cat.report.page.problem;
+package org.unidal.cat.plugin.problem.page;
 
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 import com.dianping.cat.mvc.AbstractReportPayload;
 import com.dianping.cat.report.ReportPage;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class Payload extends AbstractReportPayload<Action,ReportPage> {
 	@FieldMeta("op")
@@ -45,6 +49,9 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 
 	@FieldMeta("group")
 	private String m_group;
+
+	@FieldMeta("date")
+	private long m_startTime;
 
 	public Payload() {
 		super(ReportPage.PROBLEM);
@@ -118,7 +125,7 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 	}
 
 	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.HOULY_REPORT);
+		m_action = Action.getByName(action, Action.HOURLY_REPORT);
 	}
 
 	public void setCacheThreshold(int cacheThreshold) {
@@ -177,7 +184,73 @@ public class Payload extends AbstractReportPayload<Action,ReportPage> {
 	@Override
 	public void validate(ActionContext<?> ctx) {
 		if (m_action == null) {
-			m_action = Action.HOULY_REPORT;
+			m_action = Action.HOURLY_REPORT;
 		}
+	}
+
+	public ReportPeriod getReportPeriod() {
+		if (m_action == null || !m_action.isHistory()) {
+			return ReportPeriod.HOUR;
+		} else {
+			String type = super.getReportType();
+			ReportPeriod period = ReportPeriod.getByName(type, ReportPeriod.DAY);
+
+			return period;
+		}
+	}
+
+	public Date getStartTime() {
+		ReportPeriod period = getReportPeriod();
+		Date startTime;
+
+		if (m_startTime <= 0) {
+			startTime = period.getStartTime(new Date());
+		} else {
+			Date time = getDate(period, m_startTime, m_step);
+
+			startTime = period.getStartTime(time);
+		}
+
+		if (startTime.after(new Date())) {
+			return period.getStartTime(new Date());
+		} else {
+			return startTime;
+		}
+	}
+
+	private Date getDate(ReportPeriod period, long date, int step) {
+		long time = date < 100000000L ? date * 100 : date;
+		long year = (time % 10000000000L) / 1000000L;
+		long month = (time % 1000000L) / 10000L;
+		long day = (time % 10000L) / 100L;
+		long hour = (time % 100L) / 1L;
+		Calendar cal = Calendar.getInstance();
+
+		cal.set(Calendar.YEAR, (int) year);
+		cal.set(Calendar.MONTH, (int) month - 1);
+		cal.set(Calendar.DATE, (int) day);
+		cal.set(Calendar.HOUR_OF_DAY, (int) hour);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
+		if (step != 0) {
+			switch (period) {
+				case HOUR:
+					cal.add(Calendar.HOUR_OF_DAY, step);
+					break;
+				case DAY:
+					cal.add(Calendar.DATE, step);
+					break;
+				case WEEK:
+					cal.add(Calendar.DATE, 7 * step);
+					break;
+				case MONTH:
+					cal.add(Calendar.MONTH, step);
+					break;
+			}
+		}
+
+		return cal.getTime();
 	}
 }

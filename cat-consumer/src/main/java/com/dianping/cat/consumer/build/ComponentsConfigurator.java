@@ -53,11 +53,8 @@ import com.dianping.cat.consumer.matrix.MatrixAnalyzer;
 import com.dianping.cat.consumer.matrix.MatrixDelegate;
 import com.dianping.cat.consumer.metric.MetricAnalyzer;
 import com.dianping.cat.consumer.metric.MetricConfigManager;
-import com.dianping.cat.consumer.problem.DefaultProblemHandler;
-import com.dianping.cat.consumer.problem.LongExecutionProblemHandler;
 import com.dianping.cat.consumer.problem.ProblemAnalyzer;
 import com.dianping.cat.consumer.problem.ProblemDelegate;
-import com.dianping.cat.consumer.problem.ProblemHandler;
 import com.dianping.cat.consumer.state.StateAnalyzer;
 import com.dianping.cat.consumer.state.StateDelegate;
 import com.dianping.cat.consumer.storage.StorageAnalyzer;
@@ -74,14 +71,29 @@ import com.dianping.cat.core.dal.ProjectDao;
 import com.dianping.cat.hadoop.hdfs.HdfsUploader;
 import com.dianping.cat.message.PathBuilder;
 import com.dianping.cat.message.storage.MessageBucketManager;
-import com.dianping.cat.report.DefaultReportManager;
-import com.dianping.cat.report.DomainValidator;
-import com.dianping.cat.report.ReportBucketManager;
-import com.dianping.cat.report.ReportDelegate;
-import com.dianping.cat.report.ReportManager;
+import com.dianping.cat.report.*;
 import com.dianping.cat.service.ProjectService;
 import com.dianping.cat.statistic.ServerStatisticManager;
 import com.dianping.cat.task.TaskManager;
+import org.unidal.cat.plugin.event.EventReportAggregator;
+import org.unidal.cat.plugin.event.EventReportAnalyzer;
+import org.unidal.cat.plugin.event.EventReportDelegate;
+import org.unidal.cat.plugin.event.EventReportManager;
+import org.unidal.cat.plugin.event.filter.*;
+import org.unidal.cat.plugin.problem.*;
+import org.unidal.cat.plugin.problem.filter.*;
+import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
+import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
+import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
+import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.filter.*;
+import org.unidal.initialization.Module;
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public static void main(String[] args) {
@@ -216,30 +228,23 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 	private Collection<Component> defineProblemComponents() {
 		final List<Component> all = new ArrayList<Component>();
-		final String ID = ProblemAnalyzer.ID;
 
-		all.add(C(ProblemHandler.class, DefaultProblemHandler.ID, DefaultProblemHandler.class)//
-		      .config(E("errorType").value("Error,RuntimeException,Exception"))//
-		      .req(ServerConfigManager.class));
+        all.add(A(ProblemReportManager.class));
+        all.add(A(ProblemReportAggregator.class));
+        all.add(A(ProblemReportDelegate.class));
+        all.add(A(ProblemReportAnalyzer.class));
 
-		all.add(C(ProblemHandler.class, LongExecutionProblemHandler.ID, LongExecutionProblemHandler.class) //
-		      .req(ServerConfigManager.class));
+        all.add(A(DefaultAbstractProblemHandler.class));
+        all.add(A(LongExecutionAbstractProblemHandler.class));
 
-		all.add(C(MessageAnalyzer.class, ID, ProblemAnalyzer.class).is(PER_LOOKUP)
-		//
-		      .req(ReportManager.class, ID).req(ServerConfigManager.class).req(ProblemHandler.class, //
-		            new String[] { DefaultProblemHandler.ID, LongExecutionProblemHandler.ID }, "m_handlers"));
-		all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
-		//
-		      .req(ReportDelegate.class, ID)
-		      //
-		      .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
-		      .config(E("name").value(ID)));
-		all.add(C(ReportDelegate.class, ID, ProblemDelegate.class) //
-		      .req(TaskManager.class, ServerFilterConfigManager.class));
-
+		all.add(A(ProblemReportHelper.class));
+		all.add(A(ProblemHomePageFilter.class));
+		all.add(A(ProblemGraphFilter.class));
+		all.add(A(ProblemThreadFilter.class));
+		all.add(A(ProblemDetailFilter.class));
 		return all;
 	}
+
 
 	private List<Component> defineTransactionComponents() {
 		final List<Component> all = new ArrayList<Component>();
@@ -379,4 +384,31 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		return all;
 	}
+
+    Collection<Component> oldProblemComponents() {
+        final List<Component> all = new ArrayList<Component>();
+        final String ID = ProblemAnalyzer.ID;
+
+        all.add(C(ProblemHandler.class, DefaultAbstractProblemHandler.ID, DefaultAbstractProblemHandler.class)//
+                .config(E("errorType").value("Error,RuntimeException,Exception"))//
+                .req(ServerConfigManager.class));
+
+        all.add(C(ProblemHandler.class, LongExecutionAbstractProblemHandler.ID, LongExecutionAbstractProblemHandler.class) //
+                .req(ServerConfigManager.class));
+
+        all.add(C(MessageAnalyzer.class, ID, ProblemAnalyzer.class).is(PER_LOOKUP)
+                //
+                .req(ReportManager.class, ID).req(ServerConfigManager.class).req(ProblemHandler.class, //
+                        new String[]{DefaultAbstractProblemHandler.ID, LongExecutionAbstractProblemHandler.ID}, "m_handlers"));
+        all.add(C(ReportManager.class, ID, DefaultReportManager.class).is(PER_LOOKUP)
+                //
+                .req(ReportDelegate.class, ID)
+                //
+                .req(ReportBucketManager.class, HourlyReportDao.class, HourlyReportContentDao.class, DomainValidator.class) //
+                .config(E("name").value(ID)));
+        all.add(C(ReportDelegate.class, ID, ProblemDelegate.class) //
+                .req(TaskManager.class, ServerFilterConfigManager.class));
+
+        return all;
+    }
 }

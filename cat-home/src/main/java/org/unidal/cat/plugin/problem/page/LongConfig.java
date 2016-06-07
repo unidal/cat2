@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.problem;
+package org.unidal.cat.plugin.problem.page;
 
 public class LongConfig {
 	private int m_sqlThreshold = 50;

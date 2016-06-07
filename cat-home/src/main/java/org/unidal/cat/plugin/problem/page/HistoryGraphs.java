@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.problem;
+package org.unidal.cat.plugin.problem.page;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,8 +21,8 @@ import com.dianping.cat.core.dal.GraphEntity;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.report.graph.LineChart;
 import com.dianping.cat.report.page.BaseHistoryGraphs;
-import com.dianping.cat.report.page.problem.Handler.DetailOrder;
-import com.dianping.cat.report.page.problem.Handler.SummaryOrder;
+import org.unidal.cat.plugin.problem.page.Handler.DetailOrder;
+import org.unidal.cat.plugin.problem.page.Handler.SummaryOrder;
 
 public class HistoryGraphs extends BaseHistoryGraphs {
 
