@@ -185,7 +185,10 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 
 				Machine m = transactionReport.findMachine(m_ip);
 				transactionReport.getMachines().clear();
-				transactionReport.addMachine(m);
+
+                if (null != m) {
+				    transactionReport.addMachine(m);
+                }
 			}
 
 			super.visitTransactionReport(transactionReport);

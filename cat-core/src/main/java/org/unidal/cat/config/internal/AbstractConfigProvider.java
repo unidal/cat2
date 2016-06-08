@@ -19,8 +19,7 @@ public abstract class AbstractConfigProvider<T> implements ConfigProvider<T> {
         try {
             config = parse(configString);
         } catch (Throwable e) {
-            // m_logger
-            Cat.logError(e);
+            e.printStackTrace();
         }
 
         return config;

@@ -6,6 +6,7 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -18,6 +19,9 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
 
     @Inject
     private TransactionReportHelper m_helper;
+
+    @Inject
+    private ProjectService m_projectService;
 
     @Override
     public String getReportName() {
@@ -32,7 +36,8 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
     @Override
     public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
         String type = ctx.getProperty("type", null);
-        NameScreener visitor = new NameScreener(report.getDomain(), type);
+        String ip = ctx.getProperty("ip", null);
+        NameScreener visitor = new NameScreener(report.getDomain(), ip, type);
 
         report.accept(visitor);
         return visitor.getReport();
@@ -50,9 +55,12 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
     private class NameScreener extends BaseVisitor {
         private String m_typeName;
 
+        private String m_ip;
+
         private TransactionHolder m_holder = new TransactionHolder();
 
-        public NameScreener(String domain, String type) {
+        public NameScreener(String domain, String ip, String type) {
+            m_ip = ip;
             m_typeName = type;
             m_holder.setReport(new TransactionReport(domain));
         }
@@ -87,6 +95,10 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
             TransactionReport r = m_holder.getReport();
 
             m_helper.mergeReport(r, report);
+
+            if (m_ip != null && !m_ip.equals(Constants.ALL) && !m_ip.equals(m_projectService.findBu(report.getDomain()))) {
+                return;
+            }
 
             Machine m = r.findOrCreateMachine(Constants.ALL);
 
@@ -174,7 +186,7 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
 
             transactionReport.getMachines().clear();
             transactionReport.addMachine(m_machine);
-            transactionReport.getDistributionInType().clear();
+            transactionReport.getDistributionInTypes().clear();
         }
 
         @Override

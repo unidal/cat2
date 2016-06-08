@@ -223,7 +223,7 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
 		}
 
 		@Override
-		public void visitEventReport(EventReport EventReport) {
+		public void visitEventReport(EventReport eventReport) {
 			boolean all = m_ip == null || m_ip.equals(Constants.ALL);
 
 			if (all) {
@@ -232,16 +232,18 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
 				m_holder.setMachine(machine);
 			} else {
 				Machine machine = new Machine(m_ip);
-				Machine m = EventReport.findMachine(m_ip);
+				Machine m = eventReport.findMachine(m_ip);
 
-				EventReport.getMachines().clear();
-				EventReport.addMachine(m);
+				eventReport.getMachines().clear();
+                if (null != m) {
+				    eventReport.addMachine(m);
+                }
 				m_holder.setMachine(machine);
 			}
 
-			super.visitEventReport(EventReport);
+			super.visitEventReport(eventReport);
 
-			EventReport.addMachine(m_holder.getMachine());
+			eventReport.addMachine(m_holder.getMachine());
 		}
 
 		@Override

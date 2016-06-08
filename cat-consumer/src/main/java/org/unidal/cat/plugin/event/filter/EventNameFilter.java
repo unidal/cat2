@@ -182,7 +182,10 @@ public class EventNameFilter implements ReportFilter<EventReport> {
 
 				Machine m = eventReport.findMachine(m_ip);
 				eventReport.getMachines().clear();
-				eventReport.addMachine(m);
+
+                if (null != m) {
+				    eventReport.addMachine(m);
+                }
 			}
 
 			super.visitEventReport(eventReport);

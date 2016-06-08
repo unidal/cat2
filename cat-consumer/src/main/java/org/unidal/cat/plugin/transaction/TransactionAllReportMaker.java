@@ -6,9 +6,7 @@ import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.lookup.annotation.Named;
 
-@Named(type = TransactionAllReportMaker.class)
 public class TransactionAllReportMaker extends BaseVisitor {
 
     private TransactionHolder m_holder = new TransactionHolder();
@@ -23,10 +21,13 @@ public class TransactionAllReportMaker extends BaseVisitor {
 
     private TransactionReportHelper m_helper;
 
-    public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionReportHelper helper) {
+    private TransactionConfigProvider m_transactionConfigProvider;
+
+    public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionReportHelper helper, TransactionConfigProvider transactionConfigProvider) {
         m_holder.setReport(report);
         m_projectService = service;
         m_helper = helper;
+        m_transactionConfigProvider = transactionConfigProvider;
     }
 
     public TransactionReport getReport() {
@@ -84,13 +85,11 @@ public class TransactionAllReportMaker extends BaseVisitor {
 
 
     private boolean validateName(String type, String name) {
-        // TODO make it configurable
-        return "Service".equals(type);
+        return m_transactionConfigProvider.shouldMakeAllReport(type, name);
     }
 
     private boolean validateType(String type) {
-        // TODO make it configurable
-        return "Service".equals(type);
+        return m_transactionConfigProvider.shouldMakeAllReport(type);
     }
 
     private void updateDomainStat(DomainStat domainStat, TransactionType type) {

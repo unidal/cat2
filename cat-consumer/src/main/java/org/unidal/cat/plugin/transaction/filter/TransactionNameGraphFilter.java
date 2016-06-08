@@ -236,7 +236,9 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
 				Machine m = transactionReport.findMachine(m_ip);
 
 				transactionReport.getMachines().clear();
-				transactionReport.addMachine(m);
+                if (null != m) {
+				    transactionReport.addMachine(m);
+                }
 				m_holder.setMachine(machine);
 			}
 

@@ -132,7 +132,10 @@ public class EventTypeFilter implements ReportFilter<EventReport> {
 
                 Machine m = eventReport.findMachine(m_ip);
                 eventReport.getMachines().clear();
-                eventReport.addMachine(m);
+
+                if (m != null) {
+                    eventReport.addMachine(m);
+                }
             }
 
             super.visitEventReport(eventReport);

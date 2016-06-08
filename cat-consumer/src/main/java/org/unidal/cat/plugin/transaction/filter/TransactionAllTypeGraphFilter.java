@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transaction.filter;
 import com.dianping.cat.Constants;
 import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -16,6 +17,9 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
     @Inject
     private TransactionReportHelper m_helper;
 
+    @Inject
+    private ProjectService m_projectService;
+
     @Override
     public String getId() {
         return ID;
@@ -28,8 +32,9 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
 
     @Override
     public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+        String ip = ctx.getProperty("ip", null);
         String type = ctx.getProperty("type", null);
-        TypeGraphScreener visitor = new TypeGraphScreener(report.getDomain(), type);
+        TypeGraphScreener visitor = new TypeGraphScreener(report.getDomain(), ip, type);
 
         report.accept(visitor);
         return visitor.getReport();
@@ -47,9 +52,12 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
     private class TypeGraphScreener extends BaseVisitor {
         private String m_type;
 
+        private String m_ip;
+
         private TransactionHolder m_holder = new TransactionHolder();
 
-        public TypeGraphScreener(String domain, String type) {
+        public TypeGraphScreener(String domain, String ip,  String type) {
+            m_ip = ip;
             m_type = type;
             m_holder.setReport(new TransactionReport(domain));
         }
@@ -104,6 +112,10 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
             TransactionReport r = m_holder.getReport();
 
             m_helper.mergeReport(r, report);
+
+            if (m_ip != null && !m_ip.equals(Constants.ALL) && !m_ip.equals(m_projectService.findBu(report.getDomain()))) {
+                return;
+            }
 
             Machine machineAll = r.findOrCreateMachine(Constants.ALL);
 
@@ -167,7 +179,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
 
                 m_holder.setMachine(m);
 
-                report.getDistributionInType().clear();
+                report.getDistributionInTypes().clear();
             } else {
                 Machine machine = report.findMachine(m_ip);
                 Machine m = new Machine(m_ip);
@@ -180,7 +192,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
                 }
 
                 DistributionInType distributionInType = report.findOrCreateDistributionInType(m_type);
-                report.getDistributionInType().clear();
+                report.getDistributionInTypes().clear();
                 if (distributionInType != null) {
                     report.addDistributionInType(distributionInType);
                 }

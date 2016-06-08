@@ -176,7 +176,7 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 				      new Date(startTime + TimeHelper.ONE_DAY));
 
 				//do not keep type domain in monthly or weekly report
-				reportModel.getDistributionInType().clear();
+				reportModel.getDistributionInTypes().clear();
 				reportModel.accept(merger);
 			} catch (Exception e) {
 				Cat.logError(e);
@@ -203,7 +203,7 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 			      startTime + TimeHelper.ONE_HOUR));
 
 			//do not keep type domain in daily report
-			report.getDistributionInType().clear();
+			report.getDistributionInTypes().clear();
 			reports.add(report);
 		}
 		return m_transactionMerger.mergeForDaily(domain, reports, domainSet, duration);

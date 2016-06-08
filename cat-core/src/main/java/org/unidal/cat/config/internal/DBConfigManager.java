@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-@Named(type = DBConfigManager.class)
+@Named(type = ConfigManager.class)
 public class DBConfigManager implements Initializable, ConfigManager {
     private static final long REFRESH_PERIOD = 5*TimeHelper.ONE_MINUTE;
 

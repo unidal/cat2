@@ -19,11 +19,12 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(TransactionPipeline.class));
-		all.add(A(EventPipeline.class));
+        all.add(A(TransactionConfigProvider.class));
+
+        all.add(A(EventPipeline.class));
+
 		all.add(A(ProblemPipeline.class));
 
-		all.add(A(TransactionAllReportMaker.class));
-        all.add(A(TransactionConfigProvider.class));
         all.add(A(DBConfigManager.class));
 		all.add(A(ProjectService.class));
 

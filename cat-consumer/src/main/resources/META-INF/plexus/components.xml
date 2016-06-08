@@ -22,6 +22,15 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.transaction.TransactionConfigProvider</role>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.analysis.pipeline.Pipeline</role>
 			<role-hint>event</role-hint>
 			<implementation>org.unidal.cat.plugin.event.EventPipeline</implementation>
@@ -58,21 +67,7 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</role>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionAllReportMaker</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.config.ConfigProvider</role>
-			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.config.ConfigManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.config.internal.DBConfigManager</role>
+			<role>org.unidal.cat.config.ConfigManager</role>
 			<implementation>org.unidal.cat.config.internal.DBConfigManager</implementation>
 			<requirements>
 				<requirement>
@@ -127,6 +122,9 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.TransactionConfigProvider</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -204,6 +202,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -213,6 +214,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -224,6 +228,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -233,6 +240,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -343,6 +353,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -357,11 +370,14 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>event:name</role-hint>
+			<role-hint>event:all-name</role-hint>
 			<implementation>org.unidal.cat.plugin.event.filter.EventAllNameFilter</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.service.ProjectService</role>
 				</requirement>
 			</requirements>
 		</component>

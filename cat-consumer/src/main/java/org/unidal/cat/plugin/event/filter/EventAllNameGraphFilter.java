@@ -178,7 +178,9 @@ public class EventAllNameGraphFilter implements ReportFilter<EventReport> {
                 Machine m = report.findMachine(m_ip);
 
                 report.getMachines().clear();
-                report.addMachine(m);
+                if (null != m) {
+                    report.addMachine(m);
+                }
                 m_holder.setMachine(machine);
 
                 DistributionInType distributionInType = report.findOrCreateDistributionInType(m_type);

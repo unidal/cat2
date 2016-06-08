@@ -21,6 +21,9 @@ public class TransactionReportAggregator implements ReportAggregator<Transaction
 	@Inject
 	private TransactionReportHelper m_helper;
 
+    @Inject
+    private TransactionConfigProvider transactionConfigProvider;
+
 	@Override
 	public TransactionReport aggregate(ReportPeriod period, Collection<TransactionReport> reports) {
 		TransactionReport aggregated = new TransactionReport();
@@ -49,7 +52,7 @@ public class TransactionReportAggregator implements ReportAggregator<Transaction
 			all.setEndTime(reports.iterator().next().getEndTime());
 			all.setPeriod(reports.iterator().next().getPeriod());
 
-			TransactionAllReportMaker maker = new TransactionAllReportMaker(all, m_projectService, m_helper);
+			TransactionAllReportMaker maker = new TransactionAllReportMaker(all, m_projectService, m_helper, transactionConfigProvider);
 
 			for (TransactionReport report : reports) {
 				report.accept(maker);
