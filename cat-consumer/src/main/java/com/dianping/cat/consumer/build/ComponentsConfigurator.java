@@ -1,33 +1,5 @@
 package com.dianping.cat.consumer.build;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.dianping.cat.message.Event;
-import org.unidal.cat.plugin.event.EventReportAggregator;
-import org.unidal.cat.plugin.event.EventReportAnalyzer;
-import org.unidal.cat.plugin.event.EventReportDelegate;
-import org.unidal.cat.plugin.event.EventReportManager;
-import org.unidal.cat.plugin.event.filter.*;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
-
-import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.initialization.Module;
-import org.unidal.lookup.configuration.AbstractResourceConfigurator;
-import org.unidal.lookup.configuration.Component;
-
 import com.dianping.cat.analysis.MessageAnalyzer;
 import com.dianping.cat.config.content.ContentFetcher;
 import com.dianping.cat.config.content.DefaultContentFetcher;
@@ -71,22 +43,17 @@ import com.dianping.cat.core.dal.ProjectDao;
 import com.dianping.cat.hadoop.hdfs.HdfsUploader;
 import com.dianping.cat.message.PathBuilder;
 import com.dianping.cat.message.storage.MessageBucketManager;
-import com.dianping.cat.report.*;
+import com.dianping.cat.report.DefaultReportManager;
+import com.dianping.cat.report.DomainValidator;
+import com.dianping.cat.report.ReportBucketManager;
+import com.dianping.cat.report.ReportDelegate;
+import com.dianping.cat.report.ReportManager;
 import com.dianping.cat.service.ProjectService;
 import com.dianping.cat.statistic.ServerStatisticManager;
 import com.dianping.cat.task.TaskManager;
-import org.unidal.cat.plugin.event.EventReportAggregator;
-import org.unidal.cat.plugin.event.EventReportAnalyzer;
-import org.unidal.cat.plugin.event.EventReportDelegate;
-import org.unidal.cat.plugin.event.EventReportManager;
-import org.unidal.cat.plugin.event.filter.*;
-import org.unidal.cat.plugin.problem.*;
-import org.unidal.cat.plugin.problem.filter.*;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
-import org.unidal.cat.plugin.transaction.filter.*;
+import org.unidal.cat.plugin.problem.DefaultAbstractProblemHandler;
+import org.unidal.cat.plugin.problem.LongExecutionAbstractProblemHandler;
+import org.unidal.cat.plugin.problem.ProblemHandler;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -106,10 +73,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.addAll(new Cat2ComponentsConfigurator().defineComponents());
 
-		all.addAll(defineTransactionComponents());
-		all.addAll(defineEventComponents());
 
-		all.addAll(defineProblemComponents());
 		all.addAll(defineHeartbeatComponents());
 		all.addAll(defineTopComponents());
 		all.addAll(defineDumpComponents());
@@ -226,67 +190,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		return all;
 	}
 
-	private Collection<Component> defineProblemComponents() {
-		final List<Component> all = new ArrayList<Component>();
 
-        all.add(A(ProblemReportManager.class));
-        all.add(A(ProblemReportAggregator.class));
-        all.add(A(ProblemReportDelegate.class));
-        all.add(A(ProblemReportAnalyzer.class));
-
-        all.add(A(DefaultAbstractProblemHandler.class));
-        all.add(A(LongExecutionAbstractProblemHandler.class));
-
-		all.add(A(ProblemReportHelper.class));
-		all.add(A(ProblemHomePageFilter.class));
-		all.add(A(ProblemGraphFilter.class));
-		all.add(A(ProblemThreadFilter.class));
-		all.add(A(ProblemDetailFilter.class));
-		return all;
-	}
-
-
-	private List<Component> defineTransactionComponents() {
-		final List<Component> all = new ArrayList<Component>();
-
-		all.add(A(TransactionReportManager.class));
-		all.add(A(TransactionReportAggregator.class));
-		all.add(A(TransactionReportDelegate.class));
-		all.add(A(TransactionReportAnalyzer.class));
-
-		all.add(A(TransactionReportHelper.class));
-		all.add(A(TransactionTypeFilter.class));
-		all.add(A(TransactionTypeGraphFilter.class));
-		all.add(A(TransactionNameFilter.class));
-		all.add(A(TransactionNameGraphFilter.class));
-		all.add(A(TransactionAllTypeFilter.class));
-		all.add(A(TransactionAllTypeGraphFilter.class));
-		all.add(A(TransactionAllNameFilter.class));
-		all.add(A(TransactionAllNameGraphFilter.class));
-
-		return all;
-	}
-
-	private List<Component> defineEventComponents() {
-		final List<Component> all = new ArrayList<Component>();
-
-		all.add(A(EventReportManager.class));
-		all.add(A(EventReportAggregator.class));
-		all.add(A(EventReportDelegate.class));
-		all.add(A(EventReportAnalyzer.class));
-
-        all.add(A(EventReportHelper.class));
-        all.add(A(EventTypeFilter.class));
-        all.add(A(EventTypeGraphFilter.class));
-        all.add(A(EventNameFilter.class));
-        all.add(A(EventNameGraphFilter.class));
-        all.add(A(EventAllTypeFilter.class));
-        all.add(A(EventAllTypeGraphFilter.class));
-        all.add(A(EventAllNameFilter.class));
-        all.add(A(EventAllNameGraphFilter.class));
-
-		return all;
-	}
 
 	private Collection<Component> defineStateComponents() {
 		final List<Component> all = new ArrayList<Component>();
