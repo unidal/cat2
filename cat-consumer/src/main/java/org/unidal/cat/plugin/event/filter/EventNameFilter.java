@@ -17,186 +17,186 @@ import java.util.Collection;
 
 @Named(type = ReportFilter.class, value = EventConstants.NAME + ":" + EventNameFilter.ID)
 public class EventNameFilter implements ReportFilter<EventReport> {
-	public static final String ID = "name";
+   public static final String ID = "name";
 
-	@Inject
-	private EventReportHelper m_helper;
+   @Inject
+   private EventReportHelper m_helper;
 
-	@Override
-	public String getId() {
-		return ID;
-	}
+   @Override
+   public String getId() {
+      return ID;
+   }
 
-	@Override
-	public String getReportName() {
-		return EventConstants.NAME;
-	}
+   @Override
+   public String getReportName() {
+      return EventConstants.NAME;
+   }
 
-	@Override
-	public EventReport screen(RemoteContext ctx, EventReport report) {
-		String type = ctx.getProperty("type", null);
-		String ip = ctx.getProperty("ip", null);
-		NameScreener visitor = new NameScreener(report.getDomain(), type, ip);
+   @Override
+   public EventReport screen(RemoteContext ctx, EventReport report) {
+      String type = ctx.getProperty("type", null);
+      String ip = ctx.getProperty("ip", null);
+      NameScreener visitor = new NameScreener(report.getDomain(), type, ip);
 
-		report.accept(visitor);
-		return visitor.getReport();
-	}
+      report.accept(visitor);
+      return visitor.getReport();
+   }
 
-	@Override
-	public void tailor(RemoteContext ctx, EventReport report) {
-		String type = ctx.getProperty("type", null);
-		String ip = ctx.getProperty("ip", null);
-		NameTailor visitor = new NameTailor(type, ip);
+   @Override
+   public void tailor(RemoteContext ctx, EventReport report) {
+      String type = ctx.getProperty("type", null);
+      String ip = ctx.getProperty("ip", null);
+      NameTailor visitor = new NameTailor(type, ip);
 
-		report.accept(visitor);
-	}
+      report.accept(visitor);
+   }
 
-	private class NameScreener extends BaseVisitor {
-		private String m_typeName;
+   private class NameScreener extends BaseVisitor {
+      private String m_typeName;
 
-		private String m_ip;
+      private String m_ip;
 
-		private EventHolder m_holder = new EventHolder();
+      private EventHolder m_holder = new EventHolder();
 
-		public NameScreener(String domain, String type, String ip) {
-			m_typeName = type;
-			m_ip = ip;
-			m_holder.setReport(new EventReport(domain));
-		}
+      public NameScreener(String domain, String type, String ip) {
+         m_typeName = type;
+         m_ip = ip;
+         m_holder.setReport(new EventReport(domain));
+      }
 
-		public EventReport getReport() {
-			return m_holder.getReport();
-		}
+      public EventReport getReport() {
+         return m_holder.getReport();
+      }
 
-		@Override
-		public void visitMachine(Machine machine) {
-			Machine m = m_holder.getMachine();
-			EventType t = m.findOrCreateType(m_typeName);
-            EventType type = machine.findType(m_typeName);
+      @Override
+      public void visitEventReport(EventReport report) {
+         EventReport r = m_holder.getReport();
 
-			m_helper.mergeMachine(m, machine);
-			m_holder.setType(t);
+         m_helper.mergeReport(r, report);
 
-			if (type != null) {
-				visitType(type);
-			}
-		}
+         if (m_ip == null || m_ip.equals(Constants.ALL)) {
+            Machine m = r.findOrCreateMachine(Constants.ALL);
+            Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
 
-		@Override
-		public void visitName(EventName name) {
-            EventName n = m_holder.getName();
+            m_holder.setMachine(m);
 
-			m_helper.mergeName(n, name);
-		}
+            for (Machine machine : machines) {
+               visitMachine(machine);
+            }
+         } else {
+            Machine machine = report.findMachine(m_ip);
+            Machine m = r.findOrCreateMachine(m_ip);
 
-		@Override
-		public void visitEventReport(EventReport report) {
-            EventReport r = m_holder.getReport();
+            if (machine != null) {
+               m_holder.setMachine(m);
+               visitMachine(machine);
+            }
+         }
+      }
 
-			m_helper.mergeReport(r, report);
+      @Override
+      public void visitMachine(Machine machine) {
+         Machine m = m_holder.getMachine();
+         EventType t = m.findOrCreateType(m_typeName);
+         EventType type = machine.findType(m_typeName);
 
-			if (m_ip == null || m_ip.equals(Constants.ALL)) {
-				Machine m = r.findOrCreateMachine(Constants.ALL);
-				Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
+         m_helper.mergeMachine(m, machine);
+         m_holder.setType(t);
 
-				m_holder.setMachine(m);
+         if (type != null) {
+            visitType(type);
+         }
+      }
 
-				for (Machine machine : machines) {
-					visitMachine(machine);
-				}
-			} else {
-				Machine machine = report.findMachine(m_ip);
-				Machine m = r.findOrCreateMachine(m_ip);
+      @Override
+      public void visitName(EventName name) {
+         EventName n = m_holder.getName();
 
-				if (machine != null) {
-					m_holder.setMachine(m);
-					visitMachine(machine);
-				}
-			}
-		}
+         m_helper.mergeName(n, name);
+      }
 
-		@Override
-		public void visitType(EventType type) {
-			EventType t = m_holder.getType();
+      @Override
+      public void visitType(EventType type) {
+         EventType t = m_holder.getType();
 
-			m_helper.mergeType(t, type);
+         m_helper.mergeType(t, type);
 
-			Collection<EventName> names = new ArrayList<EventName>(type.getNames().values());
+         Collection<EventName> names = new ArrayList<EventName>(type.getNames().values());
 
-			for (EventName name : names) {
-                EventName n = t.findOrCreateName(name.getId());
+         for (EventName name : names) {
+            EventName n = t.findOrCreateName(name.getId());
 
-				m_holder.setName(n);
-				visitName(name);
-			}
-		}
-	}
+            m_holder.setName(n);
+            visitName(name);
+         }
+      }
+   }
 
-	private class NameTailor extends BaseVisitor {
-		private String m_typeName;
+   private class NameTailor extends BaseVisitor {
+      private String m_typeName;
 
-		private String m_ip;
+      private String m_ip;
 
-		private Machine m_machine;
+      private Machine m_machine;
 
-		private EventType m_type;
+      private EventType m_type;
 
-		public NameTailor(String type, String ip) {
-			m_typeName = type;
-			m_ip = ip;
-		}
+      public NameTailor(String type, String ip) {
+         m_typeName = type;
+         m_ip = ip;
+      }
 
-		@Override
-		public void visitMachine(Machine machine) {
-			EventType type = machine.findType(m_typeName);
+      @Override
+      public void visitEventReport(EventReport eventReport) {
+         boolean all = m_ip == null || m_ip.equals(Constants.ALL);
 
-			machine.getTypes().clear();
+         if (all) {
+            m_machine = new Machine(Constants.ALL);
+         } else {
+            m_machine = new Machine(m_ip);
 
-			if (type != null) {
-				m_type = m_machine.findOrCreateType(type.getId());
+            Machine m = eventReport.findMachine(m_ip);
+            eventReport.getMachines().clear();
 
-				m_helper.mergeType(m_type, type);
-				machine.addType(type);
-			}
+            if (null != m) {
+               eventReport.addMachine(m);
+            }
+         }
 
-			super.visitMachine(machine);
-		}
+         super.visitEventReport(eventReport);
 
-		@Override
-		public void visitName(EventName name) {
-			name.getRanges().clear();
+         eventReport.getMachines().clear();
+         eventReport.addMachine(m_machine);
+      }
 
-            EventName n = m_type.findOrCreateName(name.getId());
+      @Override
+      public void visitMachine(Machine machine) {
+         EventType type = machine.findType(m_typeName);
 
-			m_helper.mergeName(n, name);
-		}
+         machine.getTypes().clear();
 
-		@Override
-		public void visitEventReport(EventReport eventReport) {
-			boolean all = m_ip == null || m_ip.equals(Constants.ALL);
+         if (type != null) {
+            m_type = m_machine.findOrCreateType(type.getId());
 
-			if (all) {
-				m_machine = new Machine(Constants.ALL);
-			} else {
-				m_machine = new Machine(m_ip);
+            m_helper.mergeType(m_type, type);
+            machine.addType(type);
+         }
 
-				Machine m = eventReport.findMachine(m_ip);
-				eventReport.getMachines().clear();
+         super.visitMachine(machine);
+      }
 
-                if (null != m) {
-				    eventReport.addMachine(m);
-                }
-			}
+      @Override
+      public void visitName(EventName name) {
+         name.getRanges().clear();
 
-			super.visitEventReport(eventReport);
+         EventName n = m_type.findOrCreateName(name.getId());
 
-			eventReport.getMachines().clear();
-			eventReport.addMachine(m_machine);
-		}
+         m_helper.mergeName(n, name);
+      }
 
-		@Override
-		public void visitType(EventType type) {
-			super.visitType(type);
-		}
-	}
+      @Override
+      public void visitType(EventType type) {
+         super.visitType(type);
+      }
+   }
 }

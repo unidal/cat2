@@ -6,13 +6,13 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = Pipeline.class, value = ProblemConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class ProblemPipeline extends AbstractPipeline {
-    @Override
-    protected void beforeCheckpoint() {
+   @Override
+   protected void afterCheckpoint() {
 
-    }
+   }
 
-    @Override
-    protected void afterCheckpoint() {
+   @Override
+   protected void beforeCheckpoint() {
 
-    }
+   }
 }

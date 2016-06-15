@@ -19,58 +19,58 @@ import java.util.Date;
 
 @Named(type = ReportDelegate.class, value = ProblemConstants.NAME)
 public class ProblemReportDelegate implements ReportDelegate<ProblemReport> {
-    @Inject(ProblemConstants.NAME)
-    private ReportAggregator<ProblemReport> m_aggregator;
+   @Inject(ProblemConstants.NAME)
+   private ReportAggregator<ProblemReport> m_aggregator;
 
-    @Override
-    public ProblemReport aggregate(ReportPeriod period, Collection<ProblemReport> reports) {
-        return m_aggregator.aggregate(period, reports);
-    }
+   @Override
+   public ProblemReport aggregate(ReportPeriod period, Collection<ProblemReport> reports) {
+      return m_aggregator.aggregate(period, reports);
+   }
 
-    @Override
-    public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
-        return null;
-    }
+   @Override
+   public String buildXml(ProblemReport report) {
+      String xml = new DefaultXmlBuilder().buildXml(report);
 
-    @Override
-    public String buildXml(ProblemReport report) {
-        String xml = new DefaultXmlBuilder().buildXml(report);
+      return xml;
+   }
 
-        return xml;
-    }
+   @Override
+   public ProblemReport createLocal(ReportPeriod period, String domain, Date startTime) {
+      return new ProblemReport(domain).setPeriod(period).setStartTime(startTime);
+   }
 
-    @Override
-    public String getName() {
-        return ProblemConstants.NAME;
-    }
+   @Override
+   public String getName() {
+      return ProblemConstants.NAME;
+   }
 
-    @Override
-    public ProblemReport parseXml(String xml) {
-        try {
-            return DefaultSaxParser.parse(xml);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid XML! length = " + xml.length(), e);
-        }
-    }
+   @Override
+   public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
+      return null;
+   }
 
-    @Override
-    public ProblemReport readStream(InputStream in) throws IOException {
-        ProblemReport report = DefaultNativeParser.parse(in);
+   @Override
+   public ProblemReport parseXml(String xml) {
+      try {
+         return DefaultSaxParser.parse(xml);
+      } catch (Exception e) {
+         throw new IllegalArgumentException("Invalid XML! length = " + xml.length(), e);
+      }
+   }
 
-        if (report.getDomain() == null) {
-            return null;
-        } else {
-            return report;
-        }
-    }
+   @Override
+   public ProblemReport readStream(InputStream in) throws IOException {
+      ProblemReport report = DefaultNativeParser.parse(in);
 
-    @Override
-    public void writeStream(OutputStream out, ProblemReport report) throws IOException {
-        DefaultNativeBuilder.build(report, out);
-    }
+      if (report.getDomain() == null) {
+         return null;
+      } else {
+         return report;
+      }
+   }
 
-    @Override
-    public ProblemReport createLocal(ReportPeriod period, String domain, Date startTime) {
-        return new ProblemReport(domain).setPeriod(period).setStartTime(startTime);
-    }
+   @Override
+   public void writeStream(OutputStream out, ProblemReport report) throws IOException {
+      DefaultNativeBuilder.build(report, out);
+   }
 }

@@ -1,55 +1,59 @@
 package org.unidal.cat.plugin.event.filter;
 
-import com.dianping.cat.consumer.event.model.entity.*;
+import com.dianping.cat.consumer.event.model.entity.EventName;
+import com.dianping.cat.consumer.event.model.entity.EventReport;
+import com.dianping.cat.consumer.event.model.entity.EventType;
+import com.dianping.cat.consumer.event.model.entity.Machine;
+import com.dianping.cat.consumer.event.model.entity.Range;
 
 public class EventHolder {
-    private EventReport m_report;
+   private EventReport m_report;
 
-    private Machine m_machine;
+   private Machine m_machine;
 
-    private EventType m_type;
+   private EventType m_type;
 
-    private EventName m_name;
+   private EventName m_name;
 
-    private Range m_range;
+   private Range m_range;
 
-    public EventReport getReport() {
-        return m_report;
-    }
+   public Machine getMachine() {
+      return m_machine;
+   }
 
-    public void setReport(EventReport report) {
-        m_report = report;
-    }
+   public EventName getName() {
+      return m_name;
+   }
 
-    public Machine getMachine() {
-        return m_machine;
-    }
+   public Range getRange() {
+      return m_range;
+   }
 
-    public void setMachine(Machine machine) {
-        m_machine = machine;
-    }
+   public EventReport getReport() {
+      return m_report;
+   }
 
-    public EventType getType() {
-        return m_type;
-    }
+   public EventType getType() {
+      return m_type;
+   }
 
-    public void setType(EventType type) {
-        m_type = type;
-    }
+   public void setMachine(Machine machine) {
+      m_machine = machine;
+   }
 
-    public EventName getName() {
-        return m_name;
-    }
+   public void setName(EventName name) {
+      m_name = name;
+   }
 
-    public void setName(EventName name) {
-        m_name = name;
-    }
+   public void setRange(Range range) {
+      m_range = range;
+   }
 
-    public Range getRange() {
-        return m_range;
-    }
+   public void setReport(EventReport report) {
+      m_report = report;
+   }
 
-    public void setRange(Range range) {
-        m_range = range;
-    }
+   public void setType(EventType type) {
+      m_type = type;
+   }
 }

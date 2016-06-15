@@ -19,37 +19,37 @@ import java.util.Map;
 
 @Named(type = Pipeline.class, value = EventConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class EventPipeline extends AbstractPipeline {
-    @Inject
-    private ReportManagerManager m_rmm;
+   @Inject
+   private ReportManagerManager m_rmm;
 
-    @Inject
-    private ReportDelegateManager m_rdg;
+   @Inject
+   private ReportDelegateManager m_rdg;
 
-	@Override
-	protected void beforeCheckpoint() throws IOException {
-        ReportManager<Report> manager = m_rmm.getReportManager(getName());
+   @Override
+   protected void afterCheckpoint() {
 
-        ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
+   }
 
-        List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
+   @Override
+   protected void beforeCheckpoint() throws IOException {
+      ReportManager<Report> manager = m_rmm.getReportManager(getName());
 
-        if (reportMapList.size() > 0) {
-            List<Report> reportList = new ArrayList<Report>();
+      ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
 
-            for (Map<String, Report> map : reportMapList) {
-                reportList.addAll(map.values());
-            }
+      List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
 
-            Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
+      if (reportMapList.size() > 0) {
+         List<Report> reportList = new ArrayList<Report>();
 
-            Map<String, Report> map = reportMapList.get(0);
+         for (Map<String, Report> map : reportMapList) {
+            reportList.addAll(map.values());
+         }
 
-            map.put(Constants.ALL, allReport);
-        }
-	}
+         Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
 
-	@Override
-	protected void afterCheckpoint() {
+         Map<String, Report> map = reportMapList.get(0);
 
-	}
+         map.put(Constants.ALL, allReport);
+      }
+   }
 }

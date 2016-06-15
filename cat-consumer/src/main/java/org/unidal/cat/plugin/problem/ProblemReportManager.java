@@ -7,8 +7,8 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = ReportManager.class, value = ProblemConstants.NAME)
 public class ProblemReportManager extends AbstractReportManager<ProblemReport> {
-    @Override
-    public int getThreadsCount() {
-        return 2;
-    }
+   @Override
+   public int getThreadsCount() {
+      return 2;
+   }
 }

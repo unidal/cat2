@@ -69,6 +69,27 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
       return all;
    }
 
+   private List<Component> defineEventComponents() {
+      final List<Component> all = new ArrayList<Component>();
+
+      all.add(A(EventReportManager.class));
+      all.add(A(EventReportAggregator.class));
+      all.add(A(EventReportDelegate.class));
+      all.add(A(EventReportAnalyzer.class));
+
+      all.add(A(EventReportHelper.class));
+      all.add(A(EventTypeFilter.class));
+      all.add(A(EventTypeGraphFilter.class));
+      all.add(A(EventNameFilter.class));
+      all.add(A(EventNameGraphFilter.class));
+      all.add(A(EventAllTypeFilter.class));
+      all.add(A(EventAllTypeGraphFilter.class));
+      all.add(A(EventAllNameFilter.class));
+      all.add(A(EventAllNameGraphFilter.class));
+
+      return all;
+   }
+
    private Collection<Component> defineProblemComponents() {
       final List<Component> all = new ArrayList<Component>();
 
@@ -105,27 +126,6 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(TransactionAllTypeGraphFilter.class));
       all.add(A(TransactionAllNameFilter.class));
       all.add(A(TransactionAllNameGraphFilter.class));
-
-      return all;
-   }
-
-   private List<Component> defineEventComponents() {
-      final List<Component> all = new ArrayList<Component>();
-
-      all.add(A(EventReportManager.class));
-      all.add(A(EventReportAggregator.class));
-      all.add(A(EventReportDelegate.class));
-      all.add(A(EventReportAnalyzer.class));
-
-      all.add(A(EventReportHelper.class));
-      all.add(A(EventTypeFilter.class));
-      all.add(A(EventTypeGraphFilter.class));
-      all.add(A(EventNameFilter.class));
-      all.add(A(EventNameGraphFilter.class));
-      all.add(A(EventAllTypeFilter.class));
-      all.add(A(EventAllTypeGraphFilter.class));
-      all.add(A(EventAllNameFilter.class));
-      all.add(A(EventAllNameGraphFilter.class));
 
       return all;
    }

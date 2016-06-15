@@ -10,26 +10,26 @@ import java.util.Collection;
 
 @Named(type = ReportAggregator.class, value = ProblemConstants.NAME)
 public class ProblemReportAggregator implements ReportAggregator<ProblemReport> {
-    @Override
-    public ProblemReport aggregate(ReportPeriod period, Collection<ProblemReport> reports) {
-        ProblemReport aggregated = new ProblemReport();
+   @Override
+   public ProblemReport aggregate(ReportPeriod period, Collection<ProblemReport> reports) {
+      ProblemReport aggregated = new ProblemReport();
 
-        if (reports.size() > 0) {
-            ProblemReportMerger merger = new ProblemReportMerger(aggregated);
+      if (reports.size() > 0) {
+         ProblemReportMerger merger = new ProblemReportMerger(aggregated);
 
-            // must be same domain
-            aggregated.setDomain(reports.iterator().next().getDomain());
+         // must be same domain
+         aggregated.setDomain(reports.iterator().next().getDomain());
 
-            for (ProblemReport report : reports) {
-                report.accept(merger);
-            }
-        }
+         for (ProblemReport report : reports) {
+            report.accept(merger);
+         }
+      }
 
-        return aggregated;
-    }
+      return aggregated;
+   }
 
-    @Override
-    public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
-        return null;
-    }
+   @Override
+   public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
+      return null;
+   }
 }

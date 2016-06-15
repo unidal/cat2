@@ -12,19 +12,19 @@ import java.util.List;
 
 @Named(type = MessageAnalyzer.class, value = ProblemConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class ProblemReportAnalyzer extends AbstractMessageAnalyzer<ProblemReport> {
-    @Inject({DefaultAbstractProblemHandler.ID, LongExecutionAbstractProblemHandler.ID})
-    private List<ProblemHandler> m_handlers;
+   @Inject({DefaultAbstractProblemHandler.ID, LongExecutionAbstractProblemHandler.ID})
+   private List<ProblemHandler> m_handlers;
 
-    @Override
-    protected void process(MessageTree tree) {
-        String domain = tree.getDomain();
-        ProblemReport report = getLocalReport(domain);
+   @Override
+   protected void process(MessageTree tree) {
+      String domain = tree.getDomain();
+      ProblemReport report = getLocalReport(domain);
 
-        report.addIp(tree.getIpAddress());
-        Machine machine = report.findOrCreateMachine(tree.getIpAddress());
+      report.addIp(tree.getIpAddress());
+      Machine machine = report.findOrCreateMachine(tree.getIpAddress());
 
-        for (ProblemHandler handler : m_handlers) {
-            handler.handle(machine, tree);
-        }
-    }
+      for (ProblemHandler handler : m_handlers) {
+         handler.handle(machine, tree);
+      }
+   }
 }
