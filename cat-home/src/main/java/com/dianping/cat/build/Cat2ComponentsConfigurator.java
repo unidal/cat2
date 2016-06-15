@@ -13,6 +13,7 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
         List<Component> all = new ArrayList<Component>();
 
         all.add(A(AllReportDistributionBuilder.class));
+        all.add(A(org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder.class));
 
         return all;
     }

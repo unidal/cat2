@@ -1,13 +1,7 @@
 package com.dianping.cat.report.page.problem.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.unidal.lookup.annotation.Inject;
-
 import com.dianping.cat.consumer.problem.ProblemAnalyzer;
 import com.dianping.cat.consumer.problem.ProblemReportMerger;
-import com.dianping.cat.consumer.problem.model.entity.Entry;
 import com.dianping.cat.consumer.problem.model.entity.JavaThread;
 import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;
@@ -20,6 +14,10 @@ import com.dianping.cat.report.ReportBucketManager;
 import com.dianping.cat.report.service.LocalModelService;
 import com.dianping.cat.report.service.ModelPeriod;
 import com.dianping.cat.report.service.ModelRequest;
+import org.unidal.lookup.annotation.Inject;
+
+import java.util.Date;
+import java.util.List;
 
 public class LocalProblemService extends LocalModelService<ProblemReport> {
 
@@ -114,23 +112,6 @@ public class LocalProblemService extends LocalModelService<ProblemReport> {
 		@Override
 		public void visitDuration(com.dianping.cat.consumer.problem.model.entity.Duration duration) {
 			super.visitDuration(duration);
-		}
-
-		@Override
-		public void visitEntry(Entry entry) {
-			if (m_type == null) {
-				super.visitEntry(entry);
-			} else {
-				if (m_status == null) {
-					if (entry.getType().equals(m_type)) {
-						super.visitEntry(entry);
-					}
-				} else {
-					if (entry.getType().equals(m_type) && entry.getStatus().equals(m_status)) {
-						super.visitEntry(entry);
-					}
-				}
-			}
 		}
 
 		@Override

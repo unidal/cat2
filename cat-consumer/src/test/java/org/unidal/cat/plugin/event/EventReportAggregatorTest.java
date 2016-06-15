@@ -42,7 +42,7 @@ public class EventReportAggregatorTest extends JdbcTestCase {
 	@Test
 	public void testAggregate() throws Exception {
 		EventReportAggregator aggregator = (EventReportAggregator) lookup(ReportAggregator.class,
-		      EventConstants.ID);
+		      EventConstants.NAME);
 		EventReport p1 = loadReport("aggregate_p1.xml");
 		EventReport p2 = loadReport("aggregate_p2.xml");
 		EventReport expected = loadReport("aggregate_all.xml");

@@ -9,22 +9,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+
 import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
+import  org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.analysis.event.TimeWindowHandler;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
+
 
 @Named(type = PipelineManager.class)
 public class DefaultPipelineManager extends ContainerHolder implements PipelineManager,
@@ -52,7 +54,7 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
     }
 
     @Override
-    public void initialize() throws InitializationException {
+    public void initialize() {
         m_timeWindowManager.register(this);
         m_executor = Threads.forPool().getFixedThreadPool("Cat", m_config.getCheckpointThreads());
     }

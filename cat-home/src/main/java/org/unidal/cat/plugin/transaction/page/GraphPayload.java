@@ -139,7 +139,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class FailurePayload extends AbstractPayload {
+	public final static class FailurePayload extends AbstractPayload {
 		public FailurePayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
@@ -168,7 +168,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class HitPayload extends AbstractPayload {
+	public final static class HitPayload extends AbstractPayload {
 		public HitPayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}

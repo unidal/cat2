@@ -72,21 +72,21 @@ public class EventAlert implements Task, LogEnabled {
 	private double[] buildArrayData(int start, int end, String type, String name, String monitor, EventReport report) {
 		EventType t = report.findOrCreateMachine(Constants.ALL).findOrCreateType(type);
 		EventName eventName = t.findOrCreateName(name);
-		Map<Integer, Range> range = eventName.getRanges();
+		List<Range> ranges = eventName.getRanges();
 		int length = end - start + 1;
 		double[] datas = new double[60];
 		double[] result = new double[length];
 
 		if (COUNT.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				datas[entry.getKey()] = entry.getValue().getCount();
+			for (int i = 0; i < ranges.size(); i++) {
+                Range range = ranges.get(i);
+				datas[i] = range.getCount();
 			}
 		} else if (FAIL_RATIO.equalsIgnoreCase(monitor)) {
-			for (Entry<Integer, Range> entry : range.entrySet()) {
-				Range value = entry.getValue();
-
-				if (value.getCount() > 0) {
-					datas[entry.getKey()] = value.getFails() * 1.0 / value.getCount();
+            for (int i = 0; i < ranges.size(); i++) {
+                Range range = ranges.get(i);
+				if (range.getCount() > 0) {
+					datas[i] = range.getFails() * 1.0 / range.getCount();
 				}
 			}
 		}
