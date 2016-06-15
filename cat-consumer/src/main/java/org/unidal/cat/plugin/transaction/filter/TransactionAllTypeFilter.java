@@ -5,6 +5,7 @@ import com.dianping.cat.consumer.transaction.model.entity.Machine;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -16,131 +17,141 @@ import java.util.Collection;
 
 @Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionAllTypeFilter.ID)
 public class TransactionAllTypeFilter implements ReportFilter<TransactionReport> {
-    public static final String ID = "all-type";
+   public static final String ID = "all-type";
 
-    @Inject
-    private TransactionReportHelper m_helper;
+   @Inject
+   private TransactionReportHelper m_helper;
 
-    @Override
-    public String getReportName() {
-        return TransactionConstants.NAME;
-    }
+   @Inject
+   private ProjectService m_projectService;
 
-    @Override
-    public String getId() {
-        return ID;
-    }
+   @Override
+   public String getId() {
+      return ID;
+   }
 
-    @Override
-    public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
-        TypeScreener visitor = new TypeScreener(report.getDomain());
+   @Override
+   public String getReportName() {
+      return TransactionConstants.NAME;
+   }
 
-        report.accept(visitor);
-        return visitor.getReport();
-    }
+   @Override
+   public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+      String ip = ctx.getProperty("ip", null);
+      TypeScreener visitor = new TypeScreener(report.getDomain(), ip);
 
-    @Override
-    public void tailor(RemoteContext ctx, TransactionReport report) {
-        String ip = ctx.getProperty("ip", null);
-        TypeTailor visitor = new TypeTailor(ip);
+      report.accept(visitor);
+      return visitor.getReport();
+   }
 
-        report.accept(visitor);
-    }
+   @Override
+   public void tailor(RemoteContext ctx, TransactionReport report) {
+      String ip = ctx.getProperty("ip", null);
+      TypeTailor visitor = new TypeTailor(ip);
 
-    private class TypeScreener extends BaseVisitor {
+      report.accept(visitor);
+   }
 
-        private TransactionHolder m_holder = new TransactionHolder();
+   private class TypeScreener extends BaseVisitor {
+      private String m_ip;
 
-        public TypeScreener(String domain) {
-            m_holder.setReport(new TransactionReport(domain));
-        }
+      private TransactionHolder m_holder = new TransactionHolder();
 
-        public TransactionReport getReport() {
-            return m_holder.getReport();
-        }
+      public TypeScreener(String domain, String ip) {
+         m_ip = ip;
+         m_holder.setReport(new TransactionReport(domain));
+      }
 
-        @Override
-        public void visitMachine(Machine machine) {
-            Machine m = m_holder.getMachine();
+      public TransactionReport getReport() {
+         return m_holder.getReport();
+      }
 
-            m_helper.mergeMachine(m, machine);
+      @Override
+      public void visitMachine(Machine machine) {
+         Machine m = m_holder.getMachine();
 
-            Collection<TransactionType> types = new ArrayList<TransactionType>(machine.getTypes().values());
+         m_helper.mergeMachine(m, machine);
 
-            for (TransactionType type : types) {
-                TransactionType t = m.findOrCreateType(type.getId());
+         Collection<TransactionType> types = new ArrayList<TransactionType>(machine.getTypes().values());
 
-                m_holder.setType(t);
-                visitType(type);
-            }
-        }
+         for (TransactionType type : types) {
+            TransactionType t = m.findOrCreateType(type.getId());
 
-        @Override
-        public void visitTransactionReport(TransactionReport report) {
-            TransactionReport r = m_holder.getReport();
+            m_holder.setType(t);
+            visitType(type);
+         }
+      }
 
-            m_helper.mergeReport(r, report);
+      @Override
+      public void visitTransactionReport(TransactionReport report) {
+         TransactionReport r = m_holder.getReport();
 
-            Machine m = r.findOrCreateMachine(Constants.ALL);
-            Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
+         m_helper.mergeReport(r, report);
 
-            m_holder.setMachine(m);
+         if (m_ip != null && !m_ip.equals(Constants.ALL) && !m_ip.equals(m_projectService.findBu(report.getDomain()))) {
+            return;
+         }
 
-            for (Machine machine : machines) {
-                visitMachine(machine);
-            }
-        }
+         Machine m = r.findOrCreateMachine(Constants.ALL);
+         Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
 
-        @Override
-        public void visitType(TransactionType type) {
-            TransactionType t = m_holder.getType();
+         m_holder.setMachine(m);
 
-            m_helper.mergeType(t, type);
-        }
-    }
+         for (Machine machine : machines) {
+            visitMachine(machine);
+         }
+      }
 
-    private class TypeTailor extends BaseVisitor {
-        private String m_ip;
+      @Override
+      public void visitType(TransactionType type) {
+         TransactionType t = m_holder.getType();
 
-        private Machine m_machine;
+         m_helper.mergeType(t, type);
+      }
+   }
 
-        public TypeTailor(String ip) {
-            m_ip = ip;
-        }
+   private class TypeTailor extends BaseVisitor {
+      private String m_ip;
 
-        @Override
-        public void visitTransactionReport(TransactionReport transactionReport) {
-            boolean all = m_ip == null || m_ip.equals(Constants.ALL);
+      private Machine m_machine;
 
-            if (all) {
-                m_machine = new Machine(Constants.ALL);
-            } else {
-                m_machine = new Machine(m_ip);
+      public TypeTailor(String ip) {
+         m_ip = ip;
+      }
 
-                Machine m = transactionReport.findMachine(m_ip);
-                transactionReport.getMachines().clear();
+      @Override
+      public void visitTransactionReport(TransactionReport transactionReport) {
+         boolean all = m_ip == null || m_ip.equals(Constants.ALL);
 
-                if (m != null) {
-                    transactionReport.addMachine(m);
-                }
-            }
+         if (all) {
+            m_machine = new Machine(Constants.ALL);
+         } else {
+            m_machine = new Machine(m_ip);
 
-            super.visitTransactionReport(transactionReport);
-
+            Machine m = transactionReport.findMachine(m_ip);
             transactionReport.getMachines().clear();
-            transactionReport.addMachine(m_machine);
-            transactionReport.getTypeDomains().clear();
-        }
 
-        @Override
-        public void visitType(TransactionType type) {
-            type.getNames().clear();
-            type.getRange2s().clear();
-            type.getAllDurations().clear();
+            if (m != null) {
+               transactionReport.addMachine(m);
+            }
+         }
 
-            TransactionType t = m_machine.findOrCreateType(type.getId());
+         super.visitTransactionReport(transactionReport);
 
-            m_helper.mergeType(t, type);
-        }
-    }
+         transactionReport.getMachines().clear();
+         transactionReport.addMachine(m_machine);
+         transactionReport.getDistributionInTypes().clear();
+      }
+
+      @Override
+      public void visitType(TransactionType type) {
+         type.getNames().clear();
+         type.getRange2s().clear();
+         type.getAllDurations().clear();
+
+         TransactionType t = m_machine.findOrCreateType(type.getId());
+
+         m_helper.mergeType(t, type);
+      }
+   }
 }

@@ -1,128 +1,133 @@
 package org.unidal.cat.plugin.transaction;
 
 
-import com.dianping.cat.consumer.transaction.model.entity.*;
+import com.dianping.cat.consumer.transaction.model.entity.DomainStat;
+import com.dianping.cat.consumer.transaction.model.entity.Machine;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.lookup.annotation.Named;
 
-@Named(type = TransactionAllReportMaker.class)
 public class TransactionAllReportMaker extends BaseVisitor {
 
-    private TransactionHolder m_holder = new TransactionHolder();
+   private TransactionHolder m_holder = new TransactionHolder();
 
-    private String m_currentBu;
+   private String m_currentBu;
 
-    private String m_currentType;
+   private String m_currentType;
 
-    private String m_currentDomain;
+   private String m_currentDomain;
 
-    private ProjectService m_projectService;
+   private ProjectService m_projectService;
 
-    private TransactionReportHelper m_helper;
+   private TransactionReportHelper m_helper;
 
-    public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionReportHelper helper) {
-        m_holder.setReport(report);
-        m_projectService = service;
-        m_helper = helper;
-    }
+   private TransactionConfigProvider m_transactionConfigProvider;
 
-    public TransactionReport getReport() {
-        return m_holder.getReport();
-    }
+   public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionReportHelper helper, TransactionConfigProvider transactionConfigProvider) {
+      m_holder.setReport(report);
+      m_projectService = service;
+      m_helper = helper;
+      m_transactionConfigProvider = transactionConfigProvider;
+   }
 
-    @Override
-    public void visitTransactionReport(TransactionReport transactionReport) {
-        m_currentDomain = transactionReport.getDomain();
-        m_currentBu = m_projectService.findBu(transactionReport.getDomain());
-        m_holder.getReport().addIp(m_currentBu);
-        super.visitTransactionReport(transactionReport);
-    }
+   public TransactionReport getReport() {
+      return m_holder.getReport();
+   }
 
-    @Override
-    public void visitType(TransactionType type) {
-        m_currentType = type.getId();
+   private void updateDomainStat(DomainStat domainStat, TransactionType type) {
+      domainStat.setTotalCount(domainStat.getTotalCount() + type.getTotalCount());
+      domainStat.setFailCount(domainStat.getFailCount() + type.getFailCount());
 
-        if (validateType(m_currentType)) {
-            TransactionReport report = m_holder.getReport();
-            Machine machine = report.findOrCreateMachine(m_currentBu);
-            TransactionType result = machine.findOrCreateType(m_currentType);
+      if (type.getMin() < domainStat.getMin()) {
+         domainStat.setMin(type.getMin());
+      }
+      if (type.getMax() > domainStat.getMax()) {
+         domainStat.setMax(type.getMax());
+      }
+      domainStat.setSum(domainStat.getSum() + type.getSum());
+      domainStat.setSum2(domainStat.getSum2() + type.getSum2());
+      domainStat.setTps(domainStat.getTps() + type.getTps());
+      if (domainStat.getTotalCount() > 0) {
+         domainStat.setAvg(domainStat.getSum() / domainStat.getTotalCount());
+      }
+   }
 
-            m_holder.setType(result);
-            m_helper.mergeType(result, type);
+   private void updateDomainStat(DomainStat DomainStat, TransactionName name) {
+      DomainStat.setTotalCount(DomainStat.getTotalCount() + name.getTotalCount());
+      DomainStat.setFailCount(DomainStat.getFailCount() + name.getFailCount());
 
-            DomainCount domainCount = report.findOrCreateTypeDomain(m_currentType)
-                    .findOrCreateBu(m_currentBu).findOrCreateDomainCount(m_currentDomain);
+      if (name.getMin() < DomainStat.getMin()) {
+         DomainStat.setMin(name.getMin());
+      }
+      if (name.getMax() > DomainStat.getMax()) {
+         DomainStat.setMax(name.getMax());
+      }
+      DomainStat.setSum(DomainStat.getSum() + name.getSum());
+      DomainStat.setSum2(DomainStat.getSum2() + name.getSum2());
+      DomainStat.setTps(DomainStat.getTps() + name.getTps());
+      if (DomainStat.getTotalCount() > 0) {
+         DomainStat.setAvg(DomainStat.getSum() / DomainStat.getTotalCount());
+      }
+   }
 
-            updateDomainCount(domainCount, type);
+   private boolean validateName(String type, String name) {
+      return m_transactionConfigProvider.shouldMakeAllReport(type, name);
+   }
 
-            super.visitType(type);
-        }
-    }
+   private boolean validateType(String type) {
+      return m_transactionConfigProvider.shouldMakeAllReport(type);
+   }
 
-    @Override
-    public void visitName(TransactionName name) {
-        String nameId = name.getId();
+   @Override
+   public void visitName(TransactionName name) {
+      String nameId = name.getId();
 
-        if (validateName(m_currentType, nameId)) {
-            TransactionType trType = m_holder.getType();
-            TransactionName trName = trType.findOrCreateName(nameId);
+      if (validateName(m_currentType, nameId)) {
+         TransactionType trType = m_holder.getType();
+         TransactionName trName = trType.findOrCreateName(nameId);
 
-            m_helper.mergeName(trName, name);
-            m_helper.mergeDurations(trName.getDurations(), name.getDurations());
-            m_helper.mergeRanges(trName.getRanges(), name.getRanges());
+         m_helper.mergeName(trName, name);
+         m_helper.mergeDurations(trName.getDurations(), name.getDurations());
+         m_helper.mergeRanges(trName.getRanges(), name.getRanges());
 
-            TransactionReport report = m_holder.getReport();
-            DomainCount domainCount = report.findOrCreateTypeDomain(trType.getId()).findOrCreateNameDomain(nameId)
-                    .findOrCreateBu(m_currentBu).findOrCreateDomainCount(m_currentDomain);
-            updateDomainCount(domainCount, name);
-        }
-    }
+         TransactionReport report = m_holder.getReport();
+         DomainStat DomainStat = report.findOrCreateDistributionInType(trType.getId())
+               .findOrCreateDistributionInName(nameId)
+               .findOrCreateBu(m_currentBu).findOrCreateDomainStat(m_currentDomain);
+         updateDomainStat(DomainStat, name);
+      }
+   }
 
+   @Override
+   public void visitTransactionReport(TransactionReport transactionReport) {
+      m_currentDomain = transactionReport.getDomain();
+      m_currentBu = m_projectService.findBu(transactionReport.getDomain());
+      m_holder.getReport().addIp(m_currentBu);
+      super.visitTransactionReport(transactionReport);
+   }
 
-    private boolean validateName(String type, String name) {
-        return "Service".equals(type);
-    }
+   @Override
+   public void visitType(TransactionType type) {
+      m_currentType = type.getId();
 
-    private boolean validateType(String type) {
-        return "Service".equals(type);
-    }
+      if (validateType(m_currentType)) {
+         TransactionReport report = m_holder.getReport();
+         Machine machine = report.findOrCreateMachine(m_currentBu);
+         TransactionType result = machine.findOrCreateType(m_currentType);
 
-    private void updateDomainCount(DomainCount domainCount, TransactionType type) {
-        domainCount.setTotalCount(domainCount.getTotalCount() + type.getTotalCount());
-        domainCount.setFailCount(domainCount.getFailCount() + type.getFailCount());
+         m_holder.setType(result);
+         m_helper.mergeType(result, type);
 
-        if (type.getMin() < domainCount.getMin()) {
-            domainCount.setMin(type.getMin());
-        }
-        if (type.getMax() > domainCount.getMax()) {
-            domainCount.setMax(type.getMax());
-        }
-        domainCount.setSum(domainCount.getSum() + type.getSum());
-        domainCount.setSum2(domainCount.getSum2() + type.getSum2());
-        domainCount.setTps(domainCount.getTps() + type.getTps());
-        if (domainCount.getTotalCount() > 0) {
-            domainCount.setAvg(domainCount.getSum() / domainCount.getTotalCount());
-        }
-    }
+         DomainStat domainStat = report.findOrCreateDistributionInType(m_currentType)
+               .findOrCreateBu(m_currentBu).findOrCreateDomainStat(m_currentDomain);
 
-    private void updateDomainCount(DomainCount domainCount, TransactionName name) {
-        domainCount.setTotalCount(domainCount.getTotalCount() + name.getTotalCount());
-        domainCount.setFailCount(domainCount.getFailCount() + name.getFailCount());
+         updateDomainStat(domainStat, type);
 
-        if (name.getMin() < domainCount.getMin()) {
-            domainCount.setMin(name.getMin());
-        }
-        if (name.getMax() > domainCount.getMax()) {
-            domainCount.setMax(name.getMax());
-        }
-        domainCount.setSum(domainCount.getSum() + name.getSum());
-        domainCount.setSum2(domainCount.getSum2() + name.getSum2());
-        domainCount.setTps(domainCount.getTps() + name.getTps());
-        if (domainCount.getTotalCount() > 0) {
-            domainCount.setAvg(domainCount.getSum() / domainCount.getTotalCount());
-        }
-    }
+         super.visitType(type);
+      }
+   }
 }

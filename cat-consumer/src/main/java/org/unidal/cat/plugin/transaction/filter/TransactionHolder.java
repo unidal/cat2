@@ -8,63 +8,63 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 
 public class TransactionHolder {
-	private TransactionReport m_report;
+   private TransactionReport m_report;
 
-	private Machine m_machine;
+   private Machine m_machine;
 
-	private TransactionType m_type;
+   private TransactionType m_type;
 
-	private TransactionName m_name;
+   private TransactionName m_name;
 
-	private Range m_range;
+   private Range m_range;
 
-	private Duration m_duration;
+   private Duration m_duration;
 
-	public TransactionReport getReport() {
-		return m_report;
-	}
+   public Duration getDuration() {
+      return m_duration;
+   }
 
-	public void setReport(TransactionReport report) {
-		m_report = report;
-	}
+   public Machine getMachine() {
+      return m_machine;
+   }
 
-	public Machine getMachine() {
-		return m_machine;
-	}
+   public TransactionName getName() {
+      return m_name;
+   }
 
-	public void setMachine(Machine machine) {
-		m_machine = machine;
-	}
+   public Range getRange() {
+      return m_range;
+   }
 
-	public TransactionType getType() {
-		return m_type;
-	}
+   public TransactionReport getReport() {
+      return m_report;
+   }
 
-	public void setType(TransactionType type) {
-		m_type = type;
-	}
+   public TransactionType getType() {
+      return m_type;
+   }
 
-	public TransactionName getName() {
-		return m_name;
-	}
+   public void setDuration(Duration duration) {
+      m_duration = duration;
+   }
 
-	public void setName(TransactionName name) {
-		m_name = name;
-	}
+   public void setMachine(Machine machine) {
+      m_machine = machine;
+   }
 
-	public Range getRange() {
-		return m_range;
-	}
+   public void setName(TransactionName name) {
+      m_name = name;
+   }
 
-	public void setRange(Range range) {
-		m_range = range;
-	}
+   public void setRange(Range range) {
+      m_range = range;
+   }
 
-	public Duration getDuration() {
-		return m_duration;
-	}
+   public void setReport(TransactionReport report) {
+      m_report = report;
+   }
 
-	public void setDuration(Duration duration) {
-		m_duration = duration;
-	}
+   public void setType(TransactionType type) {
+      m_type = type;
+   }
 }

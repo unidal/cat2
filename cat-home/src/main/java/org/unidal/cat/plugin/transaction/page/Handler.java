@@ -36,7 +36,6 @@ import com.dianping.cat.report.graph.PieChart.Item;
 import com.dianping.cat.report.graph.svg.GraphBuilder;
 import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
 import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
-import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -278,6 +277,8 @@ public class Handler implements PageHandler<Context> {
 
 		TransactionReport report = model.getReport();
 		Date startTime = report.getStartTime();
+
+        // TODO for history report, endTime should not be startTime + HOUR
 		Date endTime = ReportPeriod.HOUR.getNextStartTime(startTime);
 
 		report.setEndTime(new Date(endTime.getTime() - 1000));

@@ -15,7 +15,7 @@ import com.dianping.cat.consumer.problem.model.entity.Entity;
 import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.consumer.problem.model.transform.BaseVisitor;
 import com.dianping.cat.helper.SortHelper;
-import com.dianping.cat.report.page.problem.LongConfig;
+import org.unidal.cat.plugin.problem.page.LongConfig;
 
 public class ProblemStatistics extends BaseVisitor {
 
@@ -126,7 +126,7 @@ public class ProblemStatistics extends BaseVisitor {
 
 	@Override
 	public void visitMachine(Machine machine) {
-		if (m_allIp == true || m_ip.equals(machine.getIp())) {
+		if (m_allIp || m_ip.equals(machine.getIp())) {
 			Collection<Entity> entities = machine.getEntities().values();
 
 			for (Entity entity : entities) {

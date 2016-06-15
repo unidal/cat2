@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import com.dianping.cat.helper.TimeHelper;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.ReportManager;
@@ -61,6 +62,13 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 				}
 			}
 		}
+
+		removeReport(new Date(startTime.getTime() - TimeHelper.ONE_HOUR ) , index);
+	}
+
+	private void removeReport(Date time, int index){
+		long key = time.getTime() + index;
+		m_reports.remove(key);
 	}
 
 	@Override
@@ -150,7 +158,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
 	}
 
-	@Override
 	public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 		if (period == ReportPeriod.HOUR) {
 			int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());

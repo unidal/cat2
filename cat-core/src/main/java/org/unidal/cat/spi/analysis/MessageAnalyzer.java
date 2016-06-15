@@ -3,9 +3,8 @@ package org.unidal.cat.spi.analysis;
 import java.io.IOException;
 import java.util.Map;
 
-import org.unidal.helper.Threads.Task;
-
 import com.dianping.cat.message.spi.MessageTree;
+import org.unidal.helper.Threads.Task;
 
 /**
  * Message analyzer is responsible of processing each message in the queue, and producing a report normally.
