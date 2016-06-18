@@ -157,41 +157,6 @@
 			<implementation>org.unidal.cat.service.internals.ZlibCompressionService</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.task.TaskManager</role>
-			<implementation>org.unidal.cat.spi.task.internals.DefaultTaskManager</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.task.internals.TaskRegistry</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.task.internals.TaskDispatcher</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.task.internals.TaskQueue</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.task.internals.TaskRegistry</role>
-			<implementation>org.unidal.cat.spi.task.internals.TaskRegistry</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.task.internals.TaskDispatcher</role>
-			<implementation>org.unidal.cat.spi.task.internals.TaskDispatcher</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.task.internals.TaskRegistry</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.task.internals.TaskQueue</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.task.internals.TaskQueue</role>
-			<implementation>org.unidal.cat.spi.task.internals.TaskQueue</implementation>
-		</component>
-		<component>
 			<role>org.unidal.cat.metric.BenchmarkManager</role>
 			<implementation>org.unidal.cat.metric.DefaultBenchmarkManager</implementation>
 		</component>

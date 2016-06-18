@@ -8,6 +8,16 @@
 	<name>CAT :: Parent</name>
 	<description>Central Application Tracking</description>
 	<packaging>pom</packaging>
+	<modules>
+		<module>cat-client</module>
+		<module>cat-core</module>
+		<module>cat-consumer</module>
+		<module>cat-hadoop</module>
+		<module>cat-home</module>
+		<module>cat-maven-plugin</module>
+		<module>cat-plugin-transaction</module>
+		<module>cat-plugin-event</module>
+	</modules>
 	<organization>
 		<name>Unidal</name>
 		<url>http://unidal.org</url>
@@ -47,15 +57,6 @@
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 	</properties>
-	<modules>
-		<module>cat-client</module>
-		<module>cat-core</module>
-		<module>cat-consumer</module>
-		<module>cat-hadoop</module>
-		<module>cat-home</module>
-		<module>cat-maven-plugin</module>
-		<module>cat-plugin-transaction</module>
-	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -88,6 +89,11 @@
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
 				<artifactId>cat-plugin-transaction</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dianping.cat</groupId>
+				<artifactId>cat-plugin-event</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

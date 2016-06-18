@@ -55,10 +55,6 @@ import org.unidal.cat.spi.report.provider.RecentReportProvider;
 import org.unidal.cat.spi.report.storage.DefaultReportStorage;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
 import org.unidal.cat.spi.report.storage.MysqlReportStorage;
-import org.unidal.cat.spi.task.internals.DefaultTaskManager;
-import org.unidal.cat.spi.task.internals.TaskDispatcher;
-import org.unidal.cat.spi.task.internals.TaskQueue;
-import org.unidal.cat.spi.task.internals.TaskRegistry;
 import org.unidal.cat.spi.transport.DefaultServerTransportConfiguration;
 import org.unidal.cat.spi.transport.TcpSocketSkeleton;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -90,11 +86,6 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultCompressionService.class));
 		all.add(A(GzipCompressionService.class));
 		all.add(A(ZlibCompressionService.class));
-
-		all.add(A(DefaultTaskManager.class));
-		all.add(A(TaskRegistry.class));
-		all.add(A(TaskDispatcher.class));
-		all.add(A(TaskQueue.class));
 
 		all.add(A(DefaultBenchmarkManager.class));
 
