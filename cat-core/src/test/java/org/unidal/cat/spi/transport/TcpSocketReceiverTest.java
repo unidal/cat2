@@ -3,9 +3,8 @@ package org.unidal.cat.spi.transport;
 import io.netty.buffer.ByteBuf;
 
 import org.junit.Test;
-import org.unidal.cat.spi.decode.DecodeHandler;
-import org.unidal.cat.spi.decode.DecodeHandlerManager;
-import org.unidal.cat.transport.TransportConfiguration;
+import org.unidal.cat.transport.decode.DecodeHandler;
+import org.unidal.cat.transport.decode.DecodeHandlerManager;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.analysis.TcpSocketReceiver;
@@ -13,7 +12,7 @@ import com.dianping.cat.analysis.TcpSocketReceiver;
 public class TcpSocketReceiverTest extends ComponentTestCase {
 	@Test
 	public void test() throws Exception {
-		defineComponent(TransportConfiguration.class, MockTransportConfiguration.class);
+		defineComponent(ServerTransportConfiguration.class, MockTransportConfiguration.class);
 		defineComponent(DecodeHandlerManager.class, MockCodecHandlerManager.class);
 
 		TcpSocketReceiver receiver = lookup(TcpSocketReceiver.class);
@@ -37,7 +36,7 @@ public class TcpSocketReceiverTest extends ComponentTestCase {
 		}
 	}
 
-	public static final class MockTransportConfiguration implements TransportConfiguration {
+	public static final class MockTransportConfiguration implements ServerTransportConfiguration {
 		@Override
 		public int getBossThreads() {
 			return 1;
