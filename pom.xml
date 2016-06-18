@@ -54,7 +54,6 @@
 		<module>cat-hadoop</module>
 		<module>cat-home</module>
 		<module>cat-maven-plugin</module>
-		<module>cat-plugin-transaction</module>
 	</modules>
 	<dependencyManagement>
 		<dependencies>
@@ -87,10 +86,9 @@
 			</dependency>
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
-				<artifactId>cat-plugin-transaction</artifactId>
+				<artifactId>cat-consumer-advanced</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>org.unidal.webres</groupId>
 				<artifactId>WebResServer</artifactId>

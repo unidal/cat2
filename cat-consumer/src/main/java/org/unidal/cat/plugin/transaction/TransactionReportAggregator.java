@@ -1,6 +1,7 @@
 package org.unidal.cat.plugin.transaction;
 
 import com.dianping.cat.Constants;
+import com.dianping.cat.consumer.transaction.TransactionReportMerger;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
