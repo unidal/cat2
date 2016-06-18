@@ -243,27 +243,9 @@
 			<implementation>org.unidal.cat.spi.command.DefaultCommandDispatcher</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.decode.DecodeHandlerManager</role>
-			<implementation>org.unidal.cat.spi.decode.internals.DefaultDecodeHandlerManager</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.decode.DecodeHandler</role>
-			<role-hint>NC1</role-hint>
-			<implementation>org.unidal.cat.spi.decode.internals.NativeCommandDecodeHandler</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.message.codec.CommandCodec</role>
-					<role-hint>NC1</role-hint>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.command.CommandDispatcher</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.decode.DecodeHandler</role>
+			<role>org.unidal.cat.transport.decode.DecodeHandler</role>
 			<role-hint>NT1</role-hint>
-			<implementation>org.unidal.cat.spi.decode.internals.NativeMessageDecodeHandler</implementation>
+			<implementation>org.unidal.cat.spi.message.NativeMessageDecodeHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
@@ -284,9 +266,9 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.decode.DecodeHandler</role>
+			<role>org.unidal.cat.transport.decode.DecodeHandler</role>
 			<role-hint>PT1</role-hint>
-			<implementation>org.unidal.cat.spi.decode.internals.PlainTextMessageDecodeHandler</implementation>
+			<implementation>org.unidal.cat.spi.message.PlainTextMessageDecodeHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
@@ -307,18 +289,44 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.transport.TransportConfiguration</role>
-			<implementation>org.unidal.cat.transport.DefaultTransportConfiugration</implementation>
-		</component>
-		<component>
 			<role>com.dianping.cat.analysis.TcpSocketReceiver</role>
 			<implementation>com.dianping.cat.analysis.TcpSocketReceiver</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.decode.DecodeHandlerManager</role>
+					<role>org.unidal.cat.transport.decode.DecodeHandlerManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.transport.TransportConfiguration</role>
+					<role>org.unidal.cat.spi.transport.ServerTransportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.transport.TcpSocketSkeleton</role>
+			<implementation>org.unidal.cat.spi.transport.TcpSocketSkeleton</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.transport.ServerTransportConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.message.ServerTransportHub</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.transport.ServerTransportConfiguration</role>
+			<implementation>org.unidal.cat.spi.transport.DefaultServerTransportConfiguration</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.message.ServerTransportHub</role>
+			<implementation>org.unidal.cat.spi.message.DefaultServerTransportHub</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.message.codec.CommandCodec</role>
+					<role-hint>NC1</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.transport.decode.DecodeHandlerManager</role>
 				</requirement>
 			</requirements>
 		</component>

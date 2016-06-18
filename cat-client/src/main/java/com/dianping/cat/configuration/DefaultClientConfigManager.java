@@ -13,6 +13,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.helper.Files;
+import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
@@ -65,9 +66,9 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 	}
 
 	@Override
-   public long getServerAddressRefreshInterval() {
-	   return TimeUnit.MINUTES.toMillis(1);
-   }
+	public long getServerAddressRefreshInterval() {
+		return TimeUnit.MINUTES.toMillis(1);
+	}
 
 	@Override
 	public String getServerConfigUrl() {
@@ -83,7 +84,7 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 					httpPort = 8080;
 				}
 				return String.format("http://%s:%d/cat/s/router?domain=%s&ip=%s&op=json", server.getIp().trim(), httpPort,
-				      getDomain().getId(), NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
+				      getDomain().getId(), Inets.IP4.getLocalHostAddress());
 			}
 		}
 		return null;

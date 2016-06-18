@@ -1,11 +1,11 @@
-package org.unidal.cat.transport;
+package org.unidal.cat.spi.transport;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = TransportConfiguration.class)
-public class DefaultTransportConfiugration implements TransportConfiguration, Initializable {
+@Named(type = ServerTransportConfiguration.class)
+public class DefaultServerTransportConfiguration implements ServerTransportConfiguration, Initializable {
 	private int m_bossThreads;
 
 	private int m_workerThreads;

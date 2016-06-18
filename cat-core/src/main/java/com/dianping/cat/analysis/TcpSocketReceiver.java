@@ -23,9 +23,9 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.spi.decode.DecodeHandler;
-import org.unidal.cat.spi.decode.DecodeHandlerManager;
-import org.unidal.cat.transport.TransportConfiguration;
+import org.unidal.cat.spi.transport.ServerTransportConfiguration;
+import org.unidal.cat.transport.decode.DecodeHandler;
+import org.unidal.cat.transport.decode.DecodeHandlerManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -35,7 +35,7 @@ public final class TcpSocketReceiver implements Initializable, LogEnabled {
 	private DecodeHandlerManager m_manager;
 
 	@Inject
-	private TransportConfiguration m_config;
+	private ServerTransportConfiguration m_config;
 
 	private ChannelFuture m_future;
 

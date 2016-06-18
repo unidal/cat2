@@ -2,33 +2,29 @@ package org.unidal.cat.transport;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
+import org.unidal.net.SocketAddressProvider;
 
 @Named(type = TransportConfiguration.class)
-public class DefaultTransportConfiugration implements TransportConfiguration, Initializable {
-	private int m_bossThreads;
+public class DefaultTransportConfiguration implements TransportConfiguration, Initializable {
+	@Inject
+	private SocketAddressProvider m_addressProvider;
 
-	private int m_workerThreads;
+	private int m_threads;
 
 	@Override
-	public int getBossThreads() {
-		return m_bossThreads;
+	public SocketAddressProvider getAddressProvider() {
+		return m_addressProvider;
 	}
 
 	@Override
-	public int getWorkerThreads() {
-		return m_workerThreads;
-	}
-
-	@Override
-	public int getTcpPort() {
-		// 2280 comes from cellphone pad, C:2, A:2, T:8
-		return 2280;
+	public int getThreads() {
+		return m_threads;
 	}
 
 	@Override
 	public void initialize() throws InitializationException {
-		m_bossThreads = Runtime.getRuntime().availableProcessors(); // TODO tune it
-		m_workerThreads = Runtime.getRuntime().availableProcessors(); // TODO tune it
+		m_threads = Runtime.getRuntime().availableProcessors(); // TODO tune it
 	}
 }

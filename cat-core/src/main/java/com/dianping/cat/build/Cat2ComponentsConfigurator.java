@@ -41,10 +41,9 @@ import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.DomainHashStrategy;
 import org.unidal.cat.spi.analysis.pipeline.RoundRobinStrategy;
 import org.unidal.cat.spi.command.DefaultCommandDispatcher;
-import org.unidal.cat.spi.decode.internals.DefaultDecodeHandlerManager;
-import org.unidal.cat.spi.decode.internals.NativeCommandDecodeHandler;
-import org.unidal.cat.spi.decode.internals.NativeMessageDecodeHandler;
-import org.unidal.cat.spi.decode.internals.PlainTextMessageDecodeHandler;
+import org.unidal.cat.spi.message.DefaultServerTransportHub;
+import org.unidal.cat.spi.message.NativeMessageDecodeHandler;
+import org.unidal.cat.spi.message.PlainTextMessageDecodeHandler;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
 import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
@@ -60,7 +59,8 @@ import org.unidal.cat.spi.task.internals.DefaultTaskManager;
 import org.unidal.cat.spi.task.internals.TaskDispatcher;
 import org.unidal.cat.spi.task.internals.TaskQueue;
 import org.unidal.cat.spi.task.internals.TaskRegistry;
-import org.unidal.cat.transport.DefaultTransportConfiugration;
+import org.unidal.cat.spi.transport.DefaultServerTransportConfiguration;
+import org.unidal.cat.spi.transport.TcpSocketSkeleton;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -107,19 +107,27 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(A(DefaultCommandDispatcher.class));
 
-		all.add(A(DefaultDecodeHandlerManager.class));
-		all.add(A(NativeCommandDecodeHandler.class));
 		all.add(A(NativeMessageDecodeHandler.class));
 		all.add(A(PlainTextMessageDecodeHandler.class));
 
-		all.add(A(DefaultTransportConfiugration.class));
 		all.add(A(TcpSocketReceiver.class));
 
+		all.addAll(defineTransportComponents());
 		all.addAll(defineLocalComponents());
 		return all;
 	}
 
-	public List<Component> defineLocalComponents() {
+	private List<Component> defineTransportComponents() {
+		List<Component> all = new ArrayList<Component>();
+
+		all.add(A(TcpSocketSkeleton.class));
+		all.add(A(DefaultServerTransportConfiguration.class));
+		all.add(A(DefaultServerTransportHub.class));
+
+		return all;
+	}
+
+	private List<Component> defineLocalComponents() {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(DefaultMessageDumperManager.class));

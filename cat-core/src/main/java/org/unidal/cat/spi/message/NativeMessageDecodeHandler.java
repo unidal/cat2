@@ -1,11 +1,12 @@
-package org.unidal.cat.spi.decode.internals;
+package org.unidal.cat.spi.message;
 
 import io.netty.buffer.ByteBuf;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.cat.spi.analysis.MessageDispatcher;
-import org.unidal.cat.spi.decode.DecodeHandler;
+import org.unidal.cat.transport.decode.DecodeHandler;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -14,12 +15,11 @@ import com.dianping.cat.analysis.MessageConsumer;
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
-import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 import com.dianping.cat.statistic.ServerStatisticManager;
 
-@Named(type = DecodeHandler.class, value = PlainTextMessageCodec.ID)
-public class PlainTextMessageDecodeHandler implements DecodeHandler, LogEnabled {
-	@Inject(PlainTextMessageCodec.ID)
+@Named(type = DecodeHandler.class, value = NativeMessageCodec.ID)
+public class NativeMessageDecodeHandler implements DecodeHandler, LogEnabled {
+	@Inject(NativeMessageCodec.ID)
 	private MessageCodec m_codec;
 
 	@Inject

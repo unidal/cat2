@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.decode.internals;
+package org.unidal.cat.transport.decode;
 
 import io.netty.buffer.ByteBuf;
 
@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.spi.decode.DecodeHandler;
-import org.unidal.cat.spi.decode.DecodeHandlerManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 

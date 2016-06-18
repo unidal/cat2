@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.decode.internals;
+package org.unidal.cat.transport.decode;
 
 import io.netty.buffer.ByteBuf;
 
@@ -7,8 +7,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.message.codec.CommandCodec;
 import org.unidal.cat.message.codec.NativeCommandCodec;
 import org.unidal.cat.message.command.Command;
-import org.unidal.cat.spi.command.CommandDispatcher;
-import org.unidal.cat.spi.decode.DecodeHandler;
+import org.unidal.cat.message.command.CommandDispatcher;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -35,7 +34,7 @@ public class NativeCommandDecodeHandler implements DecodeHandler, LogEnabled {
 			cmd = m_codec.decode(buf);
 			m_dispatcher.dispatch(cmd);
 		} catch (Exception e) {
-			m_logger.error("Error when handling " + cmd + "!", e);
+			m_logger.error("Error when handling command " + cmd + "!", e);
 		}
 	}
 }

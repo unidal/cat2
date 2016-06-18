@@ -1,9 +1,9 @@
 package org.unidal.cat.transport;
 
+import org.unidal.net.SocketAddressProvider;
+
 public interface TransportConfiguration {
-	public int getBossThreads();
+	public SocketAddressProvider getAddressProvider();
 
-	public int getWorkerThreads();
-
-	public int getTcpPort();
+	public int getThreads();
 }
