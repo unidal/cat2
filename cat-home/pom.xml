@@ -20,6 +20,10 @@
          <artifactId>cat-hadoop</artifactId>
       </dependency>
       <dependency>
+         <groupId>com.dianping.cat</groupId>
+         <artifactId>cat-plugin-transaction</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.unidal.webres</groupId>
          <artifactId>WebResServer</artifactId>
       </dependency>

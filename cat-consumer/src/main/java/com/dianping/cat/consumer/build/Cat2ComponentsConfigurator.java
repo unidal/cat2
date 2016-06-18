@@ -1,6 +1,9 @@
 package com.dianping.cat.consumer.build;
 
-import com.dianping.cat.service.ProjectService;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.unidal.cat.config.internal.DBConfigManager;
 import org.unidal.cat.plugin.event.EventPipeline;
 import org.unidal.cat.plugin.event.EventReportAggregator;
@@ -28,41 +31,21 @@ import org.unidal.cat.plugin.problem.filter.ProblemGraphFilter;
 import org.unidal.cat.plugin.problem.filter.ProblemHomePageFilter;
 import org.unidal.cat.plugin.problem.filter.ProblemReportHelper;
 import org.unidal.cat.plugin.problem.filter.ProblemThreadFilter;
-import org.unidal.cat.plugin.transaction.TransactionConfigProvider;
-import org.unidal.cat.plugin.transaction.TransactionPipeline;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
-import org.unidal.cat.plugin.transaction.TransactionReportDelegate;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.dianping.cat.service.ProjectService;
 
 public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
    @Override
    public List<Component> defineComponents() {
       List<Component> all = new ArrayList<Component>();
 
-      all.add(A(TransactionPipeline.class));
-      all.add(A(TransactionConfigProvider.class));
       all.add(A(EventPipeline.class));
       all.add(A(ProblemPipeline.class));
       all.add(A(DBConfigManager.class));
       all.add(A(ProjectService.class));
 
-      all.addAll(defineTransactionComponents());
       all.addAll(defineEventComponents());
       all.addAll(defineProblemComponents());
 
@@ -106,27 +89,6 @@ public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(ProblemGraphFilter.class));
       all.add(A(ProblemThreadFilter.class));
       all.add(A(ProblemDetailFilter.class));
-      return all;
-   }
-
-   private List<Component> defineTransactionComponents() {
-      final List<Component> all = new ArrayList<Component>();
-
-      all.add(A(TransactionReportManager.class));
-      all.add(A(TransactionReportAggregator.class));
-      all.add(A(TransactionReportDelegate.class));
-      all.add(A(TransactionReportAnalyzer.class));
-
-      all.add(A(TransactionReportHelper.class));
-      all.add(A(TransactionTypeFilter.class));
-      all.add(A(TransactionTypeGraphFilter.class));
-      all.add(A(TransactionNameFilter.class));
-      all.add(A(TransactionNameGraphFilter.class));
-      all.add(A(TransactionAllTypeFilter.class));
-      all.add(A(TransactionAllTypeGraphFilter.class));
-      all.add(A(TransactionAllNameFilter.class));
-      all.add(A(TransactionAllNameGraphFilter.class));
-
       return all;
    }
 }

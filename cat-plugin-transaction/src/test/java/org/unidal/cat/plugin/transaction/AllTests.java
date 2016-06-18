@@ -15,6 +15,6 @@ TransactionReportAggregatorTest.class,
 TransactionReportFilterTest.class
 
 })
-public class AllTransactionTests {
+public class AllTests {
 
 }
