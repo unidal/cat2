@@ -1,13 +1,11 @@
 package org.unidal.cat.config.internal;
 
-import com.dianping.cat.Cat;
-import org.codehaus.plexus.logging.LogEnabled;
+import java.io.IOException;
+
 import org.unidal.cat.config.ConfigManager;
 import org.unidal.cat.config.ConfigProvider;
 import org.unidal.lookup.annotation.Inject;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
 
 public abstract class AbstractConfigProvider<T> implements ConfigProvider<T> {
     @Inject

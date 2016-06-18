@@ -35,11 +35,6 @@ import java.util.Date;
 import java.util.Map;
 
 public class Handler implements PageHandler<Context> {
-
-    private static final String DETAIL = "detail";
-
-    private static final String VIEW = "view";
-
     @Inject
     private HistoryGraphs m_historyGraphs;
 

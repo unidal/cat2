@@ -14,6 +14,7 @@ import com.dianping.cat.report.ReportBucketManager;
 import com.dianping.cat.report.service.LocalModelService;
 import com.dianping.cat.report.service.ModelPeriod;
 import com.dianping.cat.report.service.ModelRequest;
+
 import org.unidal.lookup.annotation.Inject;
 
 import java.util.Date;
@@ -95,11 +96,13 @@ public class LocalProblemService extends LocalModelService<ProblemReport> {
 		private String m_ipAddress;
 
 		// view is show the summary,detail show the thread info
-		private String m_type;
+		@SuppressWarnings("unused")
+      private String m_type;
 
 		private String m_queryType;
 
-		private String m_status;
+		@SuppressWarnings("unused")
+      private String m_status;
 
 		public ProblemReportFilter(String ipAddress, String type, String queryType, String name) {
 			super(true, new StringBuilder(DEFAULT_SIZE));

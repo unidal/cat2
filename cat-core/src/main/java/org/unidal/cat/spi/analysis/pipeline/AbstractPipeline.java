@@ -6,14 +6,14 @@ import java.util.List;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.spi.ReportConfiguration;
-import com.dianping.cat.Constants;
-import com.dianping.cat.message.spi.MessageTree;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageRoutingStrategy;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
+
+import com.dianping.cat.message.spi.MessageTree;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
 	@Inject(StrategyConstants.DOMAIN_HASH)
