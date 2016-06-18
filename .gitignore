@@ -8,4 +8,4 @@
 /*.bat
 !.travis.yml
 *.iml
-cat-client/**/*.xsd
+/cat-client/**/*.xsd
