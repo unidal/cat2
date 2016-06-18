@@ -1,0 +1,11 @@
+/ws/*
+/target/*
+/bin/*
+/*/target/*
+/*/bin/*
+/*/.*
+.*
+/*.bat
+!.travis.yml
+*.iml
+cat-client/**/*.xsd
