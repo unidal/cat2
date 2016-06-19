@@ -5,28 +5,15 @@ import java.util.Arrays;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.plugin.transaction.TransactionReportAggregator;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportAggregator;
-import org.unidal.dal.jdbc.test.JdbcTestCase;
+import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
 
-public class TransactionReportAggregatorTest extends JdbcTestCase {
-	@Before
-	public void before() throws Exception {
-		createTables("report");
-	}
-
-	@Override
-	protected String getDefaultDataSource() {
-		return "cat";
-	}
-
+public class TransactionReportAggregatorTest extends ComponentTestCase {
 	private TransactionReport loadReport(String resource) throws Exception {
 		InputStream in = getClass().getResourceAsStream(resource);
 
