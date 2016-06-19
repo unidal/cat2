@@ -1,5 +1,13 @@
 package org.unidal.cat.plugin.transaction;
 
+import java.util.List;
+
+import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
+import org.unidal.cat.spi.analysis.MessageAnalyzer;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
+import org.unidal.tuple.Pair;
+
 import com.dianping.cat.Cat;
 import com.dianping.cat.config.server.ServerFilterConfigManager;
 import com.dianping.cat.consumer.transaction.model.entity.Duration;
@@ -12,13 +20,6 @@ import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
-import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
-import org.unidal.cat.spi.analysis.MessageAnalyzer;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
-import org.unidal.tuple.Pair;
-
-import java.util.List;
 
 @Named(type = MessageAnalyzer.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> {
@@ -77,6 +78,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
             }
          }
       }
+      
       Range range = ranges.get(min);
       return range;
    }
@@ -91,6 +93,7 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
             }
          }
       }
+      
       Range2 range = ranges.get(min);
       return range;
    }
@@ -199,22 +202,22 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
       }
 
       int allDuration = ((int) computeDuration(duration));
-      double sum = duration * duration;
+      double duration2 = duration * duration;
 
       name.setMax(Math.max(name.getMax(), duration));
       name.setMin(Math.min(name.getMin(), duration));
       name.setSum(name.getSum() + duration);
-      name.setSum2(name.getSum2() + sum);
+      name.setSum2(name.getSum2() + duration2);
       name.findOrCreateAllDuration(allDuration).incCount();
 
       type.setMax(Math.max(type.getMax(), duration));
       type.setMin(Math.min(type.getMin(), duration));
       type.setSum(type.getSum() + duration);
-      type.setSum2(type.getSum2() + sum);
+      type.setSum2(type.getSum2() + duration2);
       type.findOrCreateAllDuration(allDuration).incCount();
 
       long current = t.getTimestamp() / 1000 / 60;
-      int min = (int) (current % (60));
+      int min = (int) (current % 60);
 
       processNameGraph(t, name, min, duration);
       processTypeRange(t, type, min, duration);

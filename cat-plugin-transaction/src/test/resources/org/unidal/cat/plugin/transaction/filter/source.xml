@@ -170,7 +170,7 @@
             <duration value="32" count="2" />
          </name>
       </type>
-      <type id="ModelService" totalCount="4" failCount="0" failPercent="0.00" min="34.03" max="77.23" avg="54.6" sum="218.2"
+      <type id="ModelService" totalCount="4" failCount="0" failPercent="0.00" min="34.03" max="77.23" avg="54.6" sum="218.0"
          sum2="13533.8" std="20.2" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
          <name id="CompositeTopService" totalCount="1" failCount="0" failPercent="0.00" min="77.23" max="77.23" avg="77.2" sum="77.2"
@@ -345,7 +345,7 @@
             <duration value="32" count="2" />
          </name>
       </type>
-      <type id="ModelService" totalCount="4" failCount="0" failPercent="0.00" min="34.03" max="77.23" avg="54.6" sum="218.2"
+      <type id="ModelService" totalCount="4" failCount="0" failPercent="0.00" min="34.03" max="77.23" avg="54.6" sum="218.0"
          sum2="13533.8" std="20.2" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
          <name id="CompositeTopService" totalCount="1" failCount="0" failPercent="0.00" min="77.23" max="77.23" avg="77.2" sum="77.2"
