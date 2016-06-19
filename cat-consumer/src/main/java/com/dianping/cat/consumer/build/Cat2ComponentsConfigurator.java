@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.unidal.cat.config.internal.DBConfigManager;
 import org.unidal.cat.plugin.problem.DefaultAbstractProblemHandler;
 import org.unidal.cat.plugin.problem.LongExecutionAbstractProblemHandler;
 import org.unidal.cat.plugin.problem.ProblemPipeline;
@@ -20,16 +19,12 @@ import org.unidal.cat.plugin.problem.filter.ProblemThreadFilter;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
-import com.dianping.cat.service.ProjectService;
-
 public class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 	@Override
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(ProblemPipeline.class));
-		all.add(A(DBConfigManager.class));
-		all.add(A(ProjectService.class));
 
 		all.addAll(defineProblemComponents());
 

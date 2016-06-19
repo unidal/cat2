@@ -61,13 +61,7 @@
 			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAggregator</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.TransactionConfigProvider</role>
 				</requirement>
 			</requirements>
 		</component>

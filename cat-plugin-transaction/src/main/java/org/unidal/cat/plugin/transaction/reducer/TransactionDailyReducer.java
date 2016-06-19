@@ -30,7 +30,7 @@ public class TransactionDailyReducer implements ReportReducer<TransactionReport>
 
 	@Override
 	public TransactionReport reduce(Context ctx, List<TransactionReport> reports) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
