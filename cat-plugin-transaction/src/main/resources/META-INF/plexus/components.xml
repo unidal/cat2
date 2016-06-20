@@ -183,5 +183,20 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transaction:daily</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transaction:weekly</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionWeeklyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transaction:monthly</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionMonthlyReducer</implementation>
+		</component>
 	</components>
 </plexus>

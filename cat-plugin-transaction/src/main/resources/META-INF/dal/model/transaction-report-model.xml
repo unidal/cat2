@@ -46,21 +46,21 @@
         <attribute name="sum" value-type="double" primitive="true" format="0.0" />
         <attribute name="sum2" value-type="double" primitive="true" format="0.0" />
         <attribute name="std" value-type="double" primitive="true" format="0.0" />
-        <entity-ref name="range" type="list" names="ranges" initial-capacity="10"/>
+        <entity-ref name="range" type="list" names="ranges" initial-capacity="10" method-find-or-create="true"/>
         <entity-ref name="duration" type="map" names="durations" method-find-or-create="true" keep-order="false"/>
         <entity-ref name="all-duration" type="map" names="all-durations" method-find-or-create="true"  render="false" keep-order="false"/>
     </entity>
     <entity name="range">
         <attribute name="value" value-type="int" primitive="true" key="true" />
         <attribute name="count" value-type="int" primitive="true" method-inc="true" />
-        <attribute name="sum" value-type="double" primitive="true" />
+        <attribute name="sum" value-type="double" primitive="true" format="0.0" />
         <attribute name="avg" value-type="double" primitive="true" format="0.0" />
         <attribute name="fails" value-type="int" primitive="true" method-inc="true" />
     </entity>
     <entity name="range2">
         <attribute name="value" value-type="int" primitive="true" key="true" />
         <attribute name="count" value-type="int" primitive="true" method-inc="true" />
-        <attribute name="sum" value-type="double" primitive="true" />
+        <attribute name="sum" value-type="double" primitive="true" format="0.0" />
         <attribute name="avg" value-type="double" primitive="true" format="0.0" />
         <attribute name="fails" value-type="int" primitive="true" method-inc="true" />
     </entity>

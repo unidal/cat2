@@ -9,9 +9,9 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.consumer.transaction.model.entity.Range;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 
-@Named(type = ReportReducer.class, value = TransactionConstants.NAME + ":" + TransactionDailyReducer.ID)
-public class TransactionDailyReducer extends AbstractTransactionReducer implements ReportReducer<TransactionReport> {
-	public static final String ID = "daily";
+@Named(type = ReportReducer.class, value = TransactionConstants.NAME + ":" + TransactionWeeklyReducer.ID)
+public class TransactionWeeklyReducer extends AbstractTransactionReducer implements ReportReducer<TransactionReport> {
+	public static final String ID = "weekly";
 
 	@Override
 	public String getId() {
@@ -20,13 +20,13 @@ public class TransactionDailyReducer extends AbstractTransactionReducer implemen
 
 	@Override
 	public ReportPeriod getPeriod() {
-		return ReportPeriod.DAY;
+		return ReportPeriod.WEEK;
 	}
 
 	@Override
 	protected int getRangeValue(Context ctx, TransactionReport report, Range range) {
-		int hour = Dates.from(report.getStartTime()).hour();
+		int day = Dates.from(report.getStartTime()).dayOfWeek();
 
-		return hour;
+		return day;
 	}
 }
