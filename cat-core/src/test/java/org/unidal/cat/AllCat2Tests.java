@@ -7,12 +7,15 @@ import org.unidal.cat.spi.ReportManagerManagerTest;
 import org.unidal.cat.spi.ReportPeriodTest;
 import org.unidal.cat.spi.remote.RemoteIntegrationTest;
 import org.unidal.cat.spi.report.ReportFilterManagerTest;
+import org.unidal.cat.spi.report.ReportReducerManagerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 
 /** report **/
 ReportFilterManagerTest.class,
+
+ReportReducerManagerTest.class,
 
 ReportManagerManagerTest.class,
 
