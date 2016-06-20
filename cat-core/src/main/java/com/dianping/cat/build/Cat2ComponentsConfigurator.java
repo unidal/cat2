@@ -49,6 +49,7 @@ import org.unidal.cat.spi.remote.DefaultRemoteStub;
 import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
 import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
 import org.unidal.cat.spi.report.internals.DefaultReportManagerManager;
+import org.unidal.cat.spi.report.internals.DefaultReportReducerManager;
 import org.unidal.cat.spi.report.provider.DefaultReportProvider;
 import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
 import org.unidal.cat.spi.report.provider.RecentReportProvider;
@@ -70,6 +71,7 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultReportConfiguration.class));
 		all.add(A(DefaultReportManagerManager.class));
 		all.add(A(DefaultReportFilterManager.class));
+		all.add(A(DefaultReportReducerManager.class));
 		all.add(A(DefaultReportDelegateManager.class));
 
 		all.add(A(DefaultRemoteStub.class));

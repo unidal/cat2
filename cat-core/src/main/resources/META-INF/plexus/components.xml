@@ -9,8 +9,12 @@
 			<implementation>org.unidal.cat.spi.report.internals.DefaultReportManagerManager</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportFilterManager</role>
+			<role>org.unidal.cat.spi.report.ReportFilterManager</role>
 			<implementation>org.unidal.cat.spi.report.internals.DefaultReportFilterManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducerManager</role>
+			<implementation>org.unidal.cat.spi.report.internals.DefaultReportReducerManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>

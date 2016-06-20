@@ -1,12 +1,10 @@
-package org.unidal.cat.spi;
+package org.unidal.cat.spi.report;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.remote.RemoteContext;
-import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.ComponentTestCase;
 
 public class ReportFilterManagerTest extends ComponentTestCase {
