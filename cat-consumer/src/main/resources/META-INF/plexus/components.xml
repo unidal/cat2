@@ -36,7 +36,7 @@
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportFilterManager</role>
+					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -65,7 +65,7 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
 					<role-hints>
-						<role-hint>default-problem</role-hint>
+						<role-hint>default</role-hint>
 						<role-hint>long-execution</role-hint>
 					</role-hints>
 					<field-name>m_handlers</field-name>
@@ -74,8 +74,7 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
-			<role-hint>default-problem</role-hint>
-			<implementation>org.unidal.cat.plugin.problem.DefaultAbstractProblemHandler</implementation>
+			<implementation>org.unidal.cat.plugin.problem.DefaultProblemHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.config.server.ServerConfigManager</role>
@@ -88,7 +87,7 @@
 		<component>
 			<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
 			<role-hint>long-execution</role-hint>
-			<implementation>org.unidal.cat.plugin.problem.LongExecutionAbstractProblemHandler</implementation>
+			<implementation>org.unidal.cat.plugin.problem.LongExecutionProblemHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.config.server.ServerConfigManager</role>

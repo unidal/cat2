@@ -3,7 +3,7 @@
   <entity name="daily-report-content" table="daily_report_content" alias="drc">
     <member name="report-id" field="report_id" value-type="int" length="10" nullable="false" key="true" />
     <member name="content" field="content" value-type="byte[]" length="2147483647" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-report-id" value-type="int" key-member="report-id" />
     <primary-key name="PRIMARY" members="report_id" />
     <readsets>
@@ -45,7 +45,7 @@
     <member name="type" field="type" value-type="int" length="3" nullable="false" />
     <member name="detail-content" field="detail_content" value-type="String" length="16777215" nullable="false" />
     <member name="summary-content" field="summary_content" value-type="String" length="16777215" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="dailygraph_period_ip_domain_name" unique="true" members="period ASC, ip ASC, domain ASC, name ASC" />
@@ -86,7 +86,7 @@
     <member name="domain" field="domain" value-type="String" length="50" nullable="false" />
     <member name="period" field="period" value-type="Date" nullable="false" />
     <member name="type" field="type" value-type="int" length="3" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="period" unique="true" members="period ASC, domain ASC, name ASC" />
@@ -129,7 +129,7 @@
     <member name="type" field="type" value-type="int" length="3" nullable="false" />
     <member name="detail-content" field="detail_content" value-type="String" length="16777215" nullable="false" />
     <member name="summary-content" field="summary_content" value-type="String" length="16777215" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="graph_period_ip_domain_name" unique="true" members="period ASC, ip ASC, domain ASC, name ASC" />
@@ -166,10 +166,10 @@
   <entity name="hostinfo" table="hostinfo" alias="h">
     <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
     <member name="ip" field="ip" value-type="String" length="50" nullable="false" />
-    <member name="domain" field="domain" value-type="String" length="256" nullable="false" />
-    <member name="hostname" field="hostname" value-type="String" length="256" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
-    <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" />
+    <member name="domain" field="domain" value-type="String" length="200" nullable="false" />
+    <member name="hostname" field="hostname" value-type="String" length="200" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
+    <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="ip_index" unique="true" members="ip ASC" />
@@ -206,7 +206,7 @@
   <entity name="monthly-report-content" table="monthly_report_content" alias="mrc">
     <member name="report-id" field="report_id" value-type="int" length="10" nullable="false" key="true" />
     <member name="content" field="content" value-type="byte[]" length="2147483647" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-report-id" value-type="int" key-member="report-id" />
     <primary-key name="PRIMARY" members="report_id" />
     <readsets>
@@ -246,7 +246,7 @@
     <member name="domain" field="domain" value-type="String" length="50" nullable="false" />
     <member name="period" field="period" value-type="Date" nullable="false" />
     <member name="type" field="type" value-type="int" length="3" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="period" unique="true" members="period ASC, domain ASC, name ASC" />
@@ -332,7 +332,7 @@
     <member name="ip" field="ip" value-type="String" length="50" />
     <member name="domain" field="domain" value-type="String" length="50" nullable="false" />
     <member name="period" field="period" value-type="Date" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="IX_Domain_Name_Period" members="domain ASC, name ASC, period ASC" />
@@ -371,7 +371,7 @@
   <entity name="report-content" table="report_content" alias="rc">
     <member name="report-id" field="report_id" value-type="int" length="10" nullable="false" key="true" />
     <member name="content" field="content" value-type="byte[]" length="2147483647" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-report-id" value-type="int" key-member="report-id" />
     <primary-key name="PRIMARY" members="report_id" />
     <readsets>
@@ -414,7 +414,7 @@
     <member name="report-period" field="report_period" value-type="Date" nullable="false" />
     <member name="status" field="status" value-type="int" length="3" nullable="false" />
     <member name="task-type" field="task_type" value-type="int" length="3" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="start-date" field="start_date" value-type="Date" />
     <member name="end-date" field="end_date" value-type="Date" />
     <var name="key-id" value-type="int" key-member="id" />
@@ -453,7 +453,7 @@
   <entity name="weekly-report-content" table="weekly_report_content" alias="wrc">
     <member name="report-id" field="report_id" value-type="int" length="10" nullable="false" key="true" />
     <member name="content" field="content" value-type="byte[]" length="2147483647" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-report-id" value-type="int" key-member="report-id" />
     <primary-key name="PRIMARY" members="report_id" />
     <readsets>
@@ -493,7 +493,7 @@
     <member name="domain" field="domain" value-type="String" length="50" nullable="false" />
     <member name="period" field="period" value-type="Date" nullable="false" />
     <member name="type" field="type" value-type="int" length="3" nullable="false" />
-    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
     <index name="period" unique="true" members="period ASC, domain ASC, name ASC" />

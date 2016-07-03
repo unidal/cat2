@@ -51,7 +51,7 @@
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportFilterManager</role>
+					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
 				</requirement>
 			</requirements>
 		</component>

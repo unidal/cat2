@@ -9,6 +9,6 @@ import org.unidal.lookup.annotation.Named;
 public class ProblemReportManager extends AbstractReportManager<ProblemReport> {
    @Override
    public int getThreadsCount() {
-      return 2;
+      return 1;
    }
 }

@@ -6,10 +6,10 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.plugin.problem.LongExecutionAbstractProblemHandler;
+import org.unidal.cat.plugin.problem.LongExecutionProblemHandler;
 
 public class ProblemHandlerTest {
-	private LongExecutionAbstractProblemHandler m_handler;
+	private LongExecutionProblemHandler m_handler;
 
 	private int[] m_defaultLongUrlDuration = { 1000, 2000, 3000, 4000, 5000 };
 
@@ -17,7 +17,7 @@ public class ProblemHandlerTest {
 
 	@Test
 	public void testHandler() {
-		m_handler = new LongExecutionAbstractProblemHandler();
+		m_handler = new LongExecutionProblemHandler();
 
 		for (int i = 0; i < 1000; i++) {
 			Assert.assertEquals(-1, m_handler.computeLongDuration(i, "domain", m_defaultLongUrlDuration, m_longUrlThresholds));

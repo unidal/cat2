@@ -36,11 +36,15 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
 
 	@Override
 	public boolean analyze(MessageTree tree) {
-		MessageRoutingStrategy strategy = getRoutingStrategy();
-		int index = strategy.getIndex(tree, m_analyzers.size());
-		MessageAnalyzer analyzer = m_analyzers.get(index);
+		if (!m_analyzers.isEmpty()) {
+			MessageRoutingStrategy strategy = getRoutingStrategy();
+			int index = strategy.getIndex(tree, m_analyzers.size());
+			MessageAnalyzer analyzer = m_analyzers.get(index);
 
-		return analyzer.handle(tree);
+			return analyzer.handle(tree);
+		} else {
+			return false;
+		}
 	}
 
 	protected void beforeCheckpoint() throws Exception {

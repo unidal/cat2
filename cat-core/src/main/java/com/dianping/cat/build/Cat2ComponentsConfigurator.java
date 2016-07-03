@@ -68,59 +68,48 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(A(DefaultBenchmarkManager.class));
+		all.add(A(DefaultTimeWindowManager.class));
+
+		all.add(A(DefaultPipelineManager.class));
+		all.add(A(DomainHashStrategy.class));
+		all.add(A(RoundRobinStrategy.class));
+
+		all.addAll(defineReportComponents());
+		all.addAll(defineServiceComponents());
+		all.addAll(defineStorageComponents());
+		all.addAll(defineTransportComponents());
+
+		return all;
+	}
+
+	private List<Component> defineReportComponents() {
+		List<Component> all = new ArrayList<Component>();
+
 		all.add(A(DefaultReportConfiguration.class));
 		all.add(A(DefaultReportManagerManager.class));
 		all.add(A(DefaultReportFilterManager.class));
 		all.add(A(DefaultReportReducerManager.class));
 		all.add(A(DefaultReportDelegateManager.class));
 
-		all.add(A(DefaultRemoteStub.class));
-		all.add(A(DefaultRemoteSkeleton.class));
-
 		all.add(A(DefaultReportProvider.class));
 		all.add(A(RecentReportProvider.class));
 		all.add(A(HistoricalReportProvider.class));
 
-		all.add(A(DefaultReportStorage.class));
-		all.add(A(MysqlReportStorage.class));
-		all.add(A(FileReportStorage.class));
+		return all;
+	}
+
+	private List<Component> defineServiceComponents() {
+		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(DefaultCompressionService.class));
 		all.add(A(GzipCompressionService.class));
 		all.add(A(ZlibCompressionService.class));
 
-		all.add(A(DefaultBenchmarkManager.class));
-
-		all.add(A(DefaultPipelineManager.class));
-		all.add(A(DefaultMessageDispatcher.class));
-		all.add(A(DefaultTimeWindowManager.class));
-
-		all.add(A(DomainHashStrategy.class));
-		all.add(A(RoundRobinStrategy.class));
-
-		all.add(A(DefaultCommandDispatcher.class));
-
-		all.add(A(NativeMessageDecodeHandler.class));
-		all.add(A(PlainTextMessageDecodeHandler.class));
-
-		all.add(A(TcpSocketReceiver.class));
-
-		all.addAll(defineTransportComponents());
-		all.addAll(defineLocalComponents());
 		return all;
 	}
 
-	private List<Component> defineTransportComponents() {
-		List<Component> all = new ArrayList<Component>();
-
-		all.add(A(TcpSocketSkeleton.class));
-		all.add(A(DefaultServerTransportConfiguration.class));
-		all.add(A(DefaultServerTransportHub.class));
-
-		return all;
-	}
-
-	private List<Component> defineLocalComponents() {
+	private List<Component> defineStorageComponents() {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(DefaultMessageDumperManager.class));
@@ -155,8 +144,33 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultStorageConfiguration.class));
 		all.add(A(DefaultByteBufPool.class));
 
+		all.add(A(DefaultReportStorage.class));
+		all.add(A(MysqlReportStorage.class));
+		all.add(A(FileReportStorage.class));
+
 		all.add(A(HdfsUploader.class));
 		all.add(A(LogviewProcessor.class));
+
+		return all;
+	}
+
+	private List<Component> defineTransportComponents() {
+		List<Component> all = new ArrayList<Component>();
+
+		all.add(A(TcpSocketSkeleton.class));
+		all.add(A(TcpSocketReceiver.class)); // TODO remove it
+
+		all.add(A(DefaultMessageDispatcher.class));
+		all.add(A(DefaultServerTransportConfiguration.class));
+		all.add(A(DefaultServerTransportHub.class));
+
+		all.add(A(DefaultCommandDispatcher.class));
+
+		all.add(A(NativeMessageDecodeHandler.class));
+		all.add(A(PlainTextMessageDecodeHandler.class));
+
+		all.add(A(DefaultRemoteStub.class));
+		all.add(A(DefaultRemoteSkeleton.class));
 
 		return all;
 	}

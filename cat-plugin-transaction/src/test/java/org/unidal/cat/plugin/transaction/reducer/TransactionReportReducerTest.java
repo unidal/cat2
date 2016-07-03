@@ -34,7 +34,7 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 	private TransactionReport reduce(String id, TransactionReport... reports) {
 		ReportReducer<TransactionReport> reducer = lookup(ReportReducer.class, TransactionConstants.NAME + ":" + id);
 
-		return reducer.reduce(null, Arrays.asList(reports));
+		return reducer.reduce(Arrays.asList(reports));
 	}
 
 	@Test
