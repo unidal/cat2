@@ -48,7 +48,7 @@ public class ReportReducerManagerTest extends ComponentTestCase {
 		}
 
 		@Override
-		public Report reduce(org.unidal.cat.spi.report.ReportReducer.Context ctx, List<Report> reports) {
+		public Report reduce(List<Report> reports) {
 			throw new UnsupportedOperationException();
 		}
 	}

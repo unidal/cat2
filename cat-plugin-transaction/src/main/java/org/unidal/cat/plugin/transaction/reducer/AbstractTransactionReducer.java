@@ -18,7 +18,7 @@ import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultMerger;
 
 public abstract class AbstractTransactionReducer implements ReportReducer<TransactionReport> {
-	protected abstract int getRangeValue(Context ctx, TransactionReport report, Range range);
+	protected abstract int getRangeValue(TransactionReport report, Range range);
 
 	@Override
 	public String getReportName() {
@@ -26,7 +26,7 @@ public abstract class AbstractTransactionReducer implements ReportReducer<Transa
 	}
 
 	@Override
-	public TransactionReport reduce(Context ctx, List<TransactionReport> reports) {
+	public TransactionReport reduce(List<TransactionReport> reports) {
 		TransactionReport r = new TransactionReport();
 
 		if (!reports.isEmpty()) {
@@ -36,7 +36,7 @@ public abstract class AbstractTransactionReducer implements ReportReducer<Transa
 			r.setDomain(first.getDomain());
 
 			for (TransactionReport report : reports) {
-				report.accept(merger.setMapping(new ValueMapping(report, ctx)));
+				report.accept(merger.setMapping(new ValueMapping(report)));
 			}
 
 			ReportPeriod period = getPeriod();
@@ -261,16 +261,13 @@ public abstract class AbstractTransactionReducer implements ReportReducer<Transa
 	class ValueMapping implements RangeMapping {
 		private TransactionReport m_report;
 
-		private org.unidal.cat.spi.report.ReportReducer.Context m_ctx;
-
-		public ValueMapping(TransactionReport report, Context ctx) {
+		public ValueMapping(TransactionReport report) {
 			m_report = report;
-			m_ctx = ctx;
 		}
 
 		@Override
 		public int getValue(Range range) {
-			return getRangeValue(m_ctx, m_report, range);
+			return getRangeValue(m_report, range);
 		}
 	}
 }
