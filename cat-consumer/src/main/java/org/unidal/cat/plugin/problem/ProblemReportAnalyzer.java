@@ -12,7 +12,7 @@ import java.util.List;
 
 @Named(type = MessageAnalyzer.class, value = ProblemConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class ProblemReportAnalyzer extends AbstractMessageAnalyzer<ProblemReport> {
-   @Inject({DefaultAbstractProblemHandler.ID, LongExecutionAbstractProblemHandler.ID})
+   @Inject({DefaultProblemHandler.ID, LongExecutionProblemHandler.ID})
    private List<ProblemHandler> m_handlers;
 
    @Override

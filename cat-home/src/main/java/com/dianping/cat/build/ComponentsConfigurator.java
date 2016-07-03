@@ -168,7 +168,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		// database
 		all.add(defineJdbcDataSourceConfigurationManagerComponent("/data/appdatas/cat/datasources.xml"));
-
+		all.addAll(new CatDatabaseConfigurator().defineComponents());
+		
 		// for alarm module
 		all.addAll(new AlarmComponentConfigurator().defineComponents());
 
