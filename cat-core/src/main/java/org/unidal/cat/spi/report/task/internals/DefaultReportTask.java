@@ -3,19 +3,22 @@ package org.unidal.cat.spi.report.task.internals;
 import java.util.Date;
 import java.util.List;
 
+import org.unidal.cat.dal.report.ReportTaskDo;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.task.ReportTask;
 
 public class DefaultReportTask implements ReportTask {
-	private String m_reportName;
-
 	private List<String> m_domains;
 
 	private ReportPeriod m_sourcePeriod;
 
-	private Date m_sourceStartTime;
-
 	private ReportPeriod m_targetPeriod;
+
+	private ReportTaskDo m_task;
+
+	public DefaultReportTask(ReportTaskDo task) {
+		m_task = task;
+	}
 
 	@Override
 	public void done(String domain) {
@@ -27,8 +30,18 @@ public class DefaultReportTask implements ReportTask {
 	}
 
 	@Override
+	public int getFailureCount() {
+		return m_task.getFailureCount();
+	}
+
+	@Override
+	public int getId() {
+		return m_task.getId();
+	}
+
+	@Override
 	public String getReportName() {
-		return m_reportName;
+		return m_task.getReportName();
 	}
 
 	@Override
@@ -38,7 +51,7 @@ public class DefaultReportTask implements ReportTask {
 
 	@Override
 	public Date getSourceStartTime() {
-		return m_sourceStartTime;
+		return m_task.getReportStartTime();
 	}
 
 	@Override

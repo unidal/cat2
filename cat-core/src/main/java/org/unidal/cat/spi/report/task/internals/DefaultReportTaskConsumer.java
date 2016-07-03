@@ -37,26 +37,31 @@ public class DefaultReportTaskConsumer implements ReportTaskConsumer {
 
 		try {
 			while (m_active.get()) {
-				ReportTask task = m_service.pull(ip);
+				try {
+					ReportTask task = m_service.pull(ip);
 
-				if (task != null) {
-					String message = null;
+					if (task != null) {
+						String message = null;
 
-					try {
-						m_executor.execute(task);
-					} catch (Throwable e) {
-						message = e.toString();
-						Cat.logError(e);
-					}
+						try {
+							m_executor.execute(task);
+						} catch (Throwable e) {
+							message = e.toString();
+							Cat.logError(e);
+						}
 
-					if (message == null) {
-						m_service.complete(task);
+						if (message == null) {
+							m_service.complete(task);
+						} else {
+							m_service.fail(task, message);
+						}
 					} else {
-						m_service.fail(task, message);
 					}
-				} else {
-					TimeUnit.MINUTES.sleep(1);
+				} catch (Throwable e) {
+					Cat.logError(e);
 				}
+
+				TimeUnit.SECONDS.sleep(5);
 			}
 		} catch (InterruptedException e) {
 			// ignore it

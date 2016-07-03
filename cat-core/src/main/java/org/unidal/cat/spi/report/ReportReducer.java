@@ -18,7 +18,7 @@ import org.unidal.cat.spi.ReportPeriod;
  *
  * @param <T>
  */
-public interface ReportReducer<T extends Report> {
+public interface ReportReducer<T extends Report> extends ReportConstants {
 	/**
 	 * @return reducer id of the report
 	 */
@@ -36,6 +36,7 @@ public interface ReportReducer<T extends Report> {
 
 	/**
 	 * Make longer period report from a list of shorter period reports.
+	 * 
 	 * @param reports
 	 *           list of reports, which should be kept unchanged
 	 * 

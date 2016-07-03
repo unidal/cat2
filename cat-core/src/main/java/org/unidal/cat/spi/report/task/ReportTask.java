@@ -8,6 +8,8 @@ import org.unidal.cat.spi.ReportPeriod;
 public interface ReportTask {
 	public void done(String domain);
 
+	public int getId();
+	
 	public List<String> getDomains();
 
 	public String getReportName();
@@ -17,5 +19,7 @@ public interface ReportTask {
 	public Date getSourceStartTime();
 
 	public ReportPeriod getTargetPeriod();
+
+	public int getFailureCount();
 
 }

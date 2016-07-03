@@ -172,7 +172,7 @@
     <member name="consumer-ip" field="consumer_ip" value-type="String" length="20" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
-    <index name="task_period_domain_name_type" unique="true" members="report_start_time ASC, report_name ASC, task_type ASC" />
+    <index name="UIDX_StartTime_Name_Type" unique="true" members="report_start_time ASC, report_name ASC, task_type ASC" />
     <readsets>
       <readset name="FULL" all="true" />
     </readsets>

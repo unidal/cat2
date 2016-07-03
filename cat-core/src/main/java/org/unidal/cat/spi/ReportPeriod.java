@@ -196,6 +196,71 @@ public enum ReportPeriod {
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
+	},
+	
+	YEAR {
+		@Override
+		public String getDateFormat() {
+			return "yyyy";
+		}
+		
+		@Override
+		protected long getDuration() {
+			return 365 * 24 * 3600 * 1000L;
+		}
+		
+		@Override
+		public Date getStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(date);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			return cal.getTime();
+		}
+		
+		@Override
+		public Date getLastStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(date);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			cal.add(Calendar.YEAR, -1);
+			
+			return cal.getTime();
+		}
+		
+		@Override
+		public Date getBaselineStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+			
+			cal.setTime(date);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			
+			cal.add(Calendar.YEAR, -1); // one year ago
+			return cal.getTime();
+		}
+		
+		@Override
+		public boolean isHistorical(Date startTime) {
+			return true;
+		}
 	};
 
 	public static ReportPeriod getByName(String name, ReportPeriod defaultValue) {
