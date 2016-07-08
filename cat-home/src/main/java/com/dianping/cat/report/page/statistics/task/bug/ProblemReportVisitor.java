@@ -2,7 +2,7 @@ package com.dianping.cat.report.page.statistics.task.bug;
 
 import java.util.List;
 
-import com.dianping.cat.consumer.problem.ProblemType;
+import org.unidal.cat.plugin.problem.ProblemType;
 import com.dianping.cat.consumer.problem.model.entity.Duration;
 import com.dianping.cat.consumer.problem.model.entity.Entity;
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;

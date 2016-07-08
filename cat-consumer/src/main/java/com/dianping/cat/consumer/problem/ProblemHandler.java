@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.problem;
+package com.dianping.cat.consumer.problem;
 
 import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.message.spi.MessageTree;
