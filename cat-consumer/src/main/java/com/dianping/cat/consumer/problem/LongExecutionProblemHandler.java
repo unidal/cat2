@@ -1,23 +1,21 @@
-package org.unidal.cat.plugin.problem;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
+package com.dianping.cat.consumer.problem;
 
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.configuration.server.entity.Domain;
-import com.dianping.cat.consumer.problem.ProblemType;
 import com.dianping.cat.consumer.problem.model.entity.Entity;
 import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named(type = ProblemHandler.class, value = LongExecutionProblemHandler.ID)
 public class LongExecutionProblemHandler extends AbstractProblemHandler implements Initializable {
