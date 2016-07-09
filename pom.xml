@@ -17,6 +17,7 @@
 		<module>cat-maven-plugin</module>
 		<module>cat-plugin-transaction</module>
 		<module>cat-plugin-event</module>
+		<module>cat-plugin-problem</module>
 	</modules>
 	<organization>
 		<name>Unidal</name>
@@ -94,6 +95,11 @@
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
 				<artifactId>cat-plugin-event</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dianping.cat</groupId>
+				<artifactId>cat-plugin-problem</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 

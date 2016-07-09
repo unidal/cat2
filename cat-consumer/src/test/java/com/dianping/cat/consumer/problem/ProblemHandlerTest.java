@@ -6,7 +6,6 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.plugin.problem.LongExecutionProblemHandler;
 
 public class ProblemHandlerTest {
 	private LongExecutionProblemHandler m_handler;
