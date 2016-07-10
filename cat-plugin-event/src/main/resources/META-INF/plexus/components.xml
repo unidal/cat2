@@ -44,6 +44,9 @@
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

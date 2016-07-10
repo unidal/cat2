@@ -1,11 +1,14 @@
-package org.unidal.cat.plugin.transaction.filter;
+package org.unidal.cat.plugin.transaction;
 
 import java.io.InputStream;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
@@ -20,10 +23,10 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 	@SuppressWarnings("unchecked")
 	private TransactionReport loadReport(String resource) throws Exception {
 		ReportDelegate<TransactionReport> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
-		InputStream in = getClass().getResourceAsStream(resource);
+		InputStream in = getClass().getResourceAsStream("filter/" + resource);
 
 		if (in == null) {
-			throw new IllegalStateException(String.format("Resource(%s) is not found!", resource));
+			throw new IllegalStateException(String.format("Resource(%s) is not found!", "filter/" + resource));
 		}
 
 		String xml = Files.forIO().readFrom(in, "utf-8");
@@ -103,20 +106,20 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 		      "type", "URL", "name", "/cat/r/t");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
-	
+
 	@Test
 	public void testGraphNameWithIp() throws Exception {
 		TransactionReport expected = loadReport("graph-name-ip.xml");
 		TransactionReport source = loadReport("source.xml");
 		TransactionReport report = loadReport("source.xml");
-		
+
 		TransactionReport screened = screen(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
-				"type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
+		      "type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
 		Assert.assertEquals(source.toString(), report.toString());
 		Assert.assertEquals(expected.toString(), screened.toString());
-		
+
 		tailor(TransactionNameGraphFilter.ID, ReportPeriod.HOUR, report, //
-				"type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
+		      "type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 
@@ -165,20 +168,20 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 		      "type", "URL");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
-	
+
 	@Test
 	public void testGraphTypeWithIp() throws Exception {
 		TransactionReport expected = loadReport("graph-type-ip.xml");
 		TransactionReport source = loadReport("source.xml");
 		TransactionReport report = loadReport("source.xml");
-		
+
 		TransactionReport screened = screen(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
-				"type", "URL", "ip", "192.168.31.158");
+		      "type", "URL", "ip", "192.168.31.158");
 		Assert.assertEquals(source.toString(), report.toString());
 		Assert.assertEquals(expected.toString(), screened.toString());
-		
+
 		tailor(TransactionTypeGraphFilter.ID, ReportPeriod.HOUR, report, //
-				"type", "URL", "ip", "192.168.31.158");
+		      "type", "URL", "ip", "192.168.31.158");
 		Assert.assertEquals(expected.toString(), report.toString());
 	}
 

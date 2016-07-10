@@ -50,7 +50,7 @@ public abstract class AbstractMessageAnalyzer<R extends Report> extends Containe
 	}
 
 	@Override
-	public void doCheckpoint(boolean atEnd) throws IOException {
+	public void doCheckpoint(boolean atEnd) throws Exception {
 		shutdown();
 
 		m_reportManager.doCheckpoint(m_hour, m_index, atEnd);

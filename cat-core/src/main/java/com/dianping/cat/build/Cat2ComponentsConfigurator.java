@@ -56,6 +56,9 @@ import org.unidal.cat.spi.report.provider.RecentReportProvider;
 import org.unidal.cat.spi.report.storage.DefaultReportStorage;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
 import org.unidal.cat.spi.report.storage.MysqlReportStorage;
+import org.unidal.cat.spi.report.task.internals.DefaultReportTaskConsumer;
+import org.unidal.cat.spi.report.task.internals.DefaultReportTaskExecutor;
+import org.unidal.cat.spi.report.task.internals.DefaultReportTaskService;
 import org.unidal.cat.spi.transport.DefaultServerTransportConfiguration;
 import org.unidal.cat.spi.transport.TcpSocketSkeleton;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -78,6 +81,7 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.addAll(defineReportComponents());
 		all.addAll(defineServiceComponents());
 		all.addAll(defineStorageComponents());
+		all.addAll(defineTaskComponents());
 		all.addAll(defineTransportComponents());
 
 		return all;
@@ -154,11 +158,21 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		return all;
 	}
 
+	private List<Component> defineTaskComponents() {
+		List<Component> all = new ArrayList<Component>();
+
+		all.add(A(DefaultReportTaskConsumer.class));
+		all.add(A(DefaultReportTaskExecutor.class));
+		all.add(A(DefaultReportTaskService.class));
+
+		return all;
+	}
+
 	private List<Component> defineTransportComponents() {
 		List<Component> all = new ArrayList<Component>();
 
 		all.add(A(TcpSocketSkeleton.class));
-		all.add(A(TcpSocketReceiver.class)); // TODO remove it
+		all.add(A(TcpSocketReceiver.class)); // TODO remove it later
 
 		all.add(A(DefaultMessageDispatcher.class));
 		all.add(A(DefaultServerTransportConfiguration.class));

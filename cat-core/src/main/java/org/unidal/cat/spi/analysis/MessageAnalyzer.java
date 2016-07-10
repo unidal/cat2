@@ -1,10 +1,10 @@
 package org.unidal.cat.spi.analysis;
 
-import java.io.IOException;
 import java.util.Map;
 
-import com.dianping.cat.message.spi.MessageTree;
 import org.unidal.helper.Threads.Task;
+
+import com.dianping.cat.message.spi.MessageTree;
 
 /**
  * Message analyzer is responsible of processing each message in the queue, and producing a report normally.
@@ -17,11 +17,11 @@ public interface MessageAnalyzer extends Task {
 
 	public void configure(Map<String, String> properties);
 
-	public void doCheckpoint(boolean atEnd) throws IOException;
+	public void doCheckpoint(boolean atEnd) throws Exception;
 
 	public String[] getDependencies();
 
-	public void initialize(int index, int hour) throws IOException;
+	public void initialize(int index, int hour) throws Exception;
 
 	public void destroy();
 }

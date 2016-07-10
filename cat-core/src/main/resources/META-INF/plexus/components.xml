@@ -492,6 +492,42 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.report.task.ReportTaskConsumer</role>
+			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskConsumer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskExecutor</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.task.ReportTaskExecutor</role>
+			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskExecutor</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportReducerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
+			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.dal.report.ReportTaskDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.transport.TcpSocketSkeleton</role>
 			<implementation>org.unidal.cat.spi.transport.TcpSocketSkeleton</implementation>
 			<requirements>

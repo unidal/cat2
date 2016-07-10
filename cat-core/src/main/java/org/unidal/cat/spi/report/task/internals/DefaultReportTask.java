@@ -1,21 +1,21 @@
 package org.unidal.cat.spi.report.task.internals;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.unidal.cat.dal.report.ReportTaskDo;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.task.ReportTask;
 
 public class DefaultReportTask implements ReportTask {
-	private String m_reportName;
+	private List<String> m_domains = new ArrayList<String>();
 
-	private List<String> m_domains;
+	private ReportTaskDo m_task;
 
-	private ReportPeriod m_sourcePeriod;
-
-	private Date m_sourceStartTime;
-
-	private ReportPeriod m_targetPeriod;
+	public DefaultReportTask(ReportTaskDo task) {
+		m_task = task;
+	}
 
 	@Override
 	public void done(String domain) {
@@ -27,22 +27,56 @@ public class DefaultReportTask implements ReportTask {
 	}
 
 	@Override
+	public int getFailureCount() {
+		return m_task.getFailureCount();
+	}
+
+	@Override
+	public int getId() {
+		return m_task.getId();
+	}
+
+	@Override
 	public String getReportName() {
-		return m_reportName;
+		return m_task.getReportName();
 	}
 
 	@Override
 	public ReportPeriod getSourcePeriod() {
-		return m_sourcePeriod;
+		ReportPeriod period = getTargetPeriod();
+
+		switch (period) {
+		case DAY:
+			return ReportPeriod.HOUR;
+		case WEEK:
+			return ReportPeriod.DAY;
+		case MONTH:
+			return ReportPeriod.DAY;
+		case YEAR:
+			return ReportPeriod.MONTH;
+		default:
+			throw new IllegalStateException(String.format("Invalid target period(%s) of task(%s)!", period, m_task));
+		}
 	}
 
 	@Override
 	public Date getSourceStartTime() {
-		return m_sourceStartTime;
+		return m_task.getReportStartTime();
 	}
 
 	@Override
 	public ReportPeriod getTargetPeriod() {
-		return m_targetPeriod;
+		ReportPeriod period = ReportPeriod.getById(m_task.getTaskType(), null);
+
+		if (period != null) {
+			return period;
+		} else {
+			throw new IllegalStateException(String.format("Invalid type(%s) of task(%s)!", m_task.getTaskType(), m_task));
+		}
+	}
+
+	@Override
+	public String toString() {
+		return m_task.toString();
 	}
 }

@@ -1,3 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entities do-package="org.unidal.cat.dal.report" gen="true" do-class-suffix="Do"/>
+<entities do-package="org.unidal.cat.dal.report" gen="true" do-class-suffix="Do">
+  <entity name="report-task" table="report_task" alias="rt">
+    <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
+    <member name="task-type" field="task_type" value-type="int" length="10" nullable="false" />
+    <member name="report-name" field="report_name" value-type="String" length="30" nullable="false" />
+    <member name="report-start-time" field="report_start_time" value-type="Date" nullable="false" />
+    <member name="schedule-time" field="schedule_time" value-type="Date" nullable="false" />
+    <member name="status" field="status" value-type="int" length="3" nullable="false" />
+    <member name="producer-ip" field="producer_ip" value-type="String" length="20" nullable="false" />
+    <member name="expected-done-date" field="expected_done_date" value-type="Date" nullable="false" />
+    <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
+    <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
+    <member name="failure-count" field="failure_count" value-type="int" length="3" nullable="false" />
+    <member name="failure-reason" field="failure_reason" value-type="String" length="2000" />
+    <member name="consumer-ip" field="consumer_ip" value-type="String" length="20" />
+    <var name="old-status" value-type="int" />
+    <query-defs>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[
+        INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE <FIELD name='last-modified-date'/> = NOW()
+        ]]></statement>
+      </query>
+      <query name="find-by-status-and-consumer-ip" type="SELECT">
+         <param name="status" />
+         <param name="consumer-ip" />
+         <statement><![CDATA[
+         SELECT <FIELDS/> 
+         FROM <TABLE/> 
+         WHERE <FIELD name='status'/> = ${status}
+            AND <FIELD name='schedule-time'/> <= NOW()
+            <IF type='NOT_NULL' field='consumer-ip'>
+               AND <FIELD name='consumer-ip'/> = ${consumer-ip}
+            </IF>
+            <IF type='NULL' field='consumer-ip'>
+               AND (<FIELD name='consumer-ip'/> IS NULL OR <FIELD name='consumer-ip'/> = '')
+            </IF>
+         LIMIT 1
+         ]]></statement>
+      </query>
+      <query name="update-by-PK-and-old-status" type="UPDATE">
+        <param name="key-id" />
+        <param name="old-status" />
+        <statement><![CDATA[
+        UPDATE <TABLE/>
+        SET <FIELDS/>
+        WHERE <FIELD name='id'/> = ${key-id}
+           AND <FIELD name='status'/> = ${old-status}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+</entities>
 

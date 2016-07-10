@@ -15,7 +15,7 @@ CREATE TABLE `hourly_report_content` (
   `content` longblob NOT NULL COMMENT '报表内容',
   `creation_date` timestamp NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`report_id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='用于存放实时小时报表内容';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='用于存放实时小时报表内容';
 
 CREATE TABLE `history_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -34,7 +34,7 @@ CREATE TABLE `history_report_content` (
   `content` longblob NOT NULL COMMENT '报表内容',
   `creation_date` timestamp NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`report_id`)
-)ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='历史报表内容';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='历史报表内容';
 
 CREATE TABLE `report_task` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -44,12 +44,12 @@ CREATE TABLE `report_task` (
   `schedule_time` datetime NOT NULL COMMENT '任务计划时间',
   `status` tinyint(4) NOT NULL COMMENT '执行状态: 1/todo, 2/doing, 3/done, 4/failed',  
   `producer_ip` varchar(20) NOT NULL COMMENT '任务创建者ip',
-  `expected_done_date` datetime NOT NULL COMMENT '任务预计完成时间',
   `creation_date` datetime NOT NULL COMMENT '创建时间',
   `last_modified_date` datetime NOT NULL COMMENT '上次修改时间',
   `failure_count` tinyint(4) NOT NULL COMMENT '任务失败次数',
   `failure_reason` varchar(2000) DEFAULT NULL COMMENT '任务失败原因',  
+  `expected_done_date` datetime DEFAULT NULL COMMENT '任务预计完成时间',
   `consumer_ip` varchar(20) DEFAULT NULL COMMENT '任务执行者ip',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UIDX_StartTime_Name_Type` (`report_start_time`,`report_name`,`task_type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台任务';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='后台任务';

@@ -164,6 +164,9 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
                 case MONTH:
                     cal.add(Calendar.MONTH, step);
                     break;
+                case YEAR:
+               	 cal.add(Calendar.YEAR, step);
+               	 break;
             }
         }
 
