@@ -72,10 +72,11 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 			}
 
 			// 1 AM tommorrow morning for daily report
-			Date scheduleTime = new Date(ReportPeriod.DAY.getStartTime(startTime).getTime() + 25 * TimeHelper.ONE_HOUR);
+			Date reportStartTime = ReportPeriod.DAY.getStartTime(startTime);
+			Date scheduleTime = new Date(reportStartTime.getTime() + 25 * TimeHelper.ONE_HOUR);
 			String id = Inets.IP4.getLocalHostAddress();
 
-			m_taskService.add(id, ReportPeriod.DAY, startTime, m_reportName, scheduleTime);
+			m_taskService.add(id, ReportPeriod.DAY, reportStartTime, m_reportName, scheduleTime);
 		}
 	}
 
