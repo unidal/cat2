@@ -1,13 +1,8 @@
 package org.unidal.cat.message.storage.internals;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -19,15 +14,12 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = MessageDumperManager.class)
-public class DefaultMessageDumperManager extends ContainerHolder implements LogEnabled, MessageDumperManager,
-      Initializable {
+public class DefaultMessageDumperManager extends ContainerHolder implements MessageDumperManager, Initializable {
 
 	@Inject
 	private LogviewProcessor m_logviewProcessor;
 
 	private Map<Integer, MessageDumper> m_dumpers = new LinkedHashMap<Integer, MessageDumper>();
-
-	private Logger m_logger;
 
 	@Override
 	public void close(int hour) {
@@ -44,11 +36,6 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 	}
 
 	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
-
-	@Override
 	public MessageDumper find(int hour) {
 		return m_dumpers.get(hour);
 	}
@@ -62,13 +49,10 @@ public class DefaultMessageDumperManager extends ContainerHolder implements LogE
 				dumper = m_dumpers.get(hour);
 
 				if (dumper == null) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 					dumper = lookup(MessageDumper.class);
 					dumper.initialize(hour);
 
 					m_dumpers.put(hour, dumper);
-					m_logger.info("create message dumper " + sdf.format(new Date(TimeUnit.HOURS.toMillis(hour))));
 				}
 			}
 		}
