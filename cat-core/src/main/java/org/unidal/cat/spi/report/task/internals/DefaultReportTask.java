@@ -1,5 +1,6 @@
 package org.unidal.cat.spi.report.task.internals;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,11 +9,7 @@ import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.task.ReportTask;
 
 public class DefaultReportTask implements ReportTask {
-	private List<String> m_domains;
-
-	private ReportPeriod m_sourcePeriod;
-
-	private ReportPeriod m_targetPeriod;
+	private List<String> m_domains = new ArrayList<String>();
 
 	private ReportTaskDo m_task;
 
@@ -46,7 +43,20 @@ public class DefaultReportTask implements ReportTask {
 
 	@Override
 	public ReportPeriod getSourcePeriod() {
-		return m_sourcePeriod;
+		ReportPeriod period = getTargetPeriod();
+
+		switch (period) {
+		case DAY:
+			return ReportPeriod.HOUR;
+		case WEEK:
+			return ReportPeriod.DAY;
+		case MONTH:
+			return ReportPeriod.DAY;
+		case YEAR:
+			return ReportPeriod.MONTH;
+		default:
+			throw new IllegalStateException(String.format("Invalid target period(%s) of task(%s)!", period, m_task));
+		}
 	}
 
 	@Override
@@ -56,6 +66,17 @@ public class DefaultReportTask implements ReportTask {
 
 	@Override
 	public ReportPeriod getTargetPeriod() {
-		return m_targetPeriod;
+		ReportPeriod period = ReportPeriod.getById(m_task.getTaskType(), null);
+
+		if (period != null) {
+			return period;
+		} else {
+			throw new IllegalStateException(String.format("Invalid type(%s) of task(%s)!", m_task.getTaskType(), m_task));
+		}
+	}
+
+	@Override
+	public String toString() {
+		return m_task.toString();
 	}
 }

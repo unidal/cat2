@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface ReportManager<T extends Report> {
-    public void doCheckpoint(int hour, int index, boolean atEnd) throws IOException;
+    public void doCheckpoint(int hour, int index, boolean atEnd) throws Exception;
 
     public void doInitLoad(int hour, int index) throws IOException;
 

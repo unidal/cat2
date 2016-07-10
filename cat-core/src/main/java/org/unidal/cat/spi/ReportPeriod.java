@@ -5,7 +5,16 @@ import java.util.Calendar;
 import java.util.Date;
 
 public enum ReportPeriod {
-	HOUR {
+	HOUR(0) {
+		@Override
+		public Date getBaselineStartTime(Date date) {
+			long time = date.getTime();
+
+			time = time - time % (3600 * 1000L);
+			time = time - 24 * 3600 * 1000L; // one day ago
+			return new Date(time);
+		}
+
 		@Override
 		public String getDateFormat() {
 			return "yyyyMMddHH";
@@ -25,15 +34,6 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			long time = date.getTime();
-
-			time = time - time % (3600 * 1000L);
-			time = time - 24 * 3600 * 1000L; // one day ago
-			return new Date(time);
-		}
-
-		@Override
 		public boolean isHistorical(Date startTime) {
 			long now = System.currentTimeMillis();
 
@@ -46,7 +46,21 @@ public enum ReportPeriod {
 		}
 	},
 
-	DAY {
+	DAY(1) {
+		@Override
+		public Date getBaselineStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			cal.add(Calendar.MONTH, -1); // one month ago
+			return cal.getTime();
+		}
+
 		@Override
 		public String getDateFormat() {
 			return "yyyyMMdd";
@@ -71,26 +85,27 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.MONTH, -1); // one month ago
-			return cal.getTime();
-		}
-
-		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
 	},
 
-	WEEK {
+	WEEK(2) {
+		@Override
+		public Date getBaselineStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.set(Calendar.DAY_OF_WEEK, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			cal.add(Calendar.DATE, -91); // about 3 months ago
+			return cal.getTime();
+		}
+
 		@Override
 		public String getDateFormat() {
 			return "yyyyMMdd";
@@ -116,39 +131,14 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.DAY_OF_WEEK, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.DATE, -91); // about 3 months ago
-			return cal.getTime();
-		}
-
-		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
 	},
 
-	MONTH {
+	MONTH(3) {
 		@Override
-		public String getDateFormat() {
-			return "yyyyMM";
-		}
-
-		@Override
-		protected long getDuration() {
-			return 30 * 24 * 3600 * 1000L;
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
+		public Date getBaselineStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(date);
@@ -158,7 +148,18 @@ public enum ReportPeriod {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 
+			cal.add(Calendar.YEAR, -1); // one year ago
 			return cal.getTime();
+		}
+
+		@Override
+		public String getDateFormat() {
+			return "yyyyMM";
+		}
+
+		@Override
+		protected long getDuration() {
+			return 30 * 24 * 3600 * 1000L;
 		}
 
 		@Override
@@ -178,7 +179,7 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		public Date getBaselineStartTime(Date date) {
+		public Date getStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(date);
@@ -188,7 +189,6 @@ public enum ReportPeriod {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 
-			cal.add(Calendar.YEAR, -1); // one year ago
 			return cal.getTime();
 		}
 
@@ -197,37 +197,38 @@ public enum ReportPeriod {
 			return true;
 		}
 	},
-	
-	YEAR {
+
+	YEAR(4) {
+		@Override
+		public Date getBaselineStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			cal.add(Calendar.YEAR, -1); // one year ago
+			return cal.getTime();
+		}
+
 		@Override
 		public String getDateFormat() {
 			return "yyyy";
 		}
-		
+
 		@Override
 		protected long getDuration() {
 			return 365 * 24 * 3600 * 1000L;
 		}
-		
-		@Override
-		public Date getStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-			
-			cal.setTime(date);
-			cal.set(Calendar.MONTH, 0);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-			
-			return cal.getTime();
-		}
-		
+
 		@Override
 		public Date getLastStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
-			
+
 			cal.setTime(date);
 			cal.set(Calendar.MONTH, 0);
 			cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -235,16 +236,16 @@ public enum ReportPeriod {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			
+
 			cal.add(Calendar.YEAR, -1);
-			
+
 			return cal.getTime();
 		}
-		
+
 		@Override
-		public Date getBaselineStartTime(Date date) {
+		public Date getStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
-			
+
 			cal.setTime(date);
 			cal.set(Calendar.MONTH, 0);
 			cal.set(Calendar.DAY_OF_MONTH, 1);
@@ -252,16 +253,31 @@ public enum ReportPeriod {
 			cal.set(Calendar.MINUTE, 0);
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
-			
-			cal.add(Calendar.YEAR, -1); // one year ago
+
 			return cal.getTime();
 		}
-		
+
 		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
 	};
+
+	private int m_id;
+
+	private ReportPeriod(int id) {
+		m_id = id;
+	}
+
+	public static ReportPeriod getById(int id, ReportPeriod defaultValue) {
+		for (ReportPeriod period : values()) {
+			if (period.getId() == id) {
+				return period;
+			}
+		}
+
+		return defaultValue;
+	}
 
 	public static ReportPeriod getByName(String name, ReportPeriod defaultValue) {
 		for (ReportPeriod period : values()) {
@@ -277,9 +293,15 @@ public enum ReportPeriod {
 		return new SimpleDateFormat(getDateFormat()).format(date);
 	}
 
+	public abstract Date getBaselineStartTime(Date date);
+
 	protected abstract String getDateFormat();
 
 	protected abstract long getDuration();
+
+	public int getId() {
+		return m_id;
+	}
 
 	public Date getLastStartTime(Date date) {
 		Date startTime = getStartTime(date);
@@ -300,8 +322,6 @@ public enum ReportPeriod {
 	}
 
 	public abstract Date getStartTime(Date date);
-
-	public abstract Date getBaselineStartTime(Date date);
 
 	public boolean isCurrent(Date date) {
 		return getStartTime(date).getTime() == getStartTime(new Date()).getTime();

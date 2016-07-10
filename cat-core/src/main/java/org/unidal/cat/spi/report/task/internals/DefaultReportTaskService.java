@@ -5,9 +5,11 @@ import java.util.Date;
 import org.unidal.cat.dal.report.ReportTaskDao;
 import org.unidal.cat.dal.report.ReportTaskDo;
 import org.unidal.cat.dal.report.ReportTaskEntity;
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.task.ReportTask;
 import org.unidal.cat.spi.report.task.ReportTaskService;
 import org.unidal.cat.spi.report.task.ReportTaskStatus;
+import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -18,7 +20,19 @@ public class DefaultReportTaskService implements ReportTaskService {
 	private ReportTaskDao m_dao;
 
 	@Override
-	public void add(String type, String report, Date scheduleDate) throws Exception {
+	public void add(String id, ReportPeriod targetPeriod, Date startTime, String reportName, Date scheduleTime)
+	      throws Exception {
+		ReportTaskDo t = m_dao.createLocal();
+
+		t.setTaskType(targetPeriod.getId());
+		t.setReportName(reportName);
+		t.setReportStartTime(startTime);
+		t.setScheduleTime(scheduleTime);
+		t.setStatus(ReportTaskStatus.TODO.getId());
+		t.setProducerIp(id);
+		t.setFailureCount(0);
+
+		m_dao.insert(t);
 	}
 
 	@Override
@@ -50,18 +64,22 @@ public class DefaultReportTaskService implements ReportTaskService {
 		int todo = ReportTaskStatus.TODO.getId();
 		String ip = Inets.IP4.getLocalHostAddress();
 
-		ReportTaskDo t = m_dao.findByStatusAndConsumerIp(todo, null, ReportTaskEntity.READSET_FULL);
+		try {
+			ReportTaskDo t = m_dao.findByStatusAndConsumerIp(todo, null, ReportTaskEntity.READSET_FULL);
 
-		t.setOldStatus(todo);
-		t.setStatus(ReportTaskStatus.DOING.getId());
-		t.setConsumerIp(ip);
+			t.setOldStatus(todo);
+			t.setStatus(ReportTaskStatus.DOING.getId());
+			t.setConsumerIp(ip);
 
-		int rows = m_dao.updateByPKAndOldStatus(t, ReportTaskEntity.UPDATESET_FULL);
+			int rows = m_dao.updateByPKAndOldStatus(t, ReportTaskEntity.UPDATESET_FULL);
 
-		if (rows == 1) {
-			return new DefaultReportTask(t);
-		} else {
-			return null;
+			if (rows == 1) {
+				return new DefaultReportTask(t);
+			}
+		} catch (DalNotFoundException e) {
+			// ignore it
 		}
+
+		return null;
 	}
 }

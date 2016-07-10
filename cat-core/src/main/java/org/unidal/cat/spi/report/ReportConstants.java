@@ -1,11 +1,11 @@
 package org.unidal.cat.spi.report;
 
 public interface ReportConstants {
-	String DAILY = "daily";
+	String DAILY = "day";
 
-	String WEEKLY = "weekly";
+	String WEEKLY = "week";
 
-	String MONTHLY = "monthly";
+	String MONTHLY = "month";
 
-	String YEARLY = "yearly";
+	String YEARLY = "year";
 }

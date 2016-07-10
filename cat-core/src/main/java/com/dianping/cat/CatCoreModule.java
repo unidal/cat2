@@ -2,6 +2,7 @@ package com.dianping.cat;
 
 import org.unidal.cat.spi.analysis.MessageDispatcher;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
+import org.unidal.cat.spi.report.task.ReportTaskConsumer;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.initialization.AbstractModule;
@@ -20,6 +21,10 @@ public class CatCoreModule extends AbstractModule {
 		if (manager instanceof Task) {
 			Threads.forGroup("Cat").start((Task) manager);
 		}
+
+		ReportTaskConsumer consumer = ctx.lookup(ReportTaskConsumer.class);
+
+		Threads.forGroup("Cat").start(consumer);
 	}
 
 	@Override

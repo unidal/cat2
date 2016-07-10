@@ -18,8 +18,9 @@
     <query-defs>
       <query name="insert" type="INSERT">
         <statement><![CDATA[
-        INSERT IGNORE INTO <TABLE/>(<FIELDS/>)
+        INSERT INTO <TABLE/>(<FIELDS/>)
         VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE <FIELD name='last-modified-date'/> = NOW()
         ]]></statement>
       </query>
       <query name="find-by-status-and-consumer-ip" type="SELECT">
@@ -34,7 +35,7 @@
                AND <FIELD name='consumer-ip'/> = ${consumer-ip}
             </IF>
             <IF type='NULL' field='consumer-ip'>
-               AND <FIELD name='consumer-ip'/> IS NULL
+               AND (<FIELD name='consumer-ip'/> IS NULL OR <FIELD name='consumer-ip'/> = '')
             </IF>
          LIMIT 1
          ]]></statement>

@@ -1,37 +1,37 @@
 package org.unidal.cat.plugin.transaction;
 
-import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import junit.framework.Assert;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.cat.spi.report.storage.ReportStorage;
-import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 
 public class TransactionReportManagerTest extends ComponentTestCase {
-	@BeforeClass
-	public static void beforeClass() throws Exception {
-		Files.forDir().delete(new File("target/report"), true);
+	@Before
+	public void before() throws Exception {
+		defineComponent(ReportStorage.class, MockReportStorage.class);
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCheckpoint() throws Exception {
-		lookup(ReportConfiguration.class).setBaseDataDir(new File("target"));
-
 		ReportManagerManager rmm = lookup(ReportManagerManager.class);
 		ReportDelegateManager delegateManager = lookup(ReportDelegateManager.class);
 		ReportStorage<TransactionReport> storage = lookup(ReportStorage.class);
@@ -55,9 +55,32 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 
 		Assert.assertEquals(2, reports.size());
 
-		List<TransactionReport> dailyReports = storage.loadAll(delegate, ReportPeriod.DAY, startTime, "test1");
+		// TODO check report task
+	}
 
-		Assert.assertEquals(1, dailyReports.size());
-		Assert.assertEquals("[ip0, ip1]", dailyReports.get(0).getIps().toString());
+	public static class MockReportStorage implements ReportStorage<TransactionReport> {
+		private Map<String, List<TransactionReport>> m_map = new HashMap<String, List<TransactionReport>>();
+
+		@Override
+		public List<TransactionReport> loadAll(ReportDelegate<TransactionReport> delegate, ReportPeriod period,
+		      Date startTime, String domain) throws IOException {
+			String key = period.getName() + "-" + domain + "-" + period.format(startTime);
+
+			return m_map.get(key);
+		}
+
+		@Override
+		public void store(ReportDelegate<TransactionReport> delegate, ReportPeriod period, TransactionReport report,
+		      int index, ReportStoragePolicy policy) throws IOException {
+			String key = period.getName() + "-" + report.getDomain() + "-" + period.format(report.getStartTime());
+			List<TransactionReport> reports = m_map.get(key);
+
+			if (reports == null) {
+				reports = new ArrayList<TransactionReport>();
+				m_map.put(key, reports);
+			}
+
+			reports.add(report);
+		}
 	}
 }

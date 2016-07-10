@@ -53,6 +53,9 @@
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -185,17 +188,17 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
-			<role-hint>transaction:daily</role-hint>
+			<role-hint>transaction:day</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
-			<role-hint>transaction:weekly</role-hint>
+			<role-hint>transaction:week</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionWeeklyReducer</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
-			<role-hint>transaction:monthly</role-hint>
+			<role-hint>transaction:month</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionMonthlyReducer</implementation>
 		</component>
 	</components>
