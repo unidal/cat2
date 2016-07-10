@@ -28,7 +28,7 @@ public class ReportTaskServiceTest extends JdbcTestCase {
 		String ip = Inets.IP4.getLocalHostAddress();
 
 		// add a task during hourly report checkpoint
-		service.add(ip, ReportPeriod.DAY, startTime, "mock", startTime);
+		service.add(ip, ReportPeriod.DAY, startTime, "mock", ReportPeriod.DAY.getReduceTime(startTime));
 
 		// success to claim a task for first time
 		ReportTask t1 = service.pull(ip);

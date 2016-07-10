@@ -1,22 +1,17 @@
 package org.unidal.cat.spi.report.task;
 
 import java.util.Date;
-import java.util.List;
 
 import org.unidal.cat.spi.ReportPeriod;
 
 public interface ReportTask {
-	public void done(String domain);
-
 	public int getId();
-	
-	public List<String> getDomains();
 
 	public String getReportName();
 
 	public ReportPeriod getSourcePeriod();
 
-	public Date getSourceStartTime();
+	public Date getTargetStartTime();
 
 	public ReportPeriod getTargetPeriod();
 

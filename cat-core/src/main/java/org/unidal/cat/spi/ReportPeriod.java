@@ -25,6 +25,19 @@ public enum ReportPeriod {
 			return 3600 * 1000L;
 		}
 
+		/**
+		 * Next hour
+		 */
+		@Override
+		public Date getReduceTime(Date date) {
+			long time = date.getTime();
+
+			time = time - time % (3600 * 1000L);
+			time += 3600 * 1000L;
+
+			return new Date(time);
+		}
+
 		@Override
 		public Date getStartTime(Date date) {
 			long time = date.getTime();
@@ -71,6 +84,23 @@ public enum ReportPeriod {
 			return 24 * 3600 * 1000L;
 		}
 
+		/**
+		 * 1 AM of next day
+		 */
+		@Override
+		public Date getReduceTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.add(Calendar.DATE, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 1);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			return cal.getTime();
+		}
+
 		@Override
 		public Date getStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
@@ -114,6 +144,24 @@ public enum ReportPeriod {
 		@Override
 		protected long getDuration() {
 			return 7 * 24 * 3600 * 1000L;
+		}
+
+		/**
+		 * 1 AM of first day of next week
+		 */
+		@Override
+		public Date getReduceTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.add(Calendar.DATE, 7);
+			cal.set(Calendar.DAY_OF_WEEK, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 1);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			return cal.getTime();
 		}
 
 		@Override
@@ -178,6 +226,24 @@ public enum ReportPeriod {
 			return cal.getTime();
 		}
 
+		/**
+		 * 1 AM of first day of next month
+		 */
+		@Override
+		public Date getReduceTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.add(Calendar.MONTH, 1);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 1);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			return cal.getTime();
+		}
+
 		@Override
 		public Date getStartTime(Date date) {
 			Calendar cal = Calendar.getInstance();
@@ -238,6 +304,22 @@ public enum ReportPeriod {
 			cal.set(Calendar.MILLISECOND, 0);
 
 			cal.add(Calendar.YEAR, -1);
+
+			return cal.getTime();
+		}
+
+		@Override
+		public Date getReduceTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.add(Calendar.YEAR, 1);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 1);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 
 			return cal.getTime();
 		}
@@ -320,6 +402,8 @@ public enum ReportPeriod {
 
 		return new Date(startTime.getTime() + duration);
 	}
+
+	public abstract Date getReduceTime(Date date);
 
 	public abstract Date getStartTime(Date date);
 

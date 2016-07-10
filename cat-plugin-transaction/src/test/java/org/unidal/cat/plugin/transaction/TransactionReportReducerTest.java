@@ -15,6 +15,7 @@ import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.cat.spi.report.task.ReportTask;
 import org.unidal.cat.spi.report.task.ReportTaskExecutor;
+import org.unidal.cat.spi.report.task.internals.ReportTaskTracker;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
@@ -24,6 +25,7 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 	@Before
 	public void before() throws Exception {
 		defineComponent(ReportStorage.class, MockReportStorage.class);
+		defineComponent(ReportTaskTracker.class, MockReportTaskTracker.class);
 	}
 
 	@Test
@@ -34,15 +36,15 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 	}
 
 	@Test
-	public void testWeek() throws Exception {
-		ReportTask task = new MockReportTask(ReportPeriod.DAY, ReportPeriod.WEEK);
+	public void testMonth() throws Exception {
+		ReportTask task = new MockReportTask(ReportPeriod.DAY, ReportPeriod.MONTH);
 
 		lookup(ReportTaskExecutor.class).execute(task);
 	}
 
 	@Test
-	public void testMonth() throws Exception {
-		ReportTask task = new MockReportTask(ReportPeriod.DAY, ReportPeriod.MONTH);
+	public void testWeek() throws Exception {
+		ReportTask task = new MockReportTask(ReportPeriod.DAY, ReportPeriod.WEEK);
 
 		lookup(ReportTaskExecutor.class).execute(task);
 	}
@@ -91,22 +93,9 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 
 		private ReportPeriod m_target;
 
-		private List<String> m_domains = new ArrayList<String>();
-
 		public MockReportTask(ReportPeriod source, ReportPeriod target) {
 			m_source = source;
 			m_target = target;
-
-			m_domains.add("cat");
-		}
-
-		@Override
-		public void done(String domain) {
-		}
-
-		@Override
-		public List<String> getDomains() {
-			return m_domains;
 		}
 
 		@Override
@@ -130,13 +119,38 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 		}
 
 		@Override
-		public Date getSourceStartTime() {
-			return m_source.getStartTime(new Date());
+		public ReportPeriod getTargetPeriod() {
+			return m_target;
 		}
 
 		@Override
-		public ReportPeriod getTargetPeriod() {
-			return m_target;
+		public Date getTargetStartTime() {
+			return m_source.getStartTime(new Date());
+		}
+	}
+
+	public static class MockReportTaskTracker implements ReportTaskTracker {
+		private List<String> m_domains = new ArrayList<String>();
+
+		public MockReportTaskTracker() {
+			m_domains.add("cat");
+		}
+
+		@Override
+		public List<String> getDomains() {
+			return m_domains;
+		}
+
+		@Override
+		public void done(String domain) {
+		}
+
+		@Override
+		public void close() {
+		}
+
+		@Override
+		public void open(ReportTask task) {
 		}
 	}
 }

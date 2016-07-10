@@ -59,6 +59,8 @@ import org.unidal.cat.spi.report.storage.MysqlReportStorage;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskConsumer;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskExecutor;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskService;
+import org.unidal.cat.spi.report.task.internals.DefaultReportTaskTracker;
+import org.unidal.cat.spi.report.task.internals.DefaultReportTaskTrackerManager;
 import org.unidal.cat.spi.transport.DefaultServerTransportConfiguration;
 import org.unidal.cat.spi.transport.TcpSocketSkeleton;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -164,6 +166,8 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultReportTaskConsumer.class));
 		all.add(A(DefaultReportTaskExecutor.class));
 		all.add(A(DefaultReportTaskService.class));
+		all.add(A(DefaultReportTaskTrackerManager.class));
+		all.add(A(DefaultReportTaskTracker.class));
 
 		return all;
 	}

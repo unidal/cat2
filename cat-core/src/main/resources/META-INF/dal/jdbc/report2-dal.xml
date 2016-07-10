@@ -1,5 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entities do-package="org.unidal.cat.dal.report" gen="true" do-class-suffix="Do">
+  <entity name="history-report" table="history_report" alias="hr">
+    <var name="start-date" value-type="Date" />
+    <var name="end-date" value-type="Date" />
+    <readsets>
+      <readset name="DOMAIN">
+         <member name="domain" />
+      </readset>
+    </readsets>
+    <query-defs>
+      <query name="find-all-by-type-and-name-and-date-range" type="SELECT" multiple="true">
+        <param name="type" />
+        <param name="name" />
+        <param name="start-date" />
+        <param name="end-date" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='type'/> = ${type}
+           AND <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+  <entity name="hourly-report" table="hourly_report" alias="hr2">
+    <var name="start-date" value-type="Date" />
+    <var name="end-date" value-type="Date" />
+    <readsets>
+      <readset name="DOMAIN">
+         <member name="domain" />
+      </readset>
+    </readsets>
+    <query-defs>
+      <query name="find-all-by-name-and-date-range" type="SELECT" multiple="true">
+        <param name="name" />
+        <param name="start-date" />
+        <param name="end-date" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
   <entity name="report-task" table="report_task" alias="rt">
     <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
     <member name="task-type" field="task_type" value-type="int" length="10" nullable="false" />
