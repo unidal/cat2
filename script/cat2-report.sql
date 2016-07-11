@@ -3,10 +3,11 @@ CREATE TABLE `hourly_report` (
   `name` varchar(30) NOT NULL COMMENT '报表名称，如：transaction,event,problem等',
   `ip` varchar(20) NOT NULL COMMENT '报表来自于哪台cat-consumer机器，如：192.168.1.1',
   `domain` varchar(50) NOT NULL COMMENT '应用项目名称,如：Cat',
+  `index` int(11) NOT NULL COMMENT '同一IP下第几个报表',
   `start_time` timestamp NOT NULL COMMENT '报表开始时间,如：2016-07-03 10:00:00',
   `creation_date` timestamp NOT NULL COMMENT '报表创建时间,如：2016-07-03 10:34:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UIDX_StartTime_Domain_Name` (`start_time`,`domain`,`name`)
+  UNIQUE KEY `UIDX_StartTime_Domain_Name_Index` (`start_time`,`domain`,`name`,`index`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='用于存放实时小时报表信息';
 
 CREATE TABLE `hourly_report_content` (

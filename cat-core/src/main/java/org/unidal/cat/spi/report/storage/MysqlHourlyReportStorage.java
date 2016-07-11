@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.unidal.cat.dal.report.HourlyReportContentDao;
+import org.unidal.cat.dal.report.HourlyReportContentDo;
+import org.unidal.cat.dal.report.HourlyReportContentEntity;
+import org.unidal.cat.dal.report.HourlyReportDao;
+import org.unidal.cat.dal.report.HourlyReportDo;
+import org.unidal.cat.dal.report.HourlyReportEntity;
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
@@ -20,12 +26,6 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.core.dal.HourlyReport;
-import com.dianping.cat.core.dal.HourlyReportContent;
-import com.dianping.cat.core.dal.HourlyReportContentDao;
-import com.dianping.cat.core.dal.HourlyReportContentEntity;
-import com.dianping.cat.core.dal.HourlyReportDao;
-import com.dianping.cat.core.dal.HourlyReportEntity;
 
 @Named(type = ReportStorage.class, value = MysqlHourlyReportStorage.ID)
 public class MysqlHourlyReportStorage<T extends Report> implements ReportStorage<T> {
@@ -35,23 +35,23 @@ public class MysqlHourlyReportStorage<T extends Report> implements ReportStorage
 	private CompressionService m_compression;
 
 	@Inject
-	private HourlyReportDao m_hourlyDao;
+	private HourlyReportDao m_dao;
 
 	@Inject
-	private HourlyReportContentDao m_hourlyContentDao;
+	private HourlyReportContentDao m_contentDao;
 
 	@Override
 	public List<T> loadAll(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException {
 		try {
-			List<HourlyReport> hrs = m_hourlyDao.findAllByDomainNamePeriod(startTime, domain, delegate.getName(),
+			List<HourlyReportDo> hrs = m_dao.findAllByDomainAndNameAndStartTime(domain, delegate.getName(), startTime,
 			      HourlyReportEntity.READSET_FULL);
 			List<T> reports = new ArrayList<T>(hrs.size());
 
-			for (HourlyReport hr : hrs) {
+			for (HourlyReportDo hr : hrs) {
 				try {
-					HourlyReportContent content = m_hourlyContentDao.findByPK(hr.getId(),
-					      HourlyReportContentEntity.READSET_FULL);
+					HourlyReportContentDo content = m_contentDao
+					      .findByPK(hr.getId(), HourlyReportContentEntity.READSET_FULL);
 					InputStream in = new ByteArrayInputStream(content.getContent());
 					InputStream cin = m_compression.decompress(in);
 					T report = delegate.readStream(cin);
@@ -78,23 +78,24 @@ public class MysqlHourlyReportStorage<T extends Report> implements ReportStorage
 		cout.close();
 
 		try {
-			HourlyReport r = m_hourlyDao.createLocal();
+			HourlyReportDo r = m_dao.createLocal();
 			String ip = Inets.IP4.getLocalHostAddress();
 
 			r.setName(delegate.getName());
 			r.setDomain(report.getDomain());
-			r.setPeriod(report.getStartTime());
+			r.setStartTime(report.getStartTime());
 			r.setIp(ip);
-			r.setType(1);
+			r.setIndex(index);
 
-			m_hourlyDao.insert(r);
+			m_dao.insert(r);
 
-			HourlyReportContent rc = m_hourlyContentDao.createLocal();
+			HourlyReportContentDo rc = m_contentDao.createLocal();
 
 			rc.setReportId(r.getId());
+			rc.setFormat(11);
 			rc.setContent(out.toByteArray());
 
-			m_hourlyContentDao.insert(rc);
+			m_contentDao.insert(rc);
 		} catch (DalException e) {
 			throw new IOException(String.format("Unable to store hourly report(%s) to MySQL!", delegate.getName()), e);
 		}

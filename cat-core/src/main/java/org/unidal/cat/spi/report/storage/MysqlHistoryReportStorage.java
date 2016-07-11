@@ -10,6 +10,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.unidal.cat.dal.report.HistoryReportContentDao;
+import org.unidal.cat.dal.report.HistoryReportContentDo;
+import org.unidal.cat.dal.report.HistoryReportContentEntity;
+import org.unidal.cat.dal.report.HistoryReportDao;
+import org.unidal.cat.dal.report.HistoryReportDo;
+import org.unidal.cat.dal.report.HistoryReportEntity;
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
@@ -21,13 +27,6 @@ import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.core.dal.DailyReport;
-import com.dianping.cat.core.dal.DailyReportContent;
-import com.dianping.cat.core.dal.DailyReportContentDao;
-import com.dianping.cat.core.dal.DailyReportContentEntity;
-import com.dianping.cat.core.dal.DailyReportDao;
-import com.dianping.cat.core.dal.DailyReportEntity;
-
 @Named(type = ReportStorage.class, value = MysqlHistoryReportStorage.ID)
 public class MysqlHistoryReportStorage<T extends Report> implements ReportStorage<T> {
 	public static final String ID = "mysql-history";
@@ -36,19 +35,19 @@ public class MysqlHistoryReportStorage<T extends Report> implements ReportStorag
 	private CompressionService m_compression;
 
 	@Inject
-	private DailyReportDao m_dailyDao;
+	private HistoryReportDao m_dao;
 
 	@Inject
-	private DailyReportContentDao m_dailyContentDao;
+	private HistoryReportContentDao m_contentDao;
 
 	@Override
 	public List<T> loadAll(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException {
 		try {
 			List<T> reports = new ArrayList<T>(1);
-			DailyReport dr = m_dailyDao.findByDomainNamePeriod(domain, delegate.getName(), startTime,
-			      DailyReportEntity.READSET_FULL);
-			DailyReportContent content = m_dailyContentDao.findByPK(dr.getId(), DailyReportContentEntity.READSET_FULL);
+			HistoryReportDo dr = m_dao.findByDomainAndTypeAndNameAndStartTime(domain, period.getId(), delegate.getName(),
+			      startTime, HistoryReportEntity.READSET_FULL);
+			HistoryReportContentDo content = m_contentDao.findByPK(dr.getId(), HistoryReportContentEntity.READSET_FULL);
 			InputStream in = new ByteArrayInputStream(content.getContent());
 			InputStream cin = m_compression.decompress(in);
 			T report = delegate.readStream(cin);
@@ -73,23 +72,24 @@ public class MysqlHistoryReportStorage<T extends Report> implements ReportStorag
 		cout.close();
 
 		try {
-			DailyReport r = m_dailyDao.createLocal();
+			HistoryReportDo r = m_dao.createLocal();
 			String ip = Inets.IP4.getLocalHostAddress();
 
 			r.setType(period.getId());
 			r.setName(delegate.getName());
 			r.setDomain(report.getDomain());
-			r.setPeriod(report.getStartTime());
+			r.setStartTime(report.getStartTime());
 			r.setIp(ip);
-			r.setType(1);
 
-			m_dailyDao.insert(r);
+			m_dao.insert(r);
 
-			DailyReportContent rc = m_dailyContentDao.createLocal();
+			HistoryReportContentDo rc = m_contentDao.createLocal();
 
 			rc.setReportId(r.getId());
+			rc.setFormat(11);
 			rc.setContent(out.toByteArray());
-			m_dailyContentDao.insert(rc);
+
+			m_contentDao.insert(rc);
 		} catch (DalException e) {
 			throw new IOException(String.format("Unable to store %s report(%s) to MySQL!", period.getName(),
 			      delegate.getName()), e);

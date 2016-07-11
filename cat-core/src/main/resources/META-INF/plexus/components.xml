@@ -434,28 +434,6 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-			<role-hint>mysql</role-hint>
-			<implementation>org.unidal.cat.spi.report.storage.MysqlReportStorage</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.service.CompressionService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.HourlyReportContentDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.DailyReportDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.DailyReportContentDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 			<role-hint>file</role-hint>
 			<implementation>org.unidal.cat.spi.report.storage.FileReportStorage</implementation>
 			<requirements>
@@ -464,6 +442,55 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+			<role-hint>mysql</role-hint>
+			<implementation>org.unidal.cat.spi.report.storage.MysqlReportStorage</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>mysql-hourly</role-hint>
+					<field-name>m_hourlyStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>mysql-history</role-hint>
+					<field-name>m_historyStorage</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+			<role-hint>mysql-hourly</role-hint>
+			<implementation>org.unidal.cat.spi.report.storage.MysqlHourlyReportStorage</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HourlyReportDao</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HourlyReportContentDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+			<role-hint>mysql-history</role-hint>
+			<implementation>org.unidal.cat.spi.report.storage.MysqlHistoryReportStorage</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HistoryReportDao</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HistoryReportContentDao</role>
 				</requirement>
 			</requirements>
 		</component>

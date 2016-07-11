@@ -55,6 +55,8 @@ import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
 import org.unidal.cat.spi.report.provider.RecentReportProvider;
 import org.unidal.cat.spi.report.storage.DefaultReportStorage;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
+import org.unidal.cat.spi.report.storage.MysqlHistoryReportStorage;
+import org.unidal.cat.spi.report.storage.MysqlHourlyReportStorage;
 import org.unidal.cat.spi.report.storage.MysqlReportStorage;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskConsumer;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskExecutor;
@@ -151,8 +153,10 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultByteBufPool.class));
 
 		all.add(A(DefaultReportStorage.class));
-		all.add(A(MysqlReportStorage.class));
 		all.add(A(FileReportStorage.class));
+		all.add(A(MysqlReportStorage.class));
+		all.add(A(MysqlHourlyReportStorage.class));
+		all.add(A(MysqlHistoryReportStorage.class));
 
 		all.add(A(HdfsUploader.class));
 		all.add(A(LogviewProcessor.class));

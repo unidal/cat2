@@ -22,6 +22,20 @@
            AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
         ]]></statement>
       </query>
+      <query name="find-by-domain-and-type-and-name-and-start-time" type="SELECT">
+        <param name="domain" />
+        <param name="type" />
+        <param name="name" />
+        <param name="start-time" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='domain'/> = ${domain}
+           AND <FIELD name='type'/> = ${type}
+           AND <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> = ${start-time}
+        ]]></statement>
+      </query>
     </query-defs>
   </entity>
   <entity name="hourly-report" table="hourly_report" alias="hr2">
@@ -42,6 +56,18 @@
         FROM <TABLE/>
         WHERE <FIELD name='name'/> = ${name}
            AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
+        ]]></statement>
+      </query>
+      <query name="find-all-by-domain-and-name-and-start-time" type="SELECT" multiple="true">
+        <param name="domain" />
+        <param name="name" />
+        <param name="start-time" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='domain'/> = ${domain}
+           AND <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> = ${start-time}
         ]]></statement>
       </query>
     </query-defs>
