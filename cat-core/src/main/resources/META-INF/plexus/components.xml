@@ -516,6 +516,12 @@
 				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.internals.ReportTaskTracerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -524,6 +530,26 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.dal.report.ReportTaskDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.task.internals.ReportTaskTracerManager</role>
+			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskTrackerManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.task.internals.ReportTaskTracker</role>
+			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskTracker</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HourlyReportDao</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.dal.report.HistoryReportDao</role>
 				</requirement>
 			</requirements>
 		</component>

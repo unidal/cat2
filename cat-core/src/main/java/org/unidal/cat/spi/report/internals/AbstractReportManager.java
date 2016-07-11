@@ -1,5 +1,6 @@
 package org.unidal.cat.spi.report.internals;
 
+import static org.unidal.cat.spi.ReportPeriod.DAY;
 import static org.unidal.cat.spi.ReportPeriod.HOUR;
 
 import java.io.IOException;
@@ -27,8 +28,6 @@ import org.unidal.cat.spi.report.task.ReportTaskService;
 import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
-
-import com.dianping.cat.helper.TimeHelper;
 
 public abstract class AbstractReportManager<T extends Report> implements ReportManager<T>, RoleHintEnabled {
 	@Inject
@@ -73,10 +72,9 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 			// 1 AM tommorrow morning for daily report
 			Date reportStartTime = ReportPeriod.DAY.getStartTime(startTime);
-			Date scheduleTime = new Date(reportStartTime.getTime() + 25 * TimeHelper.ONE_HOUR);
-			String id = Inets.IP4.getLocalHostAddress();
+			String ip = Inets.IP4.getLocalHostAddress();
 
-			m_taskService.add(id, ReportPeriod.DAY, reportStartTime, m_reportName, scheduleTime);
+			m_taskService.add(ip, DAY, reportStartTime, m_reportName, DAY.getReduceTime(reportStartTime));
 		}
 	}
 

@@ -2,14 +2,15 @@
 <entities>
   <entity name="history-report" table="history_report" alias="hr">
     <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
+    <member name="type" field="type" value-type="int" length="10" nullable="false" />
     <member name="name" field="name" value-type="String" length="30" nullable="false" />
-    <member name="ip" field="ip" value-type="String" length="20" />
+    <member name="ip" field="ip" value-type="String" length="20" nullable="false" />
     <member name="domain" field="domain" value-type="String" length="50" nullable="false" />
     <member name="start-time" field="start_time" value-type="Date" nullable="false" />
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
-    <index name="UIX_StartTime_Domain_Name" unique="true" members="start_time ASC, domain ASC, name ASC" />
+    <index name="UIDX_StartTime_Domain_Name" unique="true" members="start_time ASC, domain ASC, name ASC" />
     <readsets>
       <readset name="FULL" all="true" />
     </readsets>
@@ -164,11 +165,11 @@
     <member name="schedule-time" field="schedule_time" value-type="Date" nullable="false" />
     <member name="status" field="status" value-type="int" length="3" nullable="false" />
     <member name="producer-ip" field="producer_ip" value-type="String" length="20" nullable="false" />
-    <member name="expected-done-date" field="expected_done_date" value-type="Date" nullable="false" />
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <member name="last-modified-date" field="last_modified_date" value-type="Date" nullable="false" insert-expr="NOW()" update-expr="NOW()" />
     <member name="failure-count" field="failure_count" value-type="int" length="3" nullable="false" />
     <member name="failure-reason" field="failure_reason" value-type="String" length="2000" />
+    <member name="expected-done-date" field="expected_done_date" value-type="Date" />
     <member name="consumer-ip" field="consumer_ip" value-type="String" length="20" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />

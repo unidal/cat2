@@ -19,14 +19,15 @@ CREATE TABLE `hourly_report_content` (
 
 CREATE TABLE `history_report` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` int(4) NOT NULL COMMENT '报表类型，1/daily, 2/weekly, 3/monthly, 4/yearly',
   `name` varchar(30) NOT NULL COMMENT '报表名称，如：transaction,event,problem等',
   `ip` varchar(20) NOT NULL COMMENT '报表来自于哪台cat-consumer机器，如：192.168.1.1',
   `domain` varchar(50) NOT NULL COMMENT '应用项目名称,如：Cat',
   `start_time` timestamp NOT NULL COMMENT '报表开始时间,如：2016-07-03 00:00:00',
-  `creation_date` datetime NOT NULL COMMENT '创建时间',
+  `creation_date` datetime NOT NULL COMMENT '创建时间,如：2016-07-03 10:34:00',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UIDX_StartTime_Domain_Name` (`start_time`,`domain`,`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='历史报表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用于存放实时历史报表信息';
 
 CREATE TABLE `history_report_content` (
   `report_id` int(11) NOT NULL COMMENT '报表ID',

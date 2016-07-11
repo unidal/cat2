@@ -84,6 +84,18 @@ public class ReportPeriodTest {
 		Assert.assertEquals("Sun Nov 01 00:00:00 CST 2015", ReportPeriod.WEEK.getStartTime(date).toString());
 		Assert.assertEquals("Sun Nov 01 00:00:00 CST 2015", ReportPeriod.MONTH.getStartTime(date).toString());
 	}
+	
+	@Test
+	public void getReduceTime() {
+		// Sat Nov 07 16:35:02 CST 2015
+		Date date = new Date(1446885302848L);
+		
+		TimeZone.setDefault(TimeZone.getTimeZone("Asia/Shanghai"));
+		Assert.assertEquals("Sat Nov 07 17:00:00 CST 2015", ReportPeriod.HOUR.getReduceTime(date).toString());
+		Assert.assertEquals("Sun Nov 08 01:00:00 CST 2015", ReportPeriod.DAY.getReduceTime(date).toString());
+		Assert.assertEquals("Sun Nov 08 01:00:00 CST 2015", ReportPeriod.WEEK.getReduceTime(date).toString());
+		Assert.assertEquals("Tue Dec 01 01:00:00 CST 2015", ReportPeriod.MONTH.getReduceTime(date).toString());
+	}
 
 	@Test
 	public void getStartTime2() {
