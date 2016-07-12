@@ -1,5 +1,7 @@
 package org.unidal.cat.spi.report.task.internals;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -26,6 +28,17 @@ public class DefaultReportTaskConsumer implements ReportTaskConsumer {
 
 	private CountDownLatch m_latch = new CountDownLatch(1);
 
+	private String asString(Throwable e, int maxLen) {
+		ByteArrayOutputStream out = new ByteArrayOutputStream(2000);
+		PrintStream pw = new PrintStream(out);
+
+		e.printStackTrace(pw);
+
+		String msg = new String(out.toByteArray());
+
+		return msg.substring(0, Math.min(maxLen, msg.length()));
+	}
+
 	@Override
 	public String getName() {
 		return getClass().getSimpleName();
@@ -46,7 +59,7 @@ public class DefaultReportTaskConsumer implements ReportTaskConsumer {
 						try {
 							m_executor.execute(task);
 						} catch (Throwable e) {
-							message = e.toString();
+							message = asString(e, 2000);
 							Cat.logError(e);
 						}
 

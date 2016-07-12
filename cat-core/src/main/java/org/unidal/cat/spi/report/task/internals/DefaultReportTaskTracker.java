@@ -59,7 +59,7 @@ public class DefaultReportTaskTracker implements ReportTaskTracker {
 	}
 
 	private File getTrackerFile(ReportTask task) {
-		MessageFormat format = new MessageFormat("task/{0}/{1}/{2,date,yyyy-MM-dd.txt}");
+		MessageFormat format = new MessageFormat("task/{0}/{1}/{2,date,yyyy-MM-dd}.txt");
 		Object[] args = { task.getReportName(), task.getTargetPeriod().getName(), task.getTargetStartTime() };
 		String path = format.format(args);
 
@@ -108,6 +108,7 @@ public class DefaultReportTaskTracker implements ReportTaskTracker {
 			m_domains.removeAll(done);
 		}
 
+		m_file.getParentFile().mkdirs();
 		m_out = new FileOutputStream(m_file, true);
 	}
 }

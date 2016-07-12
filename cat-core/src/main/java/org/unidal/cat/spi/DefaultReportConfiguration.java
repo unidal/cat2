@@ -60,7 +60,7 @@ public class DefaultReportConfiguration implements Initializable, ReportConfigur
 
 	@Override
 	public boolean isLocalMode() {
-		return true;
+		return false;
 	}
 
 	@Override
