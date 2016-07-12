@@ -1,4 +1,7 @@
-CAT [![Build Status](https://travis-ci.org/unidal/cat2.png?branch=master)](https://travis-ci.org/unidal/cat2)
+CAT [![Build Status](https://travis-ci.org/unidal/cat2.svg?branch=master)](https://travis-ci.org/unidal/cat2)
+[![Coverage Status](https://coveralls.io/repos/github/unidal/cat2/badge.svg?branch=master)](https://coveralls.io/github/unidal/cat2?branch=master)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
 ===
 ##### CAT基于Java开发的实时应用监控平台，包括实时应用监控，业务监控。[2013-01-06] 
 

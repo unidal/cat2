@@ -5,7 +5,7 @@
          <driver>com.mysql.jdbc.Driver</driver>
          <url>jdbc:mysql://127.0.0.1:3306/cat</url>
          <user>root</user>
-         <password></password>
+         <password>~{c39095938869e090901c53664a2f6}</password>
          <properties>useUnicode=true&amp;autoReconnect=true</properties>
       </datasource>
       <group name="report" package="com.dianping.cat.core.dal">
@@ -26,13 +26,20 @@
       <group name="config" package="com.dianping.cat.core.config">
          <table name="config"/>
       </group>
+      <group name="report2" package="org.unidal.cat.dal.report">
+         <table name="hourly_report"/>
+         <table name="hourly_report_content"/>
+         <table name="history_report"/>
+         <table name="history_report_content"/>
+         <table name="report_task"/>
+      </group>
    </jdbc>
    <jdbc package="com.dianping.cat.app" name="app">
       <datasource>
          <driver>com.mysql.jdbc.Driver</driver>
          <url>jdbc:mysql://127.0.0.1:3306/cat</url>
          <user>root</user>
-         <password></password>
+         <password>~{c39095938869e090901c53664a2f6}</password>
          <properties>useUnicode=true&amp;autoReconnect=true</properties>
       </datasource>
       <group name="app" package="com.dianping.cat.app">

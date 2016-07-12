@@ -7,6 +7,7 @@
 		<element name="domain" value-type="String" type="set" names="domain-names" />
 		<element name="ip" value-type="String" type="set" names="ips" />
 		<entity-ref name="machine" type="map" names="machines" method-find-or-create="true" />
+        <entity-ref name="distribution-in-type" type="map" names="distribution-in-types" method-find-or-create="true"  keep-order="false"/>
 	</entity>
 	<entity name="machine">
 		<attribute name="ip" value-type="String" key="true"/>
@@ -27,12 +28,36 @@
 		<attribute name="failCount" value-type="long" primitive="true" method-inc="true" />
 		<attribute name="failPercent" value-type="double" primitive="true" format="0.00" />
 		<attribute name="totalPercent" value-type="double" primitive="true" format="0.00" render="false"/>
-		<entity-ref name="range" type="map" names="ranges" method-find-or-create="true" />
+		<entity-ref name="range" type="list" names="ranges" method-find-or-create="true" initial-capacity="10"/>
 	</entity>
 	<entity name="range">
 		<attribute name="value" value-type="int" key="true" />
 		<attribute name="count" value-type="int" primitive="true" method-inc="true" />
 		<attribute name="fails" value-type="int" primitive="true" method-inc="true" />
 	</entity>
+    <entity name="distribution-in-type">
+        <attribute name="type" value-type="String" key="true"/>
+        <entity-ref name="bu" type="map" names="bus" method-find-or-create="true" keep-order="false" />
+        <entity-ref name="distribution-in-name" type="map" names="distribution-in-names" method-find-or-create="true" keep-order="false" />
+    </entity>
+    <entity name="distribution-in-name">
+        <attribute name="name" value-type="String" key="true"/>
+        <entity-ref name="bu" type="map" names="bus" method-find-or-create="true" keep-order="false" />
+    </entity>
+    <entity name="bu">
+        <attribute name="name" value-type="String" key="true"/>
+        <entity-ref name="domain-stat" type="map" names="type-domain-counts" method-find-or-create="true" keep-order="false" />
+    </entity>
+    <entity name="domain-stat">
+        <attribute name="domain" value-type="String" key="true" />
+        <attribute name="totalCount" value-type="long" primitive="true" method-inc="true"/>
+        <attribute name="failCount" value-type="long" primitive="true" method-inc="true"/>
+        <attribute name="tps" value-type="double" primitive="true" format="0.00" />
+        <attribute name="min" value-type="double" primitive="true" format="0.00" default-value="86400000"/>
+        <attribute name="max" value-type="double" primitive="true" format="0.00" default-value="-1"/>
+        <attribute name="avg" value-type="double" primitive="true" format="0.0" />
+        <attribute name="sum" value-type="double" primitive="true" format="0.0" />
+        <attribute name="sum2" value-type="double" primitive="true" format="0.0" />
+    </entity>
 </model>
 

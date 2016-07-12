@@ -1,9 +1,5 @@
 package com.dianping.cat.consumer;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
 import com.dianping.cat.consumer.core.FormatTest;
 import com.dianping.cat.consumer.core.GsonTest;
 import com.dianping.cat.consumer.core.NumberFormatTest;
@@ -23,21 +19,15 @@ import com.dianping.cat.consumer.matrix.MatrixModelTest;
 import com.dianping.cat.consumer.matrix.MatrixReportMergerTest;
 import com.dianping.cat.consumer.metric.MetricAnalyzerTest;
 import com.dianping.cat.consumer.metric.ProductLineConfigManagerTest;
-import com.dianping.cat.consumer.problem.ProblemAnalyzerTest;
-import com.dianping.cat.consumer.problem.ProblemFilterTest;
-import com.dianping.cat.consumer.problem.ProblemHandlerTest;
-import com.dianping.cat.consumer.problem.ProblemReportConvertorTest;
-import com.dianping.cat.consumer.problem.ProblemReportMergerTest;
-import com.dianping.cat.consumer.problem.ProblemReportTest;
+import com.dianping.cat.consumer.problem.*;
 import com.dianping.cat.consumer.state.StateAnalyzerTest;
 import com.dianping.cat.consumer.state.StateReportMergerTest;
 import com.dianping.cat.consumer.top.TopAnalyzerTest;
 import com.dianping.cat.consumer.top.TopReportMergerTest;
-import com.dianping.cat.consumer.transaction.TransactionAnalyzerTest;
-import com.dianping.cat.consumer.transaction.TransactionReportFilterTest;
-import com.dianping.cat.consumer.transaction.TransactionReportMergerTest;
-import com.dianping.cat.consumer.transaction.TransactionReportTest;
-import com.dianping.cat.consumer.transaction.TransactionReportTypeAggergatorTest;
+import com.dianping.cat.consumer.transaction.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -101,8 +91,6 @@ TransactionReportTypeAggergatorTest.class,
 ProblemFilterTest.class,
 
 //MetricAnalyzerTest.class,
-
-ProblemReportConvertorTest.class,
 
 CrossInfoTest.class,
 

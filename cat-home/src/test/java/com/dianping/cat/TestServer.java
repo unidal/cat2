@@ -9,9 +9,14 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
 import org.unidal.test.jetty.JettyServer;
 
+import java.io.File;
+
 @RunWith(JUnit4.class)
 public class TestServer extends JettyServer {
 	public static void main(String[] args) throws Exception {
+        // Added by yj.huang
+        System.setProperty("user.dir", System.getProperty("user.dir") + "\\cat-home");
+
 		TestServer server = new TestServer();
 		System.setProperty("devMode", "true");
 		server.startServer();
@@ -24,6 +29,12 @@ public class TestServer extends JettyServer {
 		System.setProperty("devMode", "true");
 		super.startServer();
 	}
+
+    @Override
+    protected File getWarRoot() {
+        // yj.huang Need call getAbsoluteFile() to make sure the file exists
+        return new File("src/main/webapp").getAbsoluteFile();
+    }
 
 	@Override
 	protected String getContextPath() {

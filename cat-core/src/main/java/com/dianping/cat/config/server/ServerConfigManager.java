@@ -365,7 +365,7 @@ public class ServerConfigManager implements LogEnabled {
 	}
 
 	public int getMessageProcessorThreads() {
-		return Integer.parseInt(getProperty("message-processor-thread", "20"));
+		return Integer.parseInt(getProperty("message-processor-thread", "5")); // 20 for production
 	}
 
 	public int getHdfsUploadThreadsCount() {

@@ -18,7 +18,9 @@ import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.core.dal.Project;
 import com.dianping.cat.core.dal.ProjectDao;
 import com.dianping.cat.core.dal.ProjectEntity;
+import org.unidal.lookup.annotation.Named;
 
+@Named(type = ProjectService.class)
 public class ProjectService implements Initializable {
 
 	@Inject
@@ -124,6 +126,15 @@ public class ProjectService implements Initializable {
 			project = m_cmdbToProjects.get(domain);
 		}
 		return project;
+	}
+
+	public String findBu(String domain){
+		Project project = m_domainToProjects.get(domain);
+		if(project == null){
+			return DEFAULT;
+		} else {
+			return project.getBu() == null ? DEFAULT : project.getBu();
+		}
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
+import org.unidal.web.mvc.model.entity.InboundActionModel;
 
 import com.dianping.cat.system.SystemContext;
 import com.dianping.cat.system.SystemPage;
@@ -68,7 +69,7 @@ public class Handler implements PageHandler<Context> {
 			m_signinService.signout(sc);
 			redirect(ctx, payload);
 			return;
-		} else {
+		} else if (shouldLogin(ctx)) {
 			SigninContext sc = createSigninContext(ctx);
 			Session session = m_signinService.validate(sc);
 
@@ -85,6 +86,8 @@ public class Handler implements PageHandler<Context> {
 					throw new RuntimeException(String.format("%s should extend %s!", ctx.getClass(), SystemContext.class));
 				}
 			}
+		} else {
+			return; // do no login
 		}
 
 		// skip actual action, show sign-in form
@@ -166,5 +169,30 @@ public class Handler implements PageHandler<Context> {
 
 		ctx.redirect(url);
 		ctx.stopProcess();
+	}
+
+	private boolean shouldLogin(Context ctx) {
+		ActionContext<?> parent = ctx.getParent();
+		InboundActionModel inAction = parent.getRequestContext().getInboundAction();
+		LoginAction meta = inAction.getActionMethod().getAnnotation(LoginAction.class);
+
+		if (meta != null) {
+			String[] includes = meta.includes();
+
+			if (includes.length > 0) {
+				String name = parent.getPayload().getAction().getName();
+				// String name = (String)parent.getHttpServletRequest().getParameter("op");
+
+				for (String action : includes) {
+					if (action.equals(name)) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

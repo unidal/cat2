@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.report.ReportFilter;
+import org.unidal.cat.spi.report.ReportFilterManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 

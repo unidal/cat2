@@ -1,36 +1,19 @@
 package com.dianping.cat.report.page.problem.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import org.unidal.dal.jdbc.DalException;
-import org.unidal.dal.jdbc.DalNotFoundException;
-
 import com.dianping.cat.Cat;
 import com.dianping.cat.consumer.problem.ProblemAnalyzer;
-import com.dianping.cat.consumer.problem.ProblemReportConvertor;
 import com.dianping.cat.consumer.problem.ProblemReportMerger;
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;
 import com.dianping.cat.consumer.problem.model.transform.DefaultNativeParser;
-import com.dianping.cat.core.dal.DailyReport;
-import com.dianping.cat.core.dal.DailyReportEntity;
-import com.dianping.cat.core.dal.HourlyReport;
-import com.dianping.cat.core.dal.HourlyReportContent;
-import com.dianping.cat.core.dal.HourlyReportContentEntity;
-import com.dianping.cat.core.dal.HourlyReportEntity;
-import com.dianping.cat.core.dal.MonthlyReport;
-import com.dianping.cat.core.dal.MonthlyReportEntity;
-import com.dianping.cat.core.dal.WeeklyReport;
-import com.dianping.cat.core.dal.WeeklyReportEntity;
+import com.dianping.cat.core.dal.*;
 import com.dianping.cat.helper.TimeHelper;
-import com.dianping.cat.core.dal.DailyReportContent;
-import com.dianping.cat.core.dal.DailyReportContentEntity;
-import com.dianping.cat.core.dal.MonthlyReportContent;
-import com.dianping.cat.core.dal.MonthlyReportContentEntity;
-import com.dianping.cat.core.dal.WeeklyReportContent;
-import com.dianping.cat.core.dal.WeeklyReportContentEntity;
 import com.dianping.cat.report.service.AbstractReportService;
+import org.unidal.dal.jdbc.DalException;
+import org.unidal.dal.jdbc.DalNotFoundException;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 public class ProblemReportService extends AbstractReportService<ProblemReport> {
 
@@ -64,11 +47,9 @@ public class ProblemReportService extends AbstractReportService<ProblemReport> {
 			}
 		}
 		ProblemReport problemReport = merger.getProblemReport();
-		ProblemReportConvertor convertor = new ProblemReportConvertor();
 
 		problemReport.setStartTime(start);
 		problemReport.setEndTime(end);
-		problemReport.accept(convertor);
 		return problemReport;
 	}
 
@@ -149,8 +130,6 @@ public class ProblemReportService extends AbstractReportService<ProblemReport> {
 		Set<String> domains = queryAllDomainNames(start, end, ProblemAnalyzer.ID);
 		problemReport.getDomainNames().addAll(domains);
 
-		ProblemReportConvertor convertor = new ProblemReportConvertor();
-		problemReport.accept(convertor);
 		return problemReport;
 	}
 
@@ -168,9 +147,6 @@ public class ProblemReportService extends AbstractReportService<ProblemReport> {
 		} catch (Exception e) {
 			Cat.logError(e);
 		}
-		ProblemReportConvertor convertor = new ProblemReportConvertor();
-
-		problemReport.accept(convertor);
 		return problemReport;
 	}
 
@@ -188,9 +164,6 @@ public class ProblemReportService extends AbstractReportService<ProblemReport> {
 		} catch (Exception e) {
 			Cat.logError(e);
 		}
-		ProblemReportConvertor convertor = new ProblemReportConvertor();
-
-		problemReport.accept(convertor);
 		return problemReport;
 	}
 

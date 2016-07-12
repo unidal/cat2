@@ -84,7 +84,7 @@ public class DistributionDetailVisitor extends BaseVisitor {
 		}
 	}
 
-	public class DistributionDetail {
+	public static class DistributionDetail {
 
 		private String m_ip;
 
@@ -101,6 +101,8 @@ public class DistributionDetailVisitor extends BaseVisitor {
 		private double m_avg;
 
 		private double m_std;
+
+		private double m_qps;
 
 		public double getAvg() {
 			return m_avg;
@@ -128,6 +130,10 @@ public class DistributionDetailVisitor extends BaseVisitor {
 
 		public double getStd() {
 			return m_std;
+		}
+
+		public double getQps() {
+			return m_qps;
 		}
 
 		public long getTotalCount() {
@@ -166,6 +172,11 @@ public class DistributionDetailVisitor extends BaseVisitor {
 
 		public DistributionDetail setStd(double std) {
 			m_std = std;
+			return this;
+		}
+
+		public DistributionDetail setQps(double qps) {
+			m_qps = qps;
 			return this;
 		}
 

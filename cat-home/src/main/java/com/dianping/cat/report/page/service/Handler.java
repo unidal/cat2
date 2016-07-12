@@ -2,6 +2,8 @@ package com.dianping.cat.report.page.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportFilterManager;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.remote.RemoteSkeleton;
 import org.unidal.cat.spi.report.ReportFilter;
+import org.unidal.cat.spi.report.ReportFilterManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -41,7 +43,11 @@ public class Handler implements PageHandler<Context> {
 
 		for (String name : names) {
 			String value = req.getParameter(name);
-
+			try {
+				value = URLDecoder.decode(value,"UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				Cat.logError(e);
+			}
 			ctx.setProperty(name, value);
 		}
 

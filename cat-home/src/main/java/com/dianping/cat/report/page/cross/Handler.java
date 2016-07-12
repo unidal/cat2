@@ -1,12 +1,10 @@
 package com.dianping.cat.report.page.cross;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.ServletException;
 
-import org.unidal.helper.Files;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;
@@ -16,7 +14,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.consumer.cross.CrossAnalyzer;
 import com.dianping.cat.consumer.cross.model.entity.CrossReport;
-import com.dianping.cat.consumer.cross.model.transform.DefaultSaxParser;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.ReportPage;
 import com.dianping.cat.report.page.cross.display.HostInfo;
@@ -54,13 +51,6 @@ public class Handler implements PageHandler<Context> {
 			ModelResponse<CrossReport> response = m_service.invoke(request);
 			CrossReport report = response.getModel();
 
-			try {
-	         String xml = Files.forIO().readFrom(new File("/Users/youyong/Desktop/cross.xml"), "utf-8");
-	         report = DefaultSaxParser.parse(xml);
-         } catch (Exception e) {
-	         e.printStackTrace();
-         }
-			
 			return report;
 		} else {
 			throw new RuntimeException("Internal error: no eligable cross service registered for " + request + "!");

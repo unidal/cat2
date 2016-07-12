@@ -68,6 +68,9 @@
 						${basedir}/src/main/resources/META-INF/dal/model/metric-config-manifest.xml,
 						${basedir}/src/main/resources/META-INF/dal/model/storage-report-manifest.xml,
                         ${basedir}/src/main/resources/META-INF/dal/model/demo-manifest.xml,
+
+                        <!-- CAT2 -->
+                        ${basedir}/src/main/resources/META-INF/dal/model/transaction-config-manifest.xml,
 					</manifest>
                   </configuration>
                </execution>

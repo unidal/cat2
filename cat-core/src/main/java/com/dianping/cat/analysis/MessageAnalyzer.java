@@ -1,6 +1,7 @@
 package com.dianping.cat.analysis;
 
 import com.dianping.cat.message.spi.MessageQueue;
+import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.report.ReportManager;
 
 public interface MessageAnalyzer {
@@ -20,4 +21,6 @@ public interface MessageAnalyzer {
 	public void setIndex(int index);
 
 	public ReportManager<?> getReportManager();
+
+    public boolean isEligible(MessageTree tree);
 }

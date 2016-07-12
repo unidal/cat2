@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -209,4 +210,15 @@ public class StateAnalyzer extends AbstractMessageAnalyzer<StateReport> implemen
 			machine.findOrCreateProcessDomain(domain).addIp(ip);
 		}
 	}
+
+    // ctrip yj.huang Create stateReport.machine.processDomain.ip for heartbeat messages only, not for all messages,
+    // which will significantly reduce message loss
+    @Override
+    public boolean isEligible(MessageTree tree) {
+        if (tree instanceof DefaultMessageTree) {
+            return ((DefaultMessageTree) tree).getHeartbeats().size() > 0;
+        } else {
+            return false;
+        }
+    }
 }

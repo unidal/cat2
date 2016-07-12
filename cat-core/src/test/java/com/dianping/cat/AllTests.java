@@ -3,6 +3,7 @@ package com.dianping.cat;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.unidal.cat.service.CompressionServiceTest;
 
 import com.dianping.cat.analysis.AbstractMessageAnalyzerTest;
 import com.dianping.cat.analysis.PeriodTaskTest;
@@ -50,7 +51,10 @@ AbstractMessageAnalyzerTest.class,
 
 DefaultReportManagerTest.class,
 
-CommandFormatManagerTest.class
+CommandFormatManagerTest.class,
+
+/** service **/
+CompressionServiceTest.class,
 
 })
 public class AllTests {

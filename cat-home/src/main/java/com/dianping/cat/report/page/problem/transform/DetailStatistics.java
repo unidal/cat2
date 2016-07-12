@@ -20,7 +20,7 @@ import com.dianping.cat.helper.SortHelper;
 
 public class DetailStatistics extends BaseVisitor {
 
-	private String m_groupName;
+	private String m_group;
 
 	private String m_ip = "";
 
@@ -36,11 +36,11 @@ public class DetailStatistics extends BaseVisitor {
 
 	public String getSubTitle() {
 		StringBuilder sb = new StringBuilder();
-		if (StringUtils.isEmpty(m_threadId) && StringUtils.isEmpty(m_groupName)) {
+		if (StringUtils.isEmpty(m_threadId) && StringUtils.isEmpty(m_group)) {
 			return "All Thread Groups";
-		} else if (!StringUtils.isEmpty(m_groupName) && StringUtils.isEmpty(m_threadId)) {
-			return "All Threads in Group:" + m_groupName;
-		} else if (!StringUtils.isEmpty(m_groupName) && !StringUtils.isEmpty(m_threadId)) {
+		} else if (!StringUtils.isEmpty(m_group) && StringUtils.isEmpty(m_threadId)) {
+			return "All Threads in Group:" + m_group;
+		} else if (!StringUtils.isEmpty(m_group) && !StringUtils.isEmpty(m_threadId)) {
 			return "Thread :" + m_threadId;
 		}
 		return sb.toString();
@@ -48,8 +48,8 @@ public class DetailStatistics extends BaseVisitor {
 
 	public String getUrl() {
 		StringBuilder sb = new StringBuilder();
-		if (!StringUtils.isEmpty(m_groupName)) {
-			sb.append("&group=").append(m_groupName);
+		if (!StringUtils.isEmpty(m_group)) {
+			sb.append("&group=").append(m_group);
 		}
 		if (!StringUtils.isEmpty(m_threadId)) {
 			sb.append("&thread=").append(m_threadId);
@@ -58,7 +58,7 @@ public class DetailStatistics extends BaseVisitor {
 	}
 
 	private boolean isContents(String groupName, String threadId) {
-		if (m_groupName != null && m_groupName.equals(groupName) == false) {
+		if (m_group != null && m_group.equals(groupName) == false) {
 			return false;
 		}
 		if (m_threadId != null && m_threadId.equals(threadId) == false) {
@@ -67,8 +67,8 @@ public class DetailStatistics extends BaseVisitor {
 		return true;
 	}
 
-	public DetailStatistics setGroupName(String groupName) {
-		m_groupName = groupName;
+	public DetailStatistics setGroup(String groupName) {
+		m_group = groupName;
 		return this;
 	}
 

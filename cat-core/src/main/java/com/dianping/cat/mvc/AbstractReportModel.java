@@ -24,27 +24,27 @@ import com.dianping.cat.service.ProjectService.Department;
 public abstract class AbstractReportModel<A extends Action, P extends Page, M extends ActionContext<?>> extends
       ViewModel<P, A, M> {
 
-	private Date m_creatTime;
+	private transient Date m_creatTime;
 
-	private String m_customDate;
+	private transient String m_customDate;
 
-	private long m_date;
+	private transient long m_date;
 
-	private SimpleDateFormat m_dateFormat = new SimpleDateFormat("yyyyMMddHH");
+	private transient SimpleDateFormat m_dateFormat = new SimpleDateFormat("yyyyMMddHH");
 
-	private SimpleDateFormat m_dayFormat = new SimpleDateFormat("yyyyMMdd");
+	private transient SimpleDateFormat m_dayFormat = new SimpleDateFormat("yyyyMMdd");
 
-	private String m_displayDomain;
+	private transient String m_displayDomain;
 
-	private Throwable m_exception;
+	private transient Throwable m_exception;
 
-	private String m_ipAddress;
+	private transient String m_ipAddress;
 
-	private String m_reportType;
+	private transient String m_reportType;
 
-	private ProjectService m_projectService;
+	private transient ProjectService m_projectService;
 
-	private HostinfoService m_hostinfoService;
+	private transient HostinfoService m_hostinfoService;
 
 	public AbstractReportModel(M ctx) {
 		super(ctx);

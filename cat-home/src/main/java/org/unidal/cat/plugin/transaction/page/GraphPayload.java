@@ -71,7 +71,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges().values()) {
+			for (Range range : getTransactionName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getAvg();
@@ -139,7 +139,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class FailurePayload extends AbstractPayload {
+	public final static class FailurePayload extends AbstractPayload {
 		public FailurePayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
@@ -158,7 +158,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges().values()) {
+			for (Range range : getTransactionName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getFails();
@@ -168,7 +168,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class HitPayload extends AbstractPayload {
+	public final static class HitPayload extends AbstractPayload {
 		public HitPayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
@@ -182,7 +182,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges().values()) {
+			for (Range range : getTransactionName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getCount();

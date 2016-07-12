@@ -6,12 +6,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.helper.Files;
+import org.unidal.helper.Inets;
+import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.client.entity.ClientConfig;
@@ -19,11 +22,12 @@ import com.dianping.cat.configuration.client.entity.Domain;
 import com.dianping.cat.configuration.client.entity.Server;
 import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
 
+@Named(type = ClientConfigManager.class)
 public class DefaultClientConfigManager implements LogEnabled, ClientConfigManager, Initializable {
 	private static final String CAT_CLIENT_XML = "/META-INF/cat/client.xml";
 
 	private static final String PROPERTIES_CLIENT_XML = "/META-INF/app.properties";
-	
+
 	private static final String XML = "/data/appdatas/cat/client.xml";
 
 	private Logger m_logger;
@@ -62,6 +66,11 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 	}
 
 	@Override
+	public long getServerAddressRefreshInterval() {
+		return TimeUnit.MINUTES.toMillis(1);
+	}
+
+	@Override
 	public String getServerConfigUrl() {
 		if (m_config == null) {
 			return null;
@@ -75,7 +84,7 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 					httpPort = 8080;
 				}
 				return String.format("http://%s:%d/cat/s/router?domain=%s&ip=%s&op=json", server.getIp().trim(), httpPort,
-				      getDomain().getId(), NetworkInterfaceManager.INSTANCE.getLocalHostAddress());
+				      getDomain().getId(), Inets.IP4.getLocalHostAddress());
 			}
 		}
 		return null;
@@ -93,6 +102,51 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 	@Override
 	public int getTaggedTransactionCacheSize() {
 		return 1024;
+	}
+
+	@Override
+	public void initialize() throws InitializationException {
+		File configFile = new File(XML);
+
+		initialize(configFile);
+	}
+
+	@Override
+	public void initialize(File configFile) throws InitializationException {
+		try {
+			ClientConfig globalConfig = null;
+			ClientConfig clientConfig = null;
+
+			if (configFile != null) {
+				if (configFile.exists()) {
+					String xml = Files.forIO().readFrom(configFile.getCanonicalFile(), "utf-8");
+
+					globalConfig = DefaultSaxParser.parse(xml);
+					m_logger.info(String.format("Global config file(%s) found.", configFile));
+				} else {
+					m_logger.warn(String.format("Global config file(%s) not found, IGNORED.", configFile));
+				}
+			}
+
+			// load the client configure from Java class-path
+			clientConfig = loadConfigFromEnviroment();
+
+			if (clientConfig == null) {
+				clientConfig = loadConfigFromXml();
+			}
+			// merge the two configures together to make it effected
+			if (globalConfig != null && clientConfig != null) {
+				globalConfig.accept(new ClientConfigMerger(clientConfig));
+			}
+
+			if (clientConfig != null) {
+				clientConfig.accept(new ClientConfigValidator());
+			}
+
+			m_config = clientConfig;
+		} catch (Exception e) {
+			throw new InitializationException(e.getMessage(), e);
+		}
 	}
 
 	@Override
@@ -189,49 +243,4 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 		}
 		return appName;
 	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		File configFile = new File(XML);
-		
-		initialize(configFile);
-	}
-
-	@Override
-   public void initialize(File configFile) throws InitializationException {
-		try {
-			ClientConfig globalConfig = null;
-			ClientConfig clientConfig = null;
-
-			if (configFile != null) {
-				if (configFile.exists()) {
-					String xml = Files.forIO().readFrom(configFile.getCanonicalFile(), "utf-8");
-
-					globalConfig = DefaultSaxParser.parse(xml);
-					m_logger.info(String.format("Global config file(%s) found.", configFile));
-				} else {
-					m_logger.warn(String.format("Global config file(%s) not found, IGNORED.", configFile));
-				}
-			}
-
-			// load the client configure from Java class-path
-			clientConfig = loadConfigFromEnviroment();
-
-			if (clientConfig == null) {
-				clientConfig = loadConfigFromXml();
-			}
-			// merge the two configures together to make it effected
-			if (globalConfig != null && clientConfig != null) {
-				globalConfig.accept(new ClientConfigMerger(clientConfig));
-			}
-
-			if (clientConfig != null) {
-				clientConfig.accept(new ClientConfigValidator());
-			}
-
-			m_config = clientConfig;
-		} catch (Exception e) {
-			throw new InitializationException(e.getMessage(), e);
-		}
-   }
 }

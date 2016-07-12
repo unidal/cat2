@@ -1,11 +1,13 @@
 package org.unidal.cat.spi.remote;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.dianping.cat.Cat;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -69,17 +71,21 @@ public class DefaultRemoteContext implements RemoteContext {
 
 			sb.append('?');
 
-			for (Map.Entry<String, String> e : m_properties.entrySet()) {
-				String key = urlEncode(e.getKey());
-				String value = urlEncode(e.getValue());
+			try {
+				for (Map.Entry<String, String> e : m_properties.entrySet()) {
+					String key = URLEncoder.encode(e.getKey(), "UTF-8");
+					String value = URLEncoder.encode(e.getValue(), "UTF-8");
 
-				if (first) {
-					first = false;
-				} else {
-					sb.append('&');
+					if (first) {
+						first = false;
+					} else {
+						sb.append('&');
+					}
+
+					sb.append(key).append('=').append(value);
 				}
-
-				sb.append(key).append('=').append(value);
+			} catch (UnsupportedEncodingException e) {
+				Cat.logError(e);
 			}
 		}
 
@@ -187,35 +193,5 @@ public class DefaultRemoteContext implements RemoteContext {
 	@Override
 	public String toString() {
 		return buildURL("");
-	}
-
-	private String urlEncode(String str) {
-		if (str == null) {
-			return null;
-		}
-
-		byte[] ba;
-
-		try {
-			ba = str.getBytes("utf-8");
-		} catch (UnsupportedEncodingException e) {
-			ba = str.getBytes();
-		}
-
-		StringBuilder sb = new StringBuilder(ba.length + 16);
-
-		for (int i = 0; i < ba.length; i++) {
-			byte b = ba[i];
-
-			if (b == 0x20) {
-				sb.append('+');
-			} else if (b < 0x30 || b > 0x7E || !Character.isLetterOrDigit(b)) {
-				sb.append('%').append(Integer.toHexString(b));
-			} else {
-				sb.append((char) b);
-			}
-		}
-
-		return sb.toString();
 	}
 }

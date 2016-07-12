@@ -11,7 +11,7 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = ReportProvider.class)
 public class DefaultReportProvider<T extends Report> implements ReportProvider<T> {
 	@Inject(RecentReportProvider.ID)
-	private ReportProvider<T> m_rencent;
+	private ReportProvider<T> m_recent;
 
 	@Inject(HistoricalReportProvider.ID)
 	private ReportProvider<T> m_historical;
@@ -26,7 +26,7 @@ public class DefaultReportProvider<T extends Report> implements ReportProvider<T
 		if (m_historical.isEligible(ctx, delegate)) {
 			return m_historical.getReport(ctx, delegate);
 		} else {
-			return m_rencent.getReport(ctx, delegate);
+			return m_recent.getReport(ctx, delegate);
 		}
 	}
 }

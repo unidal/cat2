@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -151,10 +152,16 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 
 		report.addIp(tree.getIpAddress());
 
-		if (message instanceof Transaction) {
+        // ctrip yj.huang Utilize the transaction index to improve performance.
+        if (tree instanceof DefaultMessageTree) {
+            for (Transaction transaction : ((DefaultMessageTree)tree).getTransactions()) {
+                processTransaction(report, tree, transaction,false);
+            }
+        }
+        else if (message instanceof Transaction) {
 			Transaction root = (Transaction) message;
 
-			processTransaction(report, tree, root);
+			processTransaction(report, tree, root, true);
 		}
 	}
 
@@ -173,7 +180,7 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 		}
 
 		Duration duration = name.findOrCreateDuration(dk);
-		Range range = name.findOrCreateRange(min);
+		Range range = findOrCreateRange(name.getRanges(), min);
 
 		duration.incCount();
 		range.incCount();
@@ -185,7 +192,7 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 		range.setSum(range.getSum() + d);
 	}
 
-	protected void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
+	protected void processTransaction(TransactionReport report, MessageTree tree, Transaction t, boolean recursive) {
 		String type = t.getType();
 		String name = t.getName();
 
@@ -205,11 +212,13 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 
 			List<Message> children = t.getChildren();
 
-			for (Message child : children) {
-				if (child instanceof Transaction) {
-					processTransaction(report, tree, (Transaction) child);
-				}
-			}
+            if (recursive) {
+                for (Message child : children) {
+                    if (child instanceof Transaction) {
+                        processTransaction(report, tree, (Transaction) child, recursive);
+                    }
+                }
+            }
 		}
 	}
 
@@ -262,7 +271,7 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 	}
 
 	private void processTypeRange(Transaction t, TransactionType type, int min, double d) {
-		Range2 range = type.findOrCreateRange2(min);
+		Range2 range = findOrCreateRange2(type.getRange2s(), min);
 
 		if (!t.isSuccess()) {
 			range.incFails();
@@ -290,5 +299,34 @@ public class TransactionAnalyzer extends AbstractMessageAnalyzer<TransactionRepo
 
 		return report;
 	}
+
+    private Range findOrCreateRange(List<Range> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range(i));
+                    }
+                }
+            }
+        }
+        Range range = ranges.get(min);
+        return range;
+    }
+
+    private Range2 findOrCreateRange2(List<Range2> ranges, int min) {
+        if (min > ranges.size() - 1) {
+            synchronized (ranges) {
+                if (min > ranges.size() - 1) {
+                    for (int i = ranges.size(); i < 60; i++) {
+                        ranges.add(new Range2(i));
+                    }
+                }
+            }
+        }
+        Range2 range = ranges.get(min);
+        return range;
+    }
+
 
 }

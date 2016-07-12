@@ -11,13 +11,15 @@ final class CatDatabaseConfigurator extends AbstractJdbcResourceConfigurator {
    public List<Component> defineComponents() {
       List<Component> all = new ArrayList<Component>();
 
-      // all.add(defineJdbcDataSourceComponent("cat", "com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/cat", "root", "***", "<![CDATA[useUnicode=true&autoReconnect=true]]>"));
 
       defineSimpleTableProviderComponents(all, "cat", com.dianping.cat.core.dal._INDEX.getEntityClasses());
       defineDaoComponents(all, com.dianping.cat.core.dal._INDEX.getDaoClasses());
 
       defineSimpleTableProviderComponents(all, "cat", com.dianping.cat.core.config._INDEX.getEntityClasses());
       defineDaoComponents(all, com.dianping.cat.core.config._INDEX.getDaoClasses());
+
+      defineSimpleTableProviderComponents(all, "cat", org.unidal.cat.dal.report._INDEX.getEntityClasses());
+      defineDaoComponents(all, org.unidal.cat.dal.report._INDEX.getDaoClasses());
 
       return all;
    }

@@ -8,22 +8,28 @@ import com.dianping.cat.Cat;
 
 @RunWith(JUnit4.class)
 public class TransactionTest {
+    private final int ITER = 100;
+
 	@Test
-	public void testNormal() {
-		Transaction t = Cat.getProducer().newTransaction("URL", "MyPage");
+	public void testNormal() throws InterruptedException {
+        for (int i = 0; i < ITER; i++) {
+            Transaction t = Cat.getProducer().newTransaction("URL", "MyPage");
 
-		try {
-			// do your business here
-			t.addData("k1", "v1");
-			t.addData("k2", "v2");
-			t.addData("k3", "v3");
-			Thread.sleep(30);
+            try {
+                Cat.logEvent("URL", "MyPage");
+                // do your business here
+                t.addData("k1", "v1");
+                t.addData("k2", "v2");
+                t.addData("k3", "v3");
+                Thread.sleep(3);
 
-			t.setStatus(Message.SUCCESS);
-		} catch (Exception e) {
-			t.setStatus(e);
-		} finally {
-			t.complete();
-		}
+                t.setStatus(Message.SUCCESS);
+            } catch (Exception e) {
+                t.setStatus(e);
+            } finally {
+                t.complete();
+            }
+        }
+        Thread.sleep(1000);
 	}
 }

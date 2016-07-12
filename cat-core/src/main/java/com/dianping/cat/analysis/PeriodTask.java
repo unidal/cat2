@@ -41,16 +41,20 @@ public class PeriodTask implements Task, LogEnabled {
 	}
 
 	public boolean enqueue(MessageTree tree) {
-		boolean result = m_queue.offer(tree);
+        if (m_analyzer.isEligible(tree)){
+            boolean result = m_queue.offer(tree);
 
-		if (!result) { // trace queue overflow
-			m_queueOverflow++;
+            if (!result) { // trace queue overflow
+                m_queueOverflow++;
 
-			if (m_queueOverflow % (10 * CatConstants.ERROR_COUNT) == 0) {
-				m_logger.warn(m_analyzer.getClass().getSimpleName() + " queue overflow number " + m_queueOverflow);
-			}
-		}
-		return result;
+                if (m_queueOverflow % (10 * CatConstants.ERROR_COUNT) == 0) {
+                    m_logger.warn(m_analyzer.getClass().getSimpleName() + " queue overflow number " + m_queueOverflow);
+                }
+            }
+            return result;
+        } else {
+            return true;
+        }
 	}
 
 	public void finish() {

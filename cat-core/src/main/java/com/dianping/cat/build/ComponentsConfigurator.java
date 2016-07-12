@@ -3,18 +3,16 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.config.internal.DBConfigManager;
 import org.unidal.dal.jdbc.configuration.AbstractJdbcResourceConfigurator;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.CatCoreModule;
 import com.dianping.cat.analysis.DefaultMessageAnalyzerManager;
-import com.dianping.cat.analysis.DefaultMessageHandler;
 import com.dianping.cat.analysis.MessageAnalyzerManager;
 import com.dianping.cat.analysis.MessageConsumer;
-import com.dianping.cat.analysis.MessageHandler;
 import com.dianping.cat.analysis.RealtimeConsumer;
-import com.dianping.cat.analysis.TcpSocketReceiver;
 import com.dianping.cat.config.app.AppComparisonConfigManager;
 import com.dianping.cat.config.app.AppConfigManager;
 import com.dianping.cat.config.app.AppSpeedConfigManager;
@@ -37,11 +35,10 @@ import com.dianping.cat.core.dal.HostinfoDao;
 import com.dianping.cat.core.dal.TaskDao;
 import com.dianping.cat.message.DefaultPathBuilder;
 import com.dianping.cat.message.PathBuilder;
-import com.dianping.cat.message.spi.MessageCodec;
-import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 import com.dianping.cat.report.DomainValidator;
 import com.dianping.cat.service.HostinfoService;
 import com.dianping.cat.service.IpService;
+import com.dianping.cat.service.ProjectService;
 import com.dianping.cat.statistic.ServerStatisticManager;
 import com.dianping.cat.task.TaskManager;
 
@@ -62,6 +59,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 		all.add(C(ServerConfigManager.class));
 		all.add(C(HostinfoService.class).req(HostinfoDao.class, ServerConfigManager.class));
 		all.add(C(IpService.class));
+		all.add(A(ProjectService.class));
+		all.add(A(DBConfigManager.class));
 		all.add(C(TaskManager.class).req(TaskDao.class));
 		all.add(C(ServerStatisticManager.class));
 		all.add(C(DomainValidator.class));
@@ -71,11 +70,6 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 		all.add(C(PathBuilder.class, DefaultPathBuilder.class));
 
 		all.add(C(MessageAnalyzerManager.class, DefaultMessageAnalyzerManager.class));
-
-		all.add(C(TcpSocketReceiver.class).req(ServerConfigManager.class).req(ServerStatisticManager.class)
-		      .req(MessageCodec.class, PlainTextMessageCodec.ID).req(MessageHandler.class));
-
-		all.add(C(MessageHandler.class, DefaultMessageHandler.class));
 
 		all.add(C(AggregationHandler.class, DefaultAggregationHandler.class));
 
@@ -102,10 +96,10 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		// database
 		all.add(defineJdbcDataSourceConfigurationManagerComponent("/data/appdatas/cat/datasources.xml"));
-		// all.add(C(JdbcDataSourceDescriptorManager.class) //
-		// .config(E("datasourceFile").value("/data/appdatas/cat/datasources.xml")));
 
-		all.addAll(new CatCoreDatabaseConfigurator().defineComponents());
+		all.addAll(new CatDatabaseConfigurator().defineComponents());
+		all.addAll(new AppDatabaseConfigurator().defineComponents());
+
 		all.addAll(new CodecComponentConfigurator().defineComponents());
 		all.addAll(new StorageComponentConfigurator().defineComponents());
 

@@ -48,11 +48,21 @@
 		graphPieChart(document.getElementById('distributionChart'), distributionChartMeta);
 	}
 </script>
-<c:if test="${payload.ipAddress eq 'All' }">
+<c:if test="${not empty model.distributionDetails}">
 <table  class='table table-hover table-striped table-condensed '  style="width:60%;">
 	<tr><td colspan="8"><h5 style="text-align:center"  class='text-center text-info'>分布统计</h5></td></tr>
 	<tr>
-		<th class="right">Ip</th>
+		<c:choose>
+			<c:when test="${payload.ipAddress eq 'All' && payload.domain eq 'All'}">
+				<th class="right">Bu</th>
+			</c:when>
+			<c:when test="${payload.ipAddress eq 'All'}">
+				<th class="right">Ip</th>
+			</c:when>
+			<c:otherwise>
+				<th class="right">App</th>
+			</c:otherwise>
+		</c:choose>
 		<th class="right">Total</th>
 		<th class="right">Failure</th>
 		<th class="right">Failure%</th>
@@ -75,6 +85,8 @@
 	</c:forEach>
 </table>
 <br>
-<div id="distributionChart" class="pieChart"></div>
-<div id ="distributionChartMeta" style="display:none">${model.distributionChart}</div>
+	<c:if test="${payload.ipAddress eq 'All' }">
+		<div id="distributionChart" class="pieChart"></div>
+		<div id ="distributionChartMeta" style="display:none">${model.distributionChart}</div>
+	</c:if>
 </c:if>

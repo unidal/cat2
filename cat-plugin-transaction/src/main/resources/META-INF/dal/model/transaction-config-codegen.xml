@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="transaction-config" root="true">
+    <entity-ref name="all" type="list" names="alls" />
+    <entity-ref name="limit" type="list" names="limits" />
+    <entity-ref name="ignore" type="list" names="ignores" />
+  </entity>
+  <entity name="all">
+    <attribute name="type" value-type="String" />
+    <attribute name="name" value-type="String" />
+  </entity>
+  <entity name="limit">
+    <attribute name="domain" value-type="String" />
+    <attribute name="type" value-type="String" />
+    <attribute name="max-name-entries" value-type="int" />
+  </entity>
+  <entity name="ignore">
+    <attribute name="domain" value-type="String" />
+    <attribute name="type" value-type="String" />
+    <attribute name="name" value-type="String" />
+  </entity>
+</model>
+

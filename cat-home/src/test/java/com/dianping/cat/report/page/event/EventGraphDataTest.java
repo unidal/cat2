@@ -11,6 +11,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.unidal.cat.plugin.event.page.HistoryGraphs;
 import org.unidal.helper.Files;
 
 import com.dianping.cat.core.dal.Graph;

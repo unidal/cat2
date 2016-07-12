@@ -8,13 +8,6 @@
   </entity>
   <entity name="machine">
     <attribute name="ip" value-type="String" />
-    <entity-ref name="entry" type="list" names="entries" />
-  </entity>
-  <entity name="entry">
-    <attribute name="type" value-type="String" />
-    <attribute name="status" value-type="String" />
-    <entity-ref name="duration" type="list" names="durations" />
-    <entity-ref name="thread" type="list" names="threads" />
   </entity>
   <entity name="thread">
     <attribute name="group-name" value-type="String" />

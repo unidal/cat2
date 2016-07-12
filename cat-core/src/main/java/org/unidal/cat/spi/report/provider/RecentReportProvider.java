@@ -84,14 +84,18 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 								reports.add(report);
 							}
 						} catch (InterruptedException e) {
+                            e.printStackTrace();
 							break;
 						} catch (Exception e) {
-							// ignore it
+							e.printStackTrace();
 						}
-					}
+ 					}
+                    else {
+                        System.out.println("Future is not completed on timeout. " + future);
+                    }
 				}
 			} catch (InterruptedException e) {
-				// ignore it
+				e.printStackTrace();
 			}
 
 			if (reports.isEmpty()) {

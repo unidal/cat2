@@ -1,13 +1,5 @@
 package com.dianping.cat.consumer.problem;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.lookup.annotation.Inject;
-
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.configuration.server.entity.Domain;
 import com.dianping.cat.consumer.problem.model.entity.Entity;
@@ -15,8 +7,18 @@ import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageTree;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
-public class LongExecutionProblemHandler extends ProblemHandler implements Initializable {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@Named(type = ProblemHandler.class, value = LongExecutionProblemHandler.ID)
+public class LongExecutionProblemHandler extends AbstractProblemHandler implements Initializable {
 	public static final String ID = "long-execution";
 
 	@Inject
@@ -65,10 +67,15 @@ public class LongExecutionProblemHandler extends ProblemHandler implements Initi
 	public void handle(Machine machine, MessageTree tree) {
 		Message message = tree.getMessage();
 
-		if (message instanceof Transaction) {
+		// ctrip yj.huang Utilize the transaction/event/heartbeat index to improve performance.
+		if (tree instanceof DefaultMessageTree) {
+			for (Transaction t : ((DefaultMessageTree) tree).getTransactions()) {
+				processTransaction(machine, t, tree, false);
+			}
+		} else if (message instanceof Transaction) {
 			Transaction transaction = (Transaction) message;
 
-			processTransaction(machine, transaction, tree);
+			processTransaction(machine, transaction, tree, true);
 		}
 	}
 
@@ -164,7 +171,7 @@ public class LongExecutionProblemHandler extends ProblemHandler implements Initi
 		}
 	}
 
-	private void processTransaction(Machine machine, Transaction transaction, MessageTree tree) {
+	private void processTransaction(Machine machine, Transaction transaction, MessageTree tree, boolean recursive) {
 		String type = transaction.getType();
 
 		if (type.startsWith("Cache.")) {
@@ -181,9 +188,11 @@ public class LongExecutionProblemHandler extends ProblemHandler implements Initi
 
 		List<Message> messageList = transaction.getChildren();
 
-		for (Message message : messageList) {
-			if (message instanceof Transaction) {
-				processTransaction(machine, (Transaction) message, tree);
+		if (recursive) {
+			for (Message message : messageList) {
+				if (message instanceof Transaction) {
+					processTransaction(machine, (Transaction) message, tree, true);
+				}
 			}
 		}
 	}

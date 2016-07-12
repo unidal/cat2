@@ -86,7 +86,7 @@ public class EventGraphCreator {
 				Map<String, EventName> names = eventType.getNames();
 				for (Entry<String, EventName> nameEntry : names.entrySet()) {
 					EventName eventName = nameEntry.getValue();
-					List<Range> ranges = new ArrayList<Range>(eventName.getRanges().values());
+					List<Range> ranges = eventName.getRanges();
 					detailBuilder.append(eventType.getId());
 					detailBuilder.append('\t');
 					detailBuilder.append(eventName.getId());

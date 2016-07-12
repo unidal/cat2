@@ -2,6 +2,7 @@ package com.dianping.cat.consumer.storage;
 
 import java.util.List;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
@@ -75,10 +76,16 @@ public class StorageAnalyzer extends AbstractMessageAnalyzer<StorageReport> impl
 	protected void process(MessageTree tree) {
 		Message message = tree.getMessage();
 
-		if (message instanceof Transaction) {
+        // ctirp yj.huang Utilize the transaction index to improve performance
+        if (tree instanceof DefaultMessageTree) {
+            for (Transaction t: ((DefaultMessageTree)tree).getTransactions()) {
+                processTransaction(tree, t, false);
+            }
+        }
+        else if (message instanceof Transaction) {
 			Transaction root = (Transaction) message;
 
-			processTransaction(tree, root);
+			processTransaction(tree, root, true);
 		}
 
 	}
@@ -150,7 +157,7 @@ public class StorageAnalyzer extends AbstractMessageAnalyzer<StorageReport> impl
 		}
 	}
 
-	private void processTransaction(MessageTree tree, Transaction t) {
+	private void processTransaction(MessageTree tree, Transaction t, boolean recursive) {
 		String type = t.getType();
 
 		if (m_serverConfigManager.isSQLTransaction(type)) {
@@ -161,11 +168,13 @@ public class StorageAnalyzer extends AbstractMessageAnalyzer<StorageReport> impl
 
 		List<Message> children = t.getChildren();
 
-		for (Message child : children) {
-			if (child instanceof Transaction) {
-				processTransaction(tree, (Transaction) child);
-			}
-		}
+        if (recursive) {
+            for (Message child : children) {
+                if (child instanceof Transaction) {
+                    processTransaction(tree, (Transaction) child, recursive);
+                }
+            }
+        }
 	}
 
 	private String queryCacheId(String name) {

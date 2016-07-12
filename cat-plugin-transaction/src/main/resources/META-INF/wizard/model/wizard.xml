@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="com.dianping.cat.plugin.transaction">
+   <model package="org.unidal.cat.plugin.transaction.config" name="transaction-config">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/transaction/transaction-config.xml</sample-model>
+   </model>
+</wizard>

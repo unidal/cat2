@@ -1,8 +1,6 @@
 package org.unidal.cat.message.storage.internals;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -24,7 +22,6 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.Cat;
 import com.dianping.cat.CatConstants;
 import com.dianping.cat.config.server.ServerConfigManager;
-import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.statistic.ServerStatisticManager;
@@ -57,20 +54,9 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 
 	@Override
 	public void awaitTermination(int hour) throws InterruptedException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-		String date = sdf.format(new Date(hour * TimeHelper.ONE_HOUR));
-
-		m_logger.info("starting close message processor " + date);
 		closeMessageProcessor();
-		m_logger.info("end close dumper processor " + date);
-
-		m_logger.info("starting close dumper manager " + date);
 		m_blockDumperManager.close(hour);
-		m_logger.info("end close dumper manager " + date);
-
-		m_logger.info("starting close bucket manager " + date);
 		m_bucketManager.closeBuckets(hour);
-		m_logger.info("end close bucket manager " + date);
 	}
 
 	private void closeMessageProcessor() throws InterruptedException {

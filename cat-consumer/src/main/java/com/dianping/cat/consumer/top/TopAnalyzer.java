@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.helper.Splitters;
@@ -72,7 +73,13 @@ public class TopAnalyzer extends AbstractMessageAnalyzer<TopReport> implements L
 			TopReport report = m_reportManager.getHourlyReport(getStartTime(), Constants.CAT, true);
 			Message message = tree.getMessage();
 
-			if (message instanceof Transaction) {
+            // ctrip yj.huang Utilize the transaction index to improve performance.
+            if (tree instanceof DefaultMessageTree) {
+                for (Event event : ((DefaultMessageTree)tree).getEvents()) {
+                    processEvent(report, tree, event);
+                }
+            }
+            else if (message instanceof Transaction) {
 				processTransaction(report, tree, (Transaction) message);
 			} else if (message instanceof Event) {
 				processEvent(report, tree, (Event) message);

@@ -1,12 +1,7 @@
 package com.dianping.cat.consumer.transaction;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import com.dianping.cat.consumer.transaction.model.entity.*;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultMerger;
 
 public class TransactionReportMerger extends DefaultMerger {
@@ -47,6 +42,7 @@ public class TransactionReportMerger extends DefaultMerger {
 
 		if (other.getMax() > old.getMax()) {
 			old.setMax(other.getMax());
+			old.setSlowestMessageUrl(other.getSlowestMessageUrl());
 		}
 
 		old.setSum(old.getSum() + other.getSum());
@@ -113,6 +109,7 @@ public class TransactionReportMerger extends DefaultMerger {
 
 		if (other.getMax() > old.getMax()) {
 			old.setMax(other.getMax());
+			old.setSlowestMessageUrl(other.getSlowestMessageUrl());
 		}
 
 		old.setSum(old.getSum() + other.getSum());
@@ -150,5 +147,27 @@ public class TransactionReportMerger extends DefaultMerger {
 		super.visitTransactionReport(transactionReport);
 		getTransactionReport().getDomainNames().addAll(transactionReport.getDomainNames());
 		getTransactionReport().getIps().addAll(transactionReport.getIps());
+	}
+
+	@Override
+	public void mergeDomainStat(DomainStat to, DomainStat from){
+		to.setTotalCount(from.getTotalCount() + to.getTotalCount());
+		to.setFailCount(from.getFailCount() + to.getFailCount());
+
+		if (from.getMin() < to.getMin()) {
+			to.setMin(from.getMin());
+		}
+
+		if (from.getMax() > to.getMax()) {
+			to.setMax(from.getMax());
+		}
+
+		to.setSum(to.getSum() + from.getSum());
+		to.setSum2(to.getSum2() + from.getSum2());
+		to.setTps(to.getTps() + from.getTps());
+
+		if (to.getTotalCount() > 0) {
+			to.setAvg(to.getSum() / to.getTotalCount());
+		}
 	}
 }

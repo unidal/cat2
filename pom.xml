@@ -8,6 +8,17 @@
 	<name>CAT :: Parent</name>
 	<description>Central Application Tracking</description>
 	<packaging>pom</packaging>
+	<modules>
+		<module>cat-client</module>
+		<module>cat-core</module>
+		<module>cat-consumer</module>
+		<module>cat-hadoop</module>
+		<module>cat-home</module>
+		<module>cat-maven-plugin</module>
+		<module>cat-plugin-transaction</module>
+		<module>cat-plugin-event</module>
+		<module>cat-plugin-problem</module>
+	</modules>
 	<organization>
 		<name>Unidal</name>
 		<url>http://unidal.org</url>
@@ -47,20 +58,12 @@
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
 	</properties>
-	<modules>
-		<module>cat-client</module>
-		<module>cat-core</module>
-		<module>cat-consumer</module>
-		<module>cat-hadoop</module>
-		<module>cat-home</module>
-		<module>cat-maven-plugin</module>
-	</modules>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.unidal</groupId>
 				<artifactId>frameworks-bom</artifactId>
-				<version>2.4.0</version>
+				<version>2.4.2</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -86,9 +89,20 @@
 			</dependency>
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
-				<artifactId>cat-consumer-advanced</artifactId>
+				<artifactId>cat-plugin-transaction</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.dianping.cat</groupId>
+				<artifactId>cat-plugin-event</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dianping.cat</groupId>
+				<artifactId>cat-plugin-problem</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.unidal.webres</groupId>
 				<artifactId>WebResServer</artifactId>
@@ -153,7 +167,7 @@
 			<dependency>
 				<groupId>com.h2database</groupId>
 				<artifactId>h2</artifactId>
-				<version>1.4.186</version>
+				<version>1.4.192</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.hadoop</groupId>
@@ -251,7 +265,7 @@
 				<plugin>
 					<groupId>org.unidal.maven.plugins</groupId>
 					<artifactId>codegen-maven-plugin</artifactId>
-					<version>2.4.0</version>
+					<version>2.4.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.unidal.maven.plugins</groupId>
