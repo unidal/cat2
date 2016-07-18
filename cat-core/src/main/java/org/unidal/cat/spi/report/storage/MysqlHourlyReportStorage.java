@@ -64,7 +64,37 @@ public class MysqlHourlyReportStorage<T extends Report> implements ReportStorage
 
 			return reports;
 		} catch (DalException e) {
-			throw new IOException(String.format("Unable to load hourly reports(%s) from MySQL!", delegate.getName()), e);
+			throw new IOException(String.format("Unable to load hourly reports(%s) from MySQL! " + e, delegate.getName()),
+			      e);
+		}
+	}
+
+	@Override
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException {
+		try {
+			List<HourlyReportDo> hrs = m_dao.findAllByDomainAndNameAndDateRange(domain, delegate.getName(), startTime, endTime,
+			      HourlyReportEntity.READSET_FULL);
+			List<T> reports = new ArrayList<T>(hrs.size());
+
+			for (HourlyReportDo hr : hrs) {
+				try {
+					HourlyReportContentDo content = m_contentDao
+					      .findByPK(hr.getId(), HourlyReportContentEntity.READSET_FULL);
+					InputStream in = new ByteArrayInputStream(content.getContent());
+					InputStream cin = m_compression.decompress(in);
+					T report = delegate.readStream(cin);
+
+					reports.add(report);
+				} catch (Exception e) {
+					Cat.logError(e);
+				}
+			}
+
+			return reports;
+		} catch (DalException e) {
+			throw new IOException(String.format("Unable to load hourly reports(%s) from MySQL! " + e, delegate.getName()),
+			      e);
 		}
 	}
 

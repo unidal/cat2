@@ -70,6 +70,12 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 		}
 
 		@Override
+      public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
+            ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
+	      throw new UnsupportedOperationException("Not implemented yet!");
+      }
+
+		@Override
 		public void store(ReportDelegate<TransactionReport> delegate, ReportPeriod period, TransactionReport report,
 		      int index, ReportStoragePolicy policy) throws IOException {
 			String key = period.getName() + "-" + report.getDomain() + "-" + period.format(report.getStartTime());

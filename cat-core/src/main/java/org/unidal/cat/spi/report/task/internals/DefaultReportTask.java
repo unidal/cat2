@@ -66,4 +66,11 @@ public class DefaultReportTask implements ReportTask {
 	public String toString() {
 		return m_task.toString();
 	}
+
+	@Override
+	public Date getTargetEndTime() {
+		ReportPeriod period = getTargetPeriod();
+
+		return period.getNextStartTime(m_task.getReportStartTime());
+	}
 }

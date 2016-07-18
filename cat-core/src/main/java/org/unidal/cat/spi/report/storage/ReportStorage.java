@@ -15,4 +15,7 @@ public interface ReportStorage<T extends Report> {
 
 	public List<T> loadAll(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException;
+
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException;
 }

@@ -27,6 +27,8 @@ import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+
 @Named(type = ReportStorage.class, value = MysqlHistoryReportStorage.ID)
 public class MysqlHistoryReportStorage<T extends Report> implements ReportStorage<T> {
 	public static final String ID = "mysql-history";
@@ -59,6 +61,35 @@ public class MysqlHistoryReportStorage<T extends Report> implements ReportStorag
 		} catch (DalException e) {
 			throw new IOException(String.format("Unable to load %s reports(%s) from MySQL!", period.getName(),
 			      delegate.getName()), e);
+		}
+	}
+
+	@Override
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException {
+		try {
+			List<HistoryReportDo> hrs = m_dao.findAllByDomainAndTypeAndNameAndDateRange(domain, period.getId(),
+			      delegate.getName(), startTime, endTime, HistoryReportEntity.READSET_FULL);
+			List<T> reports = new ArrayList<T>(hrs.size());
+
+			for (HistoryReportDo hr : hrs) {
+				try {
+					HistoryReportContentDo content = m_contentDao.findByPK(hr.getId(),
+					      HistoryReportContentEntity.READSET_FULL);
+					InputStream in = new ByteArrayInputStream(content.getContent());
+					InputStream cin = m_compression.decompress(in);
+					T report = delegate.readStream(cin);
+
+					reports.add(report);
+				} catch (Exception e) {
+					Cat.logError(e);
+				}
+			}
+
+			return reports;
+		} catch (DalException e) {
+			throw new IOException(String.format("Unable to load hourly reports(%s) from MySQL! " + e, delegate.getName()),
+			      e);
 		}
 	}
 

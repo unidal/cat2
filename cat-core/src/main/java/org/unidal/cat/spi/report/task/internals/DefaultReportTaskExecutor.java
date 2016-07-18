@@ -50,10 +50,15 @@ public class DefaultReportTaskExecutor implements ReportTaskExecutor {
 		ReportTaskTracker tracker = m_trackerManager.open(task);
 
 		for (String domain : tracker.getDomains()) {
-			List<Report> reports = m_storage.loadAll(delegate, sourcePeriod, task.getTargetStartTime(), domain);
-			Report report = reducer.reduce(reports);
+			List<Report> reports = m_storage.loadAllByDateRange(delegate, sourcePeriod, task.getTargetStartTime(),
+			      task.getTargetEndTime(), domain);
 
-			m_storage.store(delegate, targetPeriod, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
+			if (reports.size() > 0) {
+				Report report = reducer.reduce(reports);
+
+				m_storage.store(delegate, targetPeriod, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
+			}
+
 			tracker.done(domain);
 		}
 

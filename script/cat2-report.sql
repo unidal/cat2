@@ -27,7 +27,7 @@ CREATE TABLE `history_report` (
   `start_time` timestamp NOT NULL COMMENT '报表开始时间,如：2016-07-03 00:00:00',
   `creation_date` datetime NOT NULL COMMENT '创建时间,如：2016-07-03 10:34:00',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UIDX_StartTime_Domain_Name` (`start_time`,`domain`,`name`)
+  UNIQUE KEY `UIDX_StartTime_Domain_Name_Type` (`start_time`,`domain`,`name`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用于存放实时历史报表信息';
 
 CREATE TABLE `history_report_content` (
