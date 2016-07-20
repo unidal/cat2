@@ -10,7 +10,7 @@
     <member name="creation-date" field="creation_date" value-type="Date" nullable="false" insert-expr="NOW()" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
-    <index name="UIDX_StartTime_Domain_Name" unique="true" members="start_time ASC, domain ASC, name ASC" />
+    <index name="UIDX_StartTime_Domain_Name_Type" unique="true" members="start_time ASC, domain ASC, name ASC, type ASC" />
     <readsets>
       <readset name="FULL" all="true" />
     </readsets>

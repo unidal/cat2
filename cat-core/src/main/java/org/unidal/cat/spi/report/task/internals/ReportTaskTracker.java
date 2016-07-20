@@ -1,7 +1,7 @@
 package org.unidal.cat.spi.report.task.internals;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
 import org.unidal.cat.spi.report.task.ReportTask;
 
@@ -10,7 +10,7 @@ public interface ReportTaskTracker {
 
 	public void done(String domain) throws IOException;
 
-	public List<String> getDomains();
+	public Set<String> getDomains();
 
 	public void open(ReportTask task) throws IOException;
 }

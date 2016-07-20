@@ -76,6 +76,7 @@ public class DefaultReportTaskConsumer implements ReportTaskConsumer {
 
 				TimeUnit.SECONDS.sleep(5);
 			}
+			
 		} catch (InterruptedException e) {
 			// ignore it
 		} finally {

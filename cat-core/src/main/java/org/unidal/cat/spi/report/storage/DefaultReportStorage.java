@@ -34,6 +34,16 @@ public class DefaultReportStorage<T extends Report> implements ReportStorage<T> 
 	}
 
 	@Override
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException {
+		if (m_configuration.isLocalMode()) {
+			return m_file.loadAllByDateRange(delegate, period, startTime, endTime, domain);
+		} else {
+			return m_mysql.loadAllByDateRange(delegate, period, startTime, endTime, domain);
+		}
+	}
+
+	@Override
 	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
 	      throws IOException {
 		m_file.store(delegate, period, report, index, policy);

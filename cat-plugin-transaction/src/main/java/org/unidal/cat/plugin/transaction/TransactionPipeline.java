@@ -28,9 +28,7 @@ public class TransactionPipeline extends AbstractPipeline {
    @Override
    protected void beforeCheckpoint() throws IOException {
       ReportManager<Report> manager = m_rmm.getReportManager(getName());
-
       ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
-
       List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
 
       if (reportMapList.size() > 0) {
@@ -41,7 +39,6 @@ public class TransactionPipeline extends AbstractPipeline {
          }
 
          Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
-
          Map<String, Report> map = reportMapList.get(0);
 
          map.put(Constants.ALL, allReport);

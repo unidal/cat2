@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,6 +66,12 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 			return reports;
 		}
 
+		@Override
+      public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
+            ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
+			throw new UnsupportedOperationException("Not implemented yet!");
+      }
+
 		private TransactionReport loadReport(ReportDelegate<TransactionReport> delegate, String resource)
 		      throws IOException {
 			InputStream in = getClass().getResourceAsStream("reducer/" + resource);
@@ -119,6 +127,11 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 		}
 
 		@Override
+      public Date getTargetEndTime() {
+	      return m_target.getNextStartTime(new Date());
+      }
+
+		@Override
 		public ReportPeriod getTargetPeriod() {
 			return m_target;
 		}
@@ -130,15 +143,14 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 	}
 
 	public static class MockReportTaskTracker implements ReportTaskTracker {
-		private List<String> m_domains = new ArrayList<String>();
+		private Set<String> m_domains = new LinkedHashSet<String>();
 
 		public MockReportTaskTracker() {
 			m_domains.add("cat");
 		}
 
 		@Override
-		public List<String> getDomains() {
-			return m_domains;
+		public void close() {
 		}
 
 		@Override
@@ -146,7 +158,8 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 		}
 
 		@Override
-		public void close() {
+		public Set<String> getDomains() {
+			return m_domains;
 		}
 
 		@Override

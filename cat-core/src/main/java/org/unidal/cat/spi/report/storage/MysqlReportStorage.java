@@ -33,6 +33,17 @@ public class MysqlReportStorage<T extends Report> implements ReportStorage<T> {
 	}
 
 	@Override
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException {
+		switch (period) {
+		case HOUR:
+			return m_hourlyStorage.loadAllByDateRange(delegate, period, startTime, endTime, domain);
+		default:
+			return m_historyStorage.loadAllByDateRange(delegate, period, startTime, endTime, domain);
+		}
+	}
+
+	@Override
 	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
 	      throws IOException {
 		if (!policy.forMySQL()) {

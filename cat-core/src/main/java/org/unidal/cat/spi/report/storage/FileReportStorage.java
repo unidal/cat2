@@ -111,6 +111,12 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 		}
 	}
 
+	@Override
+	public List<T> loadAllByDateRange(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, Date endTime,
+	      String domain) throws IOException {
+		throw new UnsupportedOperationException("Not implemented yet!");// TODO
+	}
+
 	private List<T> loadAllDaily(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)
 	      throws IOException {
 		List<T> reports = new ArrayList<T>(1);

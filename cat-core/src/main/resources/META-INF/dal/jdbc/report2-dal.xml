@@ -9,6 +9,15 @@
       </readset>
     </readsets>
     <query-defs>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[
+        INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE 
+           <FIELD name='ip'/> = ${ip},
+           <FIELD name='creation-date'/> = NOW()
+        ]]></statement>
+      </query>
       <query name="find-all-by-type-and-name-and-date-range" type="SELECT" multiple="true">
         <param name="type" />
         <param name="name" />
@@ -36,6 +45,34 @@
            AND <FIELD name='start-time'/> = ${start-time}
         ]]></statement>
       </query>
+      <query name="find-all-by-domain-and-type-and-name-and-date-range" type="SELECT" multiple="true">
+        <param name="domain" />
+        <param name="type" />
+        <param name="name" />
+        <param name="start-date" />
+        <param name="end-date" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='domain'/> = ${domain}
+           AND <FIELD name='type'/> = ${type}
+           AND <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+  <entity name="history-report-content" table="history_report_content" alias="hrc">
+    <query-defs>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[
+        INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE 
+           <FIELD name='content'/> = ${content},
+           <FIELD name='creation-date'/> = NOW()
+        ]]></statement>
+      </query>
     </query-defs>
   </entity>
   <entity name="hourly-report" table="hourly_report" alias="hr2">
@@ -47,6 +84,15 @@
       </readset>
     </readsets>
     <query-defs>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[
+        INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE 
+           <FIELD name='ip'/> = ${ip},
+           <FIELD name='creation-date'/> = NOW()
+        ]]></statement>
+      </query>
       <query name="find-all-by-name-and-date-range" type="SELECT" multiple="true">
         <param name="name" />
         <param name="start-date" />
@@ -68,6 +114,32 @@
         WHERE <FIELD name='domain'/> = ${domain}
            AND <FIELD name='name'/> = ${name}
            AND <FIELD name='start-time'/> = ${start-time}
+        ]]></statement>
+      </query>
+      <query name="find-all-by-domain-and-name-and-date-range" type="SELECT" multiple="true">
+        <param name="domain" />
+        <param name="name" />
+        <param name="start-date" />
+        <param name="end-date" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='domain'/> = ${domain}
+           AND <FIELD name='name'/> = ${name}
+           AND <FIELD name='start-time'/> BETWEEN ${start-date} AND ${end-date}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+  <entity name="hourly-report-content" table="hourly_report_content" alias="hrc2">
+    <query-defs>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[
+        INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)
+        ON DUPLICATE KEY UPDATE 
+           <FIELD name='content'/> = ${content},
+           <FIELD name='creation-date'/> = NOW()
         ]]></statement>
       </query>
     </query-defs>
