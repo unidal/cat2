@@ -438,6 +438,36 @@
 			<implementation>org.unidal.cat.spi.report.storage.FileReportStorage</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>file-hourly</role-hint>
+					<field-name>m_hourlyStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>file-history</role-hint>
+					<field-name>m_historyStorage</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+			<role-hint>file-hourly</role-hint>
+			<implementation>org.unidal.cat.spi.report.storage.FileHourlyReportStorage</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.service.CompressionService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+			<role-hint>file-history</role-hint>
+			<implementation>org.unidal.cat.spi.report.storage.FileHistoryReportStorage</implementation>
+			<requirements>
+				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
 				<requirement>
