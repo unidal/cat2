@@ -3,7 +3,12 @@ package org.unidal.cat.spi.remote;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -358,7 +363,7 @@ public class RemoteIntegrationTest extends JettyServer {
 	public static final class MockReportManager implements ReportManager<MockReport> {
 
 		@Override
-		public void doCheckpoint(int hour, int index, boolean atEnd) throws IOException {
+		public void doCheckpoint(int hour, int index) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
@@ -375,11 +380,6 @@ public class RemoteIntegrationTest extends JettyServer {
 		@Override
 		public List<MockReport> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
 			return Arrays.asList(new MockReport(period, startTime, domain));
-		}
-
-		@Override
-		public List<MockReport> getLocalFileReport(ReportPeriod period, Date startTime, String domain) throws IOException {
-			throw new UnsupportedOperationException();
 		}
 
 		@Override

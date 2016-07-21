@@ -418,17 +418,8 @@
 			<implementation>org.unidal.cat.spi.report.storage.DefaultReportStorage</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 					<role-hint>mysql</role-hint>
-					<field-name>m_mysql</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<role-hint>file</role-hint>
-					<field-name>m_file</field-name>
 				</requirement>
 			</requirements>
 		</component>

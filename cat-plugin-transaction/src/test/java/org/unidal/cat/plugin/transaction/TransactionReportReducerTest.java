@@ -12,7 +12,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.cat.spi.report.task.ReportTask;
@@ -67,10 +66,10 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 		}
 
 		@Override
-      public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
-            ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
+		public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
+		      ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
 			throw new UnsupportedOperationException("Not implemented yet!");
-      }
+		}
 
 		private TransactionReport loadReport(ReportDelegate<TransactionReport> delegate, String resource)
 		      throws IOException {
@@ -88,7 +87,7 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 
 		@Override
 		public void store(ReportDelegate<TransactionReport> delegate, ReportPeriod period, TransactionReport report,
-		      int index, ReportStoragePolicy policy) throws IOException {
+		      int index) throws IOException {
 			TransactionReport expected = loadReport(delegate, period.getName() + ".xml");
 
 			Assert.assertEquals(String.format("TransactionReport(%s) mismatched!", period), expected.toString(),
@@ -127,9 +126,9 @@ public class TransactionReportReducerTest extends ComponentTestCase {
 		}
 
 		@Override
-      public Date getTargetEndTime() {
-	      return m_target.getNextStartTime(new Date());
-      }
+		public Date getTargetEndTime() {
+			return m_target.getNextStartTime(new Date());
+		}
 
 		@Override
 		public ReportPeriod getTargetPeriod() {

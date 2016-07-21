@@ -16,7 +16,6 @@ import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.helper.Scanners;
 import org.unidal.helper.Scanners.FileMatcher;
@@ -145,7 +144,7 @@ public class FileHourlyReportStorage<T extends Report> implements ReportStorage<
 	}
 
 	@Override
-	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
+	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index)
 	      throws IOException {
 		File file = getReportFile(delegate, period, report.getStartTime(), report.getDomain(), index);
 

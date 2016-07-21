@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -44,18 +43,14 @@ public class FileReportStorage<T extends Report> implements ReportStorage<T> {
 	}
 
 	@Override
-	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
+	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index)
 	      throws IOException {
-		if (!policy.forMySQL()) {
-			return;
-		}
-
 		switch (period) {
 		case HOUR:
-			m_hourlyStorage.store(delegate, period, report, index, policy);
+			m_hourlyStorage.store(delegate, period, report, index);
 			break;
 		default:
-			m_historyStorage.store(delegate, period, report, index, policy);
+			m_historyStorage.store(delegate, period, report, index);
 			break;
 		}
 	}

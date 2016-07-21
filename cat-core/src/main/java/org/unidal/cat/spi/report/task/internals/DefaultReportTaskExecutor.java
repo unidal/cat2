@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportReducer;
 import org.unidal.cat.spi.report.ReportReducerManager;
@@ -56,14 +55,13 @@ public class DefaultReportTaskExecutor implements ReportTaskExecutor {
 			if (reports.size() > 0) {
 				Report report = reducer.reduce(reports);
 
-				m_storage.store(delegate, targetPeriod, report, 0, ReportStoragePolicy.FILE_AND_MYSQL);
+				m_storage.store(delegate, targetPeriod, report, 0);
 			}
 
 			tracker.done(domain);
 		}
 
 		m_trackerManager.close(tracker);
-
 		produceNextTasks(task);
 	}
 

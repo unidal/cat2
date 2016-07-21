@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.cat.spi.report.storage.ReportStorage;
@@ -48,7 +47,7 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 			r1.addIp("ip" + i);
 			r2.addIp("IP" + i);
 
-			rm.doCheckpoint(hour, i, false);
+			rm.doCheckpoint(hour, i);
 		}
 
 		List<TransactionReport> reports = storage.loadAll(delegate, ReportPeriod.HOUR, startTime, "test1");
@@ -70,14 +69,14 @@ public class TransactionReportManagerTest extends ComponentTestCase {
 		}
 
 		@Override
-      public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
-            ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
-	      throw new UnsupportedOperationException("Not implemented yet!");
-      }
+		public List<TransactionReport> loadAllByDateRange(ReportDelegate<TransactionReport> delegate,
+		      ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
+			throw new UnsupportedOperationException("Not implemented yet!");
+		}
 
 		@Override
 		public void store(ReportDelegate<TransactionReport> delegate, ReportPeriod period, TransactionReport report,
-		      int index, ReportStoragePolicy policy) throws IOException {
+		      int index) throws IOException {
 			String key = period.getName() + "-" + report.getDomain() + "-" + period.format(report.getStartTime());
 			List<TransactionReport> reports = m_map.get(key);
 

@@ -6,11 +6,10 @@ import java.util.List;
 
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 
 public interface ReportStorage<T extends Report> {
-	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
+	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index)
 	      throws IOException;
 
 	public List<T> loadAll(ReportDelegate<T> delegate, ReportPeriod period, Date startTime, String domain)

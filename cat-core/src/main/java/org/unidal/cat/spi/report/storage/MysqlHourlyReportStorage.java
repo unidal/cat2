@@ -18,7 +18,6 @@ import org.unidal.cat.dal.report.HourlyReportEntity;
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Inets;
@@ -99,7 +98,7 @@ public class MysqlHourlyReportStorage<T extends Report> implements ReportStorage
 	}
 
 	@Override
-	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index, ReportStoragePolicy policy)
+	public void store(ReportDelegate<T> delegate, ReportPeriod period, T report, int index)
 	      throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream(2 * 1024 * 1024);
 		OutputStream cout = m_compression.compress(out);
