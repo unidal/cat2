@@ -31,7 +31,7 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<field-name>m_storage</field-name>
+					<field-name>m_mysqlStorage</field-name>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>

@@ -54,6 +54,8 @@ import org.unidal.cat.spi.report.provider.DefaultReportProvider;
 import org.unidal.cat.spi.report.provider.HistoricalReportProvider;
 import org.unidal.cat.spi.report.provider.RecentReportProvider;
 import org.unidal.cat.spi.report.storage.DefaultReportStorage;
+import org.unidal.cat.spi.report.storage.FileHistoryReportStorage;
+import org.unidal.cat.spi.report.storage.FileHourlyReportStorage;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
 import org.unidal.cat.spi.report.storage.MysqlHistoryReportStorage;
 import org.unidal.cat.spi.report.storage.MysqlHourlyReportStorage;
@@ -154,6 +156,8 @@ class Cat2ComponentsConfigurator extends AbstractResourceConfigurator {
 
 		all.add(A(DefaultReportStorage.class));
 		all.add(A(FileReportStorage.class));
+		all.add(A(FileHourlyReportStorage.class));
+		all.add(A(FileHistoryReportStorage.class));
 		all.add(A(MysqlReportStorage.class));
 		all.add(A(MysqlHourlyReportStorage.class));
 		all.add(A(MysqlHistoryReportStorage.class));

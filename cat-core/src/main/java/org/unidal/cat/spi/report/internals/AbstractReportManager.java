@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.ReportStoragePolicy;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportDelegate;
@@ -34,7 +33,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	private ReportProvider<T> m_provider;
 
 	@Inject
-	private ReportStorage<T> m_storage;
+	private ReportStorage<T> m_mysqlStorage;
 
 	@Inject(FileReportStorage.ID)
 	private ReportStorage<T> m_fileStorage;
@@ -53,7 +52,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 	private ConcurrentMap<Long, ConcurrentMap<String, T>> m_reports = new ConcurrentHashMap<Long, ConcurrentMap<String, T>>();
 
 	@Override
-	public void doCheckpoint(int hour, int index, boolean atEnd) throws Exception {
+	public void doCheckpoint(int hour, int index) throws Exception {
 		Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
 		ConcurrentMap<String, T> map = m_reports.get(startTime.getTime() + index);
 
@@ -63,11 +62,8 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 			List<T> reports = new ArrayList<T>(map.values());
 
 			for (T report : reports) {
-				if (atEnd) {
-					m_storage.store(getDelegate(), HOUR, report, index, ReportStoragePolicy.FILE_AND_MYSQL);
-				} else {
-					m_storage.store(getDelegate(), HOUR, report, index, ReportStoragePolicy.FILE);
-				}
+				m_fileStorage.store(getDelegate(), HOUR, report, index);
+				m_mysqlStorage.store(getDelegate(), HOUR, report, index);
 			}
 
 			// 1 AM tommorrow morning for daily report
@@ -83,7 +79,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
 		long key = startTime.getTime() + index;
 		ConcurrentHashMap<String, T> map = new ConcurrentHashMap<String, T>();
-		List<T> reports = m_storage.loadAll(getDelegate(), HOUR, startTime, null);
+		List<T> reports = m_fileStorage.loadAll(getDelegate(), HOUR, startTime, null);
 
 		for (T report : reports) {
 			map.put(report.getDomain(), report);
@@ -99,11 +95,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
 	protected ReportDelegate<T> getDelegate() {
 		return m_delegateManager.getDelegate(m_reportName);
-	}
-
-	@Override
-	public List<T> getLocalFileReport(ReportPeriod period, Date startTime, String domain) throws IOException {
-		return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
 	}
 
 	@Override
