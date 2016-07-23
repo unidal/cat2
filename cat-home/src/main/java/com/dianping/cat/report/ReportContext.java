@@ -6,6 +6,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.Action;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
@@ -19,6 +20,16 @@ import org.unidal.webres.tag.resource.ResourceTagConfigurator;
 import org.unidal.webres.taglib.basic.ResourceTagLibConfigurator;
 
 public class ReportContext<T extends ActionPayload<? extends Page, ? extends Action>> extends ActionContext<T> {
+	@Override
+	public Query getQuery() {
+		return new Query(getHttpServletRequest(), true);
+	}
+
+	public ReportPeriod getPeriod() {
+		String period = this.getHttpServletRequest().getParameter("period");
+
+		return ReportPeriod.getByName(period, ReportPeriod.HOUR);
+	}
 
 	@Override
 	public void initialize(HttpServletRequest request, HttpServletResponse response) {

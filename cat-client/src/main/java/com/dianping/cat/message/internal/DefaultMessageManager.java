@@ -198,7 +198,7 @@ public class DefaultMessageManager extends ContainerHolder implements MessageMan
 		try {
 			m_factory.initialize(new File("/data/appdatas/cat/"), m_domain.getId());
 		} catch (IOException e) {
-			throw new InitializationException("Error while initializing MessageIdFactory!", e);
+			throw new InitializationException("Error while initializing MessageIdFactory! " + e, e);
 		}
 
 		// initialize the tagged transaction cache

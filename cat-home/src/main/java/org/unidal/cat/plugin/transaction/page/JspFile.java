@@ -1,13 +1,11 @@
 package org.unidal.cat.plugin.transaction.page;
 
 public enum JspFile {
-	HOURLY_REPORT("/jsp/report/transaction/transaction.jsp"),
+	REPORT("/jsp/plugin/transaction/transaction.jsp"),
 
-	HOURLY_GRAPH("/jsp/report/transaction/transactionGraphs.jsp"),
+	HOURLY_GRAPH("/jsp/plugin/transaction/transaction-hourly-graph.jsp"),
 
-	HISTORY_REPORT("/jsp/report/transaction/transactionHistoryReport.jsp"),
-
-	HISTORY_GRAPH("/jsp/report/transaction/transactionHistoryGraphs.jsp");
+	HISTORY_GRAPH("/jsp/plugin/transaction/transaction-history-graph.jsp");
 
 	private String m_path;
 

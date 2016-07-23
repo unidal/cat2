@@ -8,7 +8,14 @@ import java.util.List;
 import javax.servlet.ServletException;
 
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.plugin.transaction.filter.*;
+import org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.page.DisplayNames.TransactionNameModel;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
@@ -66,7 +73,8 @@ public class Handler implements PageHandler<Context> {
 		model.setDistributionDetails(detailVisitor.getDetails());
 	}
 
-	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip, TransactionReport report) {
+	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip,
+	      TransactionReport report) {
 		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
 	}
 
@@ -82,7 +90,9 @@ public class Handler implements PageHandler<Context> {
 			model.setDisplayNameReport(displayNames.display(sorted, type, ip, report, queryName));
 			buildTransactionNamePieChart(displayNames.getResults(), model);
 		} else {
-			model.setDisplayTypeReport(new DisplayTypes().display(sorted, ip, report));
+			DisplayTypes displayTypes = new DisplayTypes();
+
+			model.setDisplayTypeReport(displayTypes.display(sorted, ip, report));
 		}
 	}
 
@@ -128,7 +138,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
 		String filterId;
-		if(payload.getDomain().equals(Constants.ALL)){
+		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
 		} else {
 			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
@@ -170,7 +180,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
 		String filterId;
-		if(payload.getDomain().equals(Constants.ALL)){
+		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {
 			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
@@ -191,7 +201,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
 		String filterId;
-		if(payload.getDomain().equals(Constants.ALL)){
+		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
 		} else {
 			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
@@ -222,7 +232,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId;
-		if(payload.getDomain().equals(Constants.ALL)){
+		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {
 			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
@@ -261,27 +271,32 @@ public class Handler implements PageHandler<Context> {
 		normalizePayload(model, payload);
 
 		switch (action) {
-		case HOURLY_REPORT:
-			handleHourlyReport(model, payload);
+		case REPORT:
+			if (payload.getReportPeriod() == ReportPeriod.HOUR) {
+				handleHourlyReport(model, payload);
+			} else {
+				handleHistoryReport(model, payload);
+			}
+
 			break;
-		case HOURLY_GRAPH:
-			handleHourlyGraph(model, payload);
-			break;
-		case HISTORY_REPORT:
-			handleHistoryReport(model, payload);
-			break;
-		case HISTORY_GRAPH:
-			handleHistoryGraph(model, payload);
+		case GRAPH:
+			if (payload.getReportPeriod() == ReportPeriod.HOUR) {
+				handleHourlyGraph(model, payload);
+			} else {
+				handleHistoryGraph(model, payload);
+			}
+
 			break;
 		}
 
 		TransactionReport report = model.getReport();
-		Date startTime = report.getStartTime();
 
-        // TODO for history report, endTime should not be startTime + HOUR
-		Date endTime = ReportPeriod.HOUR.getNextStartTime(startTime);
+		if (report != null) {
+			Date startTime = report.getStartTime();
+			Date endTime = report.getPeriod().getNextStartTime(startTime);
 
-		report.setEndTime(new Date(endTime.getTime() - 1000));
+			report.setEndTime(new Date(endTime.getTime() - 1000));
+		}
 
 		if (!ctx.isProcessStopped()) {
 			m_jspViewer.view(ctx, model);

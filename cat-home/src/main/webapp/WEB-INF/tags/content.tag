@@ -4,58 +4,59 @@
 <%@ attribute name="subtitle" fragment="true"%>
 
 <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
-<script type="text/javascript">
-	try{ace.settings.check('main-container', 'fixed')}catch(e){}
-</script>
 
 <div id="dialog-message" class="hide">
 	<p>你确定要删除吗？(不可恢复)</p>
 </div>
 
 <div class="breadcrumbs" id="breadcrumbs">
-	<script type="text/javascript">
-		try{ace.settings.check('breadcrumbs' , 'fixed')}catch(e){}
-	</script>
 	<span class="text-danger title">【报表时间】</span>
 	<span class="text-success"><jsp:invoke fragment="subtitle"/></span>
 	<div class="nav-search nav" id="nav-search">
-		<span class="text-danger switch">【<a class="switch" href="${model.baseUri}?op=history&domain=${model.domain}&ip=${model.ipAddress}"><span class="text-danger">切到历史模式</span></a>】</span>
+		<span class="text-danger switch">【
+		<c:choose>
+			<c:when test="${ctx.period.name eq 'hour'}">
+				<a class="switch" href="?${ctx.query.period['day'].step['']}"><span class="text-danger">切到历史模式</span></a>
+			</c:when>
+			<c:otherwise>
+				<a class="switch" href="?${ctx.query.period[''].step['']}"><span class="text-danger">切到小时模式</span></a>
+			</c:otherwise>
+		</c:choose>
+		】</span>
 		<c:forEach var="nav" items="${model.navs}">
-			&nbsp;[ <a href="${model.baseUri}?date=${model.date}&ip=${model.ipAddress}&step=${nav.hours}&${navUrlPrefix}">${nav.title}</a> ]
+			&nbsp;[ <a href="?${ctx.query.step[nav.hours]}">${nav.title}</a> ]
 		</c:forEach>
-		&nbsp;[ <a href="${model.baseUri}?${navUrlPrefix}">now</a> ]&nbsp;
+		&nbsp;[ <a href="?${ctx.query.step[''].date['']}">now</a> ]&nbsp;
 	</div><!-- /.nav-search -->
 </div>
 
 <script>
 	function buildHref(domain){
-		var href = '<a href="?op=${payload.action.name}&domain='+domain+'&date=${model.date}">&nbsp;[&nbsp;'+domain+'&nbsp;]&nbsp;</a>';
-		return href;
+		return '<a href="?${ctx.query.domain['']}&domain='+domain+'">&nbsp;[&nbsp;'+domain+'&nbsp;]&nbsp;</a>';
 	}
+	
+	try{ace.settings.check('main-container', 'fixed');}catch(e){}
+	try{ace.settings.check('breadcrumbs' , 'fixed');}catch(e){}
+
 	$(document).ready(function() {
-		var domains= getcookie('CAT_DOMAINS');
-		var domainArray =domains.split("|");
+		var str= getcookie('CAT_DOMAINS');
+		var domains = 'a|b|c|d'.split('|');//str.split("|");
 		var html = '';
-		var length =domainArray.length;
 		
-		for(var i=0;i<length;i++){
-			var href = buildHref(domainArray[i])
-			html+= href;
+		for(var i in domains){
+			html+= '&nbsp;[&nbsp;<a href="?${ctx.query.domain['']}&domain='+domains[i]+'">'+domains[i]+'</a>&nbsp;]&nbsp;';
 		}
 		$('#frequentNavbar').html(html);
 		$("#search_go").bind("click",function(e){
-			var newUrl = '${model.baseUri}?op=${payload.action.name}&domain='+$( "#search" ).val() +'&date=${model.date}';
-			window.location.href = newUrl;
+			window.location.href = '?${ctx.query.domain['']}&domain='+$("#search").val();
 		});
-		$('#wrap_search').submit(
-			function(){
-				var newUrl = '${model.baseUri}?op=${payload.action.name}&domain='+$( "#search" ).val() +'&date=${model.date}';
-				window.location.href = newUrl;
-				return false;
-			}		
-		);
+		$('#wrap_search').submit(function(){
+			window.location.href = '?${ctx.query.domain['']}&domain='+$( "#search" ).val();
+			return false;
+		});
 	});
 </script>
 
 <jsp:doBody/>
 
+</div>
