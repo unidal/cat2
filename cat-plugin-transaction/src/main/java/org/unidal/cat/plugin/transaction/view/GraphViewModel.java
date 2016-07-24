@@ -24,14 +24,16 @@ import org.unidal.lookup.util.StringUtils;
 import com.dianping.cat.Constants;
 
 public class GraphViewModel {
-	private Map<String, String> m_svgCharts = new HashMap<String, String>();
+	private Map<String, String> m_barCharts = new HashMap<String, String>();
+
+	private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
 
 	private PieChart m_pieChart;
 
 	private List<DistributionDetail> m_distributions;
 
-	public GraphViewModel(GraphBuilder builder, TransactionReport report, String ip, String type, String name) {
-		buildSvgGraphs(builder, report, ip, type, name);
+	public GraphViewModel(GraphBuilder builder, String ip, String type, String name, TransactionReport report) {
+		buildBarGraphs(builder, report, ip, type, name);
 
 		if (Constants.ALL.equalsIgnoreCase(ip)) {
 			buildPieChart(report, type, name);
@@ -39,25 +41,17 @@ public class GraphViewModel {
 		}
 	}
 
-	public List<DistributionDetail> getDistributions() {
-		return m_distributions;
+	public GraphViewModel(String ip, String type, String name, TransactionReport current, TransactionReport last,
+	      TransactionReport baseline) {
+		buildLineCharts(ip, type, name, current, last, baseline);
+
+		if (Constants.ALL.equalsIgnoreCase(ip)) {
+			buildPieChart(current, type, name);
+			buildDistribution(current, type, name);
+		}
 	}
 
-	private void buildDistribution(TransactionReport report, String type, String name) {
-		DistributionBuilder builder = new DistributionBuilder(type, name);
-
-		report.accept(builder);
-		m_distributions = builder.getDetails();
-	}
-
-	private void buildPieChart(TransactionReport report, String type, String name) {
-		PieChartBuilder builder = new PieChartBuilder(type, name);
-
-		report.accept(builder);
-		m_pieChart = builder.getPieChart();
-	}
-
-	private void buildSvgGraphs(GraphBuilder builder, TransactionReport report, String ip, String type, String name) {
+	private void buildBarGraphs(GraphBuilder builder, TransactionReport report, String ip, String type, String name) {
 		if (name == null || name.length() == 0) {
 			name = Constants.ALL;
 		}
@@ -72,72 +66,52 @@ public class GraphViewModel {
 			      "Average Duration (ms)", n);
 			FailurePayload failure = new FailurePayload("Failures Over Time", "Time (min)", "Count", n);
 
-			m_svgCharts.put("duration", builder.build(duration));
-			m_svgCharts.put("hits", builder.build(hits));
-			m_svgCharts.put("average", builder.build(average));
-			m_svgCharts.put("failures", builder.build(failure));
+			m_barCharts.put("duration", builder.build(duration));
+			m_barCharts.put("hits", builder.build(hits));
+			m_barCharts.put("average", builder.build(average));
+			m_barCharts.put("failures", builder.build(failure));
 		}
+	}
+
+	private void buildDistribution(TransactionReport report, String type, String name) {
+		DistributionBuilder builder = new DistributionBuilder(type, name);
+
+		report.accept(builder);
+		m_distributions = builder.getDetails();
+	}
+
+	private void buildLineCharts(String ip, String type, String name, TransactionReport current, TransactionReport last,
+	      TransactionReport baseline) {
+		m_lineCharts.put("hits", null); // TODO
+		m_lineCharts.put("average", null);
+		m_lineCharts.put("failures", null);
+	}
+
+	private void buildPieChart(TransactionReport report, String type, String name) {
+		PieChartBuilder builder = new PieChartBuilder(type, name);
+
+		report.accept(builder);
+		m_pieChart = builder.getPieChart();
+	}
+
+	public Map<String, String> getBarCharts() {
+		return m_barCharts;
+	}
+
+	public List<DistributionDetail> getDistributions() {
+		return m_distributions;
+	}
+
+	public Map<String, LineChart> getLineCharts() {
+		return m_lineCharts;
 	}
 
 	public PieChart getPieChart() {
 		return m_pieChart;
 	}
 
-	public Map<String, String> getSvgCharts() {
-		return m_svgCharts;
-	}
-
 	public void setPieChart(PieChart pieChart) {
 		m_pieChart = pieChart;
-	}
-
-	static class PieChartBuilder extends BaseVisitor {
-		private String m_type;
-
-		private String m_name;
-
-		private Map<String, Long> m_items = new HashMap<String, Long>();
-
-		private String m_ip;
-
-		public PieChartBuilder(String type, String name) {
-			m_type = type;
-			m_name = name;
-		}
-
-		public PieChart getPieChart() {
-			PieChart chart = new PieChart();
-
-			for (Entry<String, Long> entry : m_items.entrySet()) {
-				chart.addItem(entry.getKey(), entry.getValue());
-			}
-
-			chart.prepare();
-			return chart;
-		}
-
-		@Override
-		public void visitMachine(Machine machine) {
-			if (!Constants.ALL.equalsIgnoreCase(machine.getIp())) {
-				m_ip = machine.getIp();
-
-				for (TransactionType type : machine.getTypes().values()) {
-					if (m_type != null && m_type.equals(type.getId())) {
-						if (StringUtils.isEmpty(m_name)) {
-							m_items.put(m_ip, type.getTotalCount());
-						} else {
-							for (TransactionName name : type.getNames().values()) {
-								if (m_name.equals(name.getId())) {
-									m_items.put(m_ip, name.getTotalCount());
-									break;
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-		}
 	}
 
 	static class DistributionBuilder extends BaseVisitor {
@@ -254,12 +228,12 @@ public class GraphViewModel {
 				return m_min;
 			}
 
-			public double getStd() {
-				return m_std;
-			}
-
 			public double getQps() {
 				return m_qps;
+			}
+
+			public double getStd() {
+				return m_std;
 			}
 
 			public long getTotalCount() {
@@ -296,13 +270,13 @@ public class GraphViewModel {
 				return this;
 			}
 
-			public DistributionDetail setStd(double std) {
-				m_std = std;
+			public DistributionDetail setQps(double qps) {
+				m_qps = qps;
 				return this;
 			}
 
-			public DistributionDetail setQps(double qps) {
-				m_qps = qps;
+			public DistributionDetail setStd(double std) {
+				m_std = std;
 				return this;
 			}
 
@@ -311,6 +285,55 @@ public class GraphViewModel {
 				return this;
 			}
 
+		}
+	}
+
+	static class PieChartBuilder extends BaseVisitor {
+		private String m_type;
+
+		private String m_name;
+
+		private Map<String, Long> m_items = new HashMap<String, Long>();
+
+		private String m_ip;
+
+		public PieChartBuilder(String type, String name) {
+			m_type = type;
+			m_name = name;
+		}
+
+		public PieChart getPieChart() {
+			PieChart chart = new PieChart();
+
+			for (Entry<String, Long> entry : m_items.entrySet()) {
+				chart.addItem(entry.getKey(), entry.getValue());
+			}
+
+			chart.prepare();
+			return chart;
+		}
+
+		@Override
+		public void visitMachine(Machine machine) {
+			if (!Constants.ALL.equalsIgnoreCase(machine.getIp())) {
+				m_ip = machine.getIp();
+
+				for (TransactionType type : machine.getTypes().values()) {
+					if (m_type != null && m_type.equals(type.getId())) {
+						if (StringUtils.isEmpty(m_name)) {
+							m_items.put(m_ip, type.getTotalCount());
+						} else {
+							for (TransactionName name : type.getNames().values()) {
+								if (m_name.equals(name.getId())) {
+									m_items.put(m_ip, name.getTotalCount());
+									break;
+								}
+							}
+						}
+						break;
+					}
+				}
+			}
 		}
 	}
 }

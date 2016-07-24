@@ -411,7 +411,15 @@ public enum ReportPeriod {
 		return getStartTime(date).getTime() == getStartTime(new Date()).getTime();
 	}
 
+	public boolean isDay() {
+		return this == DAY;
+	}
+	
 	public abstract boolean isHistorical(Date startTime);
+
+	public boolean isHour() {
+		return this == HOUR;
+	}
 
 	public Date parse(String date, Date defaultValue) {
 		if (date != null) {

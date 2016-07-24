@@ -1,10 +1,8 @@
 <%@ page session="false" language="java" pageEncoding="UTF-8" %>
 <%@ page contentType="text/html; charset=utf-8"%>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.page.Context" scope="request" />
 <jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.page.Payload" scope="request" />
 <jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
@@ -23,10 +21,10 @@
 </style>
 
 <svg version="1.1" width="980" height="380" xmlns="http://www.w3.org/2000/svg">
-  ${model.graph.svgCharts.duration}
-  ${model.graph.svgCharts.hits}
-  ${model.graph.svgCharts.average}
-  ${model.graph.svgCharts.failures}
+  ${model.graph.barCharts.duration}
+  ${model.graph.barCharts.hits}
+  ${model.graph.barCharts.average}
+  ${model.graph.barCharts.failures}
 </svg>
 
 <c:if test="${payload.ipAddress eq 'All'}">
