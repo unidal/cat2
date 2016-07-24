@@ -17,15 +17,16 @@ import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.FailurePayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
 import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor;
 import org.unidal.cat.plugin.transaction.page.transform.PieGraphChartVisitor;
+import org.unidal.cat.plugin.transaction.view.GraphPayload.AverageTimePayload;
+import org.unidal.cat.plugin.transaction.view.GraphPayload.DurationPayload;
+import org.unidal.cat.plugin.transaction.view.GraphPayload.FailurePayload;
+import org.unidal.cat.plugin.transaction.view.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.transaction.view.NameViewModel;
 import org.unidal.cat.plugin.transaction.view.TypeViewModel;
+import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -38,7 +39,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 import com.dianping.cat.Constants;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.ReportPage;
-import com.dianping.cat.report.graph.svg.GraphBuilder;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -81,7 +81,10 @@ public class Handler implements PageHandler<Context> {
 		String ip = payload.getIpAddress();
 
 		if (!StringUtils.isEmpty(type)) {
-			model.setTable(new NameViewModel(report, ip, type, query, sortBy));
+			NameViewModel table = new NameViewModel(report, ip, type, query, sortBy);
+			
+			model.setTable(table);
+			model.setPieChart(table.getPieChart());
 		} else {
 			model.setTable(new TypeViewModel(report, ip, query, sortBy));
 		}

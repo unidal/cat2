@@ -3573,7 +3573,7 @@
 			<implementation>org.unidal.cat.plugin.transaction.page.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.report.graph.svg.GraphBuilder</role>
+					<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.page.HistoryGraphs</role>

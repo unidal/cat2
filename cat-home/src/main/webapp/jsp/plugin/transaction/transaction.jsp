@@ -152,7 +152,7 @@
 				</tr>
 			</table>
 			<script type="text/javascript">
-				var data = ${model.table.pieChart.json};
+				var data = ${model.pieChart.json};
 				
 				graphPieChart(document.getElementById('graph'), data);
 			</script>

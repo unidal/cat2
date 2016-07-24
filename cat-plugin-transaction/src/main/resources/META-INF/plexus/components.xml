@@ -201,5 +201,18 @@
 			<role-hint>transaction:month</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionMonthlyReducer</implementation>
 		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
+			<implementation>org.unidal.cat.plugin.transaction.view.svg.DefaultGraphBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.view.svg.ValueTranslater</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transaction.view.svg.ValueTranslater</role>
+			<implementation>org.unidal.cat.plugin.transaction.view.svg.DefaultValueTranslater</implementation>
+		</component>
 	</components>
 </plexus>

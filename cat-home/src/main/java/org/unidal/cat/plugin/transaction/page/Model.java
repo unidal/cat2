@@ -1,11 +1,14 @@
 package org.unidal.cat.plugin.transaction.page;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor.DistributionDetail;
+import org.unidal.cat.plugin.transaction.view.PieChart;
 import org.unidal.cat.plugin.transaction.view.TableViewModel;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
@@ -14,6 +17,7 @@ import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
 import com.dianping.cat.helper.SortHelper;
 import com.dianping.cat.mvc.AbstractReportModel;
 import com.dianping.cat.report.ReportPage;
+import com.dianping.cat.report.graph.LineChart;
 
 @ModelMeta(TransactionAnalyzer.ID)
 public class Model extends AbstractReportModel<Action, ReportPage, Context> {
@@ -44,13 +48,16 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	private String m_type;
 
-	private String m_pieChart;
-
 	private String m_distributionChart;
 
 	private List<DistributionDetail> m_distributionDetails;
 
+	// cat2
 	private TableViewModel<?> m_table;
+
+	private PieChart m_pieChart;
+
+	private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
 
 	public Model(Context ctx) {
 		super(ctx);
@@ -133,11 +140,15 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		}
 	}
 
+	public Map<String, LineChart> getLineCharts() {
+		return m_lineCharts;
+	}
+
 	public String getMobileResponse() {
 		return m_mobileResponse;
 	}
 
-	public String getPieChart() {
+	public PieChart getPieChart() {
 		return m_pieChart;
 	}
 
@@ -151,6 +162,10 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	public String getResponseTrend() {
 		return m_responseTrend;
+	}
+
+	public TableViewModel<?> getTable() {
+		return m_table;
 	}
 
 	public String getType() {
@@ -197,11 +212,15 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		m_hitTrend = hitTrend;
 	}
 
+	public void setLineChart(String name, LineChart lineChart) {
+		m_lineCharts.put(name, lineChart);
+	}
+
 	public void setMobileResponse(String mobileResponse) {
 		m_mobileResponse = mobileResponse;
 	}
 
-	public void setPieChart(String pieChart) {
+	public void setPieChart(PieChart pieChart) {
 		m_pieChart = pieChart;
 	}
 
@@ -217,15 +236,11 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		m_responseTrend = responseTrend;
 	}
 
-	public void setType(String type) {
-		m_type = type;
-	}
-
-	public TableViewModel<?> getTable() {
-		return m_table;
-	}
-
 	public void setTable(TableViewModel<?> table) {
 		m_table = table;
+	}
+
+	public void setType(String type) {
+		m_type = type;
 	}
 }
