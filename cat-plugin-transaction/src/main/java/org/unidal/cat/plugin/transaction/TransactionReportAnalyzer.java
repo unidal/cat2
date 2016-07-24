@@ -10,12 +10,12 @@ import org.unidal.tuple.Pair;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.config.server.ServerFilterConfigManager;
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.Range2;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.Range2;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;

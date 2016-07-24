@@ -1,8 +1,8 @@
 package org.unidal.cat.plugin.transaction;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.*;
-import com.dianping.cat.consumer.transaction.model.transform.DefaultMerger;
+import org.unidal.cat.plugin.transaction.model.entity.*;
+import org.unidal.cat.plugin.transaction.model.transform.DefaultMerger;
 
 public class TransactionReportMerger extends DefaultMerger {
 	public TransactionReportMerger(TransactionReport transactionReport) {

@@ -1,11 +1,11 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Machine;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 
 public class TransactionHolder {
    private TransactionReport m_report;

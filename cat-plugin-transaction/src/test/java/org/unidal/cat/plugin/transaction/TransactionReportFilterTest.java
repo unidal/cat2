@@ -17,7 +17,7 @@ import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 
 public class TransactionReportFilterTest extends ComponentTestCase {
 	@SuppressWarnings("unchecked")

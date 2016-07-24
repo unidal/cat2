@@ -10,8 +10,8 @@ import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.transform.DefaultSaxParser;
 
 public class TransactionReportAggregatorTest extends ComponentTestCase {
 	private TransactionReport loadReport(String resource) throws Exception {

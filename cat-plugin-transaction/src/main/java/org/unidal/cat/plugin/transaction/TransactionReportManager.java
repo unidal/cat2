@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transaction;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.report.internals.AbstractReportManager;
 import org.unidal.lookup.annotation.Named;

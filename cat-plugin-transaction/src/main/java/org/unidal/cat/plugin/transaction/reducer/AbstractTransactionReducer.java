@@ -7,15 +7,15 @@ import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportReducer;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.AllDuration;
-import com.dianping.cat.consumer.transaction.model.entity.DomainStat;
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
-import com.dianping.cat.consumer.transaction.model.transform.DefaultMerger;
+import org.unidal.cat.plugin.transaction.model.entity.AllDuration;
+import org.unidal.cat.plugin.transaction.model.entity.DomainStat;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Machine;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transaction.model.transform.DefaultMerger;
 
 public abstract class AbstractTransactionReducer implements ReportReducer<TransactionReport> {
 	protected abstract int getRangeValue(TransactionReport report, Range range);
