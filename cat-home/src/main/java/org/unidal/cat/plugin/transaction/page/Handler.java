@@ -27,6 +27,8 @@ import org.unidal.cat.plugin.transaction.page.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
 import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor;
 import org.unidal.cat.plugin.transaction.page.transform.PieGraphChartVisitor;
+import org.unidal.cat.plugin.transaction.view.NameViewModel;
+import org.unidal.cat.plugin.transaction.view.TypeViewModel;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -80,19 +82,18 @@ public class Handler implements PageHandler<Context> {
 
 	private void buildTransactionMetaInfo(Model model, Payload payload, TransactionReport report) {
 		String type = payload.getType();
-		String sorted = payload.getSortBy();
-		String queryName = payload.getQueryName();
+		String sortBy = payload.getSortBy();
+		String query = payload.getQueryName();
 		String ip = payload.getIpAddress();
 
 		if (!StringUtils.isEmpty(type)) {
+			model.setTable(new NameViewModel(report, ip, type, query, sortBy));
 			DisplayNames displayNames = new DisplayNames();
 
-			model.setDisplayNameReport(displayNames.display(sorted, type, ip, report, queryName));
+			model.setDisplayNameReport(displayNames.display(sortBy, type, ip, report, query));
 			buildTransactionNamePieChart(displayNames.getResults(), model);
 		} else {
-			DisplayTypes displayTypes = new DisplayTypes();
-
-			model.setDisplayTypeReport(displayTypes.display(sorted, ip, report));
+			model.setTable(new TypeViewModel(report, ip, query, sortBy));
 		}
 	}
 
@@ -232,6 +233,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId;
+
 		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {

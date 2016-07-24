@@ -6,6 +6,7 @@ import java.util.Set;
 
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor.DistributionDetail;
+import org.unidal.cat.plugin.transaction.view.TableViewModel;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
 
@@ -18,8 +19,6 @@ import com.dianping.cat.report.ReportPage;
 public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	private DisplayNames m_displayNameReport;
-
-	private DisplayTypes m_displayTypeReport;
 
 	private List<String> m_groups;
 
@@ -54,6 +53,8 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	private List<DistributionDetail> m_distributionDetails;
 
+	private TableViewModel<?> m_table;
+
 	public Model(Context ctx) {
 		super(ctx);
 	}
@@ -65,10 +66,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	public DisplayNames getDisplayNameReport() {
 		return m_displayNameReport;
-	}
-
-	public DisplayTypes getDisplayTypeReport() {
-		return m_displayTypeReport;
 	}
 
 	public String getDistributionChart() {
@@ -171,10 +168,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		m_displayNameReport = displayNameReport;
 	}
 
-	public void setDisplayTypeReport(DisplayTypes dispalyReport) {
-		m_displayTypeReport = dispalyReport;
-	}
-
 	public void setDistributionChart(String distributionChart) {
 		m_distributionChart = distributionChart;
 	}
@@ -239,4 +232,11 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		m_type = type;
 	}
 
+	public TableViewModel<?> getTable() {
+		return m_table;
+	}
+
+	public void setTable(TableViewModel<?> table) {
+		m_table = table;
+	}
 }

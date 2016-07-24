@@ -67,8 +67,8 @@
 		</tr>
 		<tr>
 			<c:choose>
-				<c:when test="${empty payload.type}"><th class="left"><a href="?${ctx.query.sort['id']}">Type</a></th></c:when>
-				<c:otherwise><th class="left"><a href="?${ctx.query.sort['id']}">Name</a></th></c:otherwise>
+				<c:when test="${empty payload.type}"><th class="left"><a href="?${ctx.query.sort['type']}">Type</a></th></c:when>
+				<c:otherwise><th class="left"><a href="?${ctx.query.sort['name']}">Name</a></th></c:otherwise>
 			</c:choose>
 			<th class="right nowrap"><a href="?${ctx.query.sort['total']}">Total</a></th>
 			<th class="right"><a href="?${ctx.query.sort['failure']}">Failure</a></th>
@@ -86,18 +86,18 @@
 			</c:if>
 		</tr>
 		<tr class="graphs"><td colspan="13" style="display:none"><div id="-1" style="display:none"></div></td></tr>
-		<c:forEach var="row" items="${model.table.rows}" varStatus="status">
-			<c:set var="e" value="${row}"/>
+		<c:forEach var="item" items="${empty payload.type ? model.displayTypeReport.results : model.displayNameReport.results}" varStatus="status">
+			<c:set var="e" value="${item.detail}"/>
 			<c:set var="lastIndex" value="${status.index}"/>
 			<tr class="right">
 				<c:choose>
 					<c:when test="${empty payload.type}">
 						<td class="left longText" style="white-space:normal">
-							<a href="?${ctx.query.op['graph'].type[e.id]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
-							&nbsp;&nbsp;<a href="?${ctx.query.type[e.id]}">${e.id}</a>
+							<a href="?${ctx.query.op['graph'].type[item.type]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
+							&nbsp;&nbsp;<a href="?${ctx.query.type[item.type]}">${e.id}</a>
 						</td>
 					</c:when>
-					<c:when test="${not empty payload.type and e.summary}">
+					<c:when test="${not empty payload.type and item.name eq 'TOTAL'}">
 						<td class="left longText" style="white-space:normal">
 						   <a href="?${ctx.query.op['graph'].name['']}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
 						   &nbsp;&nbsp;<a href="?${ctx.query.type[payload.type]}"/>Type: ${w:shorten(payload.type, 120)}</a>
@@ -105,22 +105,22 @@
 					</c:when>
 					<c:otherwise>
 						<td class="left" style="white-space:normal">
-						   <a href="?${ctx.query.op['graph'].name[e.id]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
+						   <a href="?${ctx.query.op['graph'].name[item.name]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
 						   &nbsp;&nbsp;${w:shorten(e.id, 120)}
 						</td>
 					</c:otherwise>
 				</c:choose>
-				<td class="nowrap">${w:format(e.total,'#,###,###,###,##0')}</td>
-				<td class="nowrap">${w:format(e.failure,'#,###,###,###,##0')}</td>
-				<td class="nowrap">&nbsp;${w:format(e.failurePercent/100,'#.####%')}</td>
-				<td class="longText"><a href="${model.webapp}/r/m/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
+				<td class="nowrap">${w:format(e.totalCount,'#,###,###,###,##0')}</td>
+				<td class="nowrap">${w:format(e.failCount,'#,###,###,###,##0')}</td>
+				<td class="nowrap">&nbsp;${w:format(e.failPercent/100,'#.####%')}</td>
+				<td class="longText"><a href="${model.webapp}/r/m/${empty e.failMessageUrl ? e.successMessageUrl : e.failMessageUrl}?${ctx.query}">Log View</a></td>
 				<td>${w:format(e.min,'###,##0.#')}</td>
 				<td>${w:format(e.max,'###,##0.#')}</td>
 				<td class="nowrap">${w:format(e.avg,'###,##0.0')}</td>
 				<c:choose>
 					<c:when test="${status.index > 0}">
-						<td>${w:format(e.line95,'###,##0.0')}</td>
-						<td>${w:format(e.line99,'###,##0.0')}</td>
+						<td>${w:format(e.line95Value,'###,##0.0')}</td>
+						<td>${w:format(e.line99Value,'###,##0.0')}</td>
 					</c:when>
 					<c:otherwise>
 						<td>-</td>
@@ -130,7 +130,7 @@
 				<td>${w:format(e.std,'###,##0.0')}</td>
 				<td class="nowrap">${w:format(e.tps,'###,##0.0')}</td>
 				<c:if test="${not empty payload.type}">
-					<td class="nowrap">${w:format(e.total / model.table.total,'0.00%')}</td>
+					<td class="nowrap">${w:format(e.totalPercent,'0.00%')}</td>
 				</c:if>
 			</tr>
 			<tr class="graphs"><td colspan="13" style="display:none"><div id="${status.index}" style="display:none"></div></td></tr>
