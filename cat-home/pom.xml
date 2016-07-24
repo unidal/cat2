@@ -38,6 +38,7 @@
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
+         <version>2.5.0</version>
       </dependency>
       <dependency>
          <groupId>javax.servlet</groupId>

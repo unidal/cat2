@@ -60,7 +60,7 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	@Override
 	public Action getDefaultAction() {
-		return Action.HOURLY_REPORT;
+		return Action.REPORT;
 	}
 
 	public DisplayNames getDisplayNameReport() {

@@ -24,6 +24,7 @@ public class DisplayNames {
 		TransactionName all = new TransactionName("TOTAL");
 
 		all.setTotalPercent(1);
+
 		if (types != null) {
 			TransactionType names = types.get(type);
 
@@ -31,6 +32,7 @@ public class DisplayNames {
 				for (Entry<String, TransactionName> entry : names.getNames().entrySet()) {
 					String transTypeName = entry.getValue().getId();
 					boolean isAdd = (queryName == null || queryName.length() == 0 || isFit(queryName, transTypeName));
+
 					if (isAdd) {
 						m_results.add(new TransactionNameModel(entry.getKey(), entry.getValue()));
 						mergeName(all, entry.getValue());
@@ -38,16 +40,21 @@ public class DisplayNames {
 				}
 			}
 		}
+
 		if (sorted == null) {
 			sorted = "avg";
 		}
-		Collections.sort(m_results, new TransactionNameComparator(sorted));
 
 		long total = all.getTotalCount();
+
 		for (TransactionNameModel nameModel : m_results) {
 			TransactionName transactionName = nameModel.getDetail();
+
 			transactionName.setTotalPercent(transactionName.getTotalCount() / (double) total);
 		}
+
+		Collections.sort(m_results, new TransactionNameComparator(sorted));
+
 		m_results.add(0, new TransactionNameModel("TOTAL", all));
 		return this;
 	}
@@ -122,8 +129,8 @@ public class DisplayNames {
 
 		@Override
 		public int compare(TransactionNameModel m1, TransactionNameModel m2) {
-			if (m_sorted.equals("name") || m_sorted.equals("type")) {
-				return m1.getType().compareTo(m2.getType());
+			if (m_sorted.equals("name")) {
+				return m1.getName().compareTo(m2.getName());
 			}
 			if (m_sorted.equals("total")) {
 				long count2 = m2.getDetail().getTotalCount();
@@ -141,25 +148,25 @@ public class DisplayNames {
 				return (int) (m2.getDetail().getFailCount() - m1.getDetail().getFailCount());
 			}
 			if (m_sorted.equals("failurePercent")) {
-				return (int) (m2.getDetail().getFailPercent() * 100 - m1.getDetail().getFailPercent() * 100);
+				return Double.compare(m2.getDetail().getFailPercent(), m1.getDetail().getFailPercent());
 			}
 			if (m_sorted.equals("avg")) {
-				return (int) (m2.getDetail().getAvg() * 100 - m1.getDetail().getAvg() * 100);
+				return Double.compare(m2.getDetail().getAvg(), -m1.getDetail().getAvg());
 			}
 			if (m_sorted.equals("95line")) {
-				return (int) (m2.getDetail().getLine95Value() * 100 - m1.getDetail().getLine95Value() * 100);
+				return Double.compare(m2.getDetail().getLine95Value(), m1.getDetail().getLine95Value());
 			}
 			if (m_sorted.equals("99line")) {
-				return (int) (m2.getDetail().getLine99Value() * 100 - m1.getDetail().getLine99Value() * 100);
+				return Double.compare(m2.getDetail().getLine99Value(), m1.getDetail().getLine99Value());
 			}
 			if (m_sorted.equals("min")) {
-				return (int) (m2.getDetail().getMin() * 100 - m1.getDetail().getMin() * 100);
+				return Double.compare(m2.getDetail().getMin(), m1.getDetail().getMin());
 			}
 			if (m_sorted.equals("max")) {
-				return (int) (m2.getDetail().getMax() * 100 - m1.getDetail().getMax() * 100);
+				return Double.compare(m2.getDetail().getMax(), m1.getDetail().getMax());
 			}
 			if (m_sorted.equals("std")) {
-				return (int) (m2.getDetail().getStd() * 100 - m1.getDetail().getStd() * 100);
+				return Double.compare(m2.getDetail().getStd(), m1.getDetail().getStd());
 			}
 			return 0;
 		}

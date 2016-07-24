@@ -33,6 +33,9 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@FieldMeta("date")
 	private long m_startTime;
 
+	@FieldMeta("period")
+	private String m_period;
+
 	public Payload() {
 		super(ReportPage.TRANSACTION);
 	}
@@ -63,14 +66,9 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	}
 
 	public ReportPeriod getReportPeriod() {
-		if (m_action == null || !m_action.isHistory()) {
-			return ReportPeriod.HOUR;
-		} else {
-			String type = super.getReportType();
-			ReportPeriod period = ReportPeriod.getByName(type, ReportPeriod.DAY);
+		ReportPeriod period = ReportPeriod.getByName(m_period, ReportPeriod.HOUR);
 
-			return period;
-		}
+		return period;
 	}
 
 	public String getSortBy() {
@@ -82,7 +80,7 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	}
 
 	public void setAction(String action) {
-		m_action = Action.getByName(action, Action.HOURLY_REPORT);
+		m_action = Action.getByName(action, Action.REPORT);
 	}
 
 	@Override
@@ -93,7 +91,7 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@Override
 	public void validate(ActionContext<?> ctx) {
 		if (m_action == null) {
-			m_action = Action.HOURLY_REPORT;
+			m_action = Action.REPORT;
 		}
 
 		if (m_type != null && m_type.length() == 0) {
@@ -121,6 +119,10 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 
 		if (m_startTime <= 0) {
 			startTime = period.getStartTime(new Date());
+
+			if (period != ReportPeriod.HOUR) {
+				startTime = period.getLastStartTime(startTime);
+			}
 		} else {
 			Date time = getDate(period, m_startTime, m_step);
 

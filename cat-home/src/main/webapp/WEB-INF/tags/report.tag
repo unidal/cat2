@@ -34,6 +34,7 @@
 	<script src="${model.webapp}/assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace-elements.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace.min.js"></script>
+
 	<jsp:invoke fragment="resource"/>
 </head>
 <body class="no-skin">

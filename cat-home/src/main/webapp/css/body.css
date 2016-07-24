@@ -147,6 +147,10 @@ a.heartbeat {
 	word-break: break-all;
 }
 
+.nowrap {
+	white-space: nowrap;
+}
+
 .required {
 	color: red;
 }
