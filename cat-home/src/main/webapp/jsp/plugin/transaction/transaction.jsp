@@ -144,6 +144,7 @@
 			appendHostname(${model.ipToHostnameStr});
 		});
 	</script>
+
 	<c:choose>
 		<c:when test="${not empty payload.type}">
 			<table>
@@ -152,7 +153,7 @@
 				</tr>
 			</table>
 			<script type="text/javascript">
-				var data = ${model.pieChart.json};
+				var data = ${model.table.pieChart.json};
 				
 				graphPieChart(document.getElementById('graph'), data);
 			</script>

@@ -14,16 +14,9 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
-import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor;
-import org.unidal.cat.plugin.transaction.page.transform.PieGraphChartVisitor;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.AverageTimePayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.DurationPayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.FailurePayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.HitPayload;
+import org.unidal.cat.plugin.transaction.view.GraphViewModel;
 import org.unidal.cat.plugin.transaction.view.NameViewModel;
 import org.unidal.cat.plugin.transaction.view.TypeViewModel;
 import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
@@ -59,16 +52,6 @@ public class Handler implements PageHandler<Context> {
 	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_manager;
 
-	private void buildDistributionInfo(Model model, String type, String name, TransactionReport report) {
-		PieGraphChartVisitor chartVisitor = new PieGraphChartVisitor(type, name);
-		DistributionDetailVisitor detailVisitor = new DistributionDetailVisitor(type, name);
-
-		chartVisitor.visitTransactionReport(report);
-		detailVisitor.visitTransactionReport(report);
-		model.setDistributionChart(chartVisitor.getPieChart().getJsonString());
-		model.setDistributionDetails(detailVisitor.getDetails());
-	}
-
 	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip,
 	      TransactionReport report) {
 		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
@@ -82,35 +65,10 @@ public class Handler implements PageHandler<Context> {
 
 		if (!StringUtils.isEmpty(type)) {
 			NameViewModel table = new NameViewModel(report, ip, type, query, sortBy);
-			
+
 			model.setTable(table);
-			model.setPieChart(table.getPieChart());
 		} else {
 			model.setTable(new TypeViewModel(report, ip, query, sortBy));
-		}
-	}
-
-	private void buildTransactionNameGraph(Model model, TransactionReport report, String type, String name, String ip) {
-		if (name == null || name.length() == 0) {
-			name = Constants.ALL;
-		}
-
-		TransactionType t = report.findOrCreateMachine(ip).findOrCreateType(type);
-		TransactionName transactionName = t.findOrCreateName(name);
-
-		if (transactionName != null) {
-			String graph1 = m_builder.build(new DurationPayload("Duration Distribution", "Duration (ms)", "Count",
-			      transactionName));
-			String graph2 = m_builder.build(new HitPayload("Hits Over Time", "Time (min)", "Count", transactionName));
-			String graph3 = m_builder.build(new AverageTimePayload("Average Duration Over Time", "Time (min)",
-			      "Average Duration (ms)", transactionName));
-			String graph4 = m_builder.build(new FailurePayload("Failures Over Time", "Time (min)", "Count",
-			      transactionName));
-
-			model.setGraph1(graph1);
-			model.setGraph2(graph2);
-			model.setGraph3(graph3);
-			model.setGraph4(graph4);
 		}
 	}
 
@@ -145,9 +103,7 @@ public class Handler implements PageHandler<Context> {
 			String name = payload.getName();
 			String ip = payload.getIpAddress();
 
-			if (Constants.ALL.equalsIgnoreCase(ip)) {
-				buildDistributionInfo(model, type, name, current);
-			} else if (Constants.ALL.equals(payload.getDomain())) {
+			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, current);
 			}
 		}
@@ -195,14 +151,13 @@ public class Handler implements PageHandler<Context> {
 			String type = payload.getType();
 			String name = payload.getName();
 			String ip = payload.getIpAddress();
+			GraphViewModel graph = new GraphViewModel(m_builder, report, ip, type, name);
 
-			if (Constants.ALL.equalsIgnoreCase(ip)) {
-				buildDistributionInfo(model, type, name, report);
-			} else if (Constants.ALL.equals(payload.getDomain())) {
+			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, report);
 			}
 
-			buildTransactionNameGraph(model, report, type, name, ip);
+			model.setGraph(graph);
 		}
 
 		model.setReport(report);

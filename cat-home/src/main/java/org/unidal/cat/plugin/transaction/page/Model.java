@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor.DistributionDetail;
-import org.unidal.cat.plugin.transaction.view.PieChart;
+import org.unidal.cat.plugin.transaction.view.GraphViewModel;
 import org.unidal.cat.plugin.transaction.view.TableViewModel;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
@@ -26,14 +26,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 	private List<String> m_groupIps;
 
 	private String m_errorTrend;
-
-	private String m_graph1;
-
-	private String m_graph2;
-
-	private String m_graph3;
-
-	private String m_graph4;
 
 	private String m_hitTrend;
 
@@ -55,12 +47,20 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 	// cat2
 	private TableViewModel<?> m_table;
 
-	private PieChart m_pieChart;
+	private GraphViewModel m_graph;
 
 	private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
 
 	public Model(Context ctx) {
 		super(ctx);
+	}
+
+	public GraphViewModel getGraph() {
+		return m_graph;
+	}
+
+	public void setGraph(GraphViewModel graph) {
+		m_graph = graph;
 	}
 
 	@Override
@@ -104,22 +104,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		return m_errorTrend;
 	}
 
-	public String getGraph1() {
-		return m_graph1;
-	}
-
-	public String getGraph2() {
-		return m_graph2;
-	}
-
-	public String getGraph3() {
-		return m_graph3;
-	}
-
-	public String getGraph4() {
-		return m_graph4;
-	}
-
 	public List<String> getGroupIps() {
 		return m_groupIps;
 	}
@@ -146,10 +130,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	public String getMobileResponse() {
 		return m_mobileResponse;
-	}
-
-	public PieChart getPieChart() {
-		return m_pieChart;
 	}
 
 	public String getQueryName() {
@@ -184,22 +164,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 		m_errorTrend = errorTrend;
 	}
 
-	public void setGraph1(String graph1) {
-		m_graph1 = graph1;
-	}
-
-	public void setGraph2(String graph2) {
-		m_graph2 = graph2;
-	}
-
-	public void setGraph3(String graph3) {
-		m_graph3 = graph3;
-	}
-
-	public void setGraph4(String graph4) {
-		m_graph4 = graph4;
-	}
-
 	public void setGroupIps(List<String> groupIps) {
 		m_groupIps = groupIps;
 	}
@@ -218,10 +182,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	public void setMobileResponse(String mobileResponse) {
 		m_mobileResponse = mobileResponse;
-	}
-
-	public void setPieChart(PieChart pieChart) {
-		m_pieChart = pieChart;
 	}
 
 	public void setQueryName(String queryName) {
