@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 
 public class DisplayNames {
 

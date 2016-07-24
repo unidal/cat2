@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor.DistributionDetail;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
 
 import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.helper.SortHelper;
 import com.dianping.cat.mvc.AbstractReportModel;
 import com.dianping.cat.report.ReportPage;
-import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor.DistributionDetail;
 
 @ModelMeta(TransactionAnalyzer.ID)
 public class Model extends AbstractReportModel<Action, ReportPage, Context> {

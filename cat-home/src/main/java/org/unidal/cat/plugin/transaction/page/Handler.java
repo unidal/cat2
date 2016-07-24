@@ -16,12 +16,17 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.page.DisplayNames.TransactionNameModel;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.FailurePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
+import org.unidal.cat.plugin.transaction.page.transform.DistributionDetailVisitor;
+import org.unidal.cat.plugin.transaction.page.transform.PieGraphChartVisitor;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -32,17 +37,12 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
 import com.dianping.cat.helper.JsonBuilder;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.ReportPage;
 import com.dianping.cat.report.graph.PieChart;
 import com.dianping.cat.report.graph.PieChart.Item;
 import com.dianping.cat.report.graph.svg.GraphBuilder;
-import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
-import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
 
 public class Handler implements PageHandler<Context> {
 	@Inject

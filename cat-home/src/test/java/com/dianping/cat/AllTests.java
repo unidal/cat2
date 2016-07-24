@@ -9,7 +9,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.unidal.cat.plugin.transaction.page.PayloadTest;
 import org.unidal.cat.plugin.transaction.page.TransactionGraphDataTest;
-import org.unidal.cat.plugin.transaction.page.TransactionReportFilterTest;
 
 import com.dianping.cat.report.alert.ExtractDataTest;
 import com.dianping.cat.report.alert.JudgeTimeTest;
@@ -57,8 +56,6 @@ ValueTranslaterTest.class,
 
 /* .report.page.model */
 EventReportFilterTest.class,
-
-TransactionReportFilterTest.class,
 
 ProblemReportMergerTest.class,
 

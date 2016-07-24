@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.transaction.transform;
+package org.unidal.cat.plugin.transaction.page.transform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,10 +9,10 @@ import java.util.Map.Entry;
 import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.Machine;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
-import com.dianping.cat.consumer.transaction.model.transform.BaseVisitor;
+import org.unidal.cat.plugin.transaction.model.entity.Machine;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.report.graph.PieChart;
 import com.dianping.cat.report.graph.PieChart.Item;
 

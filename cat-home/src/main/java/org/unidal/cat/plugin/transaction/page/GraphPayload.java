@@ -3,9 +3,9 @@ package org.unidal.cat.plugin.transaction.page;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import com.dianping.cat.report.graph.svg.AbstractGraphPayload;
 
 public class GraphPayload {
