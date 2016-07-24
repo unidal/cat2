@@ -17,9 +17,6 @@ import com.dianping.cat.report.ReportPage;
 
 @ModelMeta(TransactionAnalyzer.ID)
 public class Model extends AbstractReportModel<Action, ReportPage, Context> {
-
-	private DisplayNames m_displayNameReport;
-
 	private List<String> m_groups;
 
 	private List<String> m_groupIps;
@@ -62,10 +59,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 	@Override
 	public Action getDefaultAction() {
 		return Action.REPORT;
-	}
-
-	public DisplayNames getDisplayNameReport() {
-		return m_displayNameReport;
 	}
 
 	public String getDistributionChart() {
@@ -162,10 +155,6 @@ public class Model extends AbstractReportModel<Action, ReportPage, Context> {
 
 	public String getType() {
 		return m_type;
-	}
-
-	public void setDisplayNameReport(DisplayNames displayNameReport) {
-		m_displayNameReport = displayNameReport;
 	}
 
 	public void setDistributionChart(String distributionChart) {

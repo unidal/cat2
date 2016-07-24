@@ -1,9 +1,7 @@
 package org.unidal.cat.plugin.transaction.page;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
@@ -19,7 +17,6 @@ import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
-import org.unidal.cat.plugin.transaction.page.DisplayNames.TransactionNameModel;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
 import org.unidal.cat.plugin.transaction.page.GraphPayload.FailurePayload;
@@ -39,11 +36,8 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.helper.JsonBuilder;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.ReportPage;
-import com.dianping.cat.report.graph.PieChart;
-import com.dianping.cat.report.graph.PieChart.Item;
 import com.dianping.cat.report.graph.svg.GraphBuilder;
 
 public class Handler implements PageHandler<Context> {
@@ -88,10 +82,6 @@ public class Handler implements PageHandler<Context> {
 
 		if (!StringUtils.isEmpty(type)) {
 			model.setTable(new NameViewModel(report, ip, type, query, sortBy));
-			DisplayNames displayNames = new DisplayNames();
-
-			model.setDisplayNameReport(displayNames.display(sortBy, type, ip, report, query));
-			buildTransactionNamePieChart(displayNames.getResults(), model);
 		} else {
 			model.setTable(new TypeViewModel(report, ip, query, sortBy));
 		}
@@ -119,22 +109,6 @@ public class Handler implements PageHandler<Context> {
 			model.setGraph3(graph3);
 			model.setGraph4(graph4);
 		}
-	}
-
-	private void buildTransactionNamePieChart(List<TransactionNameModel> names, Model model) {
-		PieChart chart = new PieChart();
-		List<Item> items = new ArrayList<Item>();
-
-		for (int i = 1; i < names.size(); i++) {
-			TransactionNameModel name = names.get(i);
-			Item item = new Item();
-			TransactionName transaction = name.getDetail();
-			item.setNumber(transaction.getTotalCount()).setTitle(transaction.getId());
-			items.add(item);
-		}
-
-		chart.addItems(items);
-		model.setPieChart(new JsonBuilder().toJson(chart));
 	}
 
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {

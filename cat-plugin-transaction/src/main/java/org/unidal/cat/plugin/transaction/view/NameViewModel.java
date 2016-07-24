@@ -27,6 +27,8 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 
 	private List<NameEntry> m_entries = new ArrayList<NameEntry>();
 
+	private PieChart m_chart = new PieChart();
+
 	public NameViewModel(TransactionReport report, String ip, String type, String query, String sortBy) {
 		m_ip = ip;
 		m_type = type;
@@ -38,11 +40,25 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 		report.accept(harvester);
 		harvester.harvest(m_entries);
 
+		// sort them
 		if (m_sortBy != null && m_sortBy.length() > 0) {
 			NameComparator comparator = new NameComparator(m_sortBy);
 
 			Collections.sort(m_entries, comparator);
 		}
+
+		// pie chart
+		for (NameEntry entry : m_entries) {
+			if (!entry.isSummary()) {
+				m_chart.addItem(entry.getId(), entry.getTotal());
+			}
+		}
+
+		m_chart.prepare();
+	}
+
+	public PieChart getPieChart() {
+		return m_chart;
 	}
 
 	@Override
@@ -71,7 +87,9 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 		long total = 0;
 
 		for (NameEntry entry : m_entries) {
-			total += entry.getTotal();
+			if (!entry.isSummary()) {
+				total += entry.getTotal();
+			}
 		}
 
 		return total;
