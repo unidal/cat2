@@ -10,7 +10,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import com.dianping.cat.service.ProjectService;
 
 @Named(type = ReportAggregator.class, value = TransactionConstants.NAME)

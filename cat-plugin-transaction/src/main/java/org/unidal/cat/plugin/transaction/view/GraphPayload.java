@@ -1,12 +1,12 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.view;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.dianping.cat.consumer.transaction.model.entity.Duration;
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.report.graph.svg.AbstractGraphPayload;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.view.svg.AbstractGraphPayload;
 
 public class GraphPayload {
 	abstract static class AbstractPayload extends AbstractGraphPayload {
@@ -57,7 +57,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class AverageTimePayload extends AbstractPayload {
+	public static class AverageTimePayload extends AbstractPayload {
 		public AverageTimePayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
@@ -81,7 +81,7 @@ public class GraphPayload {
 		}
 	}
 
-	final static class DurationPayload extends AbstractPayload {
+	public static class DurationPayload extends AbstractPayload {
 
 		private Map<Integer, Integer> m_map = new HashMap<Integer, Integer>();
 

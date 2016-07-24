@@ -6,8 +6,8 @@ import org.unidal.cat.spi.report.ReportReducer;
 import org.unidal.helper.Dates;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.consumer.transaction.model.entity.Range;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 
 @Named(type = ReportReducer.class, value = TransactionConstants.NAME + ":" + TransactionWeeklyReducer.ID)
 public class TransactionWeeklyReducer extends AbstractTransactionReducer implements ReportReducer<TransactionReport> {

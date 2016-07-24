@@ -20,7 +20,7 @@ import org.unidal.cat.spi.report.task.internals.ReportTaskTracker;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 
 public class TransactionReportReducerTest extends ComponentTestCase {
 	@Before

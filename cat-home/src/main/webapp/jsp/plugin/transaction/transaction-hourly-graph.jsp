@@ -8,10 +8,11 @@
 <jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.page.Context" scope="request" />
 <jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.page.Payload" scope="request" />
 <jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
-<script type="text/javascript" src="/cat/js/jquery-1.7.1.js"></script>
-<script type="text/javascript" src="/cat/js/highcharts.js"></script>
-<script type="text/javascript" src="/cat/js/baseGraph.js"></script>
-<script type="text/javascript" src="/cat/js/transaction.js"></script>
+
+<script src="${model.webapp}/js/jquery-1.7.1.js"></script>
+<script src="${model.webapp}/js/highcharts.js"></script>
+<script src="${model.webapp}/js/baseGraph.js"></script>
+<script src="${model.webapp}/js/transaction.js"></script>
 
 <style type="text/css">
 .graph {
@@ -20,17 +21,19 @@
 	margin: 4px auto;
 }
 </style>
+
 <svg version="1.1" width="980" height="380" xmlns="http://www.w3.org/2000/svg">
-  ${model.graph1}
-  ${model.graph2}
-  ${model.graph3}
-  ${model.graph4}
+  ${model.graph.svgCharts.duration}
+  ${model.graph.svgCharts.hits}
+  ${model.graph.svgCharts.average}
+  ${model.graph.svgCharts.failures}
 </svg>
-<c:if test="${payload.ipAddress eq 'All' }">
-<table  class='table table-hover table-striped table-condensed '  style="width:100%;">
-	<tr><td colspan="8"><h5 style="text-align:center"  class='text-center text-info'>分布统计</h5></td></tr>
+
+<c:if test="${payload.ipAddress eq 'All'}">
+<table class='table table-hover table-striped table-condensed' style="width:100%">
+	<tr><td colspan="8"><h4 style="text-align:center" class='text-center text-info'>Distribution by IP</h4></td></tr>
 	<tr>
-		<th class="right">Ip</th>
+		<th class="right">IP</th>
 		<th class="right">Total</th>
 		<th class="right">Failure</th>
 		<th class="right">Failure%</th>
@@ -39,29 +42,29 @@
 		<th class="right">Avg(ms)</th>
 		<th class="right">Std(ms)</th>
 	</tr>
-	<c:forEach var="item" items="${model.distributionDetails}" varStatus="status">
-	<tr class=" right">
-		<td>${item.ip}</td>
-		<td>${w:format(item.totalCount,'#,###,###,###,##0')}</td>
-		<td>${w:format(item.failCount,'#,###,###,###,##0')}</td>
-		<td>${w:format(item.failPercent/100,'0.0000%')}</td>
-		<td>${w:format(item.min,'###,##0.#')}</td>
-		<td>${w:format(item.max,'###,##0.#')}</td>
-		<td>${w:format(item.avg,'###,##0.0')}</td>
-		<td>${w:format(item.std,'###,##0.0')}</td>
-	</tr>
+	<c:forEach var="item" items="${model.graph.distributions}" varStatus="status">
+		<tr class=" right">
+			<td>${item.ip}</td>
+			<td>${w:format(item.totalCount,'#,###,###,###,##0')}</td>
+			<td>${w:format(item.failCount,'#,###,###,###,##0')}</td>
+			<td>${w:format(item.failPercent/100,'0.0000%')}</td>
+			<td>${w:format(item.min,'###,##0.#')}</td>
+			<td>${w:format(item.max,'###,##0.#')}</td>
+			<td>${w:format(item.avg,'###,##0.0')}</td>
+			<td>${w:format(item.std,'###,##0.0')}</td>
+		</tr>
 	</c:forEach>
 </table>
-<br>
 
 <div id="distributionChart" class="pieChart"></div>
-<div id="distributionChartMeta" style="display:none">${model.distributionChart}</div>
+<div id="distributionChartMeta" style="display:none">${model.graph.pieChart.json}</div>
 </c:if>
+
 <script type="text/javascript">
-	var distributionChartMeta = ${model.distributionChart};
+	var distribution = ${model.graph.pieChart.json};
 	
-	if(distributionChartMeta!=null){
-		graphPieChart(document.getElementById('distributionChart'), distributionChartMeta);
+	if (distribution) {
+		graphPieChart(document.getElementById('distributionChart'), distribution);
 	}
 </script>
 <br>

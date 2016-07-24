@@ -20,7 +20,7 @@ import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 
 public class TransactionReportManagerTest extends ComponentTestCase {
 	@Before

@@ -1,9 +1,7 @@
 package org.unidal.cat.plugin.transaction.page;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.ServletException;
 
@@ -16,12 +14,12 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
-import org.unidal.cat.plugin.transaction.page.DisplayNames.TransactionNameModel;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.AverageTimePayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.DurationPayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.FailurePayload;
-import org.unidal.cat.plugin.transaction.page.GraphPayload.HitPayload;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
+import org.unidal.cat.plugin.transaction.view.GraphViewModel;
+import org.unidal.cat.plugin.transaction.view.NameViewModel;
+import org.unidal.cat.plugin.transaction.view.TypeViewModel;
+import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -32,17 +30,8 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionName;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionType;
-import com.dianping.cat.helper.JsonBuilder;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.ReportPage;
-import com.dianping.cat.report.graph.PieChart;
-import com.dianping.cat.report.graph.PieChart.Item;
-import com.dianping.cat.report.graph.svg.GraphBuilder;
-import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
-import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
 
 public class Handler implements PageHandler<Context> {
 	@Inject
@@ -63,16 +52,6 @@ public class Handler implements PageHandler<Context> {
 	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_manager;
 
-	private void buildDistributionInfo(Model model, String type, String name, TransactionReport report) {
-		PieGraphChartVisitor chartVisitor = new PieGraphChartVisitor(type, name);
-		DistributionDetailVisitor detailVisitor = new DistributionDetailVisitor(type, name);
-
-		chartVisitor.visitTransactionReport(report);
-		detailVisitor.visitTransactionReport(report);
-		model.setDistributionChart(chartVisitor.getPieChart().getJsonString());
-		model.setDistributionDetails(detailVisitor.getDetails());
-	}
-
 	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip,
 	      TransactionReport report) {
 		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
@@ -80,60 +59,17 @@ public class Handler implements PageHandler<Context> {
 
 	private void buildTransactionMetaInfo(Model model, Payload payload, TransactionReport report) {
 		String type = payload.getType();
-		String sorted = payload.getSortBy();
-		String queryName = payload.getQueryName();
+		String sortBy = payload.getSortBy();
+		String query = payload.getQueryName();
 		String ip = payload.getIpAddress();
 
 		if (!StringUtils.isEmpty(type)) {
-			DisplayNames displayNames = new DisplayNames();
+			NameViewModel table = new NameViewModel(report, ip, type, query, sortBy);
 
-			model.setDisplayNameReport(displayNames.display(sorted, type, ip, report, queryName));
-			buildTransactionNamePieChart(displayNames.getResults(), model);
+			model.setTable(table);
 		} else {
-			DisplayTypes displayTypes = new DisplayTypes();
-
-			model.setDisplayTypeReport(displayTypes.display(sorted, ip, report));
+			model.setTable(new TypeViewModel(report, ip, query, sortBy));
 		}
-	}
-
-	private void buildTransactionNameGraph(Model model, TransactionReport report, String type, String name, String ip) {
-		if (name == null || name.length() == 0) {
-			name = Constants.ALL;
-		}
-
-		TransactionType t = report.findOrCreateMachine(ip).findOrCreateType(type);
-		TransactionName transactionName = t.findOrCreateName(name);
-
-		if (transactionName != null) {
-			String graph1 = m_builder.build(new DurationPayload("Duration Distribution", "Duration (ms)", "Count",
-			      transactionName));
-			String graph2 = m_builder.build(new HitPayload("Hits Over Time", "Time (min)", "Count", transactionName));
-			String graph3 = m_builder.build(new AverageTimePayload("Average Duration Over Time", "Time (min)",
-			      "Average Duration (ms)", transactionName));
-			String graph4 = m_builder.build(new FailurePayload("Failures Over Time", "Time (min)", "Count",
-			      transactionName));
-
-			model.setGraph1(graph1);
-			model.setGraph2(graph2);
-			model.setGraph3(graph3);
-			model.setGraph4(graph4);
-		}
-	}
-
-	private void buildTransactionNamePieChart(List<TransactionNameModel> names, Model model) {
-		PieChart chart = new PieChart();
-		List<Item> items = new ArrayList<Item>();
-
-		for (int i = 1; i < names.size(); i++) {
-			TransactionNameModel name = names.get(i);
-			Item item = new Item();
-			TransactionName transaction = name.getDetail();
-			item.setNumber(transaction.getTotalCount()).setTitle(transaction.getId());
-			items.add(item);
-		}
-
-		chart.addItems(items);
-		model.setPieChart(new JsonBuilder().toJson(chart));
 	}
 
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
@@ -167,9 +103,7 @@ public class Handler implements PageHandler<Context> {
 			String name = payload.getName();
 			String ip = payload.getIpAddress();
 
-			if (Constants.ALL.equalsIgnoreCase(ip)) {
-				buildDistributionInfo(model, type, name, current);
-			} else if (Constants.ALL.equals(payload.getDomain())) {
+			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, current);
 			}
 		}
@@ -217,14 +151,13 @@ public class Handler implements PageHandler<Context> {
 			String type = payload.getType();
 			String name = payload.getName();
 			String ip = payload.getIpAddress();
+			GraphViewModel graph = new GraphViewModel(m_builder, report, ip, type, name);
 
-			if (Constants.ALL.equalsIgnoreCase(ip)) {
-				buildDistributionInfo(model, type, name, report);
-			} else if (Constants.ALL.equals(payload.getDomain())) {
+			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, report);
 			}
 
-			buildTransactionNameGraph(model, report, type, name, ip);
+			model.setGraph(graph);
 		}
 
 		model.setReport(report);
@@ -232,6 +165,7 @@ public class Handler implements PageHandler<Context> {
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
 		String filterId;
+
 		if (payload.getDomain().equals(Constants.ALL)) {
 			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
 		} else {

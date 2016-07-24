@@ -21,6 +21,8 @@ import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer;
 import org.unidal.cat.plugin.transaction.reducer.TransactionMonthlyReducer;
 import org.unidal.cat.plugin.transaction.reducer.TransactionWeeklyReducer;
+import org.unidal.cat.plugin.transaction.view.svg.DefaultGraphBuilder;
+import org.unidal.cat.plugin.transaction.view.svg.DefaultValueTranslater;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -56,6 +58,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionDailyReducer.class));
 		all.add(A(TransactionWeeklyReducer.class));
 		all.add(A(TransactionMonthlyReducer.class));
+
+		all.add(A(DefaultGraphBuilder.class));
+		all.add(A(DefaultValueTranslater.class));
 
 		return all;
 	}
