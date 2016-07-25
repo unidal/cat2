@@ -3,12 +3,15 @@ package org.unidal.cat.plugin.transaction.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
@@ -19,6 +22,8 @@ import org.unidal.cat.plugin.transaction.view.GraphPayload.FailurePayload;
 import org.unidal.cat.plugin.transaction.view.GraphPayload.HitPayload;
 import org.unidal.cat.plugin.transaction.view.GraphViewModel.DistributionBuilder.DistributionDetail;
 import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.helper.Dates;
 import org.unidal.lookup.util.StringUtils;
 
 import com.dianping.cat.Constants;
@@ -51,6 +56,14 @@ public class GraphViewModel {
 		}
 	}
 
+	private double[] aggregateMetrics(TransactionReport report, String ip, String type, String name, String metric,
+	      int size) {
+		MetricsAggregator aggregator = new MetricsAggregator(ip, type, name, metric, size);
+
+		report.accept(aggregator);
+		return aggregator.getMetrics();
+	}
+
 	private void buildBarGraphs(GraphBuilder builder, TransactionReport report, String ip, String type, String name) {
 		if (name == null || name.length() == 0) {
 			name = Constants.ALL;
@@ -80,11 +93,83 @@ public class GraphViewModel {
 		m_distributions = builder.getDetails();
 	}
 
+	private LineChart buildLineChart(String ip, String type, String name, TransactionReport current,
+	      TransactionReport last, TransactionReport baseline, String metric) {
+		ReportPeriod period = current.getPeriod();
+		Date startTime = current.getStartTime();
+		String format;
+		String suffix;
+		int size;
+		long step;
+
+		switch (period) {
+		case DAY:
+			size = 24;
+			step = TimeUnit.HOURS.toMillis(1);
+			suffix = " (times/hour)";
+			format = "yyyy-MM-dd";
+			break;
+		case WEEK:
+			size = 7;
+			step = TimeUnit.DAYS.toMillis(1);
+			suffix = " (times/day)";
+			format = "yyyy-MM-dd";
+			break;
+		case MONTH:
+			size = 31;
+			step = TimeUnit.DAYS.toMillis(1);
+			suffix = " (times/day)";
+			format = "yyyy-MM";
+			break;
+		case YEAR:
+			size = 12;
+			step = TimeUnit.DAYS.toMillis(1);
+			suffix = " (times/month)";
+			format = "yyyy";
+			break;
+		default:
+			throw new UnsupportedOperationException("Unsupported period: " + period + "!");
+		}
+
+		LineChart c = new LineChart();
+
+		c.setStart(startTime);
+		c.setSize(size);
+		c.setStep(step);
+
+		if ("total".equals(metric)) {
+			c.setTitle("Total Distribution" + suffix);
+		} else if ("avg".equals(metric)) {
+			c.setTitle("Average Distribution (ms)");
+		} else if ("failure".equals(metric)) {
+			c.setTitle("Failure Distribution" + suffix);
+		} else {
+			throw new UnsupportedOperationException("Unsupported metric: " + metric + "!");
+		}
+
+		if (current != null) {
+			c.addSubTitle(Dates.from(current.getStartTime()).asString(format));
+			c.addValue(aggregateMetrics(current, ip, type, name, metric, size));
+		}
+
+		if (last != null) {
+			c.addSubTitle(Dates.from(last.getStartTime()).asString(format));
+			c.addValue(aggregateMetrics(last, ip, type, name, metric, size));
+		}
+
+		if (baseline != null) {
+			c.addSubTitle(Dates.from(baseline.getStartTime()).asString(format));
+			c.addValue(aggregateMetrics(baseline, ip, type, name, metric, size));
+		}
+
+		return c;
+	}
+
 	private void buildLineCharts(String ip, String type, String name, TransactionReport current, TransactionReport last,
 	      TransactionReport baseline) {
-		m_lineCharts.put("hits", null); // TODO
-		m_lineCharts.put("average", null);
-		m_lineCharts.put("failures", null);
+		m_lineCharts.put("hits", buildLineChart(ip, type, name, current, last, baseline, "total"));
+		m_lineCharts.put("average", buildLineChart(ip, type, name, current, last, baseline, "avg"));
+		m_lineCharts.put("failures", buildLineChart(ip, type, name, current, last, baseline, "failure"));
 	}
 
 	private void buildPieChart(TransactionReport report, String type, String name) {
@@ -285,6 +370,69 @@ public class GraphViewModel {
 				return this;
 			}
 
+		}
+	}
+
+	private static class MetricsAggregator extends BaseVisitor {
+		private double[] m_values;
+
+		private String m_ip;
+
+		private String m_type;
+
+		private String m_name;
+
+		private String m_metric;
+
+		public MetricsAggregator(String ip, String type, String name, String metric, int size) {
+			m_values = new double[size];
+			m_ip = ip;
+			m_type = type;
+			m_name = name;
+			m_metric = metric;
+		}
+
+		public double[] getMetrics() {
+			return m_values;
+		}
+
+		@Override
+		public void visitMachine(Machine machine) {
+			if (m_ip == null || m_ip.equals(machine.getIp())) {
+				super.visitMachine(machine);
+			}
+		}
+
+		@Override
+		public void visitName(TransactionName name) {
+			if (m_name == null || m_name.equals(name.getId())) {
+				super.visitName(name);
+			}
+		}
+
+		@Override
+		public void visitRange(Range range) {
+			int index = range.getValue();
+			double value;
+
+			if ("total".equals(m_metric)) {
+				value = range.getSum();
+			} else if ("avg".equals(m_metric)) {
+				value = range.getAvg();
+			} else if ("failure".equals(m_metric)) {
+				value = range.getFails();
+			} else {
+				throw new UnsupportedOperationException("Unsupported metric: " + m_metric + "!");
+			}
+
+			m_values[index] = value;
+		}
+
+		@Override
+		public void visitType(TransactionType type) {
+			if (m_type == null || m_type.equals(type.getId())) {
+				super.visitType(type);
+			}
 		}
 	}
 

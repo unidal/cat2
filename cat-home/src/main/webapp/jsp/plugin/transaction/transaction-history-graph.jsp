@@ -27,9 +27,9 @@
 	</tr>
 	<tr>
 		<td style="display:none">
-			<div id="responseTrendMeta">${model.graph.lineCharts.average}</div>
-			<div id="hitTrendMeta">${model.graph.lineCharts.hits}</div>
-			<div id="errorTrendMeta">${model.graph.lineCharts.failures}</div>
+			<div id="responseTrendMeta">${model.graph.lineCharts.average.json}</div>
+			<div id="hitTrendMeta">${model.graph.lineCharts.hits.json}</div>
+			<div id="errorTrendMeta">${model.graph.lineCharts.failures.json}</div>
 		</td>
 	</tr>
 </table>
@@ -66,9 +66,9 @@
 </c:if>
 
 <script type="text/javascript">
-	var responseTrendData = ${model.graph.lineCharts.average};
-	var hitTrendData = ${model.graph.lineCharts.hits};
-	var errorTrendData = ${model.graph.lineCharts.failures};
+	var responseTrendData = ${model.graph.lineCharts.average.json};
+	var hitTrendData = ${model.graph.lineCharts.hits.json};
+	var errorTrendData = ${model.graph.lineCharts.failures.json};
 
 	graphLineChart(document.getElementById('responseTrend'),responseTrendData);
 	graphLineChart(document.getElementById('hitTrend'),hitTrendData);
