@@ -348,7 +348,7 @@ $(document).delegate(
 						type : "get",
 						url : anchor.href,
 						success : function(data, textStatus) {
-							hourlyGraphLineChart(cell, data);
+							hourlyGraphLineChart(cell, data); // TODO rename it later
 						}
 					});
 				}

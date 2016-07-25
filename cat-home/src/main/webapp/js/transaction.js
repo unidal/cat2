@@ -1,36 +1,26 @@
-function hourlyGraphLineChart(cell,data){
-	cell.style.display = 'block';
-	cell.parentNode.style.display = 'block';
-	cell.innerHTML = data;
-	
-	data = $('#distributionChartMeta', cell).text();
-	
-	if (data != null && data.length > 0) {
-		graphPieChart($('#distributionChart', cell)[0], eval('(' + data + ')'));
-	}
-}
-
-function historyGraphLineChart(cell,response){
+function hourlyGraphLineChart(cell,response){
 	cell.style.display = 'block';
 	cell.parentNode.style.display = 'block';
 	cell.innerHTML = response;
 
 	var data = $('#responseTrendMeta', cell).text();
-	graphLineChart($('#responseTrend', cell)[0], eval('(' + data
-			+ ')'));
+	if (data) {
+	   graphLineChart($('#responseTrend', cell)[0], eval('(' + data + ')'));
+	}
 
 	data = $('#hitTrendMeta', cell).text();
-	graphLineChart($('#hitTrend', cell)[0], eval('(' + data
-			+ ')'));
+	if (data) {
+	   graphLineChart($('#hitTrend', cell)[0], eval('(' + data + ')'));
+	}
 
 	data = $('#errorTrendMeta', cell).text();
-	graphLineChart($('#errorTrend', cell)[0], eval('(' + data
-			+ ')'));
+	if (data) {
+	   graphLineChart($('#errorTrend', cell)[0], eval('(' + data + ')'));
+	}
 	
 	data = $('#distributionChartMeta', cell).text();
-	
-	if (data != null && data.length > 0) {
-		graphPieChart($('#distributionChart', cell)[0], eval('(' + data + ')'));
+	if (data) {
+	   graphPieChart($('#distributionChart', cell)[0], eval('(' + data + ')'));
 	}
 }
 

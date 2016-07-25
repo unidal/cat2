@@ -189,7 +189,7 @@ public class DefaultGraphBuilder implements GraphBuilder {
 
 		if (axisXTitle != null) {
 			int x = (width - left - right - axisXTitle.length() * 9) / 2 + left;
-			int y = height - 4;
+			int y = height + 8;
 
 			b.tagWithText("text", axisXTitle, "x", x, "y", y, "font-size", "18");
 		}

@@ -23,7 +23,6 @@ import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.util.StringUtils;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
@@ -57,104 +56,102 @@ public class Handler implements PageHandler<Context> {
 		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
 	}
 
-	private void buildTransactionMetaInfo(Model model, Payload payload, TransactionReport report) {
-		String type = payload.getType();
-		String sortBy = payload.getSortBy();
-		String query = payload.getQueryName();
-		String ip = payload.getIpAddress();
-
-		if (!StringUtils.isEmpty(type)) {
-			NameViewModel table = new NameViewModel(report, ip, type, query, sortBy);
-
-			model.setTable(table);
-		} else {
-			model.setTable(new TypeViewModel(report, ip, query, sortBy));
-		}
-	}
-
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
+		Date startTime = payload.getStartTime();
+		String domain = payload.getDomain();
+		String ip = payload.getIpAddress();
+		String type = payload.getType();
+		String name = payload.getName();
 		String filterId;
-		if (payload.getDomain().equals(Constants.ALL)) {
-			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
+
+		if (domain.equals(Constants.ALL)) {
+			filterId = (name == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID);
 		} else {
-			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
+			filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
 		}
 
 		ReportPeriod period = payload.getReportPeriod();
-		String domain = payload.getDomain();
-		Date date = payload.getStartTime();
-		TransactionReport current = m_manager.getReport(period, period.getStartTime(date), domain, filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType(), //
-		      "name", payload.getName());
-		TransactionReport last = m_manager.getReport(period, period.getLastStartTime(date), domain, filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType(), //
-		      "name", payload.getName());
-		TransactionReport baseline = m_manager.getReport(period, period.getBaselineStartTime(date), domain, filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType(), //
-		      "name", payload.getName());
-
-		model.setReport(current);
+		TransactionReport current = m_manager.getReport(period, period.getStartTime(startTime), domain, filterId, //
+		      "ip", ip, "type", type, "name", name);
+		TransactionReport last = m_manager.getReport(period, period.getLastStartTime(startTime), domain, filterId, //
+		      "ip", ip, "type", type, "name", name);
+		TransactionReport base = m_manager.getReport(period, period.getBaselineStartTime(startTime), domain, filterId, //
+		      "ip", ip, "type", type, "name", name);
 
 		if (current != null) {
-			String type = payload.getType();
-			String name = payload.getName();
-			String ip = payload.getIpAddress();
+			GraphViewModel graph = new GraphViewModel(ip, type, name, current, last, base);
 
+			model.setGraph(graph);
+		}
+
+		if (current != null) {
 			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, current);
 			}
 		}
 
-		m_historyGraph.buildTrend(model, current, last, baseline);
+		m_historyGraph.buildTrend(model, current, last, base);
 		// m_historyGraph.buildTrendGraph(model, payload);
+
+		model.setReport(current);
 	}
 
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
+		Date startTime = payload.getStartTime();
+		String domain = payload.getDomain();
+		String ip = payload.getIpAddress();
+		String type = payload.getType();
+		String sortBy = payload.getSortBy();
+		String query = payload.getQueryName();
 		String filterId;
-		if (payload.getDomain().equals(Constants.ALL)) {
-			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
+
+		if (domain.equals(Constants.ALL)) {
+			filterId = (type == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID);
 		} else {
-			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
+			filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
 		}
 
 		ReportPeriod period = payload.getReportPeriod();
-		Date startTime = payload.getStartTime();
-		TransactionReport report = m_manager.getReport(period, startTime, payload.getDomain(), filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType());
+		TransactionReport report = m_manager.getReport(period, startTime, domain, filterId, //
+		      "ip", ip, "type", type);
 
 		if (report != null) {
-			buildTransactionMetaInfo(model, payload, report);
+			if (type != null) {
+				model.setTable(new NameViewModel(report, ip, type, query, sortBy));
+			} else {
+				model.setTable(new TypeViewModel(report, ip, query, sortBy));
+			}
+		} else {
+			report = new TransactionReport(domain);
+			report.setPeriod(period);
+			report.setStartTime(startTime);
 		}
 
 		model.setReport(report);
 	}
 
 	private void handleHourlyGraph(Model model, Payload payload) throws IOException {
+		Date startTime = payload.getStartTime();
+		String domain = payload.getDomain();
+		String ip = payload.getIpAddress();
+		String type = payload.getType();
+		String name = payload.getName();
 		String filterId;
-		if (payload.getDomain().equals(Constants.ALL)) {
-			filterId = payload.getName() == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID;
+
+		if (domain.equals(Constants.ALL)) {
+			filterId = (name == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID);
 		} else {
-			filterId = payload.getName() == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID;
+			filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
 		}
 
-		Date startTime = payload.getStartTime();
-		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType(), //
-		      "name", payload.getName());
+		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
+		      "ip", ip, "type", type, "name", name);
 
 		if (report != null) {
-			String type = payload.getType();
-			String name = payload.getName();
-			String ip = payload.getIpAddress();
-			GraphViewModel graph = new GraphViewModel(m_builder, report, ip, type, name);
+			GraphViewModel graph = new GraphViewModel(m_builder, ip, type, name, report);
 
-			if (Constants.ALL.equals(payload.getDomain())) {
-				buildAllReportDistributionInfo(model, type, name, ip, report);
+			if (Constants.ALL.equals(domain)) {
+				buildAllReportDistributionInfo(model, type, name, ip, report); // TODO move to all
 			}
 
 			model.setGraph(graph);
@@ -164,23 +161,31 @@ public class Handler implements PageHandler<Context> {
 	}
 
 	private void handleHourlyReport(Model model, Payload payload) throws IOException {
+		Date startTime = payload.getStartTime();
+		String domain = payload.getDomain();
+		String ip = payload.getIpAddress();
+		String type = payload.getType();
+		String sortBy = payload.getSortBy();
+		String query = payload.getQueryName();
 		String filterId;
 
-		if (payload.getDomain().equals(Constants.ALL)) {
-			filterId = payload.getType() == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID;
+		if (domain.equals(Constants.ALL)) {
+			filterId = (type == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID);
 		} else {
-			filterId = payload.getType() == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID;
+			filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
 		}
 
-		Date startTime = payload.getStartTime();
-		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, payload.getDomain(), filterId, //
-		      "ip", payload.getIpAddress(), //
-		      "type", payload.getType());
+		TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
+		      "ip", ip, "type", type);
 
 		if (report != null) {
-			buildTransactionMetaInfo(model, payload, report);
+			if (type != null) {
+				model.setTable(new NameViewModel(report, ip, type, query, sortBy));
+			} else {
+				model.setTable(new TypeViewModel(report, ip, query, sortBy));
+			}
 		} else {
-			report = new TransactionReport(payload.getDomain());
+			report = new TransactionReport(domain);
 			report.setPeriod(ReportPeriod.HOUR);
 			report.setStartTime(startTime);
 		}
@@ -206,7 +211,7 @@ public class Handler implements PageHandler<Context> {
 
 		switch (action) {
 		case REPORT:
-			if (payload.getReportPeriod() == ReportPeriod.HOUR) {
+			if (payload.getReportPeriod().isHour()) {
 				handleHourlyReport(model, payload);
 			} else {
 				handleHistoryReport(model, payload);
@@ -214,7 +219,7 @@ public class Handler implements PageHandler<Context> {
 
 			break;
 		case GRAPH:
-			if (payload.getReportPeriod() == ReportPeriod.HOUR) {
+			if (payload.getReportPeriod().isHour()) {
 				handleHourlyGraph(model, payload);
 			} else {
 				handleHistoryGraph(model, payload);
