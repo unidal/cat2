@@ -53,20 +53,20 @@
    
    <!-- cat2 -->
    <tag-file>
-      <name>report</name>
-      <path>/WEB-INF/tags/report.tag</path>
-   </tag-file>
-   <tag-file>
       <name>header</name>
       <path>/WEB-INF/tags/header.tag</path>
    </tag-file>
    <tag-file>
-      <name>navbar</name>
-      <path>/WEB-INF/tags/navbar.tag</path>
+      <name>report</name>
+      <path>/WEB-INF/tags/report.tag</path>
    </tag-file>
    <tag-file>
-      <name>content</name>
-      <path>/WEB-INF/tags/content.tag</path>
+      <name>report-navbar</name>
+      <path>/WEB-INF/tags/report-navbar.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>report-content</name>
+      <path>/WEB-INF/tags/report-content.tag</path>
    </tag-file>
    
    <function>
