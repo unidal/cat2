@@ -1113,10 +1113,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.transaction.task.TransactionGraphCreator</role>
-			<implementation>com.dianping.cat.report.page.transaction.task.TransactionGraphCreator</implementation>
-		</component>
-		<component>
 			<role>com.dianping.cat.report.page.event.task.EventGraphCreator</role>
 			<implementation>com.dianping.cat.report.page.event.task.EventGraphCreator</implementation>
 		</component>
@@ -1198,9 +1194,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.transaction.service.TransactionReportService</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.report.page.transaction.task.TransactionGraphCreator</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.report.page.transaction.task.TransactionMerger</role>
@@ -3576,9 +3569,6 @@
 					<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.plugin.transaction.page.HistoryGraphs</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.plugin.transaction.page.JspViewer</role>
 				</requirement>
 				<requirement>
@@ -3590,18 +3580,6 @@
 				<requirement>
 					<role>org.unidal.cat.spi.ReportManager</role>
 					<role-hint>transaction</role-hint>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.plugin.transaction.page.HistoryGraphs</role>
-			<implementation>org.unidal.cat.plugin.transaction.page.HistoryGraphs</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.core.dal.GraphDao</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.core.dal.DailyGraphDao</role>
 				</requirement>
 			</requirements>
 		</component>
