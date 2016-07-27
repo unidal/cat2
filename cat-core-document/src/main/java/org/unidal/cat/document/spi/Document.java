@@ -106,10 +106,6 @@ public enum Document {
 		return defaultValue;
 	}
 
-	public boolean isTabbed() {
-		return m_tabbed;
-	}
-
 	protected void defineFeature(String id, String title) {
 		String url = String.format("/jsp/document/%s/%s.jsp", m_id, id);
 
@@ -132,7 +128,19 @@ public enum Document {
 		return m_title;
 	}
 
-	public void register(DocumentFeature feature) {
+	public boolean isTabbed() {
+		return m_tabbed;
+	}
+
+	public void register(String id, String title) {
+		String url = String.format("/jsp/document/%s/%s.jsp", m_id, id);
+
+		register(id, title, url);
+	}
+
+	public void register(String id, String title, String url) {
+		DocumentFeature feature = new DocumentFeature(id, title, url);
+
 		if (!m_features.contains(feature)) {
 			m_features.add(feature);
 		}
