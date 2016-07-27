@@ -1,17 +1,9 @@
 <%@ tag trimDirectiveWhitespaces="true" pageEncoding="UTF-8"%>
 <%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
-<%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
-<%@ attribute name="title"%>
-<%@ attribute name="navUrlPrefix"%>
-<%@ attribute name="timestamp"%>
-<%@ attribute name="subtitle" fragment="true"%>
 <%@ attribute name="resource" fragment="true"%>
 
-<res:bean id="res" />
-
 <html lang="en">
+
 <head>
 	<title>CAT</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -34,19 +26,20 @@
 	<script src="${model.webapp}/assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace-elements.min.js"></script>
 	<script src="${model.webapp}/assets/js/ace.min.js"></script>
-
-	<jsp:invoke fragment="resource"/>
-</head>
-<body class="no-skin">
-	<a:report-header/>
 	
+	<jsp:invoke fragment="resource" />
+</head>
+
+<body class="no-skin">
+	<a:document-header />
+
 	<div class="main-container" id="main-container">
-		<a:report-navbar/>
-		<a:report-content>
-			<jsp:attribute name="subtitle"><jsp:invoke fragment="subtitle"/></jsp:attribute>
-			<jsp:body><jsp:doBody/></jsp:body>
-		</a:report-content>
-		</div>
+		<a:document-navbar />
+		<a:document-content>
+			<jsp:body><jsp:doBody /></jsp:body>
+		</a:document-content>
+	</div>
 	</div>
 </body>
+
 </html>

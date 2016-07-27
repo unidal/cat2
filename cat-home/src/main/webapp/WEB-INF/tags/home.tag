@@ -112,7 +112,6 @@
 						</a>
 						<b class="arrow"></b>
 					</li>
-					</ul>
 				</ul>
 				<!-- #section:basics/sidebar.layout.minimize -->
 				<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">

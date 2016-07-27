@@ -32,6 +32,10 @@
          <artifactId>cat-plugin-problem</artifactId>
       </dependency>
       <dependency>
+         <groupId>com.dianping.cat</groupId>
+         <artifactId>cat-core-document</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.unidal.webres</groupId>
          <artifactId>WebResServer</artifactId>
       </dependency>

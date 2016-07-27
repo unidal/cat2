@@ -223,7 +223,7 @@
 				window.location.href = "${model.webapp}/r/statistics?op=service&domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=${payload.action.name}";
 			});
 			$("#tab_document").click(function(){
-				window.location.href = "${model.webapp}/r/home?domain=${model.domain}&ip=${model.ipAddress}&date=${model.date}&reportType=${payload.reportType}&op=${payload.action.name}";
+				window.location.href = "${model.webapp}/doc?${ctx.query}";
 			});
 			$("#tab_config").click(function(){
 				window.location.href = "${model.webapp}/s/config?op=projects";

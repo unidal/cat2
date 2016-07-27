@@ -56,6 +56,10 @@
 		<servlet-name>mvc-servlet</servlet-name>
 		<url-pattern>/s/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>mvc-servlet</servlet-name>
+		<url-pattern>/doc/*</url-pattern>
+	</servlet-mapping>
 	<jsp-config>
 		<taglib>
 			<taglib-uri>/WEB-INF/app.tld</taglib-uri>
