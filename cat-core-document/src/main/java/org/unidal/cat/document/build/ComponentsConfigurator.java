@@ -3,6 +3,7 @@ package org.unidal.cat.document.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.document.CatDocumentModule;
 import org.unidal.cat.document.spi.DefaultDocumentManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -16,10 +17,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
+		all.add(A(CatDocumentModule.class));
 		all.add(A(DefaultDocumentManager.class));
 
 		all.addAll(new WebComponentConfigurator().defineComponents());
-		
+
 		return all;
 	}
 }

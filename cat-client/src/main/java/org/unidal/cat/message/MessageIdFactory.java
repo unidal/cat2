@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.unidal.helper.Inets;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 
 @Named
@@ -100,22 +100,29 @@ public class MessageIdFactory {
 
 	protected String getIpAddress() {
 		if (m_ipAddress == null) {
-			String ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
+			String ip = Inets.IP4.getLocalHostAddress();
 			List<String> items = Splitters.by(".").noEmptyItem().split(ip);
-			byte[] bytes = new byte[4];
 
-			for (int i = 0; i < 4; i++) {
-				bytes[i] = (byte) Integer.parseInt(items.get(i));
+			if (items.size() == 4) {
+				byte[] bytes = new byte[4];
+
+				for (int i = 0; i < 4; i++) {
+					bytes[i] = (byte) Integer.parseInt(items.get(i));
+				}
+
+				StringBuilder sb = new StringBuilder(bytes.length / 2);
+
+				for (byte b : bytes) {
+					sb.append(Integer.toHexString((b >> 4) & 0x0F));
+					sb.append(Integer.toHexString(b & 0x0F));
+				}
+
+				m_ipAddress = sb.toString();
+			} else {
+				System.out.println("[ERROR] Unrecognized IP: " + ip + "!");
+
+				m_ipAddress = "7f000001";
 			}
-
-			StringBuilder sb = new StringBuilder(bytes.length / 2);
-
-			for (byte b : bytes) {
-				sb.append(Integer.toHexString((b >> 4) & 0x0F));
-				sb.append(Integer.toHexString(b & 0x0F));
-			}
-
-			m_ipAddress = sb.toString();
 		}
 
 		return m_ipAddress;

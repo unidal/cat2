@@ -94,7 +94,7 @@
 					<c:when test="${empty payload.type}">
 						<td class="left longText" style="white-space:normal">
 							<a href="?${ctx.query.op['graph'].type[e.id]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
-							&nbsp;&nbsp;<a href="?${ctx.query.type[e.id]}">${e.id}</a>
+							&nbsp;&nbsp;<a href="?${ctx.query.type[e.id].queryname['']}">${e.id}</a>
 						</td>
 					</c:when>
 					<c:when test="${not empty payload.type and e.summary}">

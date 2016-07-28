@@ -68,7 +68,7 @@ public abstract class AbstractReportModel<A extends Action, P extends Page, M ex
 	public HistoryNav getCurrentNav() {
 		return HistoryNav.getByName(m_reportType);
 	}
-
+	
 	// required by report tag
 	public Date getCurrentTime() {
 		return new Date();

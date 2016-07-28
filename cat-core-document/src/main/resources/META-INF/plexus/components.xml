@@ -1,6 +1,11 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-core-document</role-hint>
+			<implementation>org.unidal.cat.document.CatDocumentModule</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.document.spi.DocumentManager</role>
 			<implementation>org.unidal.cat.document.spi.DefaultDocumentManager</implementation>
 		</component>

@@ -13,19 +13,22 @@
 	<span class="text-danger title">【报表时间】</span>
 	<span class="text-success"><jsp:invoke fragment="subtitle"/></span>
 	<div class="nav-search nav" id="nav-search">
-		<span class="text-danger switch">【
 		<c:choose>
 			<c:when test="${ctx.period.name eq 'hour'}">
-				<a class="switch" href="?${ctx.query.period['day'].step['']}"><span class="text-danger">切到历史模式</span></a>
+         		<span class="text-danger switch">【<a class="switch" href="?${ctx.query.period['day'].step['']}"><span class="text-danger">切到历史模式</span></a>】</span>
+         		<c:forEach var="nav" items="${model.navs}">
+         			&nbsp;[ <a href="?${ctx.query.step[nav.hours]}">${nav.title}</a> ]
+         		</c:forEach>
 			</c:when>
 			<c:otherwise>
-				<a class="switch" href="?${ctx.query.period[''].step['']}"><span class="text-danger">切到小时模式</span></a>
+         		<span class="text-danger switch">【<a class="switch" href="?${ctx.query.period[''].step['']}"><span class="text-danger">切到小时模式</span></a>】</span>
+         		<c:forEach var="nav" items="${model.historyNavs}">
+         			&nbsp;[ <a href="?${ctx.query.period[nav.title]}" class="${ctx.period.name eq nav.title ? 'current' : '' }">${nav.title}</a> ]
+         		</c:forEach>
+         		&nbsp;[ <a href="?${ctx.query.step[-1]}">${model.currentNav.last}</a> ]
+         		&nbsp;[ <a href="?${ctx.query.step[1]}">${model.currentNav.next}</a> ]
 			</c:otherwise>
 		</c:choose>
-		】</span>
-		<c:forEach var="nav" items="${model.navs}">
-			&nbsp;[ <a href="?${ctx.query.step[nav.hours]}">${nav.title}</a> ]
-		</c:forEach>
 		&nbsp;[ <a href="?${ctx.query.step[''].date['']}">now</a> ]&nbsp;
 	</div><!-- /.nav-search -->
 </div>
