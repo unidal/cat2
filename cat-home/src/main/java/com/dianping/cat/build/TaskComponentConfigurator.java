@@ -91,7 +91,6 @@ import com.dianping.cat.report.page.storage.task.StorageReportBuilder;
 import com.dianping.cat.report.page.storage.task.StorageReportService;
 import com.dianping.cat.report.page.storage.transform.StorageMergeHelper;
 import com.dianping.cat.report.page.transaction.service.TransactionReportService;
-import com.dianping.cat.report.page.transaction.task.TransactionGraphCreator;
 import com.dianping.cat.report.page.transaction.task.TransactionMerger;
 import com.dianping.cat.report.page.transaction.task.TransactionReportBuilder;
 import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper;
@@ -121,7 +120,6 @@ public class TaskComponentConfigurator extends AbstractResourceConfigurator {
 		all.add(C(DefaultTaskConsumer.class) //
 		      .req(TaskDao.class, ReportFacade.class));
 
-		all.add(C(TransactionGraphCreator.class));
 		all.add(C(EventGraphCreator.class));
 		all.add(C(ProblemGraphCreator.class));
 
@@ -141,7 +139,7 @@ public class TaskComponentConfigurator extends AbstractResourceConfigurator {
 
 		all.add(C(TaskBuilder.class, TransactionReportBuilder.ID, TransactionReportBuilder.class) //
 		      .req(GraphDao.class, DailyGraphDao.class, TransactionReportService.class)//
-		      .req(TransactionGraphCreator.class, TransactionMerger.class));
+		      .req(TransactionMerger.class));
 
 		all.add(C(TaskBuilder.class, EventReportBuilder.ID, EventReportBuilder.class) //
 		      .req(GraphDao.class, DailyGraphDao.class, EventReportService.class)//

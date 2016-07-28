@@ -32,13 +32,16 @@
          <artifactId>cat-plugin-problem</artifactId>
       </dependency>
       <dependency>
+         <groupId>com.dianping.cat</groupId>
+         <artifactId>cat-core-document</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.unidal.webres</groupId>
          <artifactId>WebResServer</artifactId>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
-         <version>2.5.0</version>
       </dependency>
       <dependency>
          <groupId>javax.servlet</groupId>

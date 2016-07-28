@@ -57,16 +57,32 @@
       <path>/WEB-INF/tags/report.tag</path>
    </tag-file>
    <tag-file>
-      <name>header</name>
-      <path>/WEB-INF/tags/header.tag</path>
+      <name>report-header</name>
+      <path>/WEB-INF/tags/report-header.tag</path>
    </tag-file>
    <tag-file>
-      <name>navbar</name>
-      <path>/WEB-INF/tags/navbar.tag</path>
+      <name>report-navbar</name>
+      <path>/WEB-INF/tags/report-navbar.tag</path>
    </tag-file>
    <tag-file>
-      <name>content</name>
-      <path>/WEB-INF/tags/content.tag</path>
+      <name>report-content</name>
+      <path>/WEB-INF/tags/report-content.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document</name>
+      <path>/WEB-INF/tags/document.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-header</name>
+      <path>/WEB-INF/tags/document-header.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-navbar</name>
+      <path>/WEB-INF/tags/document-navbar.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-content</name>
+      <path>/WEB-INF/tags/document-content.tag</path>
    </tag-file>
    
    <function>

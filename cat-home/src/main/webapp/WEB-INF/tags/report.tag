@@ -38,14 +38,14 @@
 	<jsp:invoke fragment="resource"/>
 </head>
 <body class="no-skin">
-	<a:header/>
+	<a:report-header/>
 	
 	<div class="main-container" id="main-container">
-		<a:navbar/>
-		<a:content>
+		<a:report-navbar/>
+		<a:report-content>
 			<jsp:attribute name="subtitle"><jsp:invoke fragment="subtitle"/></jsp:attribute>
 			<jsp:body><jsp:doBody/></jsp:body>
-		</a:content>
+		</a:report-content>
 		</div>
 	</div>
 </body>

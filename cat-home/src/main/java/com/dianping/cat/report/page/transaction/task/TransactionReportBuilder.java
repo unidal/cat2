@@ -16,10 +16,8 @@ import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
 import com.dianping.cat.consumer.transaction.TransactionReportCountFilter;
 import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
 import com.dianping.cat.consumer.transaction.model.transform.DefaultNativeBuilder;
-import com.dianping.cat.core.dal.DailyGraph;
 import com.dianping.cat.core.dal.DailyGraphDao;
 import com.dianping.cat.core.dal.DailyReport;
-import com.dianping.cat.core.dal.Graph;
 import com.dianping.cat.core.dal.GraphDao;
 import com.dianping.cat.core.dal.MonthlyReport;
 import com.dianping.cat.core.dal.WeeklyReport;
@@ -42,9 +40,6 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 	protected TransactionReportService m_reportService;
 
 	@Inject
-	private TransactionGraphCreator m_transactionGraphCreator;
-
-	@Inject
 	private TransactionMerger m_transactionMerger;
 
 	private Logger m_logger;
@@ -54,8 +49,6 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 		try {
 			Date end = TaskHelper.tomorrowZero(period);
 			TransactionReport transactionReport = queryHourlyReportsByDuration(name, domain, period, end);
-
-			buildDailyTransactionGraph(transactionReport);
 
 			DailyReport report = new DailyReport();
 
@@ -72,44 +65,6 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 			Cat.logError(e);
 			return false;
 		}
-	}
-
-	private void buildDailyTransactionGraph(TransactionReport report) {
-		DailyTransactionGraphCreator creator = new DailyTransactionGraphCreator();
-		List<DailyGraph> graphs = creator.buildDailygraph(report);
-
-		for (DailyGraph graph : graphs) {
-			try {
-				m_dailyGraphDao.insert(graph);
-			} catch (DalException e) {
-				Cat.logError(e);
-			}
-		}
-	}
-
-	private List<Graph> buildHourlyGraphs(String name, String domain, Date period) throws DalException {
-		long startTime = period.getTime();
-		TransactionReport report = m_reportService.queryReport(domain, new Date(startTime), new Date(startTime
-		      + TimeHelper.ONE_HOUR));
-
-		return m_transactionGraphCreator.splitReportToGraphs(period, domain, TransactionAnalyzer.ID, report);
-	}
-
-	@Override
-	public boolean buildHourlyTask(String name, String domain, Date period) {
-		try {
-			List<Graph> graphs = buildHourlyGraphs(name, domain, period);
-			if (graphs != null) {
-				for (Graph graph : graphs) {
-					m_graphDao.insert(graph);
-				}
-			}
-		} catch (Exception e) {
-			m_logger.error(e.getMessage(), e);
-			Cat.logError(e);
-			return false;
-		}
-		return true;
 	}
 
 	@Override
@@ -172,10 +127,10 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 
 		for (; startTime < endTime; startTime += TimeHelper.ONE_DAY) {
 			try {
-				TransactionReport reportModel = m_reportService.queryReport(domain, new Date(startTime),
-				      new Date(startTime + TimeHelper.ONE_DAY));
+				TransactionReport reportModel = m_reportService.queryReport(domain, new Date(startTime), new Date(startTime
+				      + TimeHelper.ONE_DAY));
 
-				//do not keep type domain in monthly or weekly report
+				// do not keep type domain in monthly or weekly report
 				reportModel.getDistributionInTypes().clear();
 				reportModel.accept(merger);
 			} catch (Exception e) {
@@ -199,13 +154,18 @@ public class TransactionReportBuilder implements TaskBuilder, LogEnabled {
 		double duration = (endTime - startTime) * 1.0 / TimeHelper.ONE_DAY;
 
 		for (; startTime < endTime; startTime = startTime + TimeHelper.ONE_HOUR) {
-			TransactionReport report = m_reportService.queryReport(domain, new Date(startTime), new Date(
-			      startTime + TimeHelper.ONE_HOUR));
+			TransactionReport report = m_reportService.queryReport(domain, new Date(startTime), new Date(startTime
+			      + TimeHelper.ONE_HOUR));
 
-			//do not keep type domain in daily report
+			// do not keep type domain in daily report
 			report.getDistributionInTypes().clear();
 			reports.add(report);
 		}
 		return m_transactionMerger.mergeForDaily(domain, reports, domainSet, duration);
 	}
+
+	@Override
+   public boolean buildHourlyTask(String name, String domain, Date period) {
+	   return true;
+   }
 }

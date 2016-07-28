@@ -37,9 +37,6 @@ public class Handler implements PageHandler<Context> {
 	private GraphBuilder m_builder;
 
 	@Inject
-	private HistoryGraphs m_historyGraph;
-
-	@Inject
 	private JspViewer m_jspViewer;
 
 	@Inject
@@ -78,22 +75,17 @@ public class Handler implements PageHandler<Context> {
 		TransactionReport base = m_manager.getReport(period, period.getBaselineStartTime(startTime), domain, filterId, //
 		      "ip", ip, "type", type, "name", name);
 
-		if (current != null) {
-			GraphViewModel graph = new GraphViewModel(ip, type, name, current, last, base);
+		GraphViewModel graph = new GraphViewModel(ip, type, name, current, last, base);
 
-			model.setGraph(graph);
-		}
+		model.setGraph(graph);
+		model.setReport(current);
 
+		// TODO move to transaction ALL report
 		if (current != null) {
 			if (Constants.ALL.equals(payload.getDomain())) {
 				buildAllReportDistributionInfo(model, type, name, ip, current);
 			}
 		}
-
-		m_historyGraph.buildTrend(model, current, last, base);
-		// m_historyGraph.buildTrendGraph(model, payload);
-
-		model.setReport(current);
 	}
 
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
@@ -150,8 +142,9 @@ public class Handler implements PageHandler<Context> {
 		if (report != null) {
 			GraphViewModel graph = new GraphViewModel(m_builder, ip, type, name, report);
 
+			// TODO move to all
 			if (Constants.ALL.equals(domain)) {
-				buildAllReportDistributionInfo(model, type, name, ip, report); // TODO move to all
+				buildAllReportDistributionInfo(model, type, name, ip, report);
 			}
 
 			model.setGraph(graph);

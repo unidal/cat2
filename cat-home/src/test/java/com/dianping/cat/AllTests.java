@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.unidal.cat.plugin.transaction.page.PayloadTest;
-import org.unidal.cat.plugin.transaction.page.TransactionGraphDataTest;
 
 import com.dianping.cat.report.alert.ExtractDataTest;
 import com.dianping.cat.report.alert.JudgeTimeTest;
@@ -42,10 +41,8 @@ import com.dianping.cat.report.task.problem.ProblemGraphCreatorTest;
 import com.dianping.cat.report.task.service.ServiceReportMergerTest;
 import com.dianping.cat.report.task.storage.HistoryStorageReportMergerTest;
 import com.dianping.cat.report.task.system.SystemReportStatisticsTest;
-import com.dianping.cat.report.task.transaction.DailyTransactionReportGraphTest;
 import com.dianping.cat.report.task.transaction.HistoryTransactionMergerTest;
 import com.dianping.cat.report.task.transaction.TransactionDailyGraphMergerTest;
-import com.dianping.cat.report.task.transaction.TransactionGraphCreatorTest;
 import com.dianping.cat.system.notify.RenderTest;
 
 @RunWith(Suite.class)
@@ -70,8 +67,6 @@ EventGraphDataTest.class,
 
 ProblemGraphDataTest.class,
 
-TransactionGraphDataTest.class,
-
 /* .report.task */
 TaskConsumerTest.class,
 
@@ -85,8 +80,6 @@ ProblemCreateGraphDataTest.class,
 
 ProblemGraphCreatorTest.class,
 
-TransactionGraphCreatorTest.class,
-
 EventGraphCreatorTest.class,
 
 EventDailyGraphMergerTest.class,
@@ -99,9 +92,6 @@ ProblemDailyGraphMergerTest.class,
 RenderTest.class,
 
 StateReportMergerTest.class,
-
-/* Daily Graph Test */
-DailyTransactionReportGraphTest.class,
 
 ProblemDailyGraphTest.class,
 

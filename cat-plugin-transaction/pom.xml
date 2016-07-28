@@ -12,7 +12,7 @@
    <dependencies>
       <dependency>
          <groupId>com.dianping.cat</groupId>
-         <artifactId>cat-core</artifactId>
+         <artifactId>cat-core-document</artifactId>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
