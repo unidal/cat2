@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wizard package="org.unidal.cat">
    <webapp package="org.unidal.cat" name="cat" module="true" webres="false" cat="false" plugin-management="false" jstl="false">
-      <module name="document" path="doc" default="true" package="org.unidal.cat.core.document">
-         <page name="home" title="Home" default="true" package="org.unidal.cat.core.document.page" path="home" template="default">
+      <module name="document" path="doc" default="true" package="org.unidal.cat.document">
+         <page name="home" title="Home" default="true" package="org.unidal.cat.document.page" path="home" template="default">
             <description>Home</description>
          </page>
       </module>

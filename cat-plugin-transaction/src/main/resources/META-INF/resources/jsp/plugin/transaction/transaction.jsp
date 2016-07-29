@@ -1,6 +1,6 @@
 <%@ page session="false" language="java" pageEncoding="UTF-8" %>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="r" uri="/WEB-INF/report.tld"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
@@ -10,7 +10,7 @@
 <jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
 <c:set var="report" value="${model.report}"/>
 
-<a:report>
+<r:report>
 <jsp:attribute name="subtitle">${w:format(report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
@@ -161,4 +161,4 @@
 	</c:choose>
 </jsp:body>
 
-</a:report>
+</r:report>

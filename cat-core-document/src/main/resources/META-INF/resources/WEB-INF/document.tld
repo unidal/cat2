@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+   version="2.0">
+   <description>Application Specific JSP Tag Library</description>
+   <tlib-version>1.0</tlib-version>
+   <short-name>d</short-name>
+   <tag-file>
+      <name>document</name>
+      <path>/WEB-INF/tags/document.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-header</name>
+      <path>/WEB-INF/tags/document-header.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-navbar</name>
+      <path>/WEB-INF/tags/document-navbar.tag</path>
+   </tag-file>
+   <tag-file>
+      <name>document-content</name>
+      <path>/WEB-INF/tags/document-content.tag</path>
+   </tag-file>
+</taglib>

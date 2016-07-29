@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.document.spi.Document;
+import org.unidal.cat.core.document.spi.Document;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
