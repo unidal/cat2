@@ -15,7 +15,6 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
-import org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder;
 import org.unidal.cat.plugin.transaction.view.GraphViewModel;
 import org.unidal.cat.plugin.transaction.view.NameViewModel;
 import org.unidal.cat.plugin.transaction.view.TypeViewModel;
@@ -42,16 +41,8 @@ public class Handler implements PageHandler<Context> {
 	@Inject
 	private PayloadNormalizer m_normalizer;
 
-	@Inject
-	private AllReportDistributionBuilder m_distributionBuilder;
-
 	@Inject(TransactionConstants.NAME)
 	private ReportManager<TransactionReport> m_manager;
-
-	private void buildAllReportDistributionInfo(Model model, String type, String name, String ip,
-	      TransactionReport report) {
-		m_distributionBuilder.buildAllReportDistributionInfo(model, type, name, ip, report);
-	}
 
 	private void handleHistoryGraph(Model model, Payload payload) throws IOException {
 		Date startTime = payload.getStartTime();
@@ -79,13 +70,6 @@ public class Handler implements PageHandler<Context> {
 
 		model.setGraph(graph);
 		model.setReport(current);
-
-		// TODO move to transaction ALL report
-		if (current != null) {
-			if (Constants.ALL.equals(payload.getDomain())) {
-				buildAllReportDistributionInfo(model, type, name, ip, current);
-			}
-		}
 	}
 
 	private void handleHistoryReport(Model model, Payload payload) throws IOException {
@@ -141,11 +125,6 @@ public class Handler implements PageHandler<Context> {
 
 		if (report != null) {
 			GraphViewModel graph = new GraphViewModel(m_builder, ip, type, name, report);
-
-			// TODO move to all
-			if (Constants.ALL.equals(domain)) {
-				buildAllReportDistributionInfo(model, type, name, ip, report);
-			}
 
 			model.setGraph(graph);
 		}
