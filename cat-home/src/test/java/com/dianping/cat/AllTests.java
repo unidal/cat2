@@ -7,7 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.unidal.cat.plugin.transaction.page.PayloadTest;
 
 import com.dianping.cat.report.alert.ExtractDataTest;
 import com.dianping.cat.report.alert.JudgeTimeTest;
@@ -55,9 +54,6 @@ ValueTranslaterTest.class,
 EventReportFilterTest.class,
 
 ProblemReportMergerTest.class,
-
-/* . report.page.transcation */
-PayloadTest.class,
 
 /* . report.page.cross */
 CrossReportMergerTest.class,

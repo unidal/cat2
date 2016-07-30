@@ -3,9 +3,9 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.page.Context" scope="request" />
-<jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.page.Payload" scope="request" />
-<jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
+<jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.report.page.Context" scope="request" />
+<jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.report.page.Payload" scope="request" />
+<jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.report.page.Model" scope="request" />
 
 <script src="${model.webapp}/js/jquery-1.7.1.js"></script>
 <script src="${model.webapp}/js/highcharts.js"></script>

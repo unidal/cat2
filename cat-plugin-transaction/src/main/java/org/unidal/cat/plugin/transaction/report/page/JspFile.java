@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.report.page;
 
 public enum JspFile {
 	REPORT("/jsp/plugin/transaction/transaction.jsp"),

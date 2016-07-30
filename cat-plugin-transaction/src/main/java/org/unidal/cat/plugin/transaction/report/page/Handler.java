@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.report.page;
 
 import java.io.IOException;
 import java.util.Date;
@@ -15,6 +15,7 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.report.ReportPage;
 import org.unidal.cat.plugin.transaction.view.GraphViewModel;
 import org.unidal.cat.plugin.transaction.view.NameViewModel;
 import org.unidal.cat.plugin.transaction.view.TypeViewModel;
@@ -29,7 +30,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Constants;
 import com.dianping.cat.mvc.PayloadNormalizer;
-import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
 	@Inject

@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.report.page;
 
 public enum Action implements org.unidal.web.mvc.Action {
 	REPORT("report"),

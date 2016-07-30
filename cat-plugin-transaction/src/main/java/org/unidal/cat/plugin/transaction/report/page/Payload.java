@@ -1,15 +1,15 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.report.page;
 
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.unidal.cat.plugin.transaction.report.ReportPage;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
 import com.dianping.cat.mvc.AbstractReportPayload;
-import com.dianping.cat.report.ReportPage;
 
 public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	@FieldMeta("op")

@@ -1,9 +1,8 @@
-package org.unidal.cat.plugin.transaction.page;
+package org.unidal.cat.plugin.transaction.report.page;
 
+import org.unidal.cat.plugin.transaction.report.ReportPage;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.view.BaseJspViewer;
-
-import com.dianping.cat.report.ReportPage;
 
 public class JspViewer extends BaseJspViewer<ReportPage, Action, Context, Model> {
 	@Override
