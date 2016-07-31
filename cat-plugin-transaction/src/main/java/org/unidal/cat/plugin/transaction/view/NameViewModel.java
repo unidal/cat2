@@ -169,7 +169,7 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 			if (total > 0) {
 				return m_name.getFailCount() / total;
 			} else {
-				return Double.NaN;
+				return 0;
 			}
 		}
 

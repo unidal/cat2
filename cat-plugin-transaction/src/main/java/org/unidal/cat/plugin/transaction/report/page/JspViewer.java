@@ -1,7 +1,6 @@
 package org.unidal.cat.plugin.transaction.report.page;
 
 import org.unidal.cat.plugin.transaction.report.ReportPage;
-import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.view.BaseJspViewer;
 
 public class JspViewer extends BaseJspViewer<ReportPage, Action, Context, Model> {
@@ -13,7 +12,7 @@ public class JspViewer extends BaseJspViewer<ReportPage, Action, Context, Model>
 		case REPORT:
 			return JspFile.REPORT.getPath();
 		case GRAPH:
-			if (ctx.getPayload().getReportPeriod() == ReportPeriod.HOUR) {
+			if (ctx.getPayload().getPeriod().isHour()) {
 				return JspFile.HOURLY_GRAPH.getPath();
 			} else {
 				return JspFile.HISTORY_GRAPH.getPath();

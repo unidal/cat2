@@ -155,7 +155,7 @@ public class LocalMessageBucketTest extends ComponentTestCase {
 	static class MockMessageIdFactory extends MessageIdFactory {
 		@Override
 		protected long getTimestamp() {
-			return 1343532130488L;
+			return 1343532130488L / 36001000L;
 		}
 
 		@Override
