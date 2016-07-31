@@ -57,7 +57,7 @@
                      <goal>plexus</goal>
                   </goals>
                   <configuration>
-                     <className>org.unidal.cat.document.build.ComponentsConfigurator</className>
+                     <className>org.unidal.cat.core.report.build.ComponentsConfigurator</className>
                   </configuration>
                </execution>
             </executions>

@@ -2377,10 +2377,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</role>
-			<implementation>org.unidal.cat.plugin.transaction.page.transform.AllReportDistributionBuilder</implementation>
-		</component>
-		<component>
 			<role>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</role>
 			<implementation>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</implementation>
 		</component>
