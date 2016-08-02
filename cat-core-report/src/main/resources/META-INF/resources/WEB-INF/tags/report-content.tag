@@ -38,11 +38,11 @@
 	}
 	
 	try{ace.settings.check('main-container', 'fixed');}catch(e){}
-	try{ace.settings.check('breadcrumbs' , 'fixed');}catch(e){}
+	try{ace.settings.check('breadcrumbs', 'fixed');}catch(e){}
 
 	$(document).ready(function() {
-		var str= getcookie('CAT_DOMAINS');
-		var domains = 'a|b|c|d'.split('|');//str.split("|");
+		var str = getCookie('CAT_DOMAINS');
+		var domains = str.split("|");
 		var html = '';
 		
 		for(var i in domains){

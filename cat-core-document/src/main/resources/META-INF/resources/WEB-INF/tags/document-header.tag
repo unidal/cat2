@@ -22,7 +22,7 @@
 		<!-- /section:basics/sidebar.mobile.toggle -->
 		<div class="navbar-header pull-left">
 			<!-- #section:basics/navbar.layout.brand -->
-			<a href="${model.webapp}/r/home"  class="navbar-brand">
+			<a href="${model.webapp}/r/home" class="navbar-brand">
 				<span>CAT</span>
 				<small style="font-size:65%">(Central Application Tracking)</small>
 			</a>

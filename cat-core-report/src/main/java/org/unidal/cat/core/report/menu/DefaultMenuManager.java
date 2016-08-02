@@ -1,7 +1,9 @@
 package org.unidal.cat.core.report.menu;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.unidal.lookup.annotation.Named;
 import org.unidal.web.mvc.ActionContext;
@@ -9,6 +11,8 @@ import org.unidal.web.mvc.ActionContext;
 @Named(type = MenuManager.class)
 public class DefaultMenuManager implements MenuManager {
 	private List<MenuDef> m_defs = new ArrayList<MenuDef>();
+
+	private Set<String> m_ids = new HashSet<String>();
 
 	@Override
 	public List<Menu> getMenus(ActionContext<?> ctx) {
@@ -23,6 +27,9 @@ public class DefaultMenuManager implements MenuManager {
 
 	@Override
 	public void register(String id, String title, String styleClasses, MenuLinkBuilder builder) {
-		m_defs.add(new MenuDef(id, title, styleClasses, builder));
+		if (!m_ids.contains(id)) {
+			m_ids.add(id);
+			m_defs.add(new MenuDef(id, title, styleClasses, builder));
+		}
 	}
 }

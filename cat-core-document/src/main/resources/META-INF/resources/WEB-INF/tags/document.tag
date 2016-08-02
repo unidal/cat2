@@ -1,5 +1,5 @@
 <%@ tag trimDirectiveWhitespaces="true" pageEncoding="UTF-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="d" uri="/WEB-INF/document.tld"%>
 <%@ attribute name="resource" fragment="true"%>
 
 <html lang="en">
@@ -31,13 +31,13 @@
 </head>
 
 <body class="no-skin">
-	<a:document-header />
+	<d:document-header />
 
 	<div class="main-container" id="main-container">
-		<a:document-navbar />
-		<a:document-content>
+		<d:document-navbar />
+		<d:document-content>
 			<jsp:body><jsp:doBody /></jsp:body>
-		</a:document-content>
+		</d:document-content>
 	</div>
 	</div>
 </body>
