@@ -8,6 +8,8 @@ import java.util.Map;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.document.spi.Document;
+import org.unidal.cat.core.report.menu.MenuLinkBuilder;
+import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;
@@ -18,6 +20,7 @@ import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
+import org.unidal.web.mvc.ActionContext;
 
 import com.dianping.cat.Constants;
 
@@ -51,6 +54,14 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
 
 	@Override
 	public void initialize() throws InitializationException {
+		lookup(MenuManager.class).register("transaction", "Transaction", "glyphicon glyphicon-time",
+		      new MenuLinkBuilder() {
+			      @Override
+			      public String build(ActionContext<?> ctx) {
+				      return ctx.getQuery().uri("/r/t").get("type").get("").get("name").get("").toString();
+			      }
+		      });
+
 		Document.USER.register("transaction", "Transaction");
 	}
 }

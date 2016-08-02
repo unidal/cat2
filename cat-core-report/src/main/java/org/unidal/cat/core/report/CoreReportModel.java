@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.unidal.cat.core.report.menu.Menu;
+import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.core.report.nav.NavigationBar;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
@@ -30,14 +32,29 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 
 	private transient HostinfoService m_hostinfoService;
 
+	private transient List<Menu> m_menus;
+
 	public CoreReportModel(M ctx) {
 		super(ctx);
+
+		try {
+			MenuManager manager = ContainerLoader.getDefaultContainer().lookup(MenuManager.class);
+
+			m_menus = manager.getMenus(ctx);
+		} catch (Exception e) {
+			Cat.logError(e);
+		}
+
 		try {
 			m_projectService = ContainerLoader.getDefaultContainer().lookup(ProjectService.class);
 			m_hostinfoService = ContainerLoader.getDefaultContainer().lookup(HostinfoService.class);
 		} catch (Exception e) {
 			Cat.logError(e);
 		}
+	}
+
+	public List<Menu> getMenus() {
+		return m_menus;
 	}
 
 	public List<NavigationBar> getBars() {
