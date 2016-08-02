@@ -730,6 +730,11 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-core</role-hint>
+			<implementation>com.dianping.cat.CatCoreModule</implementation>
+		</component>
+		<component>
 			<role>com.dianping.cat.analysis.MessageConsumer</role>
 			<implementation>com.dianping.cat.analysis.RealtimeConsumer</implementation>
 			<requirements>
@@ -927,11 +932,6 @@
 					<role>com.dianping.cat.config.content.ContentFetcher</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.initialization.Module</role>
-			<role-hint>cat-core</role-hint>
-			<implementation>com.dianping.cat.CatCoreModule</implementation>
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.datasource.DataSourceProvider</role>

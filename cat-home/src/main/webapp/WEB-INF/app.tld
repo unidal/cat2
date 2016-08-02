@@ -51,40 +51,6 @@
       <path>/WEB-INF/tags/historyStorageReport.tag</path>
    </tag-file>
    
-   <!-- cat2 -->
-   <tag-file>
-      <name>report</name>
-      <path>/WEB-INF/tags/report.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>report-header</name>
-      <path>/WEB-INF/tags/report-header.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>report-navbar</name>
-      <path>/WEB-INF/tags/report-navbar.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>report-content</name>
-      <path>/WEB-INF/tags/report-content.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>document</name>
-      <path>/WEB-INF/tags/document.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>document-header</name>
-      <path>/WEB-INF/tags/document-header.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>document-navbar</name>
-      <path>/WEB-INF/tags/document-navbar.tag</path>
-   </tag-file>
-   <tag-file>
-      <name>document-content</name>
-      <path>/WEB-INF/tags/document-content.tag</path>
-   </tag-file>
-   
    <function>
       <description>Build form action for given id</description>
       <name>action</name>

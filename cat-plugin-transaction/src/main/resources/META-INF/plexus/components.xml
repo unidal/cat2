@@ -214,5 +214,58 @@
 			<role>org.unidal.cat.plugin.transaction.view.svg.ValueTranslater</role>
 			<implementation>org.unidal.cat.plugin.transaction.view.svg.DefaultValueTranslater</implementation>
 		</component>
+		<component>
+			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
+			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
+			<configuration>
+				<defaultModule>org.unidal.cat.plugin.transaction.report.ReportModule</defaultModule>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.Module</role>
+			<role-hint>org.unidal.cat.plugin.transaction.report.ReportModule</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.report.ReportModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transaction.report.page.Handler</role>
+			<implementation>org.unidal.cat.plugin.transaction.report.page.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.report.page.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportManager</role>
+					<role-hint>transaction</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transaction.report.page.JspViewer</role>
+			<implementation>org.unidal.cat.plugin.transaction.report.page.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+			<implementation>com.dianping.cat.mvc.PayloadNormalizer</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.config.server.ServerConfigManager</role>
+			<implementation>com.dianping.cat.config.server.ServerConfigManager</implementation>
+		</component>
 	</components>
 </plexus>

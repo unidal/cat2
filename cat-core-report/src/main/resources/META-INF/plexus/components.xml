@@ -1,0 +1,13 @@
+<plexus>
+	<components>
+		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-core-report</role-hint>
+			<implementation>org.unidal.cat.core.report.CatReportModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.menu.MenuManager</role>
+			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
+		</component>
+	</components>
+</plexus>

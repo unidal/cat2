@@ -1,29 +1,29 @@
 <%@ page session="false" language="java" pageEncoding="UTF-8" %>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="r" uri="/WEB-INF/report.tld"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.page.Context" scope="request" />
-<jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.page.Payload" scope="request" />
-<jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.page.Model" scope="request" />
+<jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.report.page.Context" scope="request" />
+<jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.report.page.Payload" scope="request" />
+<jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.report.page.Model" scope="request" />
 <c:set var="report" value="${model.report}"/>
 
-<a:report>
+<r:report>
 <jsp:attribute name="subtitle">${w:format(report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
 	<script src="${model.webapp}/js/appendHostname.js"></script>
 </jsp:attribute>
 <jsp:body>
-	<c:set var="qs" value="${ctx.query.domain[empty model.domain ? '' : model.domain].date[empty model.date ? '' : model.date].type[empty payload.type ? '' : payload.type].queryname[empty model.queryName ? '' : model.queryName]}"/>
+	<c:set var="qs" value="${ctx.query.domain[empty payload.domain ? '' : payload.domain].date[payload.formattedStartTime].type[empty payload.type ? '' : payload.type].query[empty payload.query ? '' : payload.query]}"/>
 	
 	<table class="machines">
 		<tr class="left">
 			<th>&nbsp;[&nbsp;
 			    <c:choose>
-					<c:when test="${model.ipAddress eq 'All'}">
+					<c:when test="${payload.ip eq 'All'}">
 						<a href="?${ctx.query.ip['']}" class="current">All</a>
 					</c:when>
 					<c:otherwise>
@@ -33,7 +33,7 @@
 				<c:forEach var="ip" items="${model.ips}">
 				    &nbsp;[&nbsp;
 	   	  		    <c:choose>
-						<c:when test="${model.ipAddress eq ip}">
+						<c:when test="${payload.ip eq ip}">
 							<a href="?${ctx.query.ip[ip]}" class="current">${ip}</a>
 						</c:when>
 						<c:otherwise>
@@ -60,8 +60,8 @@
 	<table class='table table-striped table-condensed table-hover' style="width:100%;">
 		<tr>
 		   <th class="left" colspan="13">
-		   	  <input type="text" name="queryname" id="queryname" size="40" value="${model.queryName}">
-		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${model.date}','${model.domain}','${model.ipAddress}','${payload.type}')" type="submit">
+		   	  <input type="text" name="query" id="query" size="40" value="${payload.query}">
+		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${payload.formattedStartTime}','${payload.domain}','${payload.ip}','${payload.type}')" type="submit">
 			  支持多个字符串查询，例如sql|url|task，查询结果为包含任一sql、url、task的列。
 		   </th>
 		</tr>
@@ -94,7 +94,7 @@
 					<c:when test="${empty payload.type}">
 						<td class="left longText" style="white-space:normal">
 							<a href="?${ctx.query.op['graph'].type[e.id]}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
-							&nbsp;&nbsp;<a href="?${ctx.query.type[e.id]}">${e.id}</a>
+							&nbsp;&nbsp;<a href="?${ctx.query.type[e.id].query['']}">${e.id}</a>
 						</td>
 					</c:when>
 					<c:when test="${not empty payload.type and e.summary}">
@@ -130,7 +130,7 @@
 				<td>${w:format(e.std,'###,##0.0')}</td>
 				<td class="nowrap">${w:format(e.tps,'###,##0.0')}</td>
 				<c:if test="${not empty payload.type}">
-					<td class="nowrap">${w:format(e.total / model.table.total,'0.00%')}</td>
+					<td class="nowrap">${w:format(e.total / (model.table.total eq 0 ? 1 : model.table.total),'0.00%')}</td>
 				</c:if>
 			</tr>
 			<tr class="graphs"><td colspan="13" style="display:none"><div id="${status.index}" style="display:none"></div></td></tr>
@@ -161,4 +161,4 @@
 	</c:choose>
 </jsp:body>
 
-</a:report>
+</r:report>

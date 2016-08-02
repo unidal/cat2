@@ -7,7 +7,6 @@ import org.unidal.cat.message.MessageIdFactoryTest;
 import org.unidal.cat.message.codec.BinaryMessageCodecTest;
 
 import com.dianping.cat.configuration.ConfigTest;
-import com.dianping.cat.configuration.NetworkInterfaceManagerTest;
 import com.dianping.cat.message.EventTest;
 import com.dianping.cat.message.HeartbeatTest;
 import com.dianping.cat.message.MessageTest;
@@ -41,8 +40,6 @@ CatFilterTest.class,
 
 /* .tool */
 ToolsTest.class,
-
-NetworkInterfaceManagerTest.class,
 
 CatTest.class,
 

@@ -1,12 +1,12 @@
 <%@ page session="false" language="java" pageEncoding="UTF-8"%>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="d" uri="/WEB-INF/document.tld"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<jsp:useBean id="ctx" type="org.unidal.cat.document.page.Context" scope="request" />
-<jsp:useBean id="payload" type="org.unidal.cat.document.page.Payload" scope="request" />
-<jsp:useBean id="model" type="org.unidal.cat.document.page.Model" scope="request" />
+<jsp:useBean id="ctx" type="org.unidal.cat.core.document.page.Context" scope="request" />
+<jsp:useBean id="payload" type="org.unidal.cat.core.document.page.Payload" scope="request" />
+<jsp:useBean id="model" type="org.unidal.cat.core.document.page.Model" scope="request" />
 
-<a:document>
+<d:document>
 
 <c:set var="doc" value="${payload.document}"/>
 <c:choose>
@@ -39,4 +39,4 @@
    </c:otherwise>
 </c:choose>
 
-</a:document>
+</d:document>

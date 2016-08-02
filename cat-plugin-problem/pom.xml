@@ -10,15 +10,24 @@
     <name>CAT :: Plugin :: Problem</name>
     <packaging>jar</packaging>
     <dependencies>
-        <dependency>
-            <groupId>com.dianping.cat</groupId>
-            <artifactId>cat-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.unidal.framework</groupId>
-            <artifactId>test-framework</artifactId>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+         <groupId>com.dianping.cat</groupId>
+         <artifactId>cat-core-report</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.dianping.cat</groupId>
+         <artifactId>cat-core-document</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.unidal.framework</groupId>
+         <artifactId>web-framework</artifactId>
+         <scope>provided</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.unidal.framework</groupId>
+         <artifactId>test-framework</artifactId>
+         <scope>test</scope>
+      </dependency>
     </dependencies>
     <build>
         <plugins>

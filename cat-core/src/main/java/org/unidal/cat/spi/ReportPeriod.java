@@ -7,12 +7,8 @@ import java.util.Date;
 public enum ReportPeriod {
 	HOUR(0) {
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			long time = date.getTime();
-
-			time = time - time % (3600 * 1000L);
-			time = time - 24 * 3600 * 1000L; // one day ago
-			return new Date(time);
+		protected void add(Calendar cal, int step) {
+			cal.add(Calendar.HOUR, step);
 		}
 
 		@Override
@@ -21,29 +17,15 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		protected long getDuration() {
-			return 3600 * 1000L;
-		}
+		protected Calendar getStartCalendar(Date date) {
+			Calendar cal = Calendar.getInstance();
 
-		/**
-		 * Next hour
-		 */
-		@Override
-		public Date getReduceTime(Date date) {
-			long time = date.getTime();
+			cal.setTime(date);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
 
-			time = time - time % (3600 * 1000L);
-			time += 3600 * 1000L;
-
-			return new Date(time);
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
-			long time = date.getTime();
-
-			time = time - time % (3600 * 1000L);
-			return new Date(time);
+			return cal;
 		}
 
 		@Override
@@ -57,21 +39,25 @@ public enum ReportPeriod {
 				return true;
 			}
 		}
+
+		@Override
+		protected void setBaselineCalendar(Calendar cal) {
+			cal.add(Calendar.DATE, -1); // one day ago
+		}
+
+		/**
+		 * One hour later
+		 */
+		@Override
+		protected void setReducerCalendar(Calendar cal) {
+			cal.add(Calendar.HOUR, 1);
+		}
 	},
 
 	DAY(1) {
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.MONTH, -1); // one month ago
-			return cal.getTime();
+		protected void add(Calendar cal, int step) {
+			cal.add(Calendar.DATE, step);
 		}
 
 		@Override
@@ -80,60 +66,55 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		protected long getDuration() {
-			return 24 * 3600 * 1000L;
+		protected Calendar getStartCalendar(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			return cal;
+		}
+
+		@Override
+		public Date getStartTime(Date date) {
+			Calendar cal = Calendar.getInstance();
+
+			cal.setTime(date);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+
+			return cal.getTime();
+		}
+
+		@Override
+		public boolean isHistorical(Date startTime) {
+			return true;
+		}
+
+		@Override
+		protected void setBaselineCalendar(Calendar cal) {
+			cal.add(Calendar.DATE, -7); // one week ago
 		}
 
 		/**
 		 * 1 AM of next day
 		 */
 		@Override
-		public Date getReduceTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.add(Calendar.DATE, 1);
+		protected void setReducerCalendar(Calendar cal) {
+			cal.add(Calendar.HOUR, 1);
 			cal.set(Calendar.HOUR_OF_DAY, 1);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public boolean isHistorical(Date startTime) {
-			return true;
 		}
 	},
 
 	WEEK(2) {
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.DAY_OF_WEEK, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.DATE, -91); // about 3 months ago
-			return cal.getTime();
+		protected void add(Calendar cal, int step) {
+			cal.add(Calendar.DATE, 7 * step);
 		}
 
 		@Override
@@ -142,30 +123,7 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		protected long getDuration() {
-			return 7 * 24 * 3600 * 1000L;
-		}
-
-		/**
-		 * 1 AM of first day of next week
-		 */
-		@Override
-		public Date getReduceTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.add(Calendar.DATE, 7);
-			cal.set(Calendar.DAY_OF_WEEK, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 1);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
+		protected Calendar getStartCalendar(Date date) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(date);
@@ -175,29 +133,34 @@ public enum ReportPeriod {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 
-			return cal.getTime();
+			return cal;
 		}
 
 		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
+
+		@Override
+		protected void setBaselineCalendar(Calendar cal) {
+			cal.add(Calendar.DATE, -14); // 2 weeks ago
+		}
+
+		/**
+		 * 1 AM of first day of next week
+		 */
+		@Override
+		protected void setReducerCalendar(Calendar cal) {
+			cal.add(Calendar.DATE, 7);
+			cal.set(Calendar.DAY_OF_WEEK, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 1);
+		}
 	},
 
 	MONTH(3) {
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.YEAR, -1); // one year ago
-			return cal.getTime();
+		protected void add(Calendar cal, int step) {
+			cal.add(Calendar.MONTH, step);
 		}
 
 		@Override
@@ -206,12 +169,7 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		protected long getDuration() {
-			return 30 * 24 * 3600 * 1000L;
-		}
-
-		@Override
-		public Date getLastStartTime(Date date) {
+		protected Calendar getStartCalendar(Date date) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(date);
@@ -221,64 +179,34 @@ public enum ReportPeriod {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 
-			cal.add(Calendar.MONTH, -1);
-
-			return cal.getTime();
-		}
-
-		/**
-		 * 1 AM of first day of next month
-		 */
-		@Override
-		public Date getReduceTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.add(Calendar.MONTH, 1);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 1);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
+			return cal;
 		}
 
 		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
 		}
+
+		@Override
+		protected void setBaselineCalendar(Calendar cal) {
+			cal.add(Calendar.YEAR, -1); // one year ago
+		}
+
+		/**
+		 * 2 AM of first day of next month
+		 */
+		@Override
+		protected void setReducerCalendar(Calendar cal) {
+			cal.add(Calendar.MONTH, 1);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 2);
+		}
 	},
 
 	YEAR(4) {
 		@Override
-		public Date getBaselineStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.MONTH, 0);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			cal.add(Calendar.YEAR, -1); // one year ago
-			return cal.getTime();
+		protected void add(Calendar cal, int step) {
+			cal.add(Calendar.YEAR, step);
 		}
 
 		@Override
@@ -287,12 +215,7 @@ public enum ReportPeriod {
 		}
 
 		@Override
-		protected long getDuration() {
-			return 365 * 24 * 3600 * 1000L;
-		}
-
-		@Override
-		public Date getLastStartTime(Date date) {
+		protected Calendar getStartCalendar(Date date) {
 			Calendar cal = Calendar.getInstance();
 
 			cal.setTime(date);
@@ -303,45 +226,28 @@ public enum ReportPeriod {
 			cal.set(Calendar.SECOND, 0);
 			cal.set(Calendar.MILLISECOND, 0);
 
-			cal.add(Calendar.YEAR, -1);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public Date getReduceTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.add(Calendar.YEAR, 1);
-			cal.set(Calendar.MONTH, 0);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 1);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
-		}
-
-		@Override
-		public Date getStartTime(Date date) {
-			Calendar cal = Calendar.getInstance();
-
-			cal.setTime(date);
-			cal.set(Calendar.MONTH, 0);
-			cal.set(Calendar.DAY_OF_MONTH, 1);
-			cal.set(Calendar.HOUR_OF_DAY, 0);
-			cal.set(Calendar.MINUTE, 0);
-			cal.set(Calendar.SECOND, 0);
-			cal.set(Calendar.MILLISECOND, 0);
-
-			return cal.getTime();
+			return cal;
 		}
 
 		@Override
 		public boolean isHistorical(Date startTime) {
 			return true;
+		}
+
+		@Override
+		protected void setBaselineCalendar(Calendar cal) {
+			cal.add(Calendar.YEAR, -2); // 2 years ago
+		}
+
+		/**
+		 * 3 AM of first day of next January
+		 */
+		@Override
+		protected void setReducerCalendar(Calendar cal) {
+			cal.add(Calendar.YEAR, 1);
+			cal.set(Calendar.MONTH, 0);
+			cal.set(Calendar.DAY_OF_MONTH, 1);
+			cal.set(Calendar.HOUR_OF_DAY, 3);
 		}
 	};
 
@@ -371,25 +277,40 @@ public enum ReportPeriod {
 		return defaultValue;
 	}
 
+	protected abstract void add(Calendar cal, int step);
+
 	public String format(Date date) {
 		return new SimpleDateFormat(getDateFormat()).format(date);
 	}
 
-	public abstract Date getBaselineStartTime(Date date);
+	public Date getBaselineStartTime(Date date) {
+		Calendar cal = getStartCalendar(date);
+
+		setBaselineCalendar(cal);
+		return cal.getTime();
+	}
 
 	protected abstract String getDateFormat();
 
-	protected abstract long getDuration();
+	public Date getEndTime(Date date) {
+		Calendar cal = getStartCalendar(date);
+
+		add(cal, 1);
+		cal.add(Calendar.MILLISECOND, -1);
+
+		return cal.getTime();
+	}
 
 	public int getId() {
 		return m_id;
 	}
 
 	public Date getLastStartTime(Date date) {
-		Date startTime = getStartTime(date);
-		long duration = getDuration();
+		Calendar cal = getStartCalendar(date);
 
-		return new Date(startTime.getTime() - duration);
+		add(cal, -1);
+
+		return cal.getTime();
 	}
 
 	public String getName() {
@@ -397,15 +318,25 @@ public enum ReportPeriod {
 	}
 
 	public Date getNextStartTime(Date date) {
-		Date startTime = getStartTime(date);
-		long duration = getDuration();
+		Calendar cal = getStartCalendar(date);
 
-		return new Date(startTime.getTime() + duration);
+		add(cal, 1);
+
+		return cal.getTime();
 	}
 
-	public abstract Date getReduceTime(Date date);
+	public Date getReduceTime(Date date) {
+		Calendar cal = getStartCalendar(date);
 
-	public abstract Date getStartTime(Date date);
+		setReducerCalendar(cal);
+		return cal.getTime();
+	}
+
+	protected abstract Calendar getStartCalendar(Date date);
+
+	public Date getStartTime(Date date) {
+		return getStartCalendar(date).getTime();
+	}
 
 	public boolean isCurrent(Date date) {
 		return getStartTime(date).getTime() == getStartTime(new Date()).getTime();
@@ -414,7 +345,7 @@ public enum ReportPeriod {
 	public boolean isDay() {
 		return this == DAY;
 	}
-	
+
 	public abstract boolean isHistorical(Date startTime);
 
 	public boolean isHour() {
@@ -432,4 +363,8 @@ public enum ReportPeriod {
 
 		return defaultValue;
 	}
+
+	protected abstract void setBaselineCalendar(Calendar cal);
+
+	protected abstract void setReducerCalendar(Calendar cal);
 }

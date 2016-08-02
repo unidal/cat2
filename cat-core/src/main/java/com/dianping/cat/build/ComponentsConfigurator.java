@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.unidal.cat.config.internal.DBConfigManager;
 import org.unidal.dal.jdbc.configuration.AbstractJdbcResourceConfigurator;
-import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.CatCoreModule;
@@ -53,6 +52,8 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		all.addAll(new Cat2ComponentsConfigurator().defineComponents());
 
+		all.add(A(CatCoreModule.class));
+
 		all.add(C(MessageConsumer.class, RealtimeConsumer.class) //
 		      .req(MessageAnalyzerManager.class, ServerStatisticManager.class, BlackListManager.class));
 
@@ -91,8 +92,6 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 		all.add(C(UrlPatternHandler.class, DefaultUrlPatternHandler.class));
 
 		all.add(C(UrlPatternConfigManager.class).req(ConfigDao.class, UrlPatternHandler.class, ContentFetcher.class));
-
-		all.add(C(Module.class, CatCoreModule.ID, CatCoreModule.class));
 
 		// database
 		all.add(defineJdbcDataSourceConfigurationManagerComponent("/data/appdatas/cat/datasources.xml"));

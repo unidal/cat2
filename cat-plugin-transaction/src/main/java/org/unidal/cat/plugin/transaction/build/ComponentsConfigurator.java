@@ -62,6 +62,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(DefaultGraphBuilder.class));
 		all.add(A(DefaultValueTranslater.class));
 
+		all.addAll(new WebComponentConfigurator().defineComponents());
+
 		return all;
 	}
 }
