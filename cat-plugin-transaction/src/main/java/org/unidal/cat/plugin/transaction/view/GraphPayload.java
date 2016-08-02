@@ -3,10 +3,10 @@ package org.unidal.cat.plugin.transaction.view;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.unidal.cat.core.report.view.svg.AbstractGraphPayload;
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
-import org.unidal.cat.plugin.transaction.view.svg.AbstractGraphPayload;
 
 public class GraphPayload {
 	abstract static class AbstractPayload extends AbstractGraphPayload {

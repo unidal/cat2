@@ -202,19 +202,6 @@
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionMonthlyReducer</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
-			<implementation>org.unidal.cat.plugin.transaction.view.svg.DefaultGraphBuilder</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.view.svg.ValueTranslater</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.plugin.transaction.view.svg.ValueTranslater</role>
-			<implementation>org.unidal.cat.plugin.transaction.view.svg.DefaultValueTranslater</implementation>
-		</component>
-		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
@@ -231,7 +218,7 @@
 			<implementation>org.unidal.cat.plugin.transaction.report.page.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.plugin.transaction.view.svg.GraphBuilder</role>
+					<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.report.page.JspViewer</role>

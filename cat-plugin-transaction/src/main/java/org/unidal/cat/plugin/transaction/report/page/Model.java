@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.unidal.cat.core.report.CoreReportModel;
+import org.unidal.cat.core.report.view.LineChart;
+import org.unidal.cat.core.report.view.TableViewModel;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.report.ReportPage;
 import org.unidal.cat.plugin.transaction.view.GraphViewModel;
-import org.unidal.cat.plugin.transaction.view.LineChart;
-import org.unidal.cat.plugin.transaction.view.TableViewModel;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
 
