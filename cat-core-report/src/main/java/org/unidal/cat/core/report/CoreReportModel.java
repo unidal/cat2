@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.core.report.menu.Menu;
-import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.core.report.nav.TimeBar;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
@@ -34,20 +32,10 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 
 	private transient HostinfoService m_hostinfoService;
 
-	private transient List<Menu> m_menus;
-
 	public CoreReportModel(String id, M ctx) {
 		super(ctx);
 
 		m_id = id;
-
-		try {
-			MenuManager manager = ContainerLoader.getDefaultContainer().lookup(MenuManager.class);
-
-			m_menus = manager.getMenus(ctx);
-		} catch (Exception e) {
-			Cat.logError(e);
-		}
 
 		try {
 			m_projectService = ContainerLoader.getDefaultContainer().lookup(ProjectService.class);
@@ -106,29 +94,7 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 		return new JsonBuilder().toJson(getIpToHostname());
 	}
 
-	/* used by report-navbar.tag */
-	public List<Menu> getMenus() {
-		return m_menus;
-	}
-
-	public ReportPeriod getPeriod() {
-		return m_period;
-	}
-
-	/* used by report-content.tag */
-	public List<TimeBar> getTimeBars() {
-		if (m_period.isHour()) {
-			return TimeBar.getHourlyBars();
-		} else {
-			return TimeBar.getHistoryBars();
-		}
-	};
-
 	public void setException(Throwable exception) {
 		m_exception = exception;
-	}
-
-	public void setPeriod(ReportPeriod period) {
-		m_period = period;
 	}
 }

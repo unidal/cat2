@@ -179,7 +179,6 @@ public class Handler implements PageHandler<Context> {
 		Action action = payload.getAction();
 
 		model.setAction(action);
-		model.setPeriod(payload.getPeriod());
 
 		switch (action) {
 		case REPORT:

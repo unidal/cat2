@@ -13,15 +13,15 @@
 	<span class="text-success"><jsp:invoke fragment="subtitle"/></span>
 	<div class="nav-search nav" id="nav-search">
 		<c:choose>
-			<c:when test="${model.period.name eq 'hour'}">
+			<c:when test="${ctx.period.name eq 'hour'}">
          		<span class="text-danger switch">【<a class="switch" href="?${ctx.query.period['day'].step['']}"><span class="text-danger">切到历史模式</span></a>】</span>
-         		<c:forEach var="bar" items="${model.timeBars}">
+         		<c:forEach var="bar" items="${ctx.timeBars}">
          			&nbsp;[ <a href="?${ctx.query.date[payload.formattedStartTime].step[bar.step]}">${bar.title}</a> ]
          		</c:forEach>
 			</c:when>
 			<c:otherwise>
          		<span class="text-danger switch">【<a class="switch" href="?${ctx.query.period[''].step['']}"><span class="text-danger">切到小时模式</span></a>】</span>
-         		<c:forEach var="bar" items="${model.timeBars}">
+         		<c:forEach var="bar" items="${ctx.timeBars}">
          			&nbsp;[ <a href="?${ctx.query.period[bar.title]}" class="${model.period.name eq bar.title ? 'current' : '' }">${bar.title}</a> ]
          		</c:forEach>
          		&nbsp;[ <a href="?${ctx.query.date[payload.formattedStartTime].step[-1]}">${model.activeTimeBar.last}</a> ]
