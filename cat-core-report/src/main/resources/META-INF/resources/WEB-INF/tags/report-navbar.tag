@@ -30,7 +30,7 @@
    </div>
    <ul class="nav nav-list" style="top: 0px;">
       <c:forEach var="menu" items="${model.menus}">
-         <li id="${menu.id}" >
+         <li id="${menu.id}" class="${menu.id eq model.id ? 'active open' : ''}">
             <a href="${menu.link}">
                <i class="menu-icon ${menu.styleClasses}"></i>
                <span class="menu-text">${menu.title}</span>

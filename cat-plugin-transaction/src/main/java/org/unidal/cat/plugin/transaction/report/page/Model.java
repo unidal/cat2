@@ -35,7 +35,7 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
 	private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
 
 	public Model(Context ctx) {
-		super(ctx);
+		super(TransactionConstants.NAME, ctx);
 	}
 
 	@Override

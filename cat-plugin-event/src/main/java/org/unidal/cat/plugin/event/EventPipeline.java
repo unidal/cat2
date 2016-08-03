@@ -62,13 +62,13 @@ public class EventPipeline extends AbstractPipeline implements Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register("event", "Event", "fa fa-flag", new MenuLinkBuilder() {
+		lookup(MenuManager.class).register(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
 			@Override
 			public String build(ActionContext<?> ctx) {
 				return ctx.getQuery().uri("/r/e").get("type").get("").get("name").get("").toString();
 			}
 		});
 
-		Document.USER.register("event", "Event");
+		Document.USER.register(EventConstants.NAME, "Event");
 	}
 }

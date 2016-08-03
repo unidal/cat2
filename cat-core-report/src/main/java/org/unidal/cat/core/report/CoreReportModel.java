@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.unidal.cat.core.report.menu.Menu;
 import org.unidal.cat.core.report.menu.MenuManager;
-import org.unidal.cat.core.report.nav.NavigationBar;
+import org.unidal.cat.core.report.nav.TimeBar;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.web.mvc.Action;
@@ -24,6 +24,8 @@ import com.dianping.cat.service.ProjectService.Department;
 
 public abstract class CoreReportModel<P extends Page, A extends Action, M extends ActionContext<?>> extends
       ViewModel<P, A, M> {
+	private String m_id;
+
 	private transient ReportPeriod m_period;
 
 	private transient Throwable m_exception;
@@ -34,8 +36,10 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 
 	private transient List<Menu> m_menus;
 
-	public CoreReportModel(M ctx) {
+	public CoreReportModel(String id, M ctx) {
 		super(ctx);
+
+		m_id = id;
 
 		try {
 			MenuManager manager = ContainerLoader.getDefaultContainer().lookup(MenuManager.class);
@@ -53,24 +57,13 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 		}
 	}
 
-	public List<Menu> getMenus() {
-		return m_menus;
-	}
-
-	public List<NavigationBar> getBars() {
-		if (m_period.isHour()) {
-			return NavigationBar.getHourlyBars();
-		} else {
-			return NavigationBar.getHistoryBars();
-		}
+	/* used by report-content.tag */
+	public TimeBar getActiveTimeBar() {
+		return TimeBar.getByPeriod(m_period);
 	}
 
 	public String getBaseUri() {
 		return buildPageUri(getPage().getPath(), null);
-	}
-
-	public NavigationBar getCurrentBar() {
-		return NavigationBar.getByPeriod(m_period);
 	}
 
 	public abstract String getDomain();
@@ -84,6 +77,10 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 	// required by report tag
 	public Throwable getException() {
 		return m_exception;
+	}
+
+	public String getId() {
+		return m_id;
 	}
 
 	public List<String> getIps() {
@@ -109,8 +106,22 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 		return new JsonBuilder().toJson(getIpToHostname());
 	}
 
+	/* used by report-navbar.tag */
+	public List<Menu> getMenus() {
+		return m_menus;
+	}
+
 	public ReportPeriod getPeriod() {
 		return m_period;
+	}
+
+	/* used by report-content.tag */
+	public List<TimeBar> getTimeBars() {
+		if (m_period.isHour()) {
+			return TimeBar.getHourlyBars();
+		} else {
+			return TimeBar.getHistoryBars();
+		}
 	};
 
 	public void setException(Throwable exception) {
