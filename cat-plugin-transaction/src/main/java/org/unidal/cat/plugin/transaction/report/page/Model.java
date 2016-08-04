@@ -91,6 +91,7 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
 		return m_lineCharts;
 	}
 
+	@Override
 	public TransactionReport getReport() {
 		return m_report;
 	}

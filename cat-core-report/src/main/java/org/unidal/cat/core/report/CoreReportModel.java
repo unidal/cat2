@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.core.report.nav.TimeBar;
-import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.core.report.nav.GroupBar;
+import org.unidal.cat.spi.Report;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.web.mvc.Action;
 import org.unidal.web.mvc.ActionContext;
@@ -22,9 +22,11 @@ import com.dianping.cat.service.ProjectService.Department;
 
 public abstract class CoreReportModel<P extends Page, A extends Action, M extends ActionContext<?>> extends
       ViewModel<P, A, M> {
-	private String m_id;
+	private transient String m_id;
 
-	private transient ReportPeriod m_period;
+	private transient GroupBar m_groupBar;
+
+	// --- old stuff ---
 
 	private transient Throwable m_exception;
 
@@ -45,11 +47,6 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 		}
 	}
 
-	/* used by report-content.tag */
-	public TimeBar getActiveTimeBar() {
-		return TimeBar.getByPeriod(m_period);
-	}
-
 	public String getBaseUri() {
 		return buildPageUri(getPage().getPath(), null);
 	}
@@ -62,9 +59,16 @@ public abstract class CoreReportModel<P extends Page, A extends Action, M extend
 
 	public abstract Collection<String> getDomains();
 
-	// required by report tag
+	/* used by report-navbar.tag */
+	public abstract Report getReport();
+
 	public Throwable getException() {
 		return m_exception;
+	}
+
+	/* used by report-navbar.tag */
+	public GroupBar getGroupBar() {
+		return m_groupBar;
 	}
 
 	public String getId() {

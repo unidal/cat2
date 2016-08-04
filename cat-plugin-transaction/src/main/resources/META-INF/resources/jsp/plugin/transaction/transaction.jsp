@@ -8,54 +8,15 @@
 <jsp:useBean id="ctx" type="org.unidal.cat.plugin.transaction.report.page.Context" scope="request" />
 <jsp:useBean id="payload" type="org.unidal.cat.plugin.transaction.report.page.Payload" scope="request" />
 <jsp:useBean id="model"	type="org.unidal.cat.plugin.transaction.report.page.Model" scope="request" />
-<c:set var="report" value="${model.report}"/>
 
 <r:report>
-<jsp:attribute name="subtitle">${w:format(report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
+<jsp:attribute name="subtitle">${w:format(model.report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(model.report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
 	<script src="${model.webapp}/js/appendHostname.js"></script>
+    <script src="${model.webapp}/js/transaction.js"></script>
 </jsp:attribute>
 <jsp:body>
-	<c:set var="qs" value="${ctx.query.domain[empty payload.domain ? '' : payload.domain].date[payload.formattedStartTime].type[empty payload.type ? '' : payload.type].query[empty payload.query ? '' : payload.query]}"/>
-	
-	<table class="machines">
-		<tr class="left">
-			<th>&nbsp;[&nbsp;
-			    <c:choose>
-					<c:when test="${payload.ip eq 'All'}">
-						<a href="?${ctx.query.ip['']}" class="current">All</a>
-					</c:when>
-					<c:otherwise>
-						<a href="?${ctx.query.ip['']}">All</a>
-					</c:otherwise>
-				</c:choose> &nbsp;]&nbsp;
-				<c:forEach var="ip" items="${model.ips}">
-				    &nbsp;[&nbsp;
-	   	  		    <c:choose>
-						<c:when test="${payload.ip eq ip}">
-							<a href="?${ctx.query.ip[ip]}" class="current">${ip}</a>
-						</c:when>
-						<c:otherwise>
-							<a href="?${ctx.query.ip[ip]}">${ip}</a>
-						</c:otherwise>
-					</c:choose>
-	   	 		    &nbsp;]&nbsp;
-				 </c:forEach>
-			</th>
-		</tr>
-	</table>
-	<table class="groups">
-		<tr class="left">
-			<th> 
-				<c:forEach var="group" items="${model.groups}">
-		   	  		&nbsp;[&nbsp;
-		   	  			<a href="?${ctx.query.op['groupReport'].group[group]}">${group}</a>
-		   	 		&nbsp;]&nbsp;
-				 </c:forEach>
-			</th>
-		</tr>
-	</table>
 	
 	<table class='table table-striped table-condensed table-hover' style="width:100%;">
 		<tr>
@@ -138,7 +99,6 @@
 	</table>
 	<font color="white">${lastIndex}</font>
 
-	<script src="${model.webapp}/js/transaction.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
 			appendHostname(${model.ipToHostnameStr});

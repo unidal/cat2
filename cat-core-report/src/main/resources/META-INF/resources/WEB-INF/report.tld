@@ -14,11 +14,11 @@
       <path>/WEB-INF/tags/report-header.tag</path>
    </tag-file>
    <tag-file>
-      <name>report-navbar</name>
-      <path>/WEB-INF/tags/report-navbar.tag</path>
+      <name>report-menu</name>
+      <path>/WEB-INF/tags/report-menu.tag</path>
    </tag-file>
    <tag-file>
-      <name>report-content</name>
-      <path>/WEB-INF/tags/report-content.tag</path>
+      <name>report-navbar</name>
+      <path>/WEB-INF/tags/report-navbar.tag</path>
    </tag-file>
 </taglib>

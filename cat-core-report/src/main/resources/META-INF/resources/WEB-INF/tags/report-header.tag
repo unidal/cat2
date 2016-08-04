@@ -31,19 +31,19 @@
       
       <c:if test="${not(withSearchBox eq 'false')}">
           <div class="navbar-header pull-left position" style="width:450px;padding-top:5px;">
-         <form id="wrap_search" style="margin-bottom:0px;">
-            <div class="input-group">
-               <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showDomain()" type="button"  id="switch">全部</button></span>
-               <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showFrequent()" type="button"  id="frequent">常用</button></span>
-               <span class="input-icon" style="width:300px;">
-               <input id="search" type="text" value="${model.domain}" class="search-input search-input form-control ui-autocomplete-input" placeholder="input domain for search" autocomplete="off"/>
-               <i class="ace-icon fa fa-search nav-search-icon"></i>
-               </span>
-               <span class="input-group-btn">
-                  <button class="btn btn-sm btn-pink" type="button" id="search_go">Go</button> 
-               </span>
-            </div>
-         </form>
+             <form id="wrap_search" style="margin-bottom:0px;">
+               <div class="input-group">
+                  <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showDomain()" type="button"  id="switch">全部</button></span>
+                  <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showFrequent()" type="button"  id="frequent">常用</button></span>
+                  <span class="input-icon" style="width:300px;">
+                  <input id="search" type="text" value="${model.domain}" class="search-input search-input form-control ui-autocomplete-input" placeholder="input domain for search" autocomplete="off"/>
+                  <i class="ace-icon fa fa-search nav-search-icon"></i>
+                  </span>
+                  <span class="input-group-btn">
+                     <button class="btn btn-sm btn-pink" type="button" id="search_go">Go</button> 
+                  </span>
+               </div>
+             </form>
           </div>
       </c:if>
       
@@ -105,6 +105,30 @@
       </table>
    </div>
 
+   <script>
+      try{ace.settings.check('main-container', 'fixed');}catch(e){}
+      try{ace.settings.check('breadcrumbs', 'fixed');}catch(e){}
+   
+      $(document).ready(function() {
+         var str = getCookie('CAT_DOMAINS');
+         var domains = str.split("|");
+         var html = '';
+         
+         for (var i in domains){
+            html+= '&nbsp;[&nbsp;<a href="?${ctx.query.domain['']}&domain='+domains[i]+'">'+domains[i]+'</a>&nbsp;]&nbsp;';
+         }
+         
+         $('#frequentNavbar').html(html);
+         $("#search_go").bind("click",function(e){
+            window.location.href = '?${ctx.query.domain['']}&domain='+$("#search").val();
+         });
+         $('#wrap_search').submit(function(){
+            window.location.href = '?${ctx.query.domain['']}&domain='+$( "#search" ).val();
+            return false;
+         });
+      });
+   </script>
+
    <script type="text/javascript">
    $(document).ready(function() {
       var ct = getCookie("ct");
@@ -155,7 +179,7 @@
          </c:forEach>
       </c:forEach>
       
-      $( "#search" ).catcomplete({
+      $("#search").catcomplete({
          delay: 0,
          source: data
       });
