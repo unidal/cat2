@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="domain-config" root="true">
+    <entity-ref name="domain" type="list" names="domains" />
+  </entity>
+  <entity name="domain">
+    <attribute name="id" value-type="String" />
+    <entity-ref name="machine" type="list" names="machines" />
+  </entity>
+  <entity name="machine">
+    <attribute name="ip" value-type="String" />
+    <attribute name="host" value-type="String" />
+    <attribute name="group" value-type="String" />
+    <attribute name="test" value-type="boolean" />
+  </entity>
+</model>
+

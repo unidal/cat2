@@ -11,6 +11,7 @@
 	<modules>
 		<module>cat-client</module>
 		<module>cat-core</module>
+		<module>cat-core-config</module>
 		<module>cat-core-report</module>
 		<module>cat-core-document</module>
 		<module>cat-consumer</module>
@@ -81,12 +82,17 @@
 			</dependency>
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
-				<artifactId>cat-core-document</artifactId>
+				<artifactId>cat-core-config</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.dianping.cat</groupId>
 				<artifactId>cat-core-report</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.dianping.cat</groupId>
+				<artifactId>cat-core-document</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
