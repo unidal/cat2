@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.cat.core.report.view.LineChart;
+import org.unidal.cat.core.report.view.PieChart;
+import org.unidal.cat.core.report.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
@@ -20,7 +23,6 @@ import org.unidal.cat.plugin.transaction.view.GraphPayload.AverageTimePayload;
 import org.unidal.cat.plugin.transaction.view.GraphPayload.DurationPayload;
 import org.unidal.cat.plugin.transaction.view.GraphPayload.FailurePayload;
 import org.unidal.cat.plugin.transaction.view.GraphPayload.HitPayload;
-import org.unidal.cat.plugin.transaction.view.svg.GraphBuilder;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.helper.Dates;
 import org.unidal.lookup.util.StringUtils;

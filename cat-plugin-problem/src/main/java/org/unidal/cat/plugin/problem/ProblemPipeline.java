@@ -24,13 +24,13 @@ public class ProblemPipeline extends AbstractPipeline implements Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register("problem", "Problem", "fa fa-bug", new MenuLinkBuilder() {
+		lookup(MenuManager.class).register(ProblemConstants.NAME, "Problem", "fa fa-bug", new MenuLinkBuilder() {
 			@Override
 			public String build(ActionContext<?> ctx) {
 				return ctx.getQuery().uri("/r/p").toString();
 			}
 		});
 
-		Document.USER.register("problem", "Problem");
+		Document.USER.register(ProblemConstants.NAME, "Problem");
 	}
 }

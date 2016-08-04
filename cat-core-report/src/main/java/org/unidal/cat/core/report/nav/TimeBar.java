@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.unidal.cat.spi.ReportPeriod;
 
-public enum NavigationBar {
+public enum TimeBar {
 	SEVEN_DAY_BEFORE("hourly", "-7d", -24 * 7),
 
 	ONE_DAY_BEFORE("hourly", "-1d", -24),
@@ -38,20 +38,20 @@ public enum NavigationBar {
 
 	private String m_next;
 
-	private NavigationBar(String type, String title, int step) {
+	private TimeBar(String type, String title, int step) {
 		m_type = type;
 		m_title = title;
 		m_step = step;
 	}
 
-	private NavigationBar(String type, String title, String last, String next) {
+	private TimeBar(String type, String title, String last, String next) {
 		m_type = type;
 		m_title = title;
 		m_last = last;
 		m_next = next;
 	}
 
-	public static NavigationBar getByPeriod(ReportPeriod period) {
+	public static TimeBar getByPeriod(ReportPeriod period) {
 		switch (period) {
 		case DAY:
 			return DAY;
@@ -64,8 +64,8 @@ public enum NavigationBar {
 		}
 	}
 
-	public static NavigationBar getByType(String type) {
-		for (NavigationBar nav : values()) {
+	public static TimeBar getByType(String type) {
+		for (TimeBar nav : values()) {
 			if (nav.getType().equalsIgnoreCase(type)) {
 				return nav;
 			}
@@ -74,10 +74,10 @@ public enum NavigationBar {
 		return null;
 	}
 
-	public static List<NavigationBar> getHistoryBars() {
-		List<NavigationBar> bars = new ArrayList<NavigationBar>();
+	public static List<TimeBar> getHistoryBars() {
+		List<TimeBar> bars = new ArrayList<TimeBar>();
 
-		for (NavigationBar bar : values()) {
+		for (TimeBar bar : values()) {
 			if (bar.getType().equals("history")) {
 				bars.add(bar);
 			}
@@ -86,10 +86,10 @@ public enum NavigationBar {
 		return bars;
 	}
 
-	public static List<NavigationBar> getHourlyBars() {
-		List<NavigationBar> bars = new ArrayList<NavigationBar>();
+	public static List<TimeBar> getHourlyBars() {
+		List<TimeBar> bars = new ArrayList<TimeBar>();
 
-		for (NavigationBar bar : values()) {
+		for (TimeBar bar : values()) {
 			if (bar.getType().equals("hourly")) {
 				bars.add(bar);
 			}

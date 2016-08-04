@@ -9,5 +9,18 @@
 			<role>org.unidal.cat.core.report.menu.MenuManager</role>
 			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
 		</component>
+		<component>
+			<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
+			<implementation>org.unidal.cat.core.report.view.svg.DefaultGraphBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
+			<implementation>org.unidal.cat.core.report.view.svg.DefaultValueTranslater</implementation>
+		</component>
 	</components>
 </plexus>

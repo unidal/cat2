@@ -54,7 +54,7 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
 
 	@Override
 	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register("transaction", "Transaction", "glyphicon glyphicon-time",
+		lookup(MenuManager.class).register(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
 		      new MenuLinkBuilder() {
 			      @Override
 			      public String build(ActionContext<?> ctx) {
@@ -62,6 +62,6 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
 			      }
 		      });
 
-		Document.USER.register("transaction", "Transaction");
+		Document.USER.register(TransactionConstants.NAME, "Transaction");
 	}
 }

@@ -1,0 +1,9 @@
+<plexus>
+	<components>
+		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-core-config</role-hint>
+			<implementation>org.unidal.cat.core.config.CatConfigModule</implementation>
+		</component>
+	</components>
+</plexus>

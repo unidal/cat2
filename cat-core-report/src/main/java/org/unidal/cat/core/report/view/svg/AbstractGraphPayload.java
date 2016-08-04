@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.view.svg;
+package org.unidal.cat.core.report.view.svg;
 
 public abstract class AbstractGraphPayload implements GraphPayload {
 	private String m_axisXLabel;

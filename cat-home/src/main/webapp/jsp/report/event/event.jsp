@@ -1,6 +1,6 @@
 <%@ page session="false" language="java" pageEncoding="UTF-8"%>
 <%@ page contentType="text/html; charset=utf-8"%>
-<%@ taglib prefix="a" uri="/WEB-INF/app.tld"%>
+<%@ taglib prefix="r" uri="/WEB-INF/report.tld"%>
 <%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
@@ -9,7 +9,7 @@
 <jsp:useBean id="model" type="org.unidal.cat.plugin.event.page.Model" scope="request" />
 <c:set var="report" value="${model.report}" />
 
-<a:report
+<r:report
 	title="Event Report${empty payload.type ? '' : ' :: '}<a href='?domain=${model.domain}&date=${model.date}&type=${payload.type}'>${payload.type}</a>"
 	navUrlPrefix="ip=${model.ipAddress}&domain=${model.domain}${empty payload.encodedType ? '' : '&type='}${payload.encodedType}"
 	timestamp="${w:format(model.creatTime,'yyyy-MM-dd HH:mm:ss')}">
@@ -148,4 +148,4 @@
 </c:choose>
 
 </jsp:body>
-</a:report>
+</r:report>

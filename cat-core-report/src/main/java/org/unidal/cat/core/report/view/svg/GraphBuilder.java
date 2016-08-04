@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.view.svg;
+package org.unidal.cat.core.report.view.svg;
 
 public interface GraphBuilder {
 	public String build(GraphPayload payload);

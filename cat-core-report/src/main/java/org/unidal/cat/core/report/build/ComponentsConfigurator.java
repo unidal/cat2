@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.unidal.cat.core.report.CatReportModule;
 import org.unidal.cat.core.report.menu.DefaultMenuManager;
+import org.unidal.cat.core.report.view.svg.DefaultGraphBuilder;
+import org.unidal.cat.core.report.view.svg.DefaultValueTranslater;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -20,7 +22,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(CatReportModule.class));
 
 		all.add(A(DefaultMenuManager.class));
-		
+
+		all.add(A(DefaultGraphBuilder.class));
+		all.add(A(DefaultValueTranslater.class));
+
 		return all;
 	}
 }
