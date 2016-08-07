@@ -1,7 +1,9 @@
 <domain-config>
    <domain id="cat">
-      <machine ip="10.38.0.14" host="LPT41293.local" group="local" />
-      <machine ip="127.0.0.1" host="localhost" group="local" test="true" />
+      <machine ip="10.12.34.13" host="LPT41293.local" groups="local" />
+      <machine ip="10.12.34.14" host="LPT41293.local" groups="local" />
+      <machine ip="10.12.34.15" host="LPT41293.local" groups="test" />
+      <machine ip="127.0.0.1" host="localhost" groups="local,test" />
    </domain>
    <domain id="cat2" />
 </domain-config>

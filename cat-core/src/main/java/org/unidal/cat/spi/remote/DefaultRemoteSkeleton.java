@@ -41,8 +41,6 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
     private boolean handleNormalReport(RemoteContext ctx, OutputStream out) throws IOException {
         String id = ctx.getName();
         ReportManager<Report> rm = m_rmm.getReportManager(id);
-        ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
-        ReportFilter<Report> filter = ctx.getFilter();
 
         // find local reports
         List<Report> reports = rm.getLocalReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain());
@@ -52,6 +50,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
         }
 
         // screen the reports
+        ReportFilter<Report> filter = ctx.getFilter();
         List<Report> screenedReports = new ArrayList<Report>();
 
         for (Report report : reports) {
@@ -63,6 +62,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
         }
 
         // aggregate the reports
+        ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
         Report report = delegate.aggregate(ctx.getPeriod(), screenedReports);
 
         // tailor it if necessary

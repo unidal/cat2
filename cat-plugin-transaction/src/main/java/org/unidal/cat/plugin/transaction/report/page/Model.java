@@ -1,7 +1,9 @@
 package org.unidal.cat.plugin.transaction.report.page;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -84,6 +86,14 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
 			return new ArrayList<String>();
 		} else {
 			return SortHelper.sortIpAddress(m_report.getIps());
+		}
+	}
+
+	public Set<String> getItems() {
+		if (m_report == null) {
+			return Collections.emptySet();
+		} else {
+			return new HashSet<String>(m_report.getIps());
 		}
 	}
 

@@ -2,17 +2,27 @@
 <model model-package="org.unidal.cat.core.config.domain" class-suffix="Model"
   enable-sax-parser="true">
   <entity name="domain-config" root="true">
-    <entity-ref name="domain" type="map" names="domains" />
+    <entity-ref name="domain" type="map" names="domains" method-find-or-create="true" />
   </entity>
   <entity name="domain">
     <attribute name="id" value-type="String" key="true"/>
-    <entity-ref name="machine" type="map" names="machines" />
+    <entity-ref name="machine" type="map" names="machines" method-find-or-create="true" />
   </entity>
   <entity name="machine" dynamic-attributes="true">
     <attribute name="ip" value-type="String" key="true" />
     <attribute name="host" value-type="String" />
-    <attribute name="group" value-type="String" enabled="false" />
-    <attribute name="test" value-type="boolean" enabled="false" />
+    <attribute name="groups" value-type="String" enabled="false" />
+    <snippet><![CDATA[
+      public java.util.List<String> getGroups() {
+         String groups = getDynamicAttribute("groups");
+   
+         if (groups != null) {
+            return org.unidal.helper.Splitters.by(',').noEmptyItem().trim().split(groups);
+         } else {
+            return java.util.Collections.emptyList();
+         }
+      } 
+    ]]></snippet>
   </entity>
 </model>
 

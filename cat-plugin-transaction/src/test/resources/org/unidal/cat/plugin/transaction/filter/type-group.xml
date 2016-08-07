@@ -3,11 +3,11 @@
    <ip>192.168.31.158</ip>
    <ip>192.168.31.159</ip>
    <ip>192.168.31.160</ip>
-   <machine ip="All">
+   <machine ip="mock">
       <type id="Gzip" totalCount="1" failCount="0" failPercent="0.00" min="7.70" max="7.70" avg="7.7" sum="7.7" sum2="59.4" std="0.0" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-42</successMessageUrl>
       </type>
-      <type id="MVC" totalCount="99" failCount="0" failPercent="0.00" min="0.01" max="2040.74" avg="78.2" sum="7744.2" sum2="12933340.5" std="352.9" tps="0.00" line95Value="0.00" line99Value="0.00">
+      <type id="MVC" totalCount="66" failCount="0" failPercent="0.00" min="0.01" max="2040.74" avg="78.2" sum="5162.8" sum2="8622227.0" std="352.9" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
       </type>
       <type id="ModelService" totalCount="8" failCount="0" failPercent="0.00" min="34.03" max="77.23" avg="54.5" sum="436.0" sum2="27067.6" std="20.3" tps="0.00" line95Value="0.00" line99Value="0.00">
@@ -22,10 +22,10 @@
       <type id="SQL" totalCount="124" failCount="124" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="114.8" sum2="292.8" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
          <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
       </type>
-      <type id="System" totalCount="6" failCount="0" failPercent="0.00" min="0.05" max="56.73" avg="28.4" sum="170.4" sum2="9655.8" std="28.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      <type id="System" totalCount="4" failCount="0" failPercent="0.00" min="0.05" max="56.73" avg="28.4" sum="113.6" sum2="6437.2" std="28.3" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-136</successMessageUrl>
       </type>
-      <type id="URL" totalCount="33" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="8390.1" sum2="15451472.1" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      <type id="URL" totalCount="22" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="5593.4" sum2="10300981.4" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
       </type>
       <type id="URL.Forward" totalCount="10" failCount="0" failPercent="0.00" min="16.66" max="1917.64" avg="463.9" sum="4638.8" sum2="7593417.4" std="737.7" tps="0.00" line95Value="0.00" line99Value="0.00">

@@ -22,6 +22,9 @@ public abstract class CoreReportPayload<P extends Page, A extends Action> implem
 	@FieldMeta("step")
 	private int m_step;
 
+	@FieldMeta("group")
+	private String m_group;
+
 	private Date m_startTime;
 
 	private Date m_endTime;
@@ -112,6 +115,10 @@ public abstract class CoreReportPayload<P extends Page, A extends Action> implem
 	// for JSP
 	public String getFormattedStartTime() {
 		return m_period.format(m_startTime);
+	}
+
+	public String getGroup() {
+		return m_group;
 	}
 
 	@Override

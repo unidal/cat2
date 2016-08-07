@@ -10,8 +10,7 @@
   <entity name="machine">
     <attribute name="ip" value-type="String" />
     <attribute name="host" value-type="String" />
-    <attribute name="group" value-type="String" />
-    <attribute name="test" value-type="boolean" />
+    <attribute name="groups" value-type="String" />
   </entity>
 </model>
 

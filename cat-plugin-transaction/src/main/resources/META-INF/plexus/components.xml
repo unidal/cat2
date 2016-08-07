@@ -102,6 +102,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainConfigService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -111,6 +114,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -122,6 +128,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainConfigService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>
@@ -131,6 +140,9 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionReportHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainConfigService</role>
 				</requirement>
 			</requirements>
 		</component>

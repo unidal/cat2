@@ -31,9 +31,6 @@ public class Payload extends CoreReportPayload<ReportPage, Action> {
 	@FieldMeta("sort")
 	private String m_sortBy;
 
-	@FieldMeta("group")
-	private String m_group;
-
 	public Payload() {
 		super(ReportPage.TRANSACTION);
 	}
@@ -53,10 +50,6 @@ public class Payload extends CoreReportPayload<ReportPage, Action> {
 		} catch (Exception e) {
 			return m_type;
 		}
-	}
-
-	public String getGroup() {
-		return m_group;
 	}
 
 	public String getIp() {

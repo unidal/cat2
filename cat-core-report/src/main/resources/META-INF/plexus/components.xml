@@ -10,6 +10,16 @@
 			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.report.nav.GroupBar</role>
+			<role-hint>domain</role-hint>
+			<implementation>org.unidal.cat.core.report.nav.DomainGroupBar</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
 			<implementation>org.unidal.cat.core.report.view.svg.DefaultGraphBuilder</implementation>
 			<requirements>
