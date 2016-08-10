@@ -186,7 +186,7 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 
    public static class MockDomanConfigService implements DomainConfigService {
       @Override
-      public Set<String> getGroups(String domain) {
+      public Set<String> getGroups(String domain, Set<String> ips) {
          throw new UnsupportedOperationException("Not used!");
       }
 

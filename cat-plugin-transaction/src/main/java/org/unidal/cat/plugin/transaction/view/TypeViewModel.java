@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.unidal.cat.core.report.view.TableViewModel;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
@@ -293,13 +292,6 @@ public class TypeViewModel implements TableViewModel<TypeEntry> {
 				}
 
 				names.add(new TypeEntry(type));
-			}
-		}
-
-		@Override
-		public void visitMachine(Machine machine) {
-			if (m_ip == null || m_ip.equals(machine.getIp())) {
-				super.visitMachine(machine);
 			}
 		}
 

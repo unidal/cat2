@@ -10,7 +10,6 @@ import java.util.Map;
 import org.unidal.cat.core.report.view.PieChart;
 import org.unidal.cat.core.report.view.TableViewModel;
 import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
-import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
@@ -265,13 +264,6 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 			}
 
 			names.add(0, new NameEntry(summary, true));
-		}
-
-		@Override
-		public void visitMachine(Machine machine) {
-			if (m_ip == null || m_ip.equals(machine.getIp())) {
-				super.visitMachine(machine);
-			}
 		}
 
 		@Override

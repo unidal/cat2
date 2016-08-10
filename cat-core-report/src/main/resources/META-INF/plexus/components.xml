@@ -13,6 +13,7 @@
 			<role>org.unidal.cat.core.report.nav.GroupBar</role>
 			<role-hint>domain</role-hint>
 			<implementation>org.unidal.cat.core.report.nav.DomainGroupBar</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.config.DomainConfigService</role>

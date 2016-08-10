@@ -46,7 +46,7 @@ public class DomainGroupBar implements GroupBar {
    public void initialize(String domain, String group, Set<String> ips) {
       m_domain = domain;
       m_group = group;
-      m_groups = new ArrayList<String>(m_configService.getGroups(domain));
+      m_groups = new ArrayList<String>(m_configService.getGroups(domain, ips));
       m_items = new ArrayList<String>();
 
       for (String ip : ips) {

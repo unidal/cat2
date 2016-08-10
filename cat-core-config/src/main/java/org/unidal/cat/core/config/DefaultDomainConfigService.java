@@ -17,7 +17,7 @@ public class DefaultDomainConfigService implements DomainConfigService, Initiali
    private DomainConfigModel m_config;
 
    @Override
-   public Set<String> getGroups(String domain) {
+   public Set<String> getGroups(String domain, Set<String> ips) {
       Set<String> groups = new HashSet<String>();
       DomainModel d = m_config.findOrCreateDomain(domain);
 
@@ -25,7 +25,9 @@ public class DefaultDomainConfigService implements DomainConfigService, Initiali
 
       if (d != null) {
          for (MachineModel m : d.getMachines().values()) {
-            groups.addAll(m.getGroups());
+            if (ips.contains(m.getIp())) {
+               groups.addAll(m.getGroups());
+            }
          }
       }
 
