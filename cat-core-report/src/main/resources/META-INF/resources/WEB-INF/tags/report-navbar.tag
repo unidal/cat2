@@ -28,41 +28,21 @@
 
 <table class="groups">
    <tr class="left">
-      <th> 
-         <c:forEach var="group" items="${model.groups}">
-               &nbsp;[&nbsp;
-                  <a href="?${ctx.query.op['groupReport'].group[group]}">${group}</a>
-               &nbsp;]&nbsp;
+      <th>
+         <c:set var="g" value="${empty model.groupBar.activeGroup ? 'All' : model.groupBar.activeGroup}"/>
+         <c:forEach var="group" items="${model.groupBar.groups}">
+               【&nbsp;<a href="?${ctx.query.ip[''].group[group eq 'All' ? '' : group]}" class="${g eq group ? 'current' : ''}">${group}</a>&nbsp;】&nbsp;
           </c:forEach>
       </th>
    </tr>
 </table>
 
 <table class="machines">
-	<tr class="left">
-		<th>&nbsp;[&nbsp;
-		    <c:choose>
-				<c:when test="${payload.ip eq 'All'}">
-					<a href="?${ctx.query.ip['']}" class="current">All</a>
-				</c:when>
-				<c:otherwise>
-					<a href="?${ctx.query.ip['']}">All</a>
-				</c:otherwise>
-			</c:choose> &nbsp;]&nbsp;
-			<c:forEach var="ip" items="${model.ips}">
-			    &nbsp;[&nbsp;
-   	  		    <c:choose>
-					<c:when test="${payload.ip eq ip}">
-						<a href="?${ctx.query.ip[ip]}" class="current">${ip}</a>
-					</c:when>
-					<c:otherwise>
-						<a href="?${ctx.query.ip[ip]}">${ip}</a>
-					</c:otherwise>
-				</c:choose>
-   	 		    &nbsp;]&nbsp;
-			 </c:forEach>
-		</th>
-	</tr>
+   <tr class="left">
+      <th>
+         <c:forEach var="machine" items="${model.groupBar.activeGroupItems}">
+               <span class="nowrap">&nbsp;[&nbsp;<a href="?${ctx.query.ip[machine]}" class="${payload.ip eq machine ? 'current' : ''}">${machine}</a>&nbsp;]&nbsp;</span>
+          </c:forEach>
+      </th>
+   </tr>
 </table>
-
-

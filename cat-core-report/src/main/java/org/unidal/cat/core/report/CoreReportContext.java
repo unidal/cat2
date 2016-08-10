@@ -13,11 +13,10 @@ import org.unidal.cat.core.report.nav.TimeBar;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.web.mvc.ActionContext;
-import org.unidal.web.mvc.ActionPayload;
 
 import com.dianping.cat.Cat;
 
-public abstract class CoreReportContext<T extends ActionPayload<?, ?>> extends ActionContext<T> {
+public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> extends ActionContext<T> {
 	private ReportPeriod m_period;
 
 	private List<Menu> m_menus;

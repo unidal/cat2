@@ -1,19 +1,18 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import com.dianping.cat.Constants;
+import org.unidal.cat.core.config.DomainConfigService;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
-import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.dianping.cat.Constants;
 
 @Named(type = ReportFilter.class, value = TransactionConstants.NAME + ":" + TransactionTypeGraphFilter.ID)
 public class TransactionTypeGraphFilter implements ReportFilter<TransactionReport> {
@@ -21,6 +20,9 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
    @Inject
    private TransactionReportHelper m_helper;
+
+   @Inject
+   private DomainConfigService m_configService;
 
    @Override
    public String getId() {
@@ -34,9 +36,10 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
    @Override
    public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
-      String type = ctx.getProperty("type", null);
+      String group = ctx.getProperty("group", null);
       String ip = ctx.getProperty("ip", null);
-      TypeGraphScreener visitor = new TypeGraphScreener(report.getDomain(), ip, type);
+      String type = ctx.getProperty("type", null);
+      TypeGraphScreener visitor = new TypeGraphScreener(report.getDomain(), group, ip, type);
 
       report.accept(visitor);
       return visitor.getReport();
@@ -44,14 +47,14 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
    @Override
    public void tailor(RemoteContext ctx, TransactionReport report) {
-      String type = ctx.getProperty("type", null);
-      String ip = ctx.getProperty("ip", null);
-      TypeGraphTailor visitor = new TypeGraphTailor(ip, type);
+      TypeGraphTailor visitor = new TypeGraphTailor();
 
       report.accept(visitor);
    }
 
    private class TypeGraphScreener extends BaseVisitor {
+      private String m_group;
+
       private String m_ip;
 
       private String m_type;
@@ -60,9 +63,10 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
       private TransactionHolder m_all = new TransactionHolder();
 
-      public TypeGraphScreener(String domain, String ip, String type) {
-         m_type = type;
+      public TypeGraphScreener(String domain, String group, String ip, String type) {
+         m_group = group;
          m_ip = ip;
+         m_type = type;
          m_holder.setReport(new TransactionReport(domain));
       }
 
@@ -70,30 +74,18 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
          return m_holder.getReport();
       }
 
-      private void mergeName(TransactionName n, TransactionName name) {
-         m_helper.mergeName(n, name);
-         n.setSuccessMessageUrl(null);
-         n.setFailMessageUrl(null);
-      }
-
-      private void mergeType(TransactionType t, TransactionType type) {
-         m_helper.mergeType(t, type);
-         t.setSuccessMessageUrl(null);
-         t.setFailMessageUrl(null);
-      }
-
       @Override
       public void visitMachine(Machine machine) {
-         Machine machineAll = m_all.getMachine();
+         Machine all = m_all.getMachine();
          Machine m = m_holder.getMachine();
          TransactionType type = machine.findType(m_type);
 
-         if (machineAll != null) {
-            m_helper.mergeMachine(machineAll, machine);
+         if (all != null) {
+            m_helper.mergeMachine(all, machine);
             m_helper.mergeMachine(m, machine);
 
             if (type != null) {
-               TransactionType ta = machineAll.findOrCreateType(m_type);
+               TransactionType ta = all.findOrCreateType(m_type);
                TransactionType t = m.findOrCreateType(m_type);
 
                m_all.setType(ta);
@@ -118,12 +110,12 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
          TransactionName n = m_holder.getName();
 
          if (na != null) {
-            mergeName(na, name);
+            m_helper.mergeName(na, name);
 
             m_helper.mergeDurations(na.getDurations(), name.getDurations());
             m_helper.mergeRanges(na.getRanges(), name.getRanges());
          } else {
-            mergeName(n, name);
+            m_helper.mergeName(n, name);
 
             m_helper.mergeDurations(n.getDurations(), name.getDurations());
             m_helper.mergeRanges(n.getRanges(), name.getRanges());
@@ -136,21 +128,36 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
 
          m_helper.mergeReport(r, report);
 
-         if (m_ip == null || m_ip.equals(Constants.ALL)) {
-            Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
+         if (m_group != null) {
+            String domain = report.getDomain();
 
-            for (Machine machine : machines) {
+            for (Machine machine : report.getMachines().values()) {
+               if (m_configService.isInGroup(domain, m_group, machine.getIp())) {
+                  r.findOrCreateMachine(machine.getIp());
+               }
+            }
+
+            Machine m = r.findOrCreateMachine(m_group);
+
+            m_all.setMachine(m);
+
+            for (Machine machine : report.getMachines().values()) {
+               if (m_configService.isInGroup(domain, m_group, machine.getIp())) {
+                  m_holder.setMachine(r.findMachine(machine.getIp()));
+                  visitMachine(machine);
+               }
+            }
+         } else if (m_ip == null || m_ip.equals(Constants.ALL)) {
+            for (Machine machine : report.getMachines().values()) {
                r.findOrCreateMachine(machine.getIp());
             }
 
-            Machine machineAll = r.findOrCreateMachine(Constants.ALL);
+            Machine m = r.findOrCreateMachine(Constants.ALL);
 
-            m_all.setMachine(machineAll);
+            m_all.setMachine(m);
 
-            for (Machine machine : machines) {
-               Machine m = r.findMachine(machine.getIp());
-
-               m_holder.setMachine(m);
+            for (Machine machine : report.getMachines().values()) {
+               m_holder.setMachine(r.findMachine(machine.getIp()));
                visitMachine(machine);
             }
          } else {
@@ -172,7 +179,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
          if (ta != null) {
             TransactionName na = ta.findOrCreateName(Constants.ALL);
 
-            mergeType(ta, type);
+            m_helper.mergeType(ta, type);
             m_all.setName(na);
          } else {
             TransactionName n = t.findOrCreateName(Constants.ALL);
@@ -180,90 +187,31 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
             m_holder.setName(n);
          }
 
-         mergeType(t, type);
+         m_helper.mergeType(t, type);
 
-         Collection<TransactionName> names = new ArrayList<TransactionName>(type.getNames().values());
-
-         for (TransactionName name : names) {
+         for (TransactionName name : type.getNames().values()) {
             visitName(name);
          }
       }
    }
 
    private class TypeGraphTailor extends BaseVisitor {
-      private String m_ip;
-
-      private String m_type;
-
-      private TransactionHolder m_holder = new TransactionHolder();
-
-      public TypeGraphTailor(String ip, String type) {
-         m_ip = ip;
-         m_type = type;
-      }
-
       @Override
-      public void visitMachine(Machine machine) {
-         TransactionType type = machine.findType(m_type);
+      public void visitName(TransactionName name) {
+         name.setSuccessMessageUrl(null);
+         name.setFailMessageUrl(null);
+         name.setSlowestMessageUrl(null);
 
-         machine.getTypes().clear();
-
-         if (type != null) {
-            TransactionType t = m_holder.getMachine().findOrCreateType(type.getId());
-
-            m_holder.setType(t);
-            m_helper.mergeType(t, type);
-            machine.addType(type);
-         }
-
-         super.visitMachine(machine);
-      }
-
-      @Override
-      public void visitTransactionReport(TransactionReport report) {
-         if (m_ip == null || m_ip.equals(Constants.ALL)) {
-            Machine m = new Machine(Constants.ALL);
-
-            m_holder.setMachine(m);
-         } else {
-            Machine machine = report.findMachine(m_ip);
-            Machine m = new Machine(m_ip);
-
-            m_holder.setMachine(m);
-            report.getMachines().clear();
-
-            if (machine != null) {
-               report.addMachine(machine);
-            }
-         }
-
-         super.visitTransactionReport(report);
-
-         report.addMachine(m_holder.getMachine());
+         super.visitName(name);
       }
 
       @Override
       public void visitType(TransactionType type) {
-         TransactionType t = m_holder.getType();
-         TransactionName n = t.findOrCreateName(Constants.ALL);
-
-         for (TransactionName name : type.getNames().values()) {
-            m_helper.mergeName(n, name);
-            n.setSuccessMessageUrl(null);
-            n.setFailMessageUrl(null);
-            n.setSlowestMessageUrl(null);
-
-            m_helper.mergeDurations(n.getDurations(), name.getDurations());
-            m_helper.mergeRanges(n.getRanges(), name.getRanges());
-         }
-
-         t.setSuccessMessageUrl(null);
-         t.setFailMessageUrl(null);
-         t.setSlowestMessageUrl(null);
          type.setSuccessMessageUrl(null);
          type.setFailMessageUrl(null);
          type.setSlowestMessageUrl(null);
-         type.getNames().clear();
+
+         super.visitType(type);
       }
    }
 }

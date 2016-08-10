@@ -2,6 +2,7 @@
 <transaction-report domain="cat" startTime="2015-12-30 11:00:00">
    <ip>192.168.31.158</ip>
    <ip>192.168.31.159</ip>
+   <ip>192.168.31.160</ip>
    <machine ip="192.168.31.158">
       <type id="URL" totalCount="11" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="2796.7" sum2="5150490.7" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
          <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>

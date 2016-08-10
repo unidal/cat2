@@ -179,7 +179,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 		ReportDelegate<T> delegate = getDelegate();
 		ReportFilter<? extends Report> filter = m_filterManager.getFilter(delegate.getName(), filterId);
 		RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
-
 		int len = keyValuePairs.length;
 
 		if (len % 2 == 0) {
