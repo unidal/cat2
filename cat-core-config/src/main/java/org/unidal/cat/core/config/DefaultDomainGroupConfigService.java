@@ -6,15 +6,15 @@ import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.config.domain.entity.DomainConfigModel;
-import org.unidal.cat.core.config.domain.entity.DomainModel;
-import org.unidal.cat.core.config.domain.entity.MachineModel;
-import org.unidal.cat.core.config.domain.transform.DefaultSaxParser;
+import org.unidal.cat.core.config.domain.group.entity.DomainGroupConfigModel;
+import org.unidal.cat.core.config.domain.group.entity.DomainModel;
+import org.unidal.cat.core.config.domain.group.entity.MachineModel;
+import org.unidal.cat.core.config.domain.group.transform.DefaultSaxParser;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = DomainConfigService.class)
-public class DefaultDomainConfigService implements DomainConfigService, Initializable {
-   private DomainConfigModel m_config;
+@Named(type = DomainGroupConfigService.class)
+public class DefaultDomainGroupConfigService implements DomainGroupConfigService, Initializable {
+   private DomainGroupConfigModel m_config;
 
    @Override
    public Set<String> getGroups(String domain, Set<String> ips) {
@@ -37,12 +37,12 @@ public class DefaultDomainConfigService implements DomainConfigService, Initiali
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("domain-config.xml");
-         DomainConfigModel config = DefaultSaxParser.parse(in);
+         InputStream in = getClass().getResourceAsStream("domain-group-config.xml");
+         DomainGroupConfigModel config = DefaultSaxParser.parse(in);
 
          m_config = config;
       } catch (Exception e) {
-         throw new InitializationException("Unable to load domain-config.xml!", e);
+         throw new InitializationException("Unable to load domain-group-config.xml!", e);
       }
    }
 

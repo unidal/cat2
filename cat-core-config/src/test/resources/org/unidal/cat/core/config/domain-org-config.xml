@@ -1,0 +1,18 @@
+<domain-org-config>
+   <department id="framework">
+      <product-line id="middleware">
+         <project domain="cat"/>
+         <project domain="hermes"/>
+         <project domain="apollo"/>
+      </product-line>
+      <product-line id="core"/>
+   </department>
+   <department id="hotel">
+      <product-line id="intl">
+         <project domain="intl-hotel-svc"/>
+         <project domain="intl-hotel-web"/>
+      </product-line>
+      <product-line id="core"/>
+   </department>
+   <department id="flight"/>
+</domain-org-config>

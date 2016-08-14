@@ -1,4 +1,4 @@
-<domain-config>
+<domain-group-config>
    <domain id="cat">
       <machine ip="10.12.34.13" host="LPT41293.local" groups="local" />
       <machine ip="10.12.34.14" host="LPT41293.local" groups="local" />
@@ -7,4 +7,4 @@
       <machine ip="127.0.0.1" host="localhost" groups="local,test" />
    </domain>
    <domain id="cat2" />
-</domain-config>
+</domain-group-config>

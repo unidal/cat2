@@ -5,14 +5,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import org.unidal.cat.core.config.DomainConfigService;
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = GroupBar.class, value = "domain", instantiationStrategy = Named.PER_LOOKUP)
 public class DomainGroupBar implements GroupBar {
    @Inject
-   private DomainConfigService m_configService;
+   private DomainGroupConfigService m_configService;
 
    private String m_domain;
 
