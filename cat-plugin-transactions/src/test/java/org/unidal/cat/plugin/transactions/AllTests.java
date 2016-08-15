@@ -9,6 +9,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 TransactionsConfigTest.class,
 
+TransactionsReportManagerTest.class,
+
 })
 public class AllTests {
 

@@ -81,15 +81,6 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
 
       private void mergeDomain(TransactionsDomain dst, TransactionName src) {
          long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-         if (totalCountSum > 0) {
-            double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value()
-                  * src.getTotalCount();
-            double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value()
-                  * src.getTotalCount();
-
-            dst.setLine95Value(line95Values / totalCountSum);
-            dst.setLine99Value(line99Values / totalCountSum);
-         }
 
          dst.setTotalCount(totalCountSum);
          dst.setFailCount(dst.getFailCount() + src.getFailCount());
@@ -290,7 +281,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       @Override
       public void visitTransactionReport(TransactionReport report) {
          TransactionsReport r = m_ts.getReport();
-         String d = m_config.findDepartment(r.getDomain());
+         String d = m_config.findDepartment(report.getDomain());
 
          r.setPeriod(report.getPeriod()).addBu(d);
          r.setStartTime(report.getStartTime()).setEndTime(report.getEndTime());

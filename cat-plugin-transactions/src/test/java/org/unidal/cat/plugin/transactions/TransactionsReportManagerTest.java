@@ -24,24 +24,6 @@ import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 public class TransactionsReportManagerTest extends ComponentTestCase {
-   @Test
-   @SuppressWarnings("unchecked")
-   public void test() throws Exception {
-      defineComponent(DomainOrgConfigService.class, MockDomainOrgConfigService.class);
-      defineComponent(ReportManager.class, TransactionConstants.NAME, MockTransactionReportManager.class) //
-            .req(ReportDelegateManager.class);
-
-      ReportManager<TransactionsReport> rm = lookup(ReportManager.class, TransactionsConstants.NAME);
-      List<TransactionsReport> reports = rm.getLocalReports(ReportPeriod.HOUR, new Date(), null);
-      TransactionsReport actual = reports.get(0);
-      TransactionsReport expected = loadReport("transactions.xml");
-
-      actual.addBu("Hotel");
-      actual.addBu("Flight");
-
-      Assert.assertEquals(expected.toString(), actual.toString());
-   }
-
    @SuppressWarnings("unchecked")
    private TransactionsReport loadReport(String resource) throws Exception {
       ReportDelegate<TransactionsReport> delegate = lookup(ReportDelegate.class, TransactionsConstants.NAME);
@@ -57,11 +39,51 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
       return report;
    }
 
+   @Test
+   @SuppressWarnings("unchecked")
+   public void test() throws Exception {
+      defineComponent(DomainOrgConfigService.class, MockDomainOrgConfigService.class);
+      defineComponent(ReportManager.class, TransactionConstants.NAME, MockTransactionReportManager.class) //
+            .req(ReportDelegateManager.class);
+
+      ReportManager<TransactionsReport> rm = lookup(ReportManager.class, TransactionsConstants.NAME);
+      List<TransactionsReport> reports = rm.getLocalReports(ReportPeriod.HOUR, new Date(), null);
+      TransactionsReport actual = reports.get(0);
+      TransactionsReport expected = loadReport("transactions.xml");
+
+      Assert.assertEquals(expected.toString(), actual.toString());
+   }
+
+   @SuppressWarnings("serial")
+   public static class MockDomainOrgConfigService implements DomainOrgConfigService {
+      private Map<String, String> m_map = new HashMap<String, String>() {
+         {
+            put("cat", "Framework");
+            put("hotel", "Business");
+            put("flight", "Business");
+         }
+      };
+
+      @Override
+      public String findDepartment(String domain) {
+         return m_map.get(domain);
+      }
+   }
+
    public static class MockTransactionReportManager extends TransactionReportManager {
       @Override
       @SuppressWarnings("unchecked")
       public List<Map<String, TransactionReport>> getLocalReports(ReportPeriod period, int hour) throws IOException {
-         String resource = "transaction.xml";
+         Map<String, TransactionReport> map = new HashMap<String, TransactionReport>();
+
+         map.put("cat", loadReport("transaction-cat.xml"));
+         map.put("hotel", loadReport("transaction-hotel.xml"));
+         map.put("flight", loadReport("transaction-flight.xml"));
+
+         return Arrays.asList(map);
+      }
+
+      private TransactionReport loadReport(String resource) throws IOException {
          InputStream in = getClass().getResourceAsStream(resource);
 
          if (in == null) {
@@ -70,18 +92,7 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
 
          String xml = Files.forIO().readFrom(in, "utf-8");
          TransactionReport report = getDelegate().parseXml(xml);
-         Map<String, TransactionReport> map = new HashMap<String, TransactionReport>();
-
-         map.put(report.getDomain(), report);
-
-         return Arrays.asList(map);
-      }
-   }
-
-   public static class MockDomainOrgConfigService implements DomainOrgConfigService {
-      @Override
-      public String findDepartment(String domain) {
-         return "Framework";
+         return report;
       }
    }
 }
