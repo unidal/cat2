@@ -24,6 +24,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(TransactionsReportDelegate.class));
       all.add(A(TransactionsHelper.class));
 
+      all.addAll(new WebComponentConfigurator().defineComponents());
+
       return all;
    }
 }

@@ -32,7 +32,7 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/r/t").get("type").get("").get("name").get("").toString();
+                  return ctx.getQuery().uri("/r/ts").get("type").get("").get("name").get("").toString();
                }
             });
 
