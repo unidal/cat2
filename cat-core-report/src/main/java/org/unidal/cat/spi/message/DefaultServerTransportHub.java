@@ -9,6 +9,7 @@ import java.util.concurrent.BlockingQueue;
 import org.unidal.cat.message.codec.CommandCodec;
 import org.unidal.cat.message.codec.NativeCommandCodec;
 import org.unidal.cat.message.command.Command;
+import org.unidal.cat.spi.transport.ServerTransportHub;
 import org.unidal.cat.transport.decode.DecodeHandler;
 import org.unidal.cat.transport.decode.DecodeHandlerManager;
 import org.unidal.lookup.annotation.Inject;
