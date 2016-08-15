@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <file path="transactions-report-codegen.xml" />
+  <file path="transactions-report-model.xml" />
+</manifest>
+

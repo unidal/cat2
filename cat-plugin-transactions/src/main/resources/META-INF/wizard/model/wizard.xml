@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.transactions">
+   <model package="org.unidal.cat.plugin.transactions.config" name="transactions-config">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/transactions/transactions-config.xml</sample-model>
+   </model>
+   <model package="org.unidal.cat.plugin.transactions.model" name="transactions-report">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/transactions/transactions.xml</sample-model>
+   </model>
+</wizard>

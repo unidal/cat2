@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="transactions-report" root="true">
+    <attribute name="startTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
+    <attribute name="endTime" value-type="Date" format="yyyy-MM-dd HH:mm:ss" />
+    <element name="bu" value-type="String" type="list" names="bus" />
+    <entity-ref name="department" type="list" names="departments" />
+  </entity>
+  <entity name="department">
+    <attribute name="id" value-type="String" />
+    <entity-ref name="type" type="list" names="types" />
+  </entity>
+  <entity name="type">
+    <attribute name="id" value-type="String" />
+    <attribute name="totalCount" value-type="int" />
+    <attribute name="failCount" value-type="int" />
+    <attribute name="failPercent" value-type="double" />
+    <attribute name="min" value-type="double" />
+    <attribute name="max" value-type="double" />
+    <attribute name="avg" value-type="double" />
+    <attribute name="sum" value-type="double" />
+    <attribute name="sum2" value-type="double" />
+    <attribute name="std" value-type="double" />
+    <attribute name="tps" value-type="double" />
+    <attribute name="line95Value" value-type="double" />
+    <attribute name="line99Value" value-type="double" />
+    <element name="successMessageUrl" value-type="String" />
+    <element name="failMessageUrl" value-type="String" />
+    <element name="slowestMessageUrl" value-type="String" />
+    <entity-ref name="name" type="list" names="names" />
+  </entity>
+  <entity name="name">
+    <attribute name="id" value-type="String" />
+    <attribute name="totalCount" value-type="int" />
+    <attribute name="failCount" value-type="int" />
+    <attribute name="failPercent" value-type="double" />
+    <attribute name="min" value-type="double" />
+    <attribute name="max" value-type="double" />
+    <attribute name="avg" value-type="double" />
+    <attribute name="sum" value-type="double" />
+    <attribute name="sum2" value-type="double" />
+    <attribute name="std" value-type="double" />
+    <attribute name="tps" value-type="double" />
+    <attribute name="line95Value" value-type="double" />
+    <attribute name="line99Value" value-type="double" />
+    <element name="successMessageUrl" value-type="String" />
+    <element name="failMessageUrl" value-type="String" />
+    <element name="slowestMessageUrl" value-type="String" />
+    <entity-ref name="range" type="list" names="ranges" />
+    <entity-ref name="duration" type="list" names="durations" />
+    <entity-ref name="domain" type="list" names="domains" />
+  </entity>
+  <entity name="range">
+    <attribute name="value" value-type="int" />
+    <attribute name="count" value-type="int" />
+    <attribute name="sum" value-type="double" />
+    <attribute name="avg" value-type="double" />
+    <attribute name="fails" value-type="int" />
+  </entity>
+  <entity name="duration">
+    <attribute name="value" value-type="int" />
+    <attribute name="count" value-type="int" />
+  </entity>
+  <entity name="domain">
+    <attribute name="id" value-type="String" />
+    <attribute name="totalCount" value-type="int" />
+    <attribute name="failCount" value-type="int" />
+    <attribute name="failPercent" value-type="double" />
+    <attribute name="min" value-type="double" />
+    <attribute name="max" value-type="double" />
+    <attribute name="avg" value-type="double" />
+    <attribute name="sum" value-type="double" />
+    <attribute name="sum2" value-type="double" />
+    <attribute name="std" value-type="double" />
+    <attribute name="tps" value-type="double" />
+  </entity>
+</model>
+
