@@ -75,7 +75,8 @@
                   </goals>
                   <configuration>
                      <manifest><![CDATA[
-                        ${basedir}/src/main/resources/META-INF/dal/model/domain-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/domain-group-config-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/domain-org-config-manifest.xml,
                      ]]></manifest>
                   </configuration>
                </execution>

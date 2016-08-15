@@ -16,7 +16,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainConfigService</role>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>

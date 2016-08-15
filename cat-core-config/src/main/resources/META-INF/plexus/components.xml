@@ -6,8 +6,12 @@
 			<implementation>org.unidal.cat.core.config.CatConfigModule</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.config.DomainConfigService</role>
-			<implementation>org.unidal.cat.core.config.DefaultDomainConfigService</implementation>
+			<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+			<implementation>org.unidal.cat.core.config.DefaultDomainGroupConfigService</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.config.DomainOrgConfigService</role>
+			<implementation>org.unidal.cat.core.config.DefaultDomainOrgConfigService</implementation>
 		</component>
 	</components>
 </plexus>

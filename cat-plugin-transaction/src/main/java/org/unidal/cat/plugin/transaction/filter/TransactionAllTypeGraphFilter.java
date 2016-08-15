@@ -20,7 +20,7 @@ public class TransactionAllTypeGraphFilter implements ReportFilter<TransactionRe
    public static final String ID = "all-type-graph";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private ProjectService m_projectService;

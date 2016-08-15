@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import org.unidal.cat.core.config.DomainConfigService;
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
@@ -19,10 +19,10 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
    public static final String ID = "name-graph";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
-   private DomainConfigService m_configService;
+   private DomainGroupConfigService m_configService;
 
    @Override
    public String getId() {

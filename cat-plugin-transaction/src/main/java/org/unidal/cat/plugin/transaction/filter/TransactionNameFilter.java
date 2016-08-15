@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.transaction.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.unidal.cat.core.config.DomainConfigService;
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
@@ -22,10 +22,10 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
    public static final String ID = "name";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
-   private DomainConfigService m_configService;
+   private DomainGroupConfigService m_configService;
 
    @Override
    public String getId() {

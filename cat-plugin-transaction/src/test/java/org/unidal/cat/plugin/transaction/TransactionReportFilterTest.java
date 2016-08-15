@@ -7,7 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.core.config.DomainConfigService;
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
@@ -24,7 +24,7 @@ import org.unidal.lookup.ComponentTestCase;
 public class TransactionReportFilterTest extends ComponentTestCase {
    @Before
    public void before() throws Exception {
-      defineComponent(DomainConfigService.class, MockDomanConfigService.class);
+      defineComponent(DomainGroupConfigService.class, MockDomanConfigService.class);
    }
 
    @SuppressWarnings("unchecked")
@@ -184,7 +184,7 @@ public class TransactionReportFilterTest extends ComponentTestCase {
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
 
-   public static class MockDomanConfigService implements DomainConfigService {
+   public static class MockDomanConfigService implements DomainGroupConfigService {
       @Override
       public Set<String> getGroups(String domain, Set<String> ips) {
          throw new UnsupportedOperationException("Not used!");

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="domain-org-config" root="true">
+    <entity-ref name="department" type="list" names="departments" />
+  </entity>
+  <entity name="department">
+    <attribute name="id" value-type="String" />
+    <entity-ref name="product-line" type="list" names="product-lines" />
+  </entity>
+  <entity name="product-line">
+    <attribute name="id" value-type="String" />
+    <entity-ref name="project" type="list" names="projects" />
+  </entity>
+  <entity name="project">
+    <attribute name="domain" value-type="String" />
+  </entity>
+</model>
+

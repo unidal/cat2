@@ -14,13 +14,14 @@
 		<module>cat-core-config</module>
 		<module>cat-core-report</module>
 		<module>cat-core-document</module>
-		<module>cat-consumer</module>
-		<module>cat-hadoop</module>
-		<module>cat-home</module>
-		<module>cat-maven-plugin</module>
 		<module>cat-plugin-transaction</module>
+		<module>cat-plugin-transactions</module>
 		<module>cat-plugin-event</module>
 		<module>cat-plugin-problem</module>
+		<module>cat-hadoop</module>
+		<module>cat-consumer</module>
+		<module>cat-home</module>
+		<module>cat-maven-plugin</module>
 	</modules>
 	<organization>
 		<name>Unidal</name>
@@ -108,6 +109,11 @@
 			<dependency>
 				<groupId>org.unidal.cat</groupId>
 				<artifactId>cat-plugin-transaction</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.unidal.cat</groupId>
+				<artifactId>cat-plugin-transactions</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

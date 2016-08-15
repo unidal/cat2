@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.unidal.cat.core.report.view.TableViewModel;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
@@ -275,7 +275,7 @@ public class TypeViewModel implements TableViewModel<TypeEntry> {
 		private QueryFilter m_filter = new QueryFilter(m_query);
 
 		public void harvest(List<TypeEntry> names) {
-			TransactionReportHelper helper = new TransactionReportHelper();
+			TransactionHelper helper = new TransactionHelper();
 
 			for (Map.Entry<String, List<TransactionType>> e : m_map.entrySet()) {
 				List<TransactionType> list = e.getValue();

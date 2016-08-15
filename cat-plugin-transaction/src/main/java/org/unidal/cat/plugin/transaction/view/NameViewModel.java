@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.unidal.cat.core.report.view.PieChart;
 import org.unidal.cat.core.report.view.TableViewModel;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
@@ -242,7 +242,7 @@ public class NameViewModel implements TableViewModel<NameEntry> {
 		private QueryFilter m_filter = new QueryFilter(m_query);
 
 		public void harvest(List<NameEntry> names) {
-			TransactionReportHelper helper = new TransactionReportHelper();
+			TransactionHelper helper = new TransactionHelper();
 			TransactionName summary = new TransactionName("SUMMARY");
 
 			for (Map.Entry<String, List<TransactionName>> e : m_map.entrySet()) {

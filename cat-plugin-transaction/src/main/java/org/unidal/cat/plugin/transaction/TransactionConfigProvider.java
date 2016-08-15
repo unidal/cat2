@@ -1,17 +1,17 @@
 package org.unidal.cat.plugin.transaction;
 
+import java.io.IOException;
+
 import org.apache.commons.lang.StringUtils;
 import org.unidal.cat.config.internal.AbstractConfigProvider;
-import org.unidal.cat.plugin.transaction.config.entity.All;
-import org.unidal.cat.plugin.transaction.config.entity.TransactionConfig;
+import org.unidal.cat.plugin.transaction.config.entity.AllModel;
+import org.unidal.cat.plugin.transaction.config.entity.TransactionConfigModel;
 import org.unidal.cat.plugin.transaction.config.transform.DefaultSaxParser;
 import org.unidal.lookup.annotation.Named;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-
 @Named(type = TransactionConfigProvider.class)
-public class TransactionConfigProvider extends AbstractConfigProvider<TransactionConfig> {
+public class TransactionConfigProvider extends AbstractConfigProvider<TransactionConfigModel> {
    @Override
    protected String getConfigKey() {
       return TransactionConstants.NAME;
@@ -26,14 +26,14 @@ public class TransactionConfigProvider extends AbstractConfigProvider<Transactio
    }
 
    @Override
-   protected TransactionConfig parse(String configString) throws IOException, SAXException {
+   protected TransactionConfigModel parse(String configString) throws IOException, SAXException {
       return configString == null ? null : DefaultSaxParser.parse(configString);
    }
 
    public boolean shouldMakeAllReport(String type) {
-      TransactionConfig config = getConfig();
+      TransactionConfigModel config = getConfig();
       if (null == config) return false;
-      for (All all : config.getAlls()) {
+      for (AllModel all : config.getAlls()) {
          String t = all.getType();
          String n = all.getName();
          if (t.equals(type) && (StringUtils.isBlank(n) || "*".equals(n))) {
@@ -44,9 +44,9 @@ public class TransactionConfigProvider extends AbstractConfigProvider<Transactio
    }
 
    public boolean shouldMakeAllReport(String type, String name) {
-      TransactionConfig config = getConfig();
+      TransactionConfigModel config = getConfig();
       if (null == config) return false;
-      for (All all : config.getAlls()) {
+      for (AllModel all : config.getAlls()) {
          String t = all.getType();
          String n = all.getName();
          if (t.equals(type) && n.equals(name)) {
