@@ -18,7 +18,7 @@ public class TransactionAllNameFilter implements ReportFilter<TransactionReport>
    public static final String ID = "all-name";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private ProjectService m_projectService;

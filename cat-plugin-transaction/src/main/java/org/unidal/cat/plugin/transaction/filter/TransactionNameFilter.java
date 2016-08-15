@@ -22,7 +22,7 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
    public static final String ID = "name";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private DomainGroupConfigService m_configService;

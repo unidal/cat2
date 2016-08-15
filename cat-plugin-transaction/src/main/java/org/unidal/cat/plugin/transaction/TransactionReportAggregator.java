@@ -2,7 +2,7 @@ package org.unidal.cat.plugin.transaction;
 
 import java.util.Collection;
 
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.lookup.ContainerHolder;
@@ -16,7 +16,7 @@ import com.dianping.cat.service.ProjectService;
 @Named(type = ReportAggregator.class, value = TransactionConstants.NAME)
 public class TransactionReportAggregator extends ContainerHolder implements ReportAggregator<TransactionReport> {
 	@Inject
-	private TransactionReportHelper m_helper;
+	private TransactionHelper m_helper;
 
 	private TransactionConfigProvider m_transactionConfigProvider;
 

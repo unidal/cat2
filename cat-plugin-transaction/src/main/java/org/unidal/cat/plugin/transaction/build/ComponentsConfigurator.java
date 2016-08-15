@@ -15,7 +15,7 @@ import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer;
@@ -42,7 +42,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionReportAnalyzer.class));
 
 		// filter
-		all.add(A(TransactionReportHelper.class));
+		all.add(A(TransactionHelper.class));
 		all.add(A(TransactionTypeFilter.class));
 		all.add(A(TransactionTypeGraphFilter.class));
 		all.add(A(TransactionNameFilter.class));

@@ -19,7 +19,7 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
    public static final String ID = "name-graph";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private DomainGroupConfigService m_configService;

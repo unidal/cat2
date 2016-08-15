@@ -9,7 +9,7 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
 import com.dianping.cat.service.ProjectService;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
-import org.unidal.cat.plugin.transaction.filter.TransactionReportHelper;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 
 public class TransactionAllReportMaker extends BaseVisitor {
 
@@ -23,11 +23,11 @@ public class TransactionAllReportMaker extends BaseVisitor {
 
    private ProjectService m_projectService;
 
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    private TransactionConfigProvider m_transactionConfigProvider;
 
-   public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionReportHelper helper, TransactionConfigProvider transactionConfigProvider) {
+   public TransactionAllReportMaker(TransactionReport report, ProjectService service, TransactionHelper helper, TransactionConfigProvider transactionConfigProvider) {
       m_holder.setReport(report);
       m_projectService = service;
       m_helper = helper;

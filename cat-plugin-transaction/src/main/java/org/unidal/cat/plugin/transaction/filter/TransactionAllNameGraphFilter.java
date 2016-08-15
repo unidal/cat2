@@ -21,7 +21,7 @@ public class TransactionAllNameGraphFilter implements ReportFilter<TransactionRe
    public static final String ID = "all-name-graph";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private ProjectService m_projectService;

@@ -21,7 +21,7 @@ public class TransactionTypeFilter implements ReportFilter<TransactionReport> {
    public static final String ID = "type";
 
    @Inject
-   private TransactionReportHelper m_helper;
+   private TransactionHelper m_helper;
 
    @Inject
    private DomainGroupConfigService m_configService;
