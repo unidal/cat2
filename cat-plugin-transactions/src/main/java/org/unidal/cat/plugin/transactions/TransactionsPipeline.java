@@ -22,6 +22,11 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
    private ReportDelegateManager m_rdg;
 
    @Override
+   protected boolean hasAnalyzer() {
+      return false;
+   }
+
+   @Override
    public void initialize() throws InitializationException {
       lookup(MenuManager.class).register(TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time",
             new MenuLinkBuilder() {

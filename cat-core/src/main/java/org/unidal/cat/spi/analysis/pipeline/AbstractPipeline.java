@@ -16,103 +16,109 @@ import org.unidal.lookup.extension.RoleHintEnabled;
 import com.dianping.cat.message.spi.MessageTree;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
-	@Inject(StrategyConstants.DOMAIN_HASH)
-	private MessageRoutingStrategy m_strategy;
+   @Inject(StrategyConstants.DOMAIN_HASH)
+   private MessageRoutingStrategy m_strategy;
 
-	@Inject
-	private ReportConfiguration m_config;
+   @Inject
+   private ReportConfiguration m_config;
 
-	private String m_name;
+   private String m_name;
 
-	private int m_hour;
+   private int m_hour;
 
-	private List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
+   private List<MessageAnalyzer> m_analyzers = new ArrayList<MessageAnalyzer>();
 
-	private Logger m_logger;
+   private Logger m_logger;
 
-	protected void afterCheckpoint() throws Exception {
-		// to be overridden
-	}
+   protected void afterCheckpoint() throws Exception {
+      // to be overridden
+   }
 
-	@Override
-	public boolean analyze(MessageTree tree) {
-		if (!m_analyzers.isEmpty()) {
-			MessageRoutingStrategy strategy = getRoutingStrategy();
-			int index = strategy.getIndex(tree, m_analyzers.size());
-			MessageAnalyzer analyzer = m_analyzers.get(index);
+   @Override
+   public boolean analyze(MessageTree tree) {
+      if (!m_analyzers.isEmpty()) {
+         MessageRoutingStrategy strategy = getRoutingStrategy();
+         int index = strategy.getIndex(tree, m_analyzers.size());
+         MessageAnalyzer analyzer = m_analyzers.get(index);
 
-			return analyzer.handle(tree);
-		} else {
-			return false;
-		}
-	}
+         return analyzer.handle(tree);
+      } else {
+         return false;
+      }
+   }
 
-	protected void beforeCheckpoint() throws Exception {
-		// to be overridden
-	}
+   protected void beforeCheckpoint() throws Exception {
+      // to be overridden
+   }
 
-	@Override
-	public void checkpoint(boolean atEnd) throws Exception {
-		beforeCheckpoint();
-		doCheckpoint(atEnd);
-		afterCheckpoint();
-	}
+   @Override
+   public void checkpoint(boolean atEnd) throws Exception {
+      beforeCheckpoint();
+      doCheckpoint(atEnd);
+      afterCheckpoint();
+   }
 
-	@Override
-	public void destroy() {
-		for (MessageAnalyzer messageAnalyzer : m_analyzers) {
-			super.release(messageAnalyzer);
-			messageAnalyzer.destroy();
-		}
-	}
+   @Override
+   public void destroy() {
+      for (MessageAnalyzer messageAnalyzer : m_analyzers) {
+         super.release(messageAnalyzer);
+         messageAnalyzer.destroy();
+      }
+   }
 
-	protected void doCheckpoint(final boolean atEnd) throws Exception {
-		for (MessageAnalyzer analyzer : m_analyzers) {
-			analyzer.doCheckpoint(atEnd);
-		}
-	}
+   protected void doCheckpoint(final boolean atEnd) throws Exception {
+      for (MessageAnalyzer analyzer : m_analyzers) {
+         analyzer.doCheckpoint(atEnd);
+      }
+   }
 
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
-	@Override
-	public void enableRoleHint(String roleHint) {
-		m_name = roleHint;
-	}
+   @Override
+   public void enableRoleHint(String roleHint) {
+      m_name = roleHint;
+   }
 
-	protected int getHour() {
-		return m_hour;
-	}
+   protected int getHour() {
+      return m_hour;
+   }
 
-	@Override
-	public String getName() {
-		return m_name;
-	}
+   @Override
+   public String getName() {
+      return m_name;
+   }
 
-	protected MessageRoutingStrategy getRoutingStrategy() {
-		return m_strategy;
-	}
+   protected MessageRoutingStrategy getRoutingStrategy() {
+      return m_strategy;
+   }
 
-	@Override
-	public void initialize(int hour) {
-		m_hour = hour;
+   protected boolean hasAnalyzer() {
+      return true;
+   }
 
-		int size = m_config.getAnanlyzerCount(m_name);
+   @Override
+   public void initialize(int hour) {
+      m_hour = hour;
 
-		for (int i = 0; i < size; i++) {
-			MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, m_name);
+      if (hasAnalyzer()) {
+         int size = m_config.getAnanlyzerCount(m_name);
 
-			try {
-				analyzer.initialize(i, hour);
-				m_analyzers.add(analyzer);
-				Threads.forGroup("Cat").start(analyzer);
-			} catch (Throwable e) {
-				String msg = String.format("Error when initializing analyzer %s!", analyzer);
+         for (int i = 0; i < size; i++) {
+            MessageAnalyzer analyzer = lookup(MessageAnalyzer.class, m_name);
 
-				m_logger.error(msg, e);
-			}
-		}
-	}
+            try {
+               analyzer.initialize(i, hour);
+               m_analyzers.add(analyzer);
+               Threads.forGroup("Cat").start(analyzer);
+            } catch (Throwable e) {
+               String msg = String.format("Error when initializing analyzer %s!", analyzer);
+
+               m_logger.error(msg, e);
+            }
+         }
+      }
+   }
 }
