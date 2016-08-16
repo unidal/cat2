@@ -36,7 +36,7 @@
                   <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showDomain()" type="button"  id="switch">全部</button></span>
                   <span class="input-group-btn"><button class="btn btn-sm btn-default" onclick="showFrequent()" type="button"  id="frequent">常用</button></span>
                   <span class="input-icon" style="width:300px;">
-                  <input id="search" type="text" value="${model.domain}" class="search-input search-input form-control ui-autocomplete-input" placeholder="input domain for search" autocomplete="off"/>
+                  <input id="search" type="text" placeholder="${model.domain}" class="search-input search-input form-control ui-autocomplete-input" autocomplete="off"/>
                   <i class="ace-icon fa fa-search nav-search-icon"></i>
                   </span>
                   <span class="input-group-btn">
@@ -76,31 +76,36 @@
 
 <div>
    <div class="domainNavbar" style="display:none;font-size:small">
-      <table border="1" rules="all">
-         <c:forEach var="item" items="${model.domainGroups}">
+      <table border="1">
+         <c:forEach var="department" items="${ctx.domainOrgConfig.departments}">
             <tr>
-               <c:set var="detail" value="${item.value}" />
-               <td class="department" rowspan="${w:size(detail.projectLines)}">${item.key}</td>
-               <c:forEach var="productline" items="${detail.projectLines}" varStatus="index">
-                     <c:if test="${index.index != 0}"> <tr></c:if>
-                     <td class="department">${productline.key}</td>
-                     <td>
-                        <div class="domain">
-                           <c:forEach var="domain" items="${productline.value.lineDomains}">&nbsp;
-                              <a class='domainItem' href="?${ctx.query.domain[domain]}" class="${model.domain eq domain ? 'current' : ''}">[&nbsp;${domain}&nbsp;]</a>
-                           </c:forEach>
-                        </div>
-                     </td>
-                     <c:if test="${index.index != 0}"></tr></c:if>
+               <td class="department" rowspan="${w:size(department.value.productLines)}">&nbsp;${department.key}</td>
+               <c:forEach var="productLine" items="${department.value.productLines}" varStatus="index">
+                  <c:if test="${index.index != 0}"><tr></c:if>
+                  <td class="department">&nbsp;${productLine.key}</td>
+                  <td>
+                     <div class="domain">
+                        <c:forEach var="project" items="${productLine.value.projects}">&nbsp;
+                           <c:set var="domain" value="${project.key}"/>
+                           <a class='domainItem nowrap' href="?${ctx.query.domain[domain]}" class="${model.domain eq domain ? 'current' : ''}">[&nbsp;${domain}&nbsp;]</a>
+                        </c:forEach>
+                     </div>
+                  </td>
+                  <c:if test="${index.index != 0}"></tr></c:if>
                </c:forEach>
             </tr>
          </c:forEach>
       </table>
    </div>
+   
    <div class="frequentNavbar" style="display:none;font-size:small">
       <table class="table table-striped table-hover table-bordered table-condensed" border="1" rules="all">
          <tr>
-            <td class="domain" style="word-break:break-all" id="frequentNavbar"></td>
+            <td class="domain" style="word-break:break-all" id="frequentNavbar">
+               <c:forEach var="domain" items="${ctx.domainBar.recentDomains}">
+                  <div class="nowrap">&nbsp;[&nbsp;<a href="?${ctx.query.domain[domain]}">${domain}</a>&nbsp;]&nbsp;</div>
+               </c:forEach>
+            </td>
          <tr>
       </table>
    </div>
@@ -110,27 +115,16 @@
       try{ace.settings.check('breadcrumbs', 'fixed');}catch(e){}
    
       $(document).ready(function() {
-         var str = getCookie('CAT_DOMAINS');
-         var domains = str.split("|");
-         var html = '';
-         
-         for (var i in domains){
-            html+= '&nbsp;[&nbsp;<a href="?${ctx.query.domain['']}&domain='+domains[i]+'">'+domains[i]+'</a>&nbsp;]&nbsp;';
-         }
-         
-         $('#frequentNavbar').html(html);
          $("#search_go").bind("click",function(e){
             window.location.href = '?${ctx.query.domain['']}&domain='+$("#search").val();
          });
          $('#wrap_search').submit(function(){
-            window.location.href = '?${ctx.query.domain['']}&domain='+$( "#search" ).val();
+            window.location.href = '?${ctx.query.domain['']}&domain='+$("#search").val();
             return false;
          });
       });
-   </script>
 
-   <script type="text/javascript">
-   $(document).ready(function() {
+      $(document).ready(function() {
       var ct = getCookie("ct");
       if (ct != "") {
          var length = ct.length;
@@ -166,13 +160,12 @@
       });
       
       var data = [];
-      <c:forEach var="item" items="${model.domainGroups}">
-         <c:set var="detail" value="${item.value}" />
-         <c:forEach var="productline" items="${detail.projectLines}" varStatus="index">
-            <c:forEach var="domain" items="${productline.value.lineDomains}">
+      <c:forEach var="department" items="${ctx.domainOrgConfig.departments}">
+         <c:forEach var="productLine" items="${department.value.productLines}">
+            <c:forEach var="project" items="${productLine.value.projects}">
                   var item = {};
-                  item['label'] = '${domain}';
-                  item['category'] ='${productline.key}';
+                  item['label'] = '${project.key}';
+                  item['category'] ='${productLine.key}';
                   
                   data.push(item);
             </c:forEach>

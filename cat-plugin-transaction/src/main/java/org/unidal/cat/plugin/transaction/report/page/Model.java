@@ -22,115 +22,100 @@ import com.dianping.cat.helper.SortHelper;
 
 @ModelMeta(TransactionConstants.NAME)
 public class Model extends CoreReportModel<ReportPage, Action, Context> {
-	private List<String> m_groups;
+   private List<String> m_groups;
 
-	private List<String> m_groupIps;
+   private List<String> m_groupIps;
 
-	@EntityMeta
-	private TransactionReport m_report;
+   @EntityMeta
+   private TransactionReport m_report;
 
-	// cat2
-	private TableViewModel<?> m_table;
+   // cat2
+   private TableViewModel<?> m_table;
 
-	private GraphViewModel m_graph;
+   private GraphViewModel m_graph;
 
-	private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
+   private Map<String, LineChart> m_lineCharts = new HashMap<String, LineChart>();
 
-	public Model(Context ctx) {
-		super(TransactionConstants.NAME, ctx);
-	}
+   public Model(Context ctx) {
+      super(TransactionConstants.NAME, ctx);
+   }
 
-	@Override
-	public Action getDefaultAction() {
-		return Action.REPORT;
-	}
+   @Override
+   public Action getDefaultAction() {
+      return Action.REPORT;
+   }
 
-	@Override
-	public String getDomain() {
-		if (m_report == null) {
-			return null;
-		} else {
-			return m_report.getDomain();
-		}
-	}
+   @Override
+   public String getDomain() {
+      if (m_report == null) {
+         return null;
+      } else {
+         return m_report.getDomain();
+      }
+   }
 
-	// required by report tag
-	@Override
-	public List<String> getDomains() {
-		if (m_report == null) {
-			ArrayList<String> arrayList = new ArrayList<String>();
+   public GraphViewModel getGraph() {
+      return m_graph;
+   }
 
-			arrayList.add(getDomain());
-			return arrayList;
-		} else {
-			Set<String> domainNames = m_report.getDomainNames();
+   public List<String> getGroupIps() {
+      return m_groupIps;
+   }
 
-			return SortHelper.sortDomain(domainNames);
-		}
-	}
+   public List<String> getGroups() {
+      return m_groups;
+   }
 
-	public GraphViewModel getGraph() {
-		return m_graph;
-	}
+   public List<String> getIps() {
+      if (m_report == null) {
+         return new ArrayList<String>();
+      } else {
+         return SortHelper.sortIpAddress(m_report.getIps());
+      }
+   }
 
-	public List<String> getGroupIps() {
-		return m_groupIps;
-	}
+   public Set<String> getItems() {
+      if (m_report == null) {
+         return Collections.emptySet();
+      } else {
+         return new HashSet<String>(m_report.getIps());
+      }
+   }
 
-	public List<String> getGroups() {
-		return m_groups;
-	}
+   public Map<String, LineChart> getLineCharts() {
+      return m_lineCharts;
+   }
 
-	public List<String> getIps() {
-		if (m_report == null) {
-			return new ArrayList<String>();
-		} else {
-			return SortHelper.sortIpAddress(m_report.getIps());
-		}
-	}
+   @Override
+   public TransactionReport getReport() {
+      return m_report;
+   }
 
-	public Set<String> getItems() {
-		if (m_report == null) {
-			return Collections.emptySet();
-		} else {
-			return new HashSet<String>(m_report.getIps());
-		}
-	}
+   public TableViewModel<?> getTable() {
+      return m_table;
+   }
 
-	public Map<String, LineChart> getLineCharts() {
-		return m_lineCharts;
-	}
+   public void setGraph(GraphViewModel graph) {
+      m_graph = graph;
+   }
 
-	@Override
-	public TransactionReport getReport() {
-		return m_report;
-	}
+   public void setGroupIps(List<String> groupIps) {
+      m_groupIps = groupIps;
+   }
 
-	public TableViewModel<?> getTable() {
-		return m_table;
-	}
+   public void setGroups(List<String> groups) {
+      m_groups = groups;
+   }
 
-	public void setGraph(GraphViewModel graph) {
-		m_graph = graph;
-	}
+   public void setLineChart(String name, LineChart lineChart) {
+      m_lineCharts.put(name, lineChart);
+   }
 
-	public void setGroupIps(List<String> groupIps) {
-		m_groupIps = groupIps;
-	}
+   public void setReport(TransactionReport report) {
+      m_report = report;
+   }
 
-	public void setGroups(List<String> groups) {
-		m_groups = groups;
-	}
-
-	public void setLineChart(String name, LineChart lineChart) {
-		m_lineCharts.put(name, lineChart);
-	}
-
-	public void setReport(TransactionReport report) {
-		m_report = report;
-	}
-
-	public void setTable(TableViewModel<?> table) {
-		m_table = table;
-	}
+   public void setTable(TableViewModel<?> table) {
+      m_table = table;
+   }
 }
