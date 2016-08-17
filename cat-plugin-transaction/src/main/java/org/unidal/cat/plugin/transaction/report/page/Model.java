@@ -1,10 +1,8 @@
 package org.unidal.cat.plugin.transaction.report.page;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,18 +16,11 @@ import org.unidal.cat.plugin.transaction.view.GraphViewModel;
 import org.unidal.web.mvc.view.annotation.EntityMeta;
 import org.unidal.web.mvc.view.annotation.ModelMeta;
 
-import com.dianping.cat.helper.SortHelper;
-
 @ModelMeta(TransactionConstants.NAME)
 public class Model extends CoreReportModel<ReportPage, Action, Context> {
-   private List<String> m_groups;
-
-   private List<String> m_groupIps;
-
    @EntityMeta
    private TransactionReport m_report;
 
-   // cat2
    private TableViewModel<?> m_table;
 
    private GraphViewModel m_graph;
@@ -58,23 +49,7 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
       return m_graph;
    }
 
-   public List<String> getGroupIps() {
-      return m_groupIps;
-   }
-
-   public List<String> getGroups() {
-      return m_groups;
-   }
-
-   public List<String> getIps() {
-      if (m_report == null) {
-         return new ArrayList<String>();
-      } else {
-         return SortHelper.sortIpAddress(m_report.getIps());
-      }
-   }
-
-   public Set<String> getItems() {
+   protected Set<String> getItems() {
       if (m_report == null) {
          return Collections.emptySet();
       } else {
@@ -97,14 +72,6 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
 
    public void setGraph(GraphViewModel graph) {
       m_graph = graph;
-   }
-
-   public void setGroupIps(List<String> groupIps) {
-      m_groupIps = groupIps;
-   }
-
-   public void setGroups(List<String> groups) {
-      m_groups = groups;
    }
 
    public void setLineChart(String name, LineChart lineChart) {

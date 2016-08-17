@@ -101,7 +101,7 @@
 
 	<script type="text/javascript">
 		$(document).ready(function() {
-			appendHostname(${model.ipToHostnameStr});
+			// appendHostname(\${model.ipToHostnameStr});
 		});
 	</script>
 
