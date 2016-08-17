@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.view;
+package org.unidal.cat.plugin.transaction.report.view;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
-import org.unidal.cat.plugin.transaction.view.NameViewModel.NameEntry;
+import org.unidal.cat.plugin.transaction.report.view.NameViewModel.NameEntry;
 import org.unidal.helper.Splitters;
 
 public class NameViewModel implements TableViewModel<NameEntry> {

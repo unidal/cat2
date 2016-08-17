@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.view;
+package org.unidal.cat.plugin.transaction.report.view;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,10 +19,10 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.AverageTimePayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.DurationPayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.FailurePayload;
-import org.unidal.cat.plugin.transaction.view.GraphPayload.HitPayload;
+import org.unidal.cat.plugin.transaction.report.view.GraphPayload.AverageTimePayload;
+import org.unidal.cat.plugin.transaction.report.view.GraphPayload.DurationPayload;
+import org.unidal.cat.plugin.transaction.report.view.GraphPayload.FailurePayload;
+import org.unidal.cat.plugin.transaction.report.view.GraphPayload.HitPayload;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.helper.Dates;
 import org.unidal.lookup.util.StringUtils;

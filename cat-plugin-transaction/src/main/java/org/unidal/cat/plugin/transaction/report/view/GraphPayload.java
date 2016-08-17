@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.view;
+package org.unidal.cat.plugin.transaction.report.view;
 
 import java.util.HashMap;
 import java.util.Map;
