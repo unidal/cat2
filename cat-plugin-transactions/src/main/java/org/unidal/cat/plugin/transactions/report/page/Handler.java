@@ -27,7 +27,7 @@ public class Handler implements PageHandler<Context> {
 	public void handleOutbound(Context ctx) throws ServletException, IOException {
 		Model model = new Model(ctx);
 
-		model.setAction(Action.VIEW);
+		model.setAction(Action.REPORT);
 		model.setPage(ReportPage.TRANSACTIONS);
 
 		if (!ctx.isProcessStopped()) {

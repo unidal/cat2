@@ -12,6 +12,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.core.config.DomainOrgConfigService;
+import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
@@ -67,6 +68,11 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
       @Override
       public String findDepartment(String domain) {
          return m_map.get(domain);
+      }
+
+      @Override
+      public DomainOrgConfigModel getConfig() {
+         return null;
       }
    }
 
