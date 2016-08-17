@@ -30,9 +30,9 @@ public class TransactionReportAggregatorTest extends ComponentTestCase {
 	public void testAggregate() throws Exception {
 		TransactionReportAggregator aggregator = (TransactionReportAggregator) lookup(ReportAggregator.class,
 		      TransactionConstants.NAME);
-		TransactionReport p1 = loadReport("aggregate_p1.xml");
-		TransactionReport p2 = loadReport("aggregate_p2.xml");
-		TransactionReport expected = loadReport("aggregate_all.xml");
+		TransactionReport p1 = loadReport("transaction-1.xml");
+		TransactionReport p2 = loadReport("transaction-2.xml");
+		TransactionReport expected = loadReport("transaction.xml");
 		TransactionReport actual = aggregator.aggregate(ReportPeriod.HOUR, Arrays.asList(p1, p2));
 
 		Assert.assertEquals(expected.toString(), actual.toString());

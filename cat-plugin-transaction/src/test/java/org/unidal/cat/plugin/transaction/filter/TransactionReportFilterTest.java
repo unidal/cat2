@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction;
+package org.unidal.cat.plugin.transaction.filter;
 
 import java.io.InputStream;
 import java.util.Set;
@@ -8,10 +8,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.core.config.DomainGroupConfigService;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
@@ -53,10 +50,10 @@ public class TransactionReportFilterTest extends ComponentTestCase {
    @SuppressWarnings("unchecked")
    private TransactionReport loadReport(String resource) throws Exception {
       ReportDelegate<TransactionReport> delegate = lookup(ReportDelegate.class, TransactionConstants.NAME);
-      InputStream in = getClass().getResourceAsStream("filter/" + resource);
+      InputStream in = getClass().getResourceAsStream(resource);
 
       if (in == null) {
-         throw new IllegalStateException(String.format("Resource(%s) is not found!", "filter/" + resource));
+         throw new IllegalStateException(String.format("Resource(%s) is not found!", resource));
       }
 
       String xml = Files.forIO().readFrom(in, "utf-8");
@@ -94,14 +91,14 @@ public class TransactionReportFilterTest extends ComponentTestCase {
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
-   
+
    @Test
    public void testNameGraphWithGroup() throws Exception {
       TransactionReport source = loadReport("source.xml");
       TransactionReport expected = loadReport("name-graph-group.xml");
       TransactionReport filtered = filter(TransactionNameGraphFilter.ID, source, //
             "type", "URL", "name", "/cat/r/t", "group", "mock");
-      
+
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
 
