@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.message;
+package org.unidal.cat.spi.transport;
 
 import org.unidal.cat.message.command.Command;
 import org.unidal.net.transport.TransportHub;

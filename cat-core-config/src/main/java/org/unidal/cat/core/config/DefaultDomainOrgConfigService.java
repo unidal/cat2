@@ -25,9 +25,14 @@ public class DefaultDomainOrgConfigService implements DomainOrgConfigService, In
    }
 
    @Override
+   public DomainOrgConfigModel getConfig() {
+      return m_config;
+   }
+
+   @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("domain-org-config.xml");
+         InputStream in = getClass().getResourceAsStream("domain-org-config.xml"); // TODO for test
          DomainOrgConfigModel config = DefaultSaxParser.parse(in);
 
          m_config = config;

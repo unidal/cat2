@@ -16,7 +16,7 @@
          <c:otherwise>
                <span class="text-danger switch">【<a class="switch" href="?${ctx.query.period[''].step['']}"><span class="text-danger">切到小时模式</span></a>】</span>
                <c:forEach var="bar" items="${ctx.timeBars}">
-                  &nbsp;[ <a href="?${ctx.query.period[bar.title]}" class="${model.period.name eq bar.title ? 'current' : '' }">${bar.title}</a> ]
+                  &nbsp;[ <a href="?${ctx.query.period[bar.title]}" class="${payload.period.name eq bar.title ? 'current' : '' }">${bar.title}</a> ]
                </c:forEach>
                &nbsp;[ <a href="?${ctx.query.date[payload.formattedStartTime].step[-1]}">${ctx.activeTimeBar.last}</a> ]
                &nbsp;[ <a href="?${ctx.query.date[payload.formattedStartTime].step[1]}">${ctx.activeTimeBar.next}</a> ]
