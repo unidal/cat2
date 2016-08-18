@@ -33,9 +33,6 @@
 					<role>org.unidal.cat.core.config.DomainOrgConfigService</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.plugin.transactions.TransactionsHelper</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 				</requirement>
 				<requirement>
@@ -64,8 +61,26 @@
 			<implementation>org.unidal.cat.plugin.transactions.TransactionsReportDelegate</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transactions.TransactionsHelper</role>
-			<implementation>org.unidal.cat.plugin.transactions.TransactionsHelper</implementation>
+			<role>org.unidal.cat.spi.report.ReportAggregator</role>
+			<role-hint>transactions</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.TransactionsReportAggregator</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:type</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -84,7 +99,17 @@
 			<implementation>org.unidal.cat.plugin.transactions.report.page.Handler</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.plugin.transactions.report.page.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportManager</role>
+					<role-hint>transactions</role-hint>
 				</requirement>
 			</requirements>
 		</component>
@@ -96,6 +121,19 @@
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+			<implementation>com.dianping.cat.mvc.PayloadNormalizer</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.config.server.ServerConfigManager</role>
+			<implementation>com.dianping.cat.config.server.ServerConfigManager</implementation>
 		</component>
 	</components>
 </plexus>

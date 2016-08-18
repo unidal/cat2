@@ -3,10 +3,12 @@ package org.unidal.cat.plugin.transactions.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.plugin.transactions.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.TransactionsPipeline;
+import org.unidal.cat.plugin.transactions.TransactionsReportAggregator;
 import org.unidal.cat.plugin.transactions.TransactionsReportDelegate;
 import org.unidal.cat.plugin.transactions.TransactionsReportManager;
+import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
+import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -22,7 +24,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(TransactionsPipeline.class));
       all.add(A(TransactionsReportManager.class));
       all.add(A(TransactionsReportDelegate.class));
+      all.add(A(TransactionsReportAggregator.class));
+
       all.add(A(TransactionsHelper.class));
+      all.add(A(TransactionsTypeFilter.class));
 
       all.addAll(new WebComponentConfigurator().defineComponents());
 

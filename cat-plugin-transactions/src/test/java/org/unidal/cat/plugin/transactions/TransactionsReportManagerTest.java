@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transactions;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +49,8 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
             .req(ReportDelegateManager.class);
 
       ReportManager<TransactionsReport> rm = lookup(ReportManager.class, TransactionsConstants.NAME);
-      List<TransactionsReport> reports = rm.getLocalReports(ReportPeriod.HOUR, new Date(), null);
+      Map<String, String> properties = Collections.emptyMap();
+      List<TransactionsReport> reports = rm.getLocalReports(ReportPeriod.HOUR, new Date(), null, properties);
       TransactionsReport actual = reports.get(0);
       TransactionsReport expected = loadReport("transactions.xml");
 
@@ -73,6 +75,11 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
       @Override
       public DomainOrgConfigModel getConfig() {
          return null;
+      }
+
+      @Override
+      public boolean isIn(String bu, String domain) {
+         return true;
       }
    }
 

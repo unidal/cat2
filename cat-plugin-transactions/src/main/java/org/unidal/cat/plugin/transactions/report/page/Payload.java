@@ -3,7 +3,6 @@ package org.unidal.cat.plugin.transactions.report.page;
 import java.net.URLEncoder;
 
 import org.unidal.cat.core.report.CoreReportPayload;
-import org.unidal.cat.plugin.transaction.report.page.Action;
 import org.unidal.cat.plugin.transactions.report.ReportPage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
@@ -17,8 +16,8 @@ public class Payload extends CoreReportPayload<ReportPage, Action> {
    @FieldMeta("domain")
    private String m_domain;
 
-   @FieldMeta("ip")
-   private String m_ip;
+   @FieldMeta("bu")
+   private String m_bu;
 
    @FieldMeta("type")
    private String m_type;
@@ -53,8 +52,8 @@ public class Payload extends CoreReportPayload<ReportPage, Action> {
       }
    }
 
-   public String getIp() {
-      return m_ip;
+   public String getBu() {
+      return m_bu;
    }
 
    public String getName() {
@@ -82,8 +81,7 @@ public class Payload extends CoreReportPayload<ReportPage, Action> {
       super.validate(ctx);
 
       m_action = denull(m_action, Action.REPORT);
-      m_domain = denull(m_domain, Constants.CAT);
-      m_ip = denull(m_ip, Constants.ALL);
+      m_domain = denull(m_domain, Constants.ALL);
       m_type = denull(m_type, null);
       m_name = denull(m_name, null);
       m_query = denull(m_query, null);

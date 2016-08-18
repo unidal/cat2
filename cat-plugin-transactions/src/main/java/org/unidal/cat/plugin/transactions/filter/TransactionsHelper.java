@@ -1,19 +1,23 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.filter;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
-import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsDepartment;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = TransactionsHelper.class)
 public class TransactionsHelper {
+   public void mergeDepartment(TransactionsDepartment dst, TransactionsDepartment src) {
+      // Do nothing
+   }
+
    public void mergeDurations(Map<Integer, Duration> dst, Map<Integer, Duration> src) {
       for (Map.Entry<Integer, Duration> e : src.entrySet()) {
          Integer key = e.getKey();
@@ -29,11 +33,7 @@ public class TransactionsHelper {
       }
    }
 
-   public void mergeMachine(Machine old, Machine other) {
-      // nothing to do
-   }
-
-   public void mergeName(TransactionName dst, TransactionName src) {
+   public void mergeName(TransactionsName dst, TransactionsName src) {
       long totalCountSum = dst.getTotalCount() + src.getTotalCount();
       if (totalCountSum > 0) {
          double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
@@ -107,13 +107,12 @@ public class TransactionsHelper {
       }
    }
 
-   public void mergeReport(TransactionReport dst, TransactionReport src) {
+   public void mergeReport(TransactionsReport dst, TransactionsReport src) {
       dst.mergeAttributes(src);
-      dst.getDomainNames().addAll(src.getDomainNames());
-      dst.getIps().addAll(src.getIps());
+      dst.getBus().addAll(src.getBus());
    }
 
-   public void mergeType(TransactionType dst, TransactionType src) {
+   public void mergeType(TransactionsType dst, TransactionsType src) {
       long totalCountSum = dst.getTotalCount() + src.getTotalCount();
       if (totalCountSum > 0) {
          double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();

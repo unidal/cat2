@@ -130,7 +130,8 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       return report;
    }
 
-   public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
+   public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
+         throws IOException {
       if (period == HOUR) {
          int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
          int count = getThreadsCount();

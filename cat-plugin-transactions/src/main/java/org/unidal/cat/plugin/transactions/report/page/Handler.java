@@ -1,37 +1,123 @@
 package org.unidal.cat.plugin.transactions.report.page;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 
-import org.unidal.cat.plugin.transactions.report.ReportPage;
+import org.unidal.cat.core.report.view.svg.GraphBuilder;
+import org.unidal.cat.plugin.transactions.TransactionsConstants;
+import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
+import org.unidal.cat.plugin.transactions.report.view.NameViewModel;
+import org.unidal.cat.plugin.transactions.report.view.TypeViewModel;
+import org.unidal.cat.spi.ReportManager;
+import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
+import com.dianping.cat.mvc.PayloadNormalizer;
+
 public class Handler implements PageHandler<Context> {
-	@Inject
-	private JspViewer m_jspViewer;
+   @Inject
+   private GraphBuilder m_builder;
 
-	@Override
-	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "ts")
-	public void handleInbound(Context ctx) throws ServletException, IOException {
-		// display only, no action here
-	}
+   @Inject
+   private JspViewer m_jspViewer;
 
-	@Override
-	@OutboundActionMeta(name = "ts")
-	public void handleOutbound(Context ctx) throws ServletException, IOException {
-		Model model = new Model(ctx);
+   @Inject
+   private PayloadNormalizer m_normalizer;
 
-		model.setAction(Action.REPORT);
-		model.setPage(ReportPage.TRANSACTIONS);
+   @Inject(TransactionsConstants.NAME)
+   private ReportManager<TransactionsReport> m_manager;
 
-		if (!ctx.isProcessStopped()) {
-		   m_jspViewer.view(ctx, model);
-		}
-	}
+   private void handleHistoryGraph(Model model, Payload payload) throws IOException {
+   }
+
+   private void handleHistoryReport(Model model, Payload payload) throws IOException {
+   }
+
+   private void handleHourlyGraph(Model model, Payload payload) throws IOException {
+   }
+
+   private void handleHourlyReport(Model model, Payload payload) throws IOException {
+      Date startTime = payload.getStartTime();
+      String domain = payload.getDomain();
+      String group = payload.getGroup();
+      String bu = payload.getBu();
+      String type = payload.getType();
+      String sortBy = payload.getSortBy();
+      String query = payload.getQuery();
+      String filterId = (type == null ? TransactionsTypeFilter.ID : TransactionsTypeFilter.ID); // TODO
+
+      TransactionsReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
+            "group", group, "bu", bu, "type", type);
+
+      if (report != null) {
+         if (type != null) {
+            model.setTable(new NameViewModel(report, bu, type, query, sortBy));
+         } else {
+            model.setTable(new TypeViewModel(report, bu, query, sortBy));
+         }
+      } else {
+         report = new TransactionsReport();
+         report.setPeriod(ReportPeriod.HOUR);
+         report.setStartTime(startTime);
+      }
+
+      model.setReport(report);
+   }
+
+   @Override
+   @PayloadMeta(Payload.class)
+   @InboundActionMeta(name = "t")
+   public void handleInbound(Context ctx) throws ServletException, IOException {
+      // display only, no action here
+   }
+
+   @Override
+   @OutboundActionMeta(name = "t")
+   public void handleOutbound(Context ctx) throws ServletException, IOException {
+      Model model = new Model(ctx);
+      Payload payload = ctx.getPayload();
+      Action action = payload.getAction();
+
+      model.setAction(action);
+
+      switch (action) {
+      case REPORT:
+         if (payload.getPeriod().isHour()) {
+            handleHourlyReport(model, payload);
+         } else {
+            handleHistoryReport(model, payload);
+         }
+
+         break;
+      case GRAPH:
+         if (payload.getPeriod().isHour()) {
+            handleHourlyGraph(model, payload);
+         } else {
+            handleHistoryGraph(model, payload);
+         }
+
+         break;
+      }
+
+      TransactionsReport report = model.getReport();
+
+      if (report != null) {
+         Date startTime = report.getStartTime();
+         Date endTime = report.getPeriod().getNextStartTime(startTime);
+
+         report.setEndTime(new Date(endTime.getTime() - 1000));
+         ctx.getDomainBar().addRecentDomain(report.getDomain());
+      }
+
+      if (!ctx.isProcessStopped()) {
+         m_jspViewer.view(ctx, model);
+      }
+   }
 }

@@ -39,20 +39,20 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    @Inject
    private DomainOrgConfigService m_config;
 
-   @Inject
-   private TransactionsHelper m_helper;
-
    @Override
-   public List<TransactionsReport> getLocalReports(ReportPeriod period, Date startTime, String domain)
-         throws IOException {
+   public List<TransactionsReport> getLocalReports(ReportPeriod period, Date startTime, String domain,
+         Map<String, String> properties) throws IOException {
       ReportManager<TransactionReport> rm = m_rmm.getReportManager(TransactionConstants.NAME);
       int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
       List<Map<String, TransactionReport>> list = rm.getLocalReports(period, hour);
       TransactionsReportMaker maker = new TransactionsReportMaker();
+      String bu = properties.get("bu");
 
       for (Map<String, TransactionReport> map : list) {
-         for (TransactionReport report : map.values()) {
-            report.accept(maker);
+         for (Map.Entry<String, TransactionReport> e : map.entrySet()) {
+            if (bu == null || m_config.isIn(bu, e.getKey())) {
+               e.getValue().accept(maker);
+            }
          }
       }
 
