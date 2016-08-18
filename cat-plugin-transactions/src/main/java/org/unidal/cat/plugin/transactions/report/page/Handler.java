@@ -7,6 +7,7 @@ import javax.servlet.ServletException;
 
 import org.unidal.cat.core.report.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
+import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.report.view.NameViewModel;
@@ -51,7 +52,7 @@ public class Handler implements PageHandler<Context> {
       String type = payload.getType();
       String sortBy = payload.getSortBy();
       String query = payload.getQuery();
-      String filterId = (type == null ? TransactionsTypeFilter.ID : TransactionsTypeFilter.ID); // TODO
+      String filterId = (type == null ? TransactionsTypeFilter.ID : TransactionsNameFilter.ID);
 
       TransactionsReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
             "group", group, "bu", bu, "type", type);

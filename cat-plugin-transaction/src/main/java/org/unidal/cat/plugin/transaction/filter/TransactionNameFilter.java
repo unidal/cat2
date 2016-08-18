@@ -1,8 +1,5 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
@@ -65,9 +62,9 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
       private TransactionHolder m_holder = new TransactionHolder();
 
       public NameScreener(String domain, String group, String ip, String type) {
-         m_type = type;
          m_group = group;
          m_ip = ip;
+         m_type = type;
          m_holder.setReport(new TransactionReport(domain));
       }
 
@@ -138,9 +135,7 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
 
          m_helper.mergeType(t, type);
 
-         Collection<TransactionName> names = new ArrayList<TransactionName>(type.getNames().values());
-
-         for (TransactionName name : names) {
+         for (TransactionName name : type.getNames().values()) {
             TransactionName n = t.findOrCreateName(name.getId());
 
             m_holder.setName(n);

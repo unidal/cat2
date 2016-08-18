@@ -70,6 +70,16 @@ public class TransactionsReportFilterTest extends ComponentTestCase {
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
+   
+   @Test
+   public void testName() throws Exception {
+      TransactionsReport source = loadReport("source.xml");
+      TransactionsReport expected = loadReport("name.xml");
+      TransactionsReport filtered = filter(TransactionsNameFilter.ID, source, //
+            "type", "URL");
+      
+      Assert.assertEquals(expected.toString(), filtered.toString());
+   }
 
    public static class MockDomanConfigService implements DomainGroupConfigService {
       @Override

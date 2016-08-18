@@ -89,6 +89,19 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:name</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
