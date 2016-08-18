@@ -13,11 +13,12 @@ import org.unidal.cat.plugin.transactions.model.transform.DefaultXmlBuilder;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = ReportDelegate.class, value = TransactionsConstants.NAME)
 public class TransactionsReportDelegate implements ReportDelegate<TransactionsReport> {
-   // @Inject(TransactionsConstants.NAME)
+   @Inject(TransactionsConstants.NAME)
    private ReportAggregator<TransactionsReport> m_aggregator;
 
    @Override

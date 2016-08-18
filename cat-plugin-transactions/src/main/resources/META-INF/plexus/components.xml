@@ -59,6 +59,12 @@
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
 			<role-hint>transactions</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.TransactionsReportDelegate</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportAggregator</role>
+					<role-hint>transactions</role-hint>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>

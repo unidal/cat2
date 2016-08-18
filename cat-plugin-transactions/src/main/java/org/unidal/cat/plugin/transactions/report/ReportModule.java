@@ -8,6 +8,7 @@ import org.unidal.web.mvc.annotation.ModulePagesMeta;
 @ModulePagesMeta({
 
 org.unidal.cat.plugin.transactions.report.page.Handler.class
+
 })
 public class ReportModule extends AbstractModule {
 

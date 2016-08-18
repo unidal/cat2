@@ -73,13 +73,13 @@ public class Handler implements PageHandler<Context> {
 
    @Override
    @PayloadMeta(Payload.class)
-   @InboundActionMeta(name = "t")
+   @InboundActionMeta(name = "ts")
    public void handleInbound(Context ctx) throws ServletException, IOException {
       // display only, no action here
    }
 
    @Override
-   @OutboundActionMeta(name = "t")
+   @OutboundActionMeta(name = "ts")
    public void handleOutbound(Context ctx) throws ServletException, IOException {
       Model model = new Model(ctx);
       Payload payload = ctx.getPayload();
@@ -113,7 +113,7 @@ public class Handler implements PageHandler<Context> {
          Date endTime = report.getPeriod().getNextStartTime(startTime);
 
          report.setEndTime(new Date(endTime.getTime() - 1000));
-         ctx.getDomainBar().addRecentDomain(report.getDomain());
+         ctx.setReport(report);
       }
 
       if (!ctx.isProcessStopped()) {

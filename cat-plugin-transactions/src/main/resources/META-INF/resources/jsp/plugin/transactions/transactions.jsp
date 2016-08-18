@@ -22,7 +22,7 @@
 		<tr>
 		   <th class="left" colspan="13">
 		   	  <input type="text" name="query" id="query" size="40" value="${payload.query}">
-		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${payload.formattedStartTime}','${payload.domain}','${payload.ip}','${payload.type}')" type="submit">
+		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${payload.formattedStartTime}','${payload.domain}','${payload.bu}','${payload.type}')" type="submit">
 			  支持多个字符串查询，例如sql|url|task，查询结果为包含任一sql、url、task的列。
 		   </th>
 		</tr>
