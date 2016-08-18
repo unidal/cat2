@@ -6,7 +6,7 @@ import java.util.Map;
 import org.unidal.cat.core.report.CoreReportModel;
 import org.unidal.cat.core.report.view.LineChart;
 import org.unidal.cat.core.report.view.TableViewModel;
-import org.unidal.cat.plugin.transaction.report.view.GraphViewModel;
+import org.unidal.cat.plugin.transactions.report.view.GraphViewModel;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.report.ReportPage;

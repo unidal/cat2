@@ -78,30 +78,18 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
          return m_holder.getReport();
       }
 
-      private void mergeName(TransactionName n, TransactionName name) {
-         m_helper.mergeName(n, name);
-         n.setSuccessMessageUrl(null);
-         n.setFailMessageUrl(null);
-      }
-
-      private void mergeType(TransactionType t, TransactionType type) {
-         m_helper.mergeType(t, type);
-         t.setSuccessMessageUrl(null);
-         t.setFailMessageUrl(null);
-      }
-
       @Override
       public void visitMachine(Machine machine) {
-         Machine machineAll = m_all.getMachine();
+         Machine all = m_all.getMachine();
          Machine m = m_holder.getMachine();
          TransactionType type = machine.findType(m_type);
 
-         if (machineAll != null) {
-            m_helper.mergeMachine(machineAll, machine);
+         if (all != null) {
+            m_helper.mergeMachine(all, machine);
             m_helper.mergeMachine(m, machine);
 
             if (type != null) {
-               TransactionType ta = machineAll.findOrCreateType(m_type);
+               TransactionType ta = all.findOrCreateType(m_type);
                TransactionType t = m.findOrCreateType(m_type);
 
                m_all.setType(ta);
@@ -126,12 +114,12 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
          TransactionName n = m_holder.getName();
 
          if (na != null) {
-            mergeName(n, name);
+            m_helper.mergeName(n, name);
 
             n = na;
          }
 
-         mergeName(n, name);
+         m_helper.mergeName(n, name);
 
          m_helper.mergeDurations(n.getDurations(), name.getDurations());
          m_helper.mergeRanges(n.getRanges(), name.getRanges());
@@ -196,13 +184,13 @@ public class TransactionNameGraphFilter implements ReportFilter<TransactionRepor
             if (ta != null) {
                TransactionName na = ta.findOrCreateName(m_name);
 
-               mergeType(ta, type);
+               m_helper.mergeType(ta, type);
                m_all.setName(na);
             }
 
             TransactionName n = t.findOrCreateName(m_name);
 
-            mergeType(t, type);
+            m_helper.mergeType(t, type);
             m_holder.setName(n);
             visitName(name);
          }

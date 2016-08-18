@@ -70,14 +70,34 @@ public class TransactionsReportFilterTest extends ComponentTestCase {
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
+
+   @Test
+   public void testTypeGroup() throws Exception {
+      TransactionsReport source = loadReport("source.xml");
+      TransactionsReport expected = loadReport("type-graph.xml");
+      TransactionsReport filtered = filter(TransactionsTypeGraphFilter.ID, source, //
+            "type", "URL");
+
+      Assert.assertEquals(expected.toString(), filtered.toString());
+   }
    
+   @Test
+   public void testNameGroup() throws Exception {
+      TransactionsReport source = loadReport("source.xml");
+      TransactionsReport expected = loadReport("name-graph.xml");
+      TransactionsReport filtered = filter(TransactionsNameGraphFilter.ID, source, //
+            "type", "URL", "name", "/cat/r/t");
+      
+      Assert.assertEquals(expected.toString(), filtered.toString());
+   }
+
    @Test
    public void testName() throws Exception {
       TransactionsReport source = loadReport("source.xml");
       TransactionsReport expected = loadReport("name.xml");
       TransactionsReport filtered = filter(TransactionsNameFilter.ID, source, //
             "type", "URL");
-      
+
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
 

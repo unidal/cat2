@@ -40,7 +40,7 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
       String group = ctx.getProperty("group", null);
       String bu = ctx.getProperty("bu", null);
       String type = ctx.getProperty("type", null);
-      TypeScreener visitor = new TypeScreener(report.getDomain(), group, bu, type);
+      NameScreener visitor = new NameScreener(report.getDomain(), group, bu, type);
 
       report.accept(visitor);
       return visitor.getReport();
@@ -50,7 +50,7 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
    public void tailor(RemoteContext ctx, TransactionsReport report) {
    }
 
-   private class TypeScreener extends BaseVisitor {
+   private class NameScreener extends BaseVisitor {
       private String m_group;
 
       private String m_bu;
@@ -59,7 +59,7 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
 
       private TransactionsHolder m_holder = new TransactionsHolder();
 
-      public TypeScreener(String domain, String group, String bu, String type) {
+      public NameScreener(String domain, String group, String bu, String type) {
          m_group = group;
          m_bu = bu;
          m_type = type;

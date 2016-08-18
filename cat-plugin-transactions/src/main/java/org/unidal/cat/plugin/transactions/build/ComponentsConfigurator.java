@@ -9,7 +9,9 @@ import org.unidal.cat.plugin.transactions.TransactionsReportDelegate;
 import org.unidal.cat.plugin.transactions.TransactionsReportManager;
 import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
+import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
+import org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -26,10 +28,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(TransactionsReportManager.class));
       all.add(A(TransactionsReportDelegate.class));
       all.add(A(TransactionsReportAggregator.class));
-
       all.add(A(TransactionsHelper.class));
+
       all.add(A(TransactionsTypeFilter.class));
       all.add(A(TransactionsNameFilter.class));
+      all.add(A(TransactionsTypeGraphFilter.class));
+      all.add(A(TransactionsNameGraphFilter.class));
 
       all.addAll(new WebComponentConfigurator().defineComponents());
 

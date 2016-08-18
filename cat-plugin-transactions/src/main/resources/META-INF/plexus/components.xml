@@ -102,6 +102,32 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:type-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:name-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>

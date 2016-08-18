@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.plugin.transaction.model.entity.Duration;
-import org.unidal.cat.plugin.transaction.model.entity.Range;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDepartment;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsRange;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;
 import org.unidal.lookup.annotation.Named;
@@ -18,14 +18,14 @@ public class TransactionsHelper {
       // Do nothing
    }
 
-   public void mergeDurations(Map<Integer, Duration> dst, Map<Integer, Duration> src) {
-      for (Map.Entry<Integer, Duration> e : src.entrySet()) {
+   public void mergeDurations(Map<Integer, TransactionsDuration> dst, Map<Integer, TransactionsDuration> src) {
+      for (Map.Entry<Integer, TransactionsDuration> e : src.entrySet()) {
          Integer key = e.getKey();
-         Duration duration = e.getValue();
-         Duration oldDuration = dst.get(key);
+         TransactionsDuration duration = e.getValue();
+         TransactionsDuration oldDuration = dst.get(key);
 
          if (oldDuration == null) {
-            oldDuration = new Duration(duration.getValue());
+            oldDuration = new TransactionsDuration(duration.getValue());
             dst.put(key, oldDuration);
          }
 
@@ -74,22 +74,22 @@ public class TransactionsHelper {
       }
    }
 
-   public void mergeRanges(List<Range> dst, List<Range> src) {
+   public void mergeRanges(List<TransactionsRange> dst, List<TransactionsRange> src) {
       Map<Integer, Integer> map = new HashMap<Integer, Integer>();
 
       for (int i = dst.size() - 1; i >= 0; i--) {
-         Range duration = dst.get(i);
+         TransactionsRange duration = dst.get(i);
 
          map.put(duration.getValue(), i);
       }
 
       for (int i = 0; i < src.size(); i++) {
-         Range duration = src.get(i);
+         TransactionsRange duration = src.get(i);
          Integer index = map.get(duration.getValue());
-         Range oldRange;
+         TransactionsRange oldRange;
 
          if (index == null) {
-            oldRange = new Range(duration.getValue());
+            oldRange = new TransactionsRange(duration.getValue());
             dst.add(oldRange);
          } else {
             oldRange = dst.get(index);

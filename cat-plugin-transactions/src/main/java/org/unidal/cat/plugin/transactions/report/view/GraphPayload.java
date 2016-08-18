@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.unidal.cat.core.report.view.svg.AbstractGraphPayload;
-import org.unidal.cat.plugin.transaction.model.entity.Duration;
-import org.unidal.cat.plugin.transaction.model.entity.Range;
-import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
+import org.unidal.cat.plugin.transactions.model.entity.TransactionsRange;
 
 public class GraphPayload {
 	abstract static class AbstractPayload extends AbstractGraphPayload {
-		private final TransactionName m_name;
+		private final TransactionsName m_name;
 
-		public AbstractPayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
+		public AbstractPayload(String title, String axisXLabel, String axisYLabel, TransactionsName name) {
 			super(title, axisXLabel, axisYLabel);
 
 			m_name = name;
@@ -42,7 +42,7 @@ public class GraphPayload {
 			return m_name.getId() + "_" + super.getIdPrefix();
 		}
 
-		protected TransactionName getTransactionName() {
+		protected TransactionsName getTransactionsName() {
 			return m_name;
 		}
 
@@ -58,7 +58,7 @@ public class GraphPayload {
 	}
 
 	public static class AverageTimePayload extends AbstractPayload {
-		public AverageTimePayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
+		public AverageTimePayload(String title, String axisXLabel, String axisYLabel, TransactionsName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
 
@@ -71,7 +71,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges()) {
+			for (TransactionsRange range : getTransactionsName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getAvg();
@@ -85,7 +85,7 @@ public class GraphPayload {
 
 		private Map<Integer, Integer> m_map = new HashMap<Integer, Integer>();
 
-		public DurationPayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
+		public DurationPayload(String title, String axisXLabel, String axisYLabel, TransactionsName name) {
 			super(title, axisXLabel, axisYLabel, name);
 			int k = 1;
 
@@ -126,7 +126,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[17];
 
-			for (Duration duration : getTransactionName().getDurations().values()) {
+			for (TransactionsDuration duration : getTransactionsName().getDurations().values()) {
 				int d = duration.getValue();
 				Integer k = m_map.get(d);
 
@@ -140,7 +140,7 @@ public class GraphPayload {
 	}
 
 	public final static class FailurePayload extends AbstractPayload {
-		public FailurePayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
+		public FailurePayload(String title, String axisXLabel, String axisYLabel, TransactionsName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
 
@@ -158,7 +158,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges()) {
+			for (TransactionsRange range : getTransactionsName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getFails();
@@ -169,7 +169,7 @@ public class GraphPayload {
 	}
 
 	public final static class HitPayload extends AbstractPayload {
-		public HitPayload(String title, String axisXLabel, String axisYLabel, TransactionName name) {
+		public HitPayload(String title, String axisXLabel, String axisYLabel, TransactionsName name) {
 			super(title, axisXLabel, axisYLabel, name);
 		}
 
@@ -182,7 +182,7 @@ public class GraphPayload {
 		protected double[] loadValues() {
 			double[] values = new double[60];
 
-			for (Range range : getTransactionName().getRanges()) {
+			for (TransactionsRange range : getTransactionsName().getRanges()) {
 				int value = range.getValue();
 
 				values[value] += range.getCount();

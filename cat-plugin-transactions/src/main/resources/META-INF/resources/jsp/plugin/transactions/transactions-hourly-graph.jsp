@@ -27,11 +27,11 @@
   ${model.graph.barCharts.failures}
 </svg>
 
-<c:if test="${payload.ip eq 'All'}">
+<c:if test="${payload.bu eq 'All'}">
 <table class='table table-hover table-striped table-condensed' style="width:100%">
 	<tr><td colspan="8"><h4 style="text-align:center" class='text-center text-info'>Distribution by IP</h4></td></tr>
 	<tr>
-		<th class="right">IP</th>
+		<th class="right">Department</th>
 		<th class="right">Total</th>
 		<th class="right">Failure</th>
 		<th class="right">Failure%</th>
@@ -42,7 +42,7 @@
 	</tr>
 	<c:forEach var="item" items="${model.graph.distributions}" varStatus="status">
 		<tr class=" right">
-			<td>${item.ip}</td>
+			<td>${item.bu}</td>
 			<td>${w:format(item.totalCount,'#,###,###,###,##0')}</td>
 			<td>${w:format(item.failCount,'#,###,###,###,##0')}</td>
 			<td>${w:format(item.failPercent/100,'0.0000%')}</td>

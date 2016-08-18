@@ -6,9 +6,12 @@ import java.util.Date;
 import javax.servlet.ServletException;
 
 import org.unidal.cat.core.report.view.svg.GraphBuilder;
+import org.unidal.cat.plugin.transactions.report.view.GraphViewModel;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
+import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
+import org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.report.view.NameViewModel;
 import org.unidal.cat.plugin.transactions.report.view.TypeViewModel;
@@ -42,6 +45,24 @@ public class Handler implements PageHandler<Context> {
    }
 
    private void handleHourlyGraph(Model model, Payload payload) throws IOException {
+      Date startTime = payload.getStartTime();
+      String domain = payload.getDomain();
+      String group = payload.getGroup();
+      String bu = payload.getBu();
+      String type = payload.getType();
+      String name = payload.getName();
+      String filterId = (name == null ? TransactionsTypeGraphFilter.ID : TransactionsNameGraphFilter.ID);
+
+      TransactionsReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
+            "group", group, "bu", bu, "type", type, "name", name);
+
+      if (report != null) {
+         GraphViewModel graph = new GraphViewModel(m_builder, bu, type, name, report);
+
+         model.setGraph(graph);
+      }
+
+      model.setReport(report);
    }
 
    private void handleHourlyReport(Model model, Payload payload) throws IOException {
