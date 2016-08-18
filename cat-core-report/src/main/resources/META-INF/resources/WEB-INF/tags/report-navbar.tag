@@ -29,9 +29,9 @@
 <table class="groups">
    <tr class="left">
       <th>
-         <c:set var="g" value="${empty model.groupBar.activeGroup ? 'All' : model.groupBar.activeGroup}"/>
-         <c:forEach var="group" items="${model.groupBar.groups}">
-               【&nbsp;<a href="?${ctx.query.ip[''].group[group eq 'All' ? '' : group]}" class="${g eq group ? 'current' : ''}">${group}</a>&nbsp;】&nbsp;
+         <c:set var="g" value="${empty ctx.groupBar.activeGroup ? 'All' : ctx.groupBar.activeGroup}"/>
+         <c:forEach var="group" items="${ctx.groupBar.groups}">
+               【&nbsp;<a href="?${ctx.query[ctx.groupBar.itemName][''].group[group eq 'All' ? '' : group]}" class="${g eq group ? 'current' : ''}">${group}</a>&nbsp;】&nbsp;
           </c:forEach>
       </th>
    </tr>
@@ -40,8 +40,8 @@
 <table class="machines">
    <tr class="left">
       <th>
-         <c:forEach var="machine" items="${model.groupBar.activeGroupItems}">
-               <span class="nowrap">&nbsp;[&nbsp;<a href="?${ctx.query.ip[machine]}" class="${payload.ip eq machine ? 'current' : ''}">${machine}</a>&nbsp;]&nbsp;</span>
+         <c:forEach var="item" items="${ctx.groupBar.activeGroupItems}">
+               <span class="nowrap">&nbsp;[&nbsp;<a href="?${ctx.query[ctx.groupBar.itemName][item]}" class="${ctx.groupBar.activeGroupItem eq item ? 'current' : ''}">${item}</a>&nbsp;]&nbsp;</span>
           </c:forEach>
       </th>
    </tr>

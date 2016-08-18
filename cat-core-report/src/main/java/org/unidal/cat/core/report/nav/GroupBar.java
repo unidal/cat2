@@ -1,16 +1,17 @@
 package org.unidal.cat.core.report.nav;
 
 import java.util.List;
-import java.util.Set;
 
 public interface GroupBar {
-	public String getActiveGroup();
+   public String getActiveGroup();
 
-	public List<String> getActiveGroupItems();
+   public String getActiveGroupItem();
 
-	public List<String> getGroups();
+   public List<String> getActiveGroupItems();
 
-	public String getId();
+   public List<String> getGroups();
 
-	public void initialize(String domain, String group, Set<String> items);
+   public String getId();
+
+   public String getItemName();
 }

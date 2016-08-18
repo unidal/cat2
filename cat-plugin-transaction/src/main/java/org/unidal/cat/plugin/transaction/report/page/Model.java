@@ -1,10 +1,7 @@
 package org.unidal.cat.plugin.transaction.report.page;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.unidal.cat.core.report.CoreReportModel;
 import org.unidal.cat.core.report.view.LineChart;
@@ -47,14 +44,6 @@ public class Model extends CoreReportModel<ReportPage, Action, Context> {
 
    public GraphViewModel getGraph() {
       return m_graph;
-   }
-
-   protected Set<String> getItems() {
-      if (m_report == null) {
-         return Collections.emptySet();
-      } else {
-         return new HashSet<String>(m_report.getIps());
-      }
    }
 
    public Map<String, LineChart> getLineCharts() {

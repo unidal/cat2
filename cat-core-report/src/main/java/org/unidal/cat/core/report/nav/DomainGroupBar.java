@@ -9,7 +9,7 @@ import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = GroupBar.class, value = "domain", instantiationStrategy = Named.PER_LOOKUP)
+@Named(type = DomainGroupBar.class, instantiationStrategy = Named.PER_LOOKUP)
 public class DomainGroupBar implements GroupBar {
    @Inject
    private DomainGroupConfigService m_configService;
@@ -22,9 +22,18 @@ public class DomainGroupBar implements GroupBar {
 
    private List<String> m_items;
 
+   private String m_activeItem;
+
+   private String m_itemName;
+
    @Override
    public String getActiveGroup() {
       return m_group;
+   }
+
+   @Override
+   public String getActiveGroupItem() {
+      return m_activeItem;
    }
 
    @Override
@@ -43,15 +52,21 @@ public class DomainGroupBar implements GroupBar {
    }
 
    @Override
-   public void initialize(String domain, String group, Set<String> ips) {
+   public String getItemName() {
+      return m_itemName;
+   }
+
+   public void initialize(String domain, String group, String itemName, String activeItem, Set<String> items) {
       m_domain = domain;
       m_group = group;
-      m_groups = new ArrayList<String>(m_configService.getGroups(domain, ips));
+      m_itemName = itemName;
+      m_activeItem = activeItem;
+      m_groups = new ArrayList<String>(m_configService.getGroups(domain, items));
       m_items = new ArrayList<String>();
 
-      for (String ip : ips) {
-         if (m_configService.isInGroup(domain, group, ip)) {
-            m_items.add(ip);
+      for (String item : items) {
+         if (m_configService.isInGroup(domain, group, item)) {
+            m_items.add(item);
          }
       }
 

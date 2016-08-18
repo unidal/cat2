@@ -209,7 +209,7 @@ public class Handler implements PageHandler<Context> {
          Date endTime = report.getPeriod().getNextStartTime(startTime);
 
          report.setEndTime(new Date(endTime.getTime() - 1000));
-         ctx.getDomainBar().addRecentDomain(report.getDomain());
+         ctx.setReport(report);
       }
 
       if (!ctx.isProcessStopped()) {
