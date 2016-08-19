@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.model;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,8 +15,9 @@ import org.junit.Test;
 import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.plugin.transaction.TransactionReportManager;
+import org.unidal.cat.plugin.transaction.model.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;

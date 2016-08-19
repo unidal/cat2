@@ -1,10 +1,11 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.model;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Date;
 
+import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.transform.DefaultNativeBuilder;
 import org.unidal.cat.plugin.transactions.model.transform.DefaultNativeParser;

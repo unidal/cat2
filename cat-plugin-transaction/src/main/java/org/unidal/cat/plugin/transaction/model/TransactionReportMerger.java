@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction;
+package org.unidal.cat.plugin.transaction.model;
 
 import com.dianping.cat.Constants;
 import org.unidal.cat.plugin.transaction.model.entity.*;

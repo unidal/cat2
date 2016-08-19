@@ -7,14 +7,14 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 					<role-hint>domain-hash</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportManagerManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>

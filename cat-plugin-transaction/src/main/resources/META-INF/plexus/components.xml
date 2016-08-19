@@ -7,14 +7,14 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 					<role-hint>domain-hash</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.ReportManagerManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
@@ -33,7 +33,7 @@
 		<component>
 			<role>org.unidal.cat.spi.ReportManager</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportManager</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportManager</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
@@ -61,7 +61,7 @@
 		<component>
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAggregator</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportAggregator</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
@@ -71,7 +71,7 @@
 		<component>
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportDelegate</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportDelegate</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportAggregator</role>
@@ -82,7 +82,7 @@
 		<component>
 			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAnalyzer</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>

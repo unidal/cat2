@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.model;
 
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;

@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportConfiguration;
+import org.unidal.cat.spi.ReportManager;
+import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageRoutingStrategy;
 import org.unidal.helper.Threads;
@@ -18,6 +21,9 @@ import com.dianping.cat.message.spi.MessageTree;
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
    @Inject(StrategyConstants.DOMAIN_HASH)
    private MessageRoutingStrategy m_strategy;
+
+   @Inject
+   private ReportManagerManager m_rmm;
 
    @Inject
    private ReportConfiguration m_config;
@@ -66,9 +72,17 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
       }
    }
 
+   protected ReportManager<Report> getReportManager() {
+      return m_rmm.getReportManager(getName());
+   }
+
    protected void doCheckpoint(final boolean atEnd) throws Exception {
-      for (MessageAnalyzer analyzer : m_analyzers) {
-         analyzer.doCheckpoint(atEnd);
+      if (hasAnalyzer()) {
+         for (MessageAnalyzer analyzer : m_analyzers) {
+            analyzer.doCheckpoint(atEnd);
+         }
+      } else {
+         getReportManager().doCheckpoint(getHour(), 0);
       }
    }
 

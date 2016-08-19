@@ -12,7 +12,6 @@ import org.unidal.cat.core.report.menu.MenuLinkBuilder;
 import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.analysis.pipeline.AbstractPipeline;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
@@ -26,49 +25,44 @@ import com.dianping.cat.Constants;
 
 @Named(type = Pipeline.class, value = EventConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class EventPipeline extends AbstractPipeline implements Initializable {
-	@Inject
-	private ReportManagerManager m_rmm;
+   @Inject
+   private ReportDelegateManager m_rdg;
 
-	@Inject
-	private ReportDelegateManager m_rdg;
+   @Override
+   protected void afterCheckpoint() {
 
-	@Override
-	protected void afterCheckpoint() {
+   }
 
-	}
+   @Override
+   protected void beforeCheckpoint() throws IOException {
+      ReportManager<Report> manager = getReportManager();
+      ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
+      List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
 
-	@Override
-	protected void beforeCheckpoint() throws IOException {
-		ReportManager<Report> manager = m_rmm.getReportManager(getName());
+      if (reportMapList.size() > 0) {
+         List<Report> reportList = new ArrayList<Report>();
 
-		ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
+         for (Map<String, Report> map : reportMapList) {
+            reportList.addAll(map.values());
+         }
 
-		List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
+         Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
 
-		if (reportMapList.size() > 0) {
-			List<Report> reportList = new ArrayList<Report>();
+         Map<String, Report> map = reportMapList.get(0);
 
-			for (Map<String, Report> map : reportMapList) {
-				reportList.addAll(map.values());
-			}
+         map.put(Constants.ALL, allReport);
+      }
+   }
 
-			Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
+   @Override
+   public void initialize() throws InitializationException {
+      lookup(MenuManager.class).register(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
+         @Override
+         public String build(ActionContext<?> ctx) {
+            return ctx.getQuery().uri("/r/e").get("type").get("").get("name").get("").toString();
+         }
+      });
 
-			Map<String, Report> map = reportMapList.get(0);
-
-			map.put(Constants.ALL, allReport);
-		}
-	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
-			@Override
-			public String build(ActionContext<?> ctx) {
-				return ctx.getQuery().uri("/r/e").get("type").get("").get("name").get("").toString();
-			}
-		});
-
-		Document.USER.register(EventConstants.NAME, "Event");
-	}
+      Document.USER.register(EventConstants.NAME, "Event");
+   }
 }

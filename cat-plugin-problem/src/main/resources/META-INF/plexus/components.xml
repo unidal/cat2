@@ -11,6 +11,9 @@
 					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
+					<role>org.unidal.cat.spi.ReportManagerManager</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.spi.ReportConfiguration</role>
 				</requirement>
 			</requirements>

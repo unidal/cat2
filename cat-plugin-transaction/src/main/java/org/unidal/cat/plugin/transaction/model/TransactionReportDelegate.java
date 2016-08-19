@@ -1,5 +1,6 @@
-package org.unidal.cat.plugin.transaction;
+package org.unidal.cat.plugin.transaction.model;
 
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.transform.DefaultNativeBuilder;
 import org.unidal.cat.plugin.transaction.model.transform.DefaultNativeParser;

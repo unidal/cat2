@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.plugin.transactions.TransactionsPipeline;
-import org.unidal.cat.plugin.transactions.TransactionsReportAggregator;
-import org.unidal.cat.plugin.transactions.TransactionsReportDelegate;
-import org.unidal.cat.plugin.transactions.TransactionsReportManager;
 import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter;
+import org.unidal.cat.plugin.transactions.model.TransactionsReportAggregator;
+import org.unidal.cat.plugin.transactions.model.TransactionsReportDelegate;
+import org.unidal.cat.plugin.transactions.model.TransactionsReportManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 

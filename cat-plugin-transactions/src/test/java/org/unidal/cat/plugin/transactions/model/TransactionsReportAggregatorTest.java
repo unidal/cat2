@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.model;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -6,6 +6,8 @@ import java.util.Arrays;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.transactions.TransactionsConstants;
+import org.unidal.cat.plugin.transactions.model.TransactionsReportAggregator;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.transform.DefaultSaxParser;
 import org.unidal.cat.spi.ReportPeriod;

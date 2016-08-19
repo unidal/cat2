@@ -1,8 +1,7 @@
 package org.unidal.cat.plugin.transactions.filter;
 
-import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
-import org.unidal.cat.plugin.transactions.TransactionsHolder;
+import org.unidal.cat.plugin.transactions.model.TransactionsHolder;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDepartment;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;
@@ -20,9 +19,6 @@ public class TransactionsTypeFilter implements ReportFilter<TransactionsReport> 
 
    @Inject
    private TransactionsHelper m_helper;
-
-   @Inject
-   private DomainGroupConfigService m_configService;
 
    @Override
    public String getId() {

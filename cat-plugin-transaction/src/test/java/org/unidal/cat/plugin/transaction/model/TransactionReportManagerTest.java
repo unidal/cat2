@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction;
+package org.unidal.cat.plugin.transaction.model;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportManagerManager;

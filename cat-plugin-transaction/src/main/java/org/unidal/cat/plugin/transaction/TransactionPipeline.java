@@ -12,7 +12,6 @@ import org.unidal.cat.core.report.menu.MenuLinkBuilder;
 import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.analysis.pipeline.AbstractPipeline;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
@@ -27,14 +26,11 @@ import com.dianping.cat.Constants;
 @Named(type = Pipeline.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class TransactionPipeline extends AbstractPipeline implements Initializable {
    @Inject
-   private ReportManagerManager m_rmm;
-
-   @Inject
    private ReportDelegateManager m_rdg;
 
    @Override
    protected void beforeCheckpoint() throws IOException {
-      ReportManager<Report> manager = m_rmm.getReportManager(getName());
+      ReportManager<Report> manager = getReportManager();
       ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
       List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
 

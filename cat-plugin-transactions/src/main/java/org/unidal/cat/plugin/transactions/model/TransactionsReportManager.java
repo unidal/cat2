@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transactions;
+package org.unidal.cat.plugin.transactions.model;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
+import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDomain;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
@@ -39,6 +40,9 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    @Inject
    private DomainOrgConfigService m_config;
 
+   /**
+    * make transactions report from transaction reports dynamically
+    */
    @Override
    public List<TransactionsReport> getLocalReports(ReportPeriod period, Date startTime, String domain,
          Map<String, String> properties) throws IOException {
@@ -46,7 +50,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
       List<Map<String, TransactionReport>> list = rm.getLocalReports(period, hour);
       TransactionsReportMaker maker = new TransactionsReportMaker();
-      String bu = properties.get("bu");
+      String bu = properties == null ? null : properties.get("bu");
 
       for (Map<String, TransactionReport> map : list) {
          for (Map.Entry<String, TransactionReport> e : map.entrySet()) {
