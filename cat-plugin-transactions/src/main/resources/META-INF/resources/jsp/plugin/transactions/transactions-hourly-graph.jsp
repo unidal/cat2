@@ -27,7 +27,7 @@
   ${model.graph.barCharts.failures}
 </svg>
 
-<c:if test="${payload.bu eq 'All'}">
+<c:if test="${empty payload.bu}">
 <table class='table table-hover table-striped table-condensed' style="width:100%">
 	<tr><td colspan="8"><h4 style="text-align:center" class='text-center text-info'>Distribution by IP</h4></td></tr>
 	<tr>

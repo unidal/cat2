@@ -66,12 +66,8 @@ public class GraphViewModel {
    }
 
    private void buildBarGraphs(GraphBuilder builder, TransactionsReport report, String bu, String type, String name) {
-      if (name == null || name.length() == 0) {
-         name = Constants.ALL;
-      }
-
-      TransactionsType t = report.findOrCreateDepartment(bu).findOrCreateType(type);
-      TransactionsName n = t.findOrCreateName(name);
+      TransactionsType t = report.findOrCreateDepartment(bu == null ? Constants.ALL : bu).findOrCreateType(type);
+      TransactionsName n = t.findOrCreateName(name == null ? Constants.ALL : name);
 
       if (n != null) {
          DurationPayload duration = new DurationPayload("Duration Distribution", "Duration (ms)", "Count", n);
@@ -235,8 +231,10 @@ public class GraphViewModel {
 
       @Override
       public void visitDepartment(TransactionsDepartment department) {
-         if (department.getId() != null) {
-            m_bu = department.getId();
+         String bu = department.getId();
+
+         if (bu != null && !bu.equals(Constants.ALL)) {
+            m_bu = bu;
 
             super.visitDepartment(department);
          }
@@ -376,7 +374,7 @@ public class GraphViewModel {
    private static class MetricsAggregator extends BaseVisitor {
       private double[] m_values;
 
-      private String m_ip;
+      private String m_bu;
 
       private String m_type;
 
@@ -386,7 +384,7 @@ public class GraphViewModel {
 
       public MetricsAggregator(String ip, String type, String name, String metric, int size) {
          m_values = new double[size];
-         m_ip = ip;
+         m_bu = ip;
          m_type = type;
          m_name = name;
          m_metric = metric;
@@ -398,7 +396,7 @@ public class GraphViewModel {
 
       @Override
       public void visitDepartment(TransactionsDepartment department) {
-         if (m_ip == null || m_ip.equals(department.getId())) {
+         if (m_bu == null || m_bu.equals(department.getId())) {
             super.visitDepartment(department);
          }
       }
@@ -463,8 +461,10 @@ public class GraphViewModel {
 
       @Override
       public void visitDepartment(TransactionsDepartment department) {
-         if (department.getId() != null) {
-            m_bu = department.getId();
+         String bu = department.getId();
+         
+         if (bu != null && !bu.equals(Constants.ALL)) {
+            m_bu = bu;
 
             for (TransactionsType type : department.getTypes().values()) {
                if (m_type != null && m_type.equals(type.getId())) {
