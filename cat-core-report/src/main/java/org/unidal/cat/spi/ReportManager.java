@@ -12,12 +12,12 @@ public interface ReportManager<T extends Report> {
 
    public T getLocalReport(String domain, int hour, int index, boolean createIfNotExist);
 
-   public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
-         throws IOException;
-
    public List<Map<String, T>> getLocalReports(ReportPeriod period, int hour) throws IOException;
 
    public T getReport(ReportPeriod period, Date startTime, String domain, String filterId, String... keyValuePairs)
+         throws IOException;
+
+   public List<T> getReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
          throws IOException;
 
    public void removeReport(int hour, int index);

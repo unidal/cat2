@@ -22,6 +22,7 @@ import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.ReportFilterManager;
 import org.unidal.cat.spi.report.provider.ReportProvider;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
+import org.unidal.cat.spi.report.storage.MysqlReportStorage;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.cat.spi.report.task.ReportTaskService;
 import org.unidal.helper.Inets;
@@ -32,7 +33,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
    @Inject
    private ReportProvider<T> m_provider;
 
-   @Inject
+   @Inject(MysqlReportStorage.ID)
    private ReportStorage<T> m_mysqlStorage;
 
    @Inject(FileReportStorage.ID)
@@ -53,8 +54,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
    @Override
    public void doCheckpoint(int hour, int index) throws Exception {
-      Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      ConcurrentMap<String, T> map = m_reports.get(startTime.getTime() + index);
+      ConcurrentMap<String, T> map = getLocalReports(ReportPeriod.HOUR, hour, index);
 
       removeReport(hour - 1, index);
 
@@ -67,6 +67,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
          }
 
          // 1 AM tommorrow morning for daily report
+         Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
          Date reportStartTime = ReportPeriod.DAY.getStartTime(startTime);
          String ip = Inets.IP4.getLocalHostAddress();
 
@@ -130,31 +131,6 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       return report;
    }
 
-   public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
-         throws IOException {
-      if (period == HOUR) {
-         int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
-         int count = getThreadsCount();
-         List<T> reports = new ArrayList<T>(count);
-
-         for (int i = 0; i < count; i++) {
-            T report = getLocalReport(domain, hour, i, false);
-
-            if (report != null) {
-               reports.add(report);
-            }
-         }
-
-         if (reports.size() > 0) {
-            return reports;
-         } else {
-            return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
-         }
-      } else {
-         return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
-      }
-   }
-
    @Override
    public List<Map<String, T>> getLocalReports(ReportPeriod period, int hour) throws IOException {
       List<Map<String, T>> reports = new ArrayList<Map<String, T>>();
@@ -171,7 +147,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       return reports;
    }
 
-   private Map<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
+   private ConcurrentMap<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
       Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
       long key = startTime.getTime() + index;
 
@@ -203,6 +179,32 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
          return report;
       } finally {
          ctx.destroy();
+      }
+   }
+
+   public List<T> getReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
+         throws IOException {
+      if (period == HOUR) {
+         int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
+         int count = getThreadsCount();
+         List<T> reports = new ArrayList<T>(count);
+
+         for (int i = 0; i < count; i++) {
+            T report = getLocalReport(domain, hour, i, false);
+
+            if (report != null) {
+               reports.add(report);
+            }
+         }
+
+         if (reports.size() > 0) {
+            return reports;
+         } else {
+            // fall back to local file storage
+            return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
+         }
+      } else {
+         return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
       }
    }
 

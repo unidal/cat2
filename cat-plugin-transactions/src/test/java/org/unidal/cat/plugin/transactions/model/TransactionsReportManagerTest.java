@@ -51,7 +51,7 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
 
       ReportManager<TransactionsReport> rm = lookup(ReportManager.class, TransactionsConstants.NAME);
       Map<String, String> properties = Collections.emptyMap();
-      List<TransactionsReport> reports = rm.getLocalReports(ReportPeriod.HOUR, new Date(), null, properties);
+      List<TransactionsReport> reports = rm.getReports(ReportPeriod.HOUR, new Date(), null, properties);
       TransactionsReport actual = reports.get(0);
       TransactionsReport expected = loadReport("transactions.xml");
 

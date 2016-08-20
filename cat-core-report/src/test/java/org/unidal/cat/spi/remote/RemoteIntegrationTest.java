@@ -378,7 +378,7 @@ public class RemoteIntegrationTest extends JettyServer {
       }
 
       @Override
-      public List<MockReport> getLocalReports(ReportPeriod period, Date startTime, String domain,
+      public List<MockReport> getReports(ReportPeriod period, Date startTime, String domain,
             Map<String, String> properties) throws IOException {
          return Arrays.asList(new MockReport(period, startTime, domain));
       }

@@ -29,7 +29,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
       ReportManager<Report> rm = m_rmm.getReportManager(id);
 
       // find local reports
-      List<Report> reports = rm.getLocalReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain(),
+      List<Report> reports = rm.getReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain(),
             ctx.getProperties());
 
       if (reports == null || reports.isEmpty()) {

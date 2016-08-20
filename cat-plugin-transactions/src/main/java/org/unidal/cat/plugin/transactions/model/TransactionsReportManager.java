@@ -40,11 +40,16 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    @Inject
    private DomainOrgConfigService m_config;
 
+   @Override
+   public void doCheckpoint(int hour, int index) throws Exception {
+      super.doCheckpoint(hour, index);
+   }
+
    /**
     * make transactions report from transaction reports dynamically
     */
    @Override
-   public List<TransactionsReport> getLocalReports(ReportPeriod period, Date startTime, String domain,
+   public List<TransactionsReport> getReports(ReportPeriod period, Date startTime, String domain,
          Map<String, String> properties) throws IOException {
       ReportManager<TransactionReport> rm = m_rmm.getReportManager(TransactionConstants.NAME);
       int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
