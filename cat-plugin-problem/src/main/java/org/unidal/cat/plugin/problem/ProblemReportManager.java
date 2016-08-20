@@ -1,7 +1,8 @@
 package org.unidal.cat.plugin.problem;
 
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;
-import org.unidal.cat.spi.ReportManager;
+
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.cat.spi.report.internals.AbstractReportManager;
 import org.unidal.lookup.annotation.Named;
 

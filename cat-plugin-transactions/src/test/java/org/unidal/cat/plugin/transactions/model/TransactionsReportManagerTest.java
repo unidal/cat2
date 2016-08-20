@@ -19,9 +19,9 @@ import org.unidal.cat.plugin.transaction.model.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
@@ -87,12 +87,16 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
    public static class MockTransactionReportManager extends TransactionReportManager {
       @Override
       @SuppressWarnings("unchecked")
-      public List<Map<String, TransactionReport>> getLocalReports(ReportPeriod period, int hour) throws IOException {
+      public List<Map<String, TransactionReport>> getLocalReports(int hour) {
          Map<String, TransactionReport> map = new HashMap<String, TransactionReport>();
 
-         map.put("cat", loadReport("transaction-cat.xml"));
-         map.put("hotel", loadReport("transaction-hotel.xml"));
-         map.put("flight", loadReport("transaction-flight.xml"));
+         try {
+            map.put("cat", loadReport("transaction-cat.xml"));
+            map.put("hotel", loadReport("transaction-hotel.xml"));
+            map.put("flight", loadReport("transaction-flight.xml"));
+         } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+         }
 
          return Arrays.asList(map);
       }

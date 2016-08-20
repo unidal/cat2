@@ -1,4 +1,4 @@
-package org.unidal.cat.spi;
+package org.unidal.cat.spi.report;
 
 
 /**

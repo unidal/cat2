@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
@@ -24,16 +24,15 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
    private ReportDelegateManager m_rdg;
 
    @Override
-   public boolean handleReport(RemoteContext ctx, OutputStream out) throws IOException {
-      String id = ctx.getName();
-      ReportManager<Report> rm = m_rmm.getReportManager(id);
+   public void handleReport(RemoteContext ctx, OutputStream out) throws IOException {
+      String name = ctx.getName();
+      ReportManager<Report> rm = m_rmm.getReportManager(name);
 
       // find local reports
-      List<Report> reports = rm.getReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain(),
-            ctx.getProperties());
+      List<Report> reports = rm.getReports(ctx.getPeriod(), ctx.getStartTime(), ctx.getDomain(), ctx.getProperties());
 
       if (reports == null || reports.isEmpty()) {
-         return false;
+         return;
       }
 
       // screen the reports
@@ -48,18 +47,18 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
          }
       }
 
-      // aggregate the reports
-      ReportDelegate<Report> delegate = m_rdg.getDelegate(id);
-      Report report = delegate.aggregate(ctx.getPeriod(), screenedReports);
+      if (screenedReports.size() > 0) {
+         // aggregate the reports
+         ReportDelegate<Report> delegate = m_rdg.getDelegate(name);
+         Report report = delegate.aggregate(ctx.getPeriod(), screenedReports);
 
-      // tailor it if necessary
-      if (filter != null) {
-         filter.tailor(ctx, report);
+         // tailor it if necessary
+         if (filter != null) {
+            filter.tailor(ctx, report);
+         }
+
+         // write out
+         delegate.writeStream(out, report);
       }
-
-      // write out
-      delegate.writeStream(out, report);
-
-      return true;
    }
 }

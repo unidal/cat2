@@ -11,11 +11,11 @@ import org.unidal.cat.core.document.spi.Document;
 import org.unidal.cat.core.report.menu.MenuLinkBuilder;
 import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.analysis.pipeline.AbstractPipeline;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -32,7 +32,7 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
    protected void beforeCheckpoint() throws IOException {
       ReportManager<Report> manager = getReportManager();
       ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
-      List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
+      List<Map<String, Report>> reportMapList = manager.getLocalReports(getHour());
 
       if (reportMapList.size() > 0) {
          List<Report> reportList = new ArrayList<Report>();

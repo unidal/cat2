@@ -8,7 +8,7 @@ import org.unidal.cat.core.report.menu.DefaultMenuManager;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
 import org.unidal.cat.core.report.view.svg.DefaultGraphBuilder;
 import org.unidal.cat.core.report.view.svg.DefaultValueTranslater;
-import org.unidal.cat.spi.DefaultReportConfiguration;
+import org.unidal.cat.spi.analysis.DefaultCheckpointService;
 import org.unidal.cat.spi.analysis.DefaultMessageDispatcher;
 import org.unidal.cat.spi.analysis.DefaultPipelineManager;
 import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
@@ -19,6 +19,7 @@ import org.unidal.cat.spi.message.NativeMessageDecodeHandler;
 import org.unidal.cat.spi.message.PlainTextMessageDecodeHandler;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
+import org.unidal.cat.spi.report.DefaultReportConfiguration;
 import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
 import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
 import org.unidal.cat.spi.report.internals.DefaultReportManagerManager;
@@ -89,6 +90,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultTimeWindowManager.class));
 
       all.add(A(DefaultPipelineManager.class));
+      all.add(A(DefaultCheckpointService.class));
       all.add(A(DomainHashStrategy.class));
       all.add(A(RoundRobinStrategy.class));
 

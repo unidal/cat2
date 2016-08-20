@@ -6,17 +6,17 @@ import java.util.Date;
 import javax.servlet.ServletException;
 
 import org.unidal.cat.core.report.view.svg.GraphBuilder;
-import org.unidal.cat.plugin.transactions.report.view.GraphViewModel;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
+import org.unidal.cat.plugin.transactions.report.view.GraphViewModel;
 import org.unidal.cat.plugin.transactions.report.view.NameViewModel;
 import org.unidal.cat.plugin.transactions.report.view.TypeViewModel;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -131,7 +131,7 @@ public class Handler implements PageHandler<Context> {
       TransactionsReport report = model.getReport();
 
       if (report != null) {
-         Date startTime = report.getStartTime();
+         Date startTime = payload.getStartTime();
          Date endTime = report.getPeriod().getNextStartTime(startTime);
 
          report.setEndTime(new Date(endTime.getTime() - 1000));

@@ -3494,7 +3494,7 @@
 					<role>com.dianping.cat.helper.JsonBuilder</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
+					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>problem</role-hint>
 				</requirement>
 			</requirements>
@@ -3577,7 +3577,7 @@
 					<role>org.unidal.cat.plugin.event.page.transform.AllReportDistributionBuilder</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
+					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>event</role-hint>
 				</requirement>
 			</requirements>

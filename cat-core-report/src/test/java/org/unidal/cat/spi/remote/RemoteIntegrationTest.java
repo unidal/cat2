@@ -38,14 +38,14 @@ import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
-import org.unidal.cat.spi.DefaultReportConfiguration;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportConfiguration;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.DefaultReportConfiguration;
+import org.unidal.cat.spi.report.ReportConfiguration;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.ReportFilterManager;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.helper.Files;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.ContainerLoader;
@@ -361,14 +361,8 @@ public class RemoteIntegrationTest extends JettyServer {
 
    @Named(type = ReportManager.class, value = "mock")
    public static final class MockReportManager implements ReportManager<MockReport> {
-
       @Override
-      public void doCheckpoint(int hour, int index) throws IOException {
-         throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public void doInitLoad(int hour, int index) throws IOException {
+      public void loadLocalReports(int hour, int index) throws IOException {
          throw new UnsupportedOperationException();
       }
 
@@ -384,18 +378,18 @@ public class RemoteIntegrationTest extends JettyServer {
       }
 
       @Override
-      public List<Map<String, MockReport>> getLocalReports(ReportPeriod report, int hour) throws IOException {
-         throw new UnsupportedOperationException();
-      }
-
-      @Override
       public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
             String... keyValuePairs) throws IOException {
          throw new UnsupportedOperationException();
       }
 
       @Override
-      public void removeReport(int hour, int index) {
+      public List<Map<String, MockReport>> getLocalReports(int hour) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public void removeLocalReports(int hour) {
          throw new UnsupportedOperationException();
       }
    }

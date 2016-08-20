@@ -14,10 +14,13 @@
 					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
+					<role>org.unidal.cat.spi.analysis.CheckpointService</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -31,7 +34,7 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportManager</role>
+			<role>org.unidal.cat.spi.report.ReportManager</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportManager</implementation>
 			<requirements>
@@ -40,12 +43,7 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<field-name>m_mysqlStorage</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 					<role-hint>file</role-hint>
-					<field-name>m_fileStorage</field-name>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
@@ -239,7 +237,7 @@
 					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
+					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
 			</requirements>

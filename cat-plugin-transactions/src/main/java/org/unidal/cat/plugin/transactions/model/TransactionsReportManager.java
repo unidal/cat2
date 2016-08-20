@@ -25,9 +25,9 @@ import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsRange;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.cat.spi.report.internals.AbstractReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -40,22 +40,10 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    @Inject
    private DomainOrgConfigService m_config;
 
-   @Override
-   public void doCheckpoint(int hour, int index) throws Exception {
-      super.doCheckpoint(hour, index);
-   }
-
-   /**
-    * make transactions report from transaction reports dynamically
-    */
-   @Override
-   public List<TransactionsReport> getReports(ReportPeriod period, Date startTime, String domain,
-         Map<String, String> properties) throws IOException {
+   private TransactionsReport buildReport(int hour, String bu) {
       ReportManager<TransactionReport> rm = m_rmm.getReportManager(TransactionConstants.NAME);
-      int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
-      List<Map<String, TransactionReport>> list = rm.getLocalReports(period, hour);
+      List<Map<String, TransactionReport>> list = rm.getLocalReports(hour);
       TransactionsReportMaker maker = new TransactionsReportMaker();
-      String bu = properties == null ? null : properties.get("bu");
 
       for (Map<String, TransactionReport> map : list) {
          for (Map.Entry<String, TransactionReport> e : map.entrySet()) {
@@ -65,7 +53,34 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
          }
       }
 
-      return Arrays.asList(maker.getReport());
+      TransactionsReport report = maker.getReport();
+      return report;
+   }
+
+   /**
+    * prepares transactions report for persistance.
+    */
+   @Override
+   @SuppressWarnings("unchecked")
+   public List<Map<String, TransactionsReport>> getLocalReports(int hour) {
+      TransactionsReport report = buildReport(hour, null);
+      Map<String, TransactionsReport> map = new HashMap<String, TransactionsReport>();
+
+      map.put(com.dianping.cat.Constants.ALL, report);
+      return Arrays.asList(map);
+   }
+
+   /**
+    * builds transactions report from transaction reports dynamically
+    */
+   @Override
+   public List<TransactionsReport> getReports(ReportPeriod period, Date startTime, String domain,
+         Map<String, String> properties) throws IOException {
+      String bu = properties == null ? null : properties.get("bu");
+      int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
+      TransactionsReport report = buildReport(hour, bu);
+
+      return Arrays.asList(report);
    }
 
    @Override

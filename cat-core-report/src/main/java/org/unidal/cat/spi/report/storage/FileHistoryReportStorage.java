@@ -14,8 +14,8 @@ import java.util.List;
 
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportConfiguration;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportConfiguration;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;

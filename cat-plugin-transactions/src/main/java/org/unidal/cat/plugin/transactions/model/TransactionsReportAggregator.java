@@ -13,7 +13,7 @@ import org.unidal.lookup.annotation.Named;
 public class TransactionsReportAggregator extends ContainerHolder implements ReportAggregator<TransactionsReport> {
    @Override
    public TransactionsReport aggregate(ReportPeriod period, Collection<TransactionsReport> reports) {
-      TransactionsReport aggregated = new TransactionsReport();
+      TransactionsReport aggregated = new TransactionsReport().setPeriod(period);
 
       if (reports.size() > 0) {
          TransactionsReportMerger merger = new TransactionsReportMerger(aggregated);

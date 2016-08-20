@@ -1,8 +1,11 @@
-package org.unidal.cat.spi;
+package org.unidal.cat.spi.report;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.spi.Report;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.cat.spi.report.internals.AbstractReportManager;
 import org.unidal.lookup.ComponentTestCase;
 import org.unidal.lookup.annotation.Named;
