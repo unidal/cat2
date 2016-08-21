@@ -125,10 +125,11 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
       @Override
       public void visitTransactionReport(TransactionReport report) {
          TransactionReport r = m_holder.getReport();
+         boolean isAll = (m_ip == null ? true : m_ip.equals(Constants.ALL));
 
          m_helper.mergeReport(r, report);
 
-         if (m_group != null) {
+         if (m_group != null && isAll) {
             String domain = report.getDomain();
 
             for (Machine machine : report.getMachines().values()) {
@@ -137,7 +138,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
                }
             }
 
-            Machine m = r.findOrCreateMachine(m_group);
+            Machine m = r.findOrCreateMachine(Constants.ALL);
 
             m_all.setMachine(m);
 
@@ -147,7 +148,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
                   visitMachine(machine);
                }
             }
-         } else if (m_ip == null || m_ip.equals(Constants.ALL)) {
+         } else if (isAll) {
             for (Machine machine : report.getMachines().values()) {
                r.findOrCreateMachine(machine.getIp());
             }
