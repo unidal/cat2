@@ -7,10 +7,6 @@ import javax.servlet.ServletException;
 
 import org.unidal.cat.core.report.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
@@ -27,7 +23,6 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
-import com.dianping.cat.Constants;
 import com.dianping.cat.mvc.PayloadNormalizer;
 
 public class Handler implements PageHandler<Context> {
@@ -51,13 +46,7 @@ public class Handler implements PageHandler<Context> {
       String ip = payload.getIp();
       String type = payload.getType();
       String name = payload.getName();
-      String filterId;
-
-      if (domain.equals(Constants.ALL)) {
-         filterId = (name == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID);
-      } else {
-         filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
-      }
+      String filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
 
       TransactionReport current = m_manager.getReport(period, startTime, domain, filterId, //
             "group", group, "ip", ip, "type", type, "name", name);
@@ -79,13 +68,7 @@ public class Handler implements PageHandler<Context> {
       String type = payload.getType();
       String sortBy = payload.getSortBy();
       String query = payload.getQuery();
-      String filterId;
-
-      if (domain.equals(Constants.ALL)) {
-         filterId = (type == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID);
-      } else {
-         filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
-      }
+      String filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
 
       ReportPeriod period = payload.getPeriod();
       TransactionReport report = m_manager.getReport(period, startTime, domain, filterId, //
@@ -113,13 +96,7 @@ public class Handler implements PageHandler<Context> {
       String ip = payload.getIp();
       String type = payload.getType();
       String name = payload.getName();
-      String filterId;
-
-      if (domain.equals(Constants.ALL)) {
-         filterId = (name == null ? TransactionAllTypeGraphFilter.ID : TransactionAllNameGraphFilter.ID);
-      } else {
-         filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
-      }
+      String filterId = (name == null ? TransactionTypeGraphFilter.ID : TransactionNameGraphFilter.ID);
 
       TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
             "group", group, "ip", ip, "type", type, "name", name);
@@ -141,13 +118,7 @@ public class Handler implements PageHandler<Context> {
       String type = payload.getType();
       String sortBy = payload.getSortBy();
       String query = payload.getQuery();
-      String filterId;
-
-      if (domain.equals(Constants.ALL)) {
-         filterId = (type == null ? TransactionAllTypeFilter.ID : TransactionAllNameFilter.ID);
-      } else {
-         filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
-      }
+      String filterId = (type == null ? TransactionTypeFilter.ID : TransactionNameFilter.ID);
 
       TransactionReport report = m_manager.getReport(ReportPeriod.HOUR, startTime, domain, filterId, //
             "group", group, "ip", ip, "type", type);
