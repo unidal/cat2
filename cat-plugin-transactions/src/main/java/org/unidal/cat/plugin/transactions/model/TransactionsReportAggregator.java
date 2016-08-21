@@ -25,9 +25,4 @@ public class TransactionsReportAggregator extends ContainerHolder implements Rep
 
       return aggregated;
    }
-
-   @Override
-   public TransactionsReport makeAll(ReportPeriod period, Collection<TransactionsReport> reports) {
-      return null;
-   }
 }

@@ -7,9 +7,6 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 					<role-hint>domain-hash</role-hint>
 				</requirement>
@@ -51,14 +48,6 @@
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>
 			<role-hint>event</role-hint>
 			<implementation>org.unidal.cat.plugin.event.EventReportAggregator</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.plugin.event.filter.EventReportHelper</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
