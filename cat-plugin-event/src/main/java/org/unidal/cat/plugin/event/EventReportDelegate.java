@@ -44,11 +44,6 @@ public class EventReportDelegate implements ReportDelegate<EventReport> {
    }
 
    @Override
-   public EventReport makeAll(ReportPeriod period, Collection<EventReport> reports) {
-      return m_aggregator.makeAll(period, reports);
-   }
-
-   @Override
    public EventReport parseXml(String xml) {
       try {
          return DefaultSaxParser.parse(xml);
