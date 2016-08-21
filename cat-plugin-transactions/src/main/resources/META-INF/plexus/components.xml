@@ -120,6 +120,21 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:day</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsDailyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:week</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsWeeklyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:month</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsMonthlyReducer</implementation>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>
