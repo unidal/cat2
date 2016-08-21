@@ -24,64 +24,59 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.message.Message;
 import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
-	@Inject
-	private RemoteSkeleton m_skeleton;
+   @Inject
+   private RemoteSkeleton m_skeleton;
 
-	@Inject
-	private ReportFilterManager m_manager;
+   @Inject
+   private ReportFilterManager m_manager;
 
-	@SuppressWarnings("unchecked")
-	private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
-		ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
-		DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
-		      payload.getStartTime(), payload.getPeriod(), filter);
-		List<String> names = Collections.list(req.getParameterNames());
+   @SuppressWarnings("unchecked")
+   private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
+      ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
+      DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
+            payload.getStartTime(), payload.getPeriod(), filter);
+      List<String> names = Collections.list(req.getParameterNames());
 
-		for (String name : names) {
-			String value = req.getParameter(name);
-			try {
-				value = URLDecoder.decode(value,"UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				Cat.logError(e);
-			}
-			ctx.setProperty(name, value);
-		}
+      for (String name : names) {
+         String value = req.getParameter(name);
+         try {
+            value = URLDecoder.decode(value, "UTF-8");
+         } catch (UnsupportedEncodingException e) {
+            Cat.logError(e);
+         }
+         ctx.setProperty(name, value);
+      }
 
-		return ctx;
-	}
+      return ctx;
+   }
 
-	@Override
-	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "service")
-	public void handleInbound(Context ctx) throws ServletException, IOException {
-		// display only, no action here
-	}
+   @Override
+   @PayloadMeta(Payload.class)
+   @InboundActionMeta(name = "service")
+   public void handleInbound(Context ctx) throws ServletException, IOException {
+      // display only, no action here
+   }
 
-	@Override
-	@OutboundActionMeta(name = "service")
-	public void handleOutbound(Context ctx) throws ServletException, IOException {
-		Model model = new Model(ctx);
-		Payload payload = ctx.getPayload();
+   @Override
+   @OutboundActionMeta(name = "service")
+   public void handleOutbound(Context ctx) throws ServletException, IOException {
+      Model model = new Model(ctx);
+      Payload payload = ctx.getPayload();
 
-		model.setAction(Action.VIEW);
-		model.setPage(ReportPage.SERVICE);
+      model.setAction(Action.VIEW);
+      model.setPage(ReportPage.SERVICE);
 
-		if (ctx.hasErrors()) {
-			ctx.getHttpServletResponse().sendError(HttpStatus.SC_BAD_REQUEST, "Bad Request");
-			ctx.stopProcess();
-		} else {
-			OutputStream out = ctx.getHttpServletResponse().getOutputStream();
+      if (ctx.hasErrors()) {
+         ctx.getHttpServletResponse().sendError(HttpStatus.SC_BAD_REQUEST, "Bad Request");
+         ctx.stopProcess();
+      } else {
+         OutputStream out = ctx.getHttpServletResponse().getOutputStream();
 
-			RemoteContext rc = buildContext(ctx.getHttpServletRequest(), payload);
-			boolean success = m_skeleton.handleReport(rc, out);
-
-			if (!success) {
-				Cat.logEvent("Service", "MissingReport", Message.SUCCESS, rc.buildURL(""));
-			}
-		}
-	}
+         RemoteContext rc = buildContext(ctx.getHttpServletRequest(), payload);
+         m_skeleton.handleReport(rc, out);
+      }
+   }
 }

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transactions-report startTime="2016-08-21 00:00:00" endTime="2016-08-23 11:59:59" period="WEEK">
+   <bu>Business</bu>
+   <bu>Framework</bu>
+   <bu>3rd Party</bu>
+   <department id="Business">
+      <type id="URL" totalCount="264" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="67120.8" sum2="123611776.8" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+         <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         <name id="/cat/r/t" totalCount="96" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="11640.0" sum2="3578786.4" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-135</successMessageUrl>
+            <range value="1" count="48" sum="5819.8" avg="121.2" fails="0"/>
+            <range value="2" count="48" sum="5819.8" avg="121.2" fails="0"/>
+            <duration value="32" count="48"/>
+            <duration value="64" count="24"/>
+            <duration value="512" count="24"/>
+         </name>
+         <name id="/cat/r/service" totalCount="96" failCount="0" failPercent="0.00" min="3.91" max="13.21" avg="7.1" sum="686.4" sum2="6144.0" std="3.6" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-134</successMessageUrl>
+            <range value="1" count="48" sum="343.2" avg="7.1" fails="0"/>
+            <range value="2" count="48" sum="343.2" avg="7.1" fails="0"/>
+            <duration value="4" count="24"/>
+            <duration value="8" count="48"/>
+            <duration value="16" count="24"/>
+         </name>
+         <name id="/cat/r/model" totalCount="32" failCount="0" failPercent="0.00" min="14.99" max="32.06" avg="23.6" sum="753.6" sum2="20043.2" std="8.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+            <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+            <range value="1" count="16" sum="376.4" avg="23.5" fails="0"/>
+            <range value="2" count="16" sum="376.4" avg="23.5" fails="0"/>
+            <duration value="16" count="16"/>
+            <duration value="64" count="16"/>
+         </name>
+         <name id="/cat/r/top" totalCount="8" failCount="0" failPercent="0.00" min="2236.04" max="2236.04" avg="2236.0" sum="17888.0" sum2="39998927.2" std="13.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
+            <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+            <range value="1" count="4" sum="8944.2" avg="2236.0" fails="0"/>
+            <range value="2" count="4" sum="8944.2" avg="2236.0" fails="0"/>
+            <duration value="4096" count="8"/>
+         </name>
+      </type>
+      <type id="SQL" totalCount="992" failCount="992" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="918.4" sum2="2342.4" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+         <name id="report.findAllByDomainNamePeriod" totalCount="64" failCount="64" failPercent="100.00" min="0.73" max="4.36" avg="1.7" sum="107.2" sum2="332.8" std="1.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="1" count="32" sum="53.6" avg="1.7" fails="32"/>
+            <range value="2" count="32" sum="53.6" avg="1.7" fails="32"/>
+            <duration value="1" count="48"/>
+            <duration value="8" count="16"/>
+         </name>
+         <name id="hostinfo.findByIp" totalCount="64" failCount="64" failPercent="100.00" min="0.82" max="1.11" avg="0.9" sum="59.2" sum2="56.0" std="0.1" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-135</failMessageUrl>
+            <range value="1" count="32" sum="29.8" avg="0.9" fails="32"/>
+            <range value="2" count="32" sum="29.8" avg="0.9" fails="32"/>
+            <duration value="1" count="48"/>
+            <duration value="2" count="16"/>
+         </name>
+         <name id="config.findByName" totalCount="848" failCount="848" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="742.4" sum2="1947.2" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+            <range value="1" count="424" sum="371.2" avg="0.9" fails="424"/>
+            <range value="2" count="424" sum="371.2" avg="0.9" fails="424"/>
+            <duration value="1" count="768"/>
+            <duration value="2" count="64"/>
+            <duration value="16" count="16"/>
+         </name>
+         <name id="hostinfo.findAllIp" totalCount="8" failCount="8" failPercent="100.00" min="0.60" max="0.60" avg="0.6" sum="4.8" sum2="3.2" std="0.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="1" count="4" sum="2.4" avg="0.6" fails="4"/>
+            <range value="2" count="4" sum="2.4" avg="0.6" fails="4"/>
+            <duration value="1" count="8"/>
+         </name>
+      </type>
+   </department>
+   <department id="Framework">
+      <type id="URL" totalCount="198" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="50340.6" sum2="92708832.6" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+         <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         <name id="/cat/r/t" totalCount="72" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="8730.0" sum2="2684089.8" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-135</successMessageUrl>
+            <range value="1" count="36" sum="4364.7" avg="121.2" fails="0"/>
+            <range value="3" count="36" sum="4364.7" avg="121.2" fails="0"/>
+            <duration value="32" count="36"/>
+            <duration value="64" count="18"/>
+            <duration value="512" count="18"/>
+         </name>
+         <name id="/cat/r/service" totalCount="72" failCount="0" failPercent="0.00" min="3.91" max="13.21" avg="7.1" sum="514.8" sum2="4608.0" std="3.6" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-134</successMessageUrl>
+            <range value="1" count="36" sum="257.4" avg="7.1" fails="0"/>
+            <range value="3" count="36" sum="257.4" avg="7.1" fails="0"/>
+            <duration value="4" count="18"/>
+            <duration value="8" count="36"/>
+            <duration value="16" count="18"/>
+         </name>
+         <name id="/cat/r/top" totalCount="6" failCount="0" failPercent="0.00" min="2236.04" max="2236.04" avg="2236.0" sum="13416.0" sum2="29999195.4" std="13.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
+            <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+            <range value="1" count="3" sum="6708.0" avg="2236.0" fails="0"/>
+            <range value="3" count="3" sum="6708.0" avg="2236.0" fails="0"/>
+            <duration value="4096" count="6"/>
+         </name>
+         <name id="/cat/r/model" totalCount="24" failCount="0" failPercent="0.00" min="14.99" max="32.06" avg="23.6" sum="565.2" sum2="15032.4" std="8.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+            <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+            <range value="1" count="12" sum="282.3" avg="23.5" fails="0"/>
+            <range value="3" count="12" sum="282.3" avg="23.5" fails="0"/>
+            <duration value="16" count="12"/>
+            <duration value="64" count="12"/>
+         </name>
+      </type>
+      <type id="ReloadConfig" totalCount="6" failCount="6" failPercent="100.00" min="1.16" max="1.16" avg="1.2" sum="7.2" sum2="7.8" std="0.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+         <name id="router" totalCount="6" failCount="6" failPercent="100.00" min="1.16" max="1.16" avg="1.2" sum="7.2" sum2="7.8" std="0.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+            <range value="1" count="3" sum="3.6" avg="1.2" fails="3"/>
+            <range value="3" count="3" sum="3.6" avg="1.2" fails="3"/>
+            <duration value="2" count="6"/>
+         </name>
+      </type>
+      <type id="SQL" totalCount="744" failCount="744" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="688.8" sum2="1756.8" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+         <name id="hostinfo.findAllIp" totalCount="6" failCount="6" failPercent="100.00" min="0.60" max="0.60" avg="0.6" sum="3.6" sum2="2.4" std="0.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="1" count="3" sum="1.8" avg="0.6" fails="3"/>
+            <range value="3" count="3" sum="1.8" avg="0.6" fails="3"/>
+            <duration value="1" count="6"/>
+         </name>
+         <name id="report.findAllByDomainNamePeriod" totalCount="48" failCount="48" failPercent="100.00" min="0.73" max="4.36" avg="1.7" sum="80.4" sum2="249.6" std="1.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="1" count="24" sum="40.2" avg="1.7" fails="24"/>
+            <range value="3" count="24" sum="40.2" avg="1.7" fails="24"/>
+            <duration value="1" count="36"/>
+            <duration value="8" count="12"/>
+         </name>
+         <name id="hostinfo.findByIp" totalCount="48" failCount="48" failPercent="100.00" min="0.82" max="1.11" avg="0.9" sum="44.4" sum2="42.0" std="0.1" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-135</failMessageUrl>
+            <range value="1" count="24" sum="22.5" avg="0.9" fails="24"/>
+            <range value="3" count="24" sum="22.5" avg="0.9" fails="24"/>
+            <duration value="1" count="36"/>
+            <duration value="2" count="12"/>
+         </name>
+         <name id="config.findByName" totalCount="636" failCount="636" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="556.8" sum2="1460.4" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+            <range value="1" count="318" sum="278.4" avg="0.9" fails="318"/>
+            <range value="3" count="318" sum="278.4" avg="0.9" fails="318"/>
+            <duration value="1" count="576"/>
+            <duration value="2" count="48"/>
+            <duration value="16" count="12"/>
+         </name>
+      </type>
+   </department>
+   <department id="3rd Party">
+      <type id="URL" totalCount="132" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="33560.4" sum2="61805888.4" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+         <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         <name id="/cat/r/t" totalCount="48" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="5820.0" sum2="1789393.2" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-135</successMessageUrl>
+            <range value="2" count="24" sum="2909.9" avg="121.2" fails="0"/>
+            <range value="3" count="24" sum="2909.9" avg="121.2" fails="0"/>
+            <duration value="32" count="24"/>
+            <duration value="64" count="12"/>
+            <duration value="512" count="12"/>
+         </name>
+         <name id="/cat/r/service" totalCount="48" failCount="0" failPercent="0.00" min="3.91" max="13.21" avg="7.1" sum="343.2" sum2="3072.0" std="3.6" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-134</successMessageUrl>
+            <range value="2" count="24" sum="171.6" avg="7.1" fails="0"/>
+            <range value="3" count="24" sum="171.6" avg="7.1" fails="0"/>
+            <duration value="4" count="12"/>
+            <duration value="8" count="24"/>
+            <duration value="16" count="12"/>
+         </name>
+         <name id="/cat/r/model" totalCount="16" failCount="0" failPercent="0.00" min="14.99" max="32.06" avg="23.6" sum="376.8" sum2="10021.6" std="8.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+            <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+            <range value="2" count="8" sum="188.2" avg="23.5" fails="0"/>
+            <range value="3" count="8" sum="188.2" avg="23.5" fails="0"/>
+            <duration value="16" count="8"/>
+            <duration value="64" count="8"/>
+         </name>
+         <name id="/cat/r/top" totalCount="4" failCount="0" failPercent="0.00" min="2236.04" max="2236.04" avg="2236.0" sum="8944.0" sum2="19999463.6" std="13.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
+            <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+            <range value="2" count="2" sum="4472.1" avg="2236.0" fails="0"/>
+            <range value="3" count="2" sum="4472.1" avg="2236.0" fails="0"/>
+            <duration value="4096" count="4"/>
+         </name>
+      </type>
+      <type id="SQL" totalCount="496" failCount="496" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="459.2" sum2="1171.2" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+         <name id="report.findAllByDomainNamePeriod" totalCount="32" failCount="32" failPercent="100.00" min="0.73" max="4.36" avg="1.7" sum="53.6" sum2="166.4" std="1.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="2" count="16" sum="26.8" avg="1.7" fails="16"/>
+            <range value="3" count="16" sum="26.8" avg="1.7" fails="16"/>
+            <duration value="1" count="24"/>
+            <duration value="8" count="8"/>
+         </name>
+         <name id="hostinfo.findByIp" totalCount="32" failCount="32" failPercent="100.00" min="0.82" max="1.11" avg="0.9" sum="29.6" sum2="28.0" std="0.1" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-135</failMessageUrl>
+            <range value="2" count="16" sum="14.9" avg="0.9" fails="16"/>
+            <range value="3" count="16" sum="14.9" avg="0.9" fails="16"/>
+            <duration value="1" count="24"/>
+            <duration value="2" count="8"/>
+         </name>
+         <name id="config.findByName" totalCount="424" failCount="424" failPercent="100.00" min="0.28" max="9.62" avg="0.9" sum="371.2" sum2="973.6" std="1.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-49</failMessageUrl>
+            <range value="2" count="212" sum="185.6" avg="0.9" fails="212"/>
+            <range value="3" count="212" sum="185.6" avg="0.9" fails="212"/>
+            <duration value="1" count="384"/>
+            <duration value="2" count="32"/>
+            <duration value="16" count="8"/>
+         </name>
+         <name id="hostinfo.findAllIp" totalCount="4" failCount="4" failPercent="100.00" min="0.60" max="0.60" avg="0.6" sum="2.4" sum2="1.6" std="0.2" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <failMessageUrl>cat-c0a81f9e-403179-0</failMessageUrl>
+            <range value="2" count="2" sum="1.2" avg="0.6" fails="2"/>
+            <range value="3" count="2" sum="1.2" avg="0.6" fails="2"/>
+            <duration value="1" count="4"/>
+         </name>
+      </type>
+   </department>
+</transactions-report>

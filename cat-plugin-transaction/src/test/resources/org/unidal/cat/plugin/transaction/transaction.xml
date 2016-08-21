@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transaction-report domain="Cat" startTime="2012-05-17 13:00:00" endTime="2012-05-17 13:59:59">
+   <domain>Cat</domain>
+   <domain>Cat</domain>
+   <ip>192.168.165.1</ip>
+   <ip>192.168.165.2</ip>
+   <machine ip="192.168.165.1">
+      <type id="Task1" totalCount="2" failCount="0" failPercent="0.00" min="21.42" max="28.35" avg="24.9" sum="49.8" sum2="1262.6" std="3.5" tps="0.00" line95Value="28.00" line99Value="0.00">
+         <successMessageUrl>Cat-c0a8a501-1337230848968-0</successMessageUrl>
+         <failMessageUrl>Cat-c0a8a501-1337230848968-0</failMessageUrl>
+         <slowestMessageUrl>Cat-c0a8a501-1337230848968-0</slowestMessageUrl>
+         <name id="Status1" totalCount="2" failCount="0" failPercent="0.00" min="21.42" max="28.35" avg="24.9" sum="49.8" sum2="1262.6" std="3.5" tps="0.00" line95Value="28.00" line99Value="0.00">
+            <successMessageUrl>Cat-c0a8a501-1337230848968-0</successMessageUrl>
+            <failMessageUrl>Cat-c0a8a501-1337230848968-0</failMessageUrl>
+            <slowestMessageUrl>Cat-c0a8a501-1337230848968-0</slowestMessageUrl>
+            <range value="0" count="2" sum="49.772000000000006" avg="24.9" fails="0"/>
+            <range/>
+            <duration value="32" count="2"/>
+            <duration/>
+         </name>
+         <name/>
+      </type>
+      <type/>
+   </machine>
+   <machine/>
+</transaction-report>

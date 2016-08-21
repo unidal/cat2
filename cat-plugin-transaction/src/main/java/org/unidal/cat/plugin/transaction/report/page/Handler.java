@@ -16,11 +16,11 @@ import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
-import org.unidal.cat.plugin.transaction.view.GraphViewModel;
-import org.unidal.cat.plugin.transaction.view.NameViewModel;
-import org.unidal.cat.plugin.transaction.view.TypeViewModel;
-import org.unidal.cat.spi.ReportManager;
+import org.unidal.cat.plugin.transaction.report.view.GraphViewModel;
+import org.unidal.cat.plugin.transaction.report.view.NameViewModel;
+import org.unidal.cat.plugin.transaction.report.view.TypeViewModel;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -209,7 +209,7 @@ public class Handler implements PageHandler<Context> {
          Date endTime = report.getPeriod().getNextStartTime(startTime);
 
          report.setEndTime(new Date(endTime.getTime() - 1000));
-         ctx.getDomainBar().addRecentDomain(report.getDomain());
+         ctx.setReport(report);
       }
 
       if (!ctx.isProcessStopped()) {

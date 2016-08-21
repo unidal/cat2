@@ -7,45 +7,37 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.analysis.MessageRoutingStrategy</role>
 					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.analysis.CheckpointService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportManager</role>
+			<role>org.unidal.cat.spi.report.ReportManager</role>
 			<role-hint>transactions</role-hint>
-			<implementation>org.unidal.cat.plugin.transactions.TransactionsReportManager</implementation>
+			<implementation>org.unidal.cat.plugin.transactions.model.TransactionsReportManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.core.config.DomainOrgConfigService</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.plugin.transactions.TransactionsHelper</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<field-name>m_mysqlStorage</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 					<role-hint>file</role-hint>
-					<field-name>m_fileStorage</field-name>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
@@ -61,11 +53,86 @@
 		<component>
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
 			<role-hint>transactions</role-hint>
-			<implementation>org.unidal.cat.plugin.transactions.TransactionsReportDelegate</implementation>
+			<implementation>org.unidal.cat.plugin.transactions.model.TransactionsReportDelegate</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportAggregator</role>
+					<role-hint>transactions</role-hint>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transactions.TransactionsHelper</role>
-			<implementation>org.unidal.cat.plugin.transactions.TransactionsHelper</implementation>
+			<role>org.unidal.cat.spi.report.ReportAggregator</role>
+			<role-hint>transactions</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.model.TransactionsReportAggregator</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:type</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsTypeFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:name</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:type-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsTypeGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>transactions:name-graph</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:day</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsDailyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:week</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsWeeklyReducer</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportReducer</role>
+			<role-hint>transactions:month</role-hint>
+			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsMonthlyReducer</implementation>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -84,7 +151,17 @@
 			<implementation>org.unidal.cat.plugin.transactions.report.page.Handler</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.plugin.transactions.report.page.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportManager</role>
+					<role-hint>transactions</role-hint>
 				</requirement>
 			</requirements>
 		</component>
@@ -96,6 +173,19 @@
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.mvc.PayloadNormalizer</role>
+			<implementation>com.dianping.cat.mvc.PayloadNormalizer</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.config.server.ServerConfigManager</role>
+			<implementation>com.dianping.cat.config.server.ServerConfigManager</implementation>
 		</component>
 	</components>
 </plexus>

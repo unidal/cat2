@@ -6,12 +6,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 import org.unidal.cat.core.report.menu.Menu;
 import org.unidal.cat.core.report.menu.MenuGroup;
 import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.core.report.nav.DomainBar;
+import org.unidal.cat.core.report.nav.GroupBar;
 import org.unidal.cat.core.report.nav.TimeBar;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
@@ -31,11 +33,9 @@ public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> exten
    private DomainBar m_domainBar;
 
    public CoreReportContext() {
-      PlexusContainer container = ContainerLoader.getDefaultContainer();
-
       try {
-         m_menus = container.lookup(MenuManager.class).getMenus(this);
-         m_domainOrgConfig = container.lookup(DomainOrgConfigService.class).getConfig();
+         m_menus = lookup(MenuManager.class).getMenus(this);
+         m_domainOrgConfig = lookup(DomainOrgConfigService.class).getConfig();
       } catch (Exception e) {
          Cat.logError(e);
       }
@@ -47,9 +47,17 @@ public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> exten
    }
 
    /* used by report-header.tag */
+   public DomainBar getDomainBar() {
+      return m_domainBar;
+   }
+
+   /* used by report-header.tag */
    public DomainOrgConfigModel getDomainOrgConfig() {
       return m_domainOrgConfig;
    }
+
+   /* used by report-navbar.tag */
+   public abstract GroupBar getGroupBar();
 
    /* used by report-menu.tag */
    public MenuGroup[] getMenuGroups() {
@@ -64,11 +72,6 @@ public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> exten
    /* used by report-navbar.tag */
    public ReportPeriod getPeriod() {
       return m_period;
-   }
-
-   /* used by report-header.tag */
-   public DomainBar getDomainBar() {
-      return m_domainBar;
    }
 
    /* used by report-navbar.tag */
@@ -88,5 +91,19 @@ public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> exten
       m_period = ReportPeriod.getByName(period, ReportPeriod.HOUR);
       m_menuGroups = MenuGroup.values();
       m_domainBar = new DomainBar(request, response);
+   }
+
+   protected <S> S lookup(Class<S> role) {
+      return (S) lookup(role, null);
+   }
+
+   protected <S> S lookup(Class<S> role, String hint) {
+      PlexusContainer container = ContainerLoader.getDefaultContainer();
+
+      try {
+         return (S) container.lookup(role, hint);
+      } catch (ComponentLookupException e) {
+         throw new RuntimeException(String.format("Unable to lookup component(%s:%s)!", role.getName(), hint), e);
+      }
    }
 }

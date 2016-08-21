@@ -11,12 +11,11 @@ import org.unidal.cat.core.document.spi.Document;
 import org.unidal.cat.core.report.menu.MenuLinkBuilder;
 import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.analysis.pipeline.AbstractPipeline;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.cat.spi.report.ReportDelegate;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.cat.spi.report.internals.ReportDelegateManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -26,42 +25,40 @@ import com.dianping.cat.Constants;
 
 @Named(type = Pipeline.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class TransactionPipeline extends AbstractPipeline implements Initializable {
-	@Inject
-	private ReportManagerManager m_rmm;
+   @Inject
+   private ReportDelegateManager m_rdg;
 
-	@Inject
-	private ReportDelegateManager m_rdg;
+   @Override
+   protected void beforeCheckpoint() throws IOException {
+      ReportManager<Report> manager = getReportManager();
+      ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
+      List<Map<String, Report>> reportMapList = manager.getLocalReports(getHour());
 
-	@Override
-	protected void beforeCheckpoint() throws IOException {
-		ReportManager<Report> manager = m_rmm.getReportManager(getName());
-		ReportDelegate<Report> delegate = m_rdg.getDelegate(getName());
-		List<Map<String, Report>> reportMapList = manager.getLocalReports(ReportPeriod.HOUR, getHour());
+      if (reportMapList.size() > 0) {
+         List<Report> reportList = new ArrayList<Report>();
 
-		if (reportMapList.size() > 0) {
-			List<Report> reportList = new ArrayList<Report>();
+         for (Map<String, Report> map : reportMapList) {
+            reportList.addAll(map.values());
+         }
 
-			for (Map<String, Report> map : reportMapList) {
-				reportList.addAll(map.values());
-			}
+         Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
+         Map<String, Report> map = reportMapList.get(0);
 
-			Report allReport = delegate.makeAll(ReportPeriod.HOUR, reportList);
-			Map<String, Report> map = reportMapList.get(0);
+         map.put(Constants.ALL, allReport);
+      }
+   }
 
-			map.put(Constants.ALL, allReport);
-		}
-	}
+   @Override
+   public void initialize() throws InitializationException {
+      lookup(MenuManager.class).register(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/r/t") //
+                        .get("type").get("").get("name").get("").get("group").get("").toString();
+               }
+            });
 
-	@Override
-	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
-		      new MenuLinkBuilder() {
-			      @Override
-			      public String build(ActionContext<?> ctx) {
-				      return ctx.getQuery().uri("/r/t").get("type").get("").get("name").get("").toString();
-			      }
-		      });
-
-		Document.USER.register(TransactionConstants.NAME, "Transaction");
-	}
+      Document.USER.register(TransactionConstants.NAME, "Transaction");
+   }
 }

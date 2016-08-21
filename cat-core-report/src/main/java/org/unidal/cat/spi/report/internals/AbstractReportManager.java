@@ -1,6 +1,5 @@
 package org.unidal.cat.spi.report.internals;
 
-import static org.unidal.cat.spi.ReportPeriod.DAY;
 import static org.unidal.cat.spi.ReportPeriod.HOUR;
 
 import java.io.IOException;
@@ -13,27 +12,23 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.ReportFilterManager;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.cat.spi.report.provider.ReportProvider;
 import org.unidal.cat.spi.report.storage.FileReportStorage;
 import org.unidal.cat.spi.report.storage.ReportStorage;
 import org.unidal.cat.spi.report.task.ReportTaskService;
-import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
 public abstract class AbstractReportManager<T extends Report> implements ReportManager<T>, RoleHintEnabled {
    @Inject
    private ReportProvider<T> m_provider;
-
-   @Inject
-   private ReportStorage<T> m_mysqlStorage;
 
    @Inject(FileReportStorage.ID)
    private ReportStorage<T> m_fileStorage;
@@ -49,44 +44,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
    private String m_reportName;
 
-   private ConcurrentMap<Long, ConcurrentMap<String, T>> m_reports = new ConcurrentHashMap<Long, ConcurrentMap<String, T>>();
-
-   @Override
-   public void doCheckpoint(int hour, int index) throws Exception {
-      Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      ConcurrentMap<String, T> map = m_reports.get(startTime.getTime() + index);
-
-      removeReport(hour - 1, index);
-
-      if (map != null && map.size() > 0) {
-         List<T> reports = new ArrayList<T>(map.values());
-
-         for (T report : reports) {
-            m_fileStorage.store(getDelegate(), HOUR, report, index);
-            m_mysqlStorage.store(getDelegate(), HOUR, report, index);
-         }
-
-         // 1 AM tommorrow morning for daily report
-         Date reportStartTime = ReportPeriod.DAY.getStartTime(startTime);
-         String ip = Inets.IP4.getLocalHostAddress();
-
-         m_taskService.add(ip, DAY, reportStartTime, m_reportName, DAY.getReduceTime(reportStartTime));
-      }
-   }
-
-   @Override
-   public void doInitLoad(int hour, int index) throws IOException {
-      Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      long key = startTime.getTime() + index;
-      ConcurrentHashMap<String, T> map = new ConcurrentHashMap<String, T>();
-      List<T> reports = m_fileStorage.loadAll(getDelegate(), HOUR, startTime, null);
-
-      for (T report : reports) {
-         map.put(report.getDomain(), report);
-      }
-
-      m_reports.putIfAbsent(key, map);
-   }
+   private ConcurrentMap<Integer, List<ConcurrentMap<String, T>>> m_map = new ConcurrentHashMap<Integer, List<ConcurrentMap<String, T>>>();
 
    @Override
    public void enableRoleHint(String roleHint) {
@@ -99,30 +57,16 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
 
    @Override
    public T getLocalReport(String domain, int hour, int index, boolean createIfNotExist) {
-      Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      long key = startTime.getTime() + index;
-      ConcurrentMap<String, T> map = m_reports.get(key);
-
-      if (map == null) {
-         synchronized (m_reports) {
-            map = m_reports.get(key);
-
-            if (map == null) {
-               map = new ConcurrentHashMap<String, T>();
-
-               m_reports.put(key, map);
-            }
-         }
-      }
-
-      T report = map.get(domain);
+      ConcurrentMap<String, T> map = getLocalReports(hour, index, createIfNotExist);
+      T report = (map == null ? null : map.get(domain));
 
       if (report == null && createIfNotExist) {
+         Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
+         T r;
+
          report = getDelegate().createLocal(HOUR, domain, startTime);
 
-         T r = map.putIfAbsent(domain, report);
-
-         if (r != null) {
+         if ((r = map.putIfAbsent(domain, report)) != null) {
             report = r;
          }
       }
@@ -130,51 +74,36 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       return report;
    }
 
-   public List<T> getLocalReports(ReportPeriod period, Date startTime, String domain) throws IOException {
-      if (period == HOUR) {
-         int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
-         int count = getThreadsCount();
-         List<T> reports = new ArrayList<T>(count);
-
-         for (int i = 0; i < count; i++) {
-            T report = getLocalReport(domain, hour, i, false);
-
-            if (report != null) {
-               reports.add(report);
-            }
-         }
-
-         if (reports.size() > 0) {
-            return reports;
-         } else {
-            return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
-         }
-      } else {
-         return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
-      }
-   }
-
    @Override
-   public List<Map<String, T>> getLocalReports(ReportPeriod period, int hour) throws IOException {
-      List<Map<String, T>> reports = new ArrayList<Map<String, T>>();
-      int count = getThreadsCount();
+   @SuppressWarnings("unchecked")
+   public List<Map<String, T>> getLocalReports(int hour) {
+      return (List<Map<String, T>>) (List<? extends Map<String, T>>) m_map.get(hour);
+   }
 
-      for (int i = 0; i < count; i++) {
-         Map<String, T> map = getLocalReports(period, hour, i);
+   private ConcurrentMap<String, T> getLocalReports(int hour, int index, boolean createIfNotExists) {
+      List<ConcurrentMap<String, T>> list = m_map.get(hour);
 
-         if (map != null && map.size() > 0) {
-            reports.add(map);
+      if (list == null && createIfNotExists) {
+         List<ConcurrentMap<String, T>> l;
+
+         list = new ArrayList<ConcurrentMap<String, T>>();
+
+         if ((l = m_map.putIfAbsent(hour, list)) != null) {
+            list = l;
          }
       }
 
-      return reports;
-   }
+      if (createIfNotExists) {
+         for (int i = list.size(); i < index + 1; i++) {
+            list.add(new ConcurrentHashMap<String, T>());
+         }
+      }
 
-   private Map<String, T> getLocalReports(ReportPeriod period, int hour, int index) throws IOException {
-      Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      long key = startTime.getTime() + index;
-
-      return m_reports.get(key);
+      if (index >= 0 && index < list.size()) {
+         return list.get(index);
+      } else {
+         return null;
+      }
    }
 
    @Override
@@ -205,13 +134,47 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       }
    }
 
+   public List<T> getReports(ReportPeriod period, Date startTime, String domain, Map<String, String> properties)
+         throws IOException {
+      if (period == HOUR) {
+         int hour = (int) TimeUnit.MILLISECONDS.toHours(startTime.getTime());
+         int count = getThreadsCount();
+         List<T> reports = new ArrayList<T>(count);
+
+         for (int i = 0; i < count; i++) {
+            T report = getLocalReport(domain, hour, i, false);
+
+            if (report != null) {
+               reports.add(report);
+            }
+         }
+
+         if (reports.size() > 0) {
+            return reports;
+         } else {
+            // fall back to local file storage
+            return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
+         }
+      } else {
+         return m_fileStorage.loadAll(getDelegate(), period, startTime, domain);
+      }
+   }
+
    public abstract int getThreadsCount();
 
    @Override
-   public void removeReport(int hour, int index) {
+   public void loadLocalReports(int hour, int index) throws IOException {
       Date startTime = new Date(TimeUnit.HOURS.toMillis(hour));
-      long key = startTime.getTime() + index;
+      List<T> reports = m_fileStorage.loadAll(getDelegate(), HOUR, startTime, null);
+      ConcurrentMap<String, T> map = getLocalReports(hour, index, true);
 
-      m_reports.remove(key);
+      for (T report : reports) {
+         map.put(report.getDomain(), report);
+      }
+   }
+
+   @Override
+   public void removeLocalReports(int hour) {
+      m_map.remove(hour);
    }
 }

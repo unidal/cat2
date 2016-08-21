@@ -7,9 +7,6 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
 				</requirement>
 				<requirement>
@@ -17,7 +14,13 @@
 					<role-hint>domain-hash</role-hint>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.analysis.CheckpointService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -31,21 +34,16 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportManager</role>
+			<role>org.unidal.cat.spi.report.ReportManager</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportManager</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportManager</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<field-name>m_mysqlStorage</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 					<role-hint>file</role-hint>
-					<field-name>m_fileStorage</field-name>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
@@ -61,7 +59,7 @@
 		<component>
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAggregator</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportAggregator</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
@@ -71,7 +69,7 @@
 		<component>
 			<role>org.unidal.cat.spi.report.ReportDelegate</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportDelegate</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportDelegate</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportAggregator</role>
@@ -82,7 +80,7 @@
 		<component>
 			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAnalyzer</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
@@ -239,7 +237,7 @@
 					<role>com.dianping.cat.mvc.PayloadNormalizer</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManager</role>
+					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
 			</requirements>

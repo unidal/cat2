@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import org.unidal.cat.spi.ReportConfiguration;
+import org.unidal.cat.spi.report.ReportConfiguration;
 import org.unidal.helper.Urls;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;

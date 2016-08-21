@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transactions-report startTime="2016-08-14 11:00:00" endTime="2016-08-14 11:59:59" period="HOUR">
+   <bu>Business</bu>
+   <bu>Framework</bu>
+   <department id="All">
+      <type id="URL" totalCount="99" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="25170.3" sum2="46354416.3" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+         <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         <name id="/cat/r/t" totalCount="36" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="4365.0" sum2="1342044.9" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-135</successMessageUrl>
+         </name>
+         <name id="/cat/r/service" totalCount="36" failCount="0" failPercent="0.00" min="3.91" max="13.21" avg="7.1" sum="257.4" sum2="2304.0" std="3.6" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-134</successMessageUrl>
+         </name>
+         <name id="/cat/r/model" totalCount="12" failCount="0" failPercent="0.00" min="14.99" max="32.06" avg="23.6" sum="282.6" sum2="7516.2" std="8.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+            <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         </name>
+         <name id="/cat/r/top" totalCount="3" failCount="0" failPercent="0.00" min="2236.04" max="2236.04" avg="2236.0" sum="6708.0" sum2="14999597.7" std="13.0" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-131</successMessageUrl>
+            <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+         </name>
+      </type>
+   </department>
+</transactions-report>

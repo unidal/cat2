@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
@@ -20,142 +20,139 @@ import com.dianping.cat.message.spi.MessageTree;
 
 public abstract class AbstractMessageAnalyzer<R extends Report> extends ContainerHolder implements MessageAnalyzer,
       RoleHintEnabled {
-	private String m_name;
+   private String m_name;
 
-	private int m_hour;
+   private int m_hour;
 
-	private int m_index;
+   private int m_index;
 
-	private String[] m_dependencies;
+   private String[] m_dependencies;
 
-	private int m_errors;
+   private int m_errors;
 
-	private ReportManager<R> m_reportManager;
+   private ReportManager<R> m_reportManager;
 
-	private MessageFilter m_filter;
+   private MessageFilter m_filter;
 
-	private MessageQueue m_queue;
+   private MessageQueue m_queue;
 
-	private CountDownLatch m_latch = new CountDownLatch(1);
+   private CountDownLatch m_latch = new CountDownLatch(1);
 
-	private AtomicBoolean m_enabled = new AtomicBoolean(true);
+   private AtomicBoolean m_enabled = new AtomicBoolean(true);
 
-	public AbstractMessageAnalyzer(String... dependencies) {
-		m_dependencies = dependencies;
-		m_queue = new DefaultMessageQueue(getQueueSize());
-	}
+   public AbstractMessageAnalyzer(String... dependencies) {
+      m_dependencies = dependencies;
+      m_queue = new DefaultMessageQueue(getQueueSize());
+   }
 
-	@Override
-	public void configure(Map<String, String> properties) {
-	}
+   @Override
+   public void configure(Map<String, String> properties) {
+   }
 
-	@Override
-	public void doCheckpoint(boolean atEnd) throws Exception {
-		shutdown();
+   @Override
+   public void doCheckpoint(boolean atEnd) throws Exception {
+      shutdown();
+   }
 
-		m_reportManager.doCheckpoint(m_hour, m_index);
-	}
+   @Override
+   public void destroy() {
+   }
 
-	@Override
-	public void destroy() {
-		m_reportManager.removeReport(m_hour, m_index);
-	}
+   @Override
+   public void enableRoleHint(String name) {
+      m_name = name;
+   }
 
-	@Override
-	public void enableRoleHint(String name) {
-		m_name = name;
-	}
+   @Override
+   public String[] getDependencies() {
+      return m_dependencies;
+   }
 
-	@Override
-	public String[] getDependencies() {
-		return m_dependencies;
-	}
+   protected R getLocalReport(String domain) {
+      return m_reportManager.getLocalReport(domain, m_hour, m_index, true);
+   }
 
-	protected R getLocalReport(String domain) {
-		return m_reportManager.getLocalReport(domain, m_hour, m_index, true);
-	}
+   public String getName() {
+      Calendar cal = Calendar.getInstance();
 
-	public String getName() {
-		Calendar cal = Calendar.getInstance();
+      cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
+      return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
+   }
 
-		cal.setTimeInMillis(TimeUnit.HOURS.toMillis(m_hour));
-		return getClass().getSimpleName() + "-" + cal.get(Calendar.HOUR_OF_DAY) + "-" + m_index;
-	}
+   @Override
+   public boolean handle(MessageTree tree) {
+      return m_queue.offer(tree);
+   }
 
-	@Override
-	public boolean handle(MessageTree tree) {
-		return m_queue.offer(tree);
-	}
+   protected int getQueueSize() {
+      return 30000;
+   }
 
-	protected int getQueueSize() {
-		return 30000;
-	}
+   protected void handleException(Throwable e) {
+      m_errors++;
 
-	protected void handleException(Throwable e) {
-		m_errors++;
+      // sampling logging
+      if (m_errors == 1 || m_errors % 10000 == 0) {
+         Cat.logError(e);
+      }
+   }
 
-		// sampling logging
-		if (m_errors == 1 || m_errors % 10000 == 0) {
-			Cat.logError(e);
-		}
-	}
+   @Override
+   public void initialize(int index, int hour) throws IOException {
+      m_index = index;
+      m_hour = hour;
 
-	@Override
-	public void initialize(int index, int hour) throws IOException {
-		m_index = index;
-		m_hour = hour;
+      if (super.hasComponent(MessageFilter.class, m_name)) {
+         m_filter = lookup(MessageFilter.class, m_name);
+      }
 
-		if (super.hasComponent(MessageFilter.class, m_name)) {
-			m_filter = lookup(MessageFilter.class, m_name);
-		}
+      ReportManagerManager rmm = lookup(ReportManagerManager.class);
 
-		ReportManagerManager rmm = lookup(ReportManagerManager.class);
+      m_reportManager = rmm.getReportManager(m_name);
+      m_reportManager.loadLocalReports(m_hour, m_index);
+   }
 
-		m_reportManager = rmm.getReportManager(m_name);
-		m_reportManager.doInitLoad(m_hour, m_index);
-	}
+   protected abstract void process(MessageTree tree);
 
-	protected abstract void process(MessageTree tree);
+   @Override
+   public void run() {
+      while (m_enabled.get() || m_queue.size() > 0) {
+         MessageTree tree = m_queue.poll();
 
-	@Override
-	public void run() {
-		while (m_enabled.get() || m_queue.size() > 0) {
-			MessageTree tree = m_queue.poll();
+         if (tree != null) {
+            try {
+               if (m_filter == null || m_filter.apply(tree)) {
+                  process(tree);
+               }
+            } catch (Throwable e) {
+               handleException(e);
+            }
+         }
+      }
 
-			if (tree != null) {
-				try {
-					if (m_filter == null || m_filter.apply(tree)) {
-						process(tree);
-					}
-				} catch (Throwable e) {
-					handleException(e);
-				}
-			}
-		}
+      m_latch.countDown();
+   }
 
-		m_latch.countDown();
-	}
+   @Override
+   public void shutdown() {
+      int timeout = 10; // 10 seconds
 
-	@Override
-	public void shutdown() {
-		int timeout = 10; // 10 seconds
+      m_enabled.set(false);
 
-		m_enabled.set(false);
+      // wait for run() to end
+      try {
+         m_latch.await(timeout, TimeUnit.SECONDS);
+      } catch (InterruptedException e) {
+         // ignore it
+         String msg = String.format("[WARN] Analyzer(%s-%s) did not finish checkout in %s seconds!", m_name, m_index,
+               timeout);
 
-		// wait for run() to end
-		try {
-			m_latch.await(timeout, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
-			// ignore it
-			String msg = String.format("[WARN] Analyzer(%s-%s) did not finish checkout in %s seconds!", m_name, m_index,
-			      timeout);
+         System.err.println(msg);
+      }
+   }
 
-			System.err.println(msg);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return String.format("%s(%s-%s-%s)", getClass().getSimpleName(), m_name, m_hour, m_index);
-	}
+   @Override
+   public String toString() {
+      return String.format("%s(%s-%s-%s)", getClass().getSimpleName(), m_name, m_hour, m_index);
+   }
 }

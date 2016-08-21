@@ -99,12 +99,6 @@
 	</table>
 	<font color="white">${lastIndex}</font>
 
-	<script type="text/javascript">
-		$(document).ready(function() {
-			// appendHostname(\${model.ipToHostnameStr});
-		});
-	</script>
-
 	<c:choose>
 		<c:when test="${not empty payload.type}">
 			<table>

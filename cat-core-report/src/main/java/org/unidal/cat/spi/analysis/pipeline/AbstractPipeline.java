@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.cat.spi.ReportConfiguration;
+import org.unidal.cat.spi.Report;
+import org.unidal.cat.spi.analysis.CheckpointService;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageRoutingStrategy;
+import org.unidal.cat.spi.report.ReportConfiguration;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
@@ -18,6 +22,12 @@ import com.dianping.cat.message.spi.MessageTree;
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {
    @Inject(StrategyConstants.DOMAIN_HASH)
    private MessageRoutingStrategy m_strategy;
+
+   @Inject
+   private CheckpointService m_checkpointService;
+
+   @Inject
+   private ReportManagerManager m_rmm;
 
    @Inject
    private ReportConfiguration m_config;
@@ -68,8 +78,10 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
 
    protected void doCheckpoint(final boolean atEnd) throws Exception {
       for (MessageAnalyzer analyzer : m_analyzers) {
-         analyzer.doCheckpoint(atEnd);
+         analyzer.shutdown();
       }
+
+      m_checkpointService.doCheckpoint(m_name, m_hour);
    }
 
    @Override
@@ -89,6 +101,10 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
    @Override
    public String getName() {
       return m_name;
+   }
+
+   protected ReportManager<Report> getReportManager() {
+      return m_rmm.getReportManager(getName());
    }
 
    protected MessageRoutingStrategy getRoutingStrategy() {

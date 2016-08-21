@@ -12,25 +12,15 @@ import org.unidal.web.mvc.ActionContext;
 
 @Named(type = Pipeline.class, value = ProblemConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class ProblemPipeline extends AbstractPipeline implements Initializable {
-	@Override
-	protected void afterCheckpoint() {
+   @Override
+   public void initialize() throws InitializationException {
+      lookup(MenuManager.class).register(ProblemConstants.NAME, "Problem", "fa fa-bug", new MenuLinkBuilder() {
+         @Override
+         public String build(ActionContext<?> ctx) {
+            return ctx.getQuery().uri("/r/p").toString();
+         }
+      });
 
-	}
-
-	@Override
-	protected void beforeCheckpoint() {
-
-	}
-
-	@Override
-	public void initialize() throws InitializationException {
-		lookup(MenuManager.class).register(ProblemConstants.NAME, "Problem", "fa fa-bug", new MenuLinkBuilder() {
-			@Override
-			public String build(ActionContext<?> ctx) {
-				return ctx.getQuery().uri("/r/p").toString();
-			}
-		});
-
-		Document.USER.register(ProblemConstants.NAME, "Problem");
-	}
+      Document.USER.register(ProblemConstants.NAME, "Problem");
+   }
 }

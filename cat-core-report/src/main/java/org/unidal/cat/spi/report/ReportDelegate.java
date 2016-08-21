@@ -10,19 +10,19 @@ import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
 
 public interface ReportDelegate<T extends Report> {
-	public T aggregate(ReportPeriod period, Collection<T> reports);
+   public T aggregate(ReportPeriod period, Collection<T> reports);
 
-	public T makeAll(ReportPeriod period, Collection<T> reports);
+   public T makeAll(ReportPeriod period, Collection<T> reports);
 
-	public String buildXml(T report);
+   public String buildXml(T report);
 
-	public String getName();
+   public String getName();
 
-	public T parseXml(String xml);
+   public T parseXml(String xml);
 
-	public T readStream(InputStream in) throws IOException;
+   public T readStream(InputStream in) throws IOException;
 
-	public void writeStream(OutputStream out, T report) throws IOException;
+   public void writeStream(OutputStream out, T report) throws IOException;
 
-	public T createLocal(ReportPeriod period, String domain, Date startTime);
+   public T createLocal(ReportPeriod period, String domain, Date startTime);
 }

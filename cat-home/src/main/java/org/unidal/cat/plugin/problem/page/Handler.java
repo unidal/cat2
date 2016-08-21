@@ -13,13 +13,14 @@ import com.dianping.cat.report.page.problem.transform.HourlyLineChartVisitor;
 import com.dianping.cat.report.page.problem.transform.PieGraphChartVisitor;
 import com.dianping.cat.report.page.problem.transform.ProblemStatistics;
 import com.dianping.cat.report.service.ModelPeriod;
+
 import org.unidal.cat.plugin.problem.ProblemConstants;
 import org.unidal.cat.plugin.problem.filter.ProblemDetailFilter;
 import org.unidal.cat.plugin.problem.filter.ProblemGraphFilter;
 import org.unidal.cat.plugin.problem.filter.ProblemHomePageFilter;
 import org.unidal.cat.plugin.problem.filter.ProblemThreadFilter;
-import org.unidal.cat.spi.ReportManager;
 import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
@@ -27,6 +28,7 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import javax.servlet.ServletException;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;

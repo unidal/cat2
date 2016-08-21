@@ -3,8 +3,8 @@ package org.unidal.cat.spi.report.internals;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.unidal.cat.spi.ReportManager;
-import org.unidal.cat.spi.ReportManagerManager;
+import org.unidal.cat.spi.report.ReportManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 

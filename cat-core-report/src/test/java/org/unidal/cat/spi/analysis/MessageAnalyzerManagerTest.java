@@ -8,7 +8,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.ReportManagerManager;
+import org.unidal.cat.spi.report.ReportManagerManager;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.analysis.MessageAnalyzerManager;

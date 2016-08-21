@@ -6,11 +6,11 @@
 			<implementation>org.unidal.cat.core.report.CatReportModule</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportConfiguration</role>
-			<implementation>org.unidal.cat.spi.DefaultReportConfiguration</implementation>
+			<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+			<implementation>org.unidal.cat.spi.report.DefaultReportConfiguration</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.ReportManagerManager</role>
+			<role>org.unidal.cat.spi.report.ReportManagerManager</role>
 			<implementation>org.unidal.cat.spi.report.internals.DefaultReportManagerManager</implementation>
 		</component>
 		<component>
@@ -77,7 +77,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.dal.report.HourlyReportDao</role>
@@ -120,7 +120,7 @@
 			<implementation>org.unidal.cat.spi.report.storage.FileHourlyReportStorage</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.service.CompressionService</role>
@@ -133,7 +133,7 @@
 			<implementation>org.unidal.cat.spi.report.storage.FileHistoryReportStorage</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.service.CompressionService</role>
@@ -194,7 +194,7 @@
 			<implementation>org.unidal.cat.spi.remote.DefaultRemoteStub</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -203,7 +203,7 @@
 			<implementation>org.unidal.cat.spi.remote.DefaultRemoteSkeleton</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportManagerManager</role>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
@@ -313,7 +313,35 @@
 					<role>org.unidal.cat.spi.analysis.event.TimeWindowManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.analysis.CheckpointService</role>
+			<implementation>org.unidal.cat.spi.analysis.DefaultCheckpointService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>mysql</role-hint>
+					<field-name>m_mysqlStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+					<role-hint>file</role-hint>
+					<field-name>m_fileStorage</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -354,7 +382,7 @@
 					<role>org.unidal.cat.spi.remote.RemoteStub</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.spi.ReportConfiguration</role>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -373,8 +401,7 @@
 			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.report.nav.GroupBar</role>
-			<role-hint>domain</role-hint>
+			<role>org.unidal.cat.core.report.nav.DomainGroupBar</role>
 			<implementation>org.unidal.cat.core.report.nav.DomainGroupBar</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
