@@ -2,10 +2,10 @@ package org.unidal.cat.plugin.transaction.model;
 
 import java.util.Collection;
 
-import org.unidal.cat.plugin.transaction.TransactionAllReportMaker;
 import org.unidal.cat.plugin.transaction.TransactionConfigProvider;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportAggregator;
 import org.unidal.lookup.ContainerHolder;
@@ -13,9 +13,6 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Constants;
-
-import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
-
 import com.dianping.cat.service.ProjectService;
 
 @Named(type = ReportAggregator.class, value = TransactionConstants.NAME)
@@ -61,13 +58,6 @@ public class TransactionReportAggregator extends ContainerHolder implements Repo
 
 			if (m_transactionConfigProvider == null) {
 				m_transactionConfigProvider = lookup(TransactionConfigProvider.class);
-			}
-
-			TransactionAllReportMaker maker = new TransactionAllReportMaker(all, m_projectService, m_helper,
-			      m_transactionConfigProvider);
-
-			for (TransactionReport report : reports) {
-				report.accept(maker);
 			}
 		}
 

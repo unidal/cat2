@@ -135,7 +135,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
             TransactionsDuration oldDuration = dst.get(key);
 
             if (oldDuration == null) {
-               oldDuration = new TransactionsDuration(duration.getValue());
+               oldDuration = new TransactionsDuration(key);
                dst.put(key, oldDuration);
             }
 
