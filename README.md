@@ -3,18 +3,18 @@ CAT [![Build Status](https://travis-ci.org/unidal/cat2.svg?branch=master)](https
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ===
-##### CAT基于Java开发的实时应用监控平台，包括实时应用监控，业务监控。[2013-01-06] 
+##### CAT(Central Application Tracking)是基于Java开发的分布式实时监控系统，主要包括应用监控、业务监控等。[2013-01-06] 
 
-##### CAT支持的监控消息类型包括：
-+  **Transaction**	  适合记录跨越系统边界的程序访问行为,比如远程调用，数据库调用，也适合执行时间较长的业务逻辑监控，Transaction用来记录一段代码的执行时间和次数。
-+  **Event**	   用来记录一件事发生的次数，比如记录系统异常，它和transaction相比缺少了时间的统计，开销比transaction要小。
-+  **Heartbeat**	表示程序内定期产生的统计信息, 如CPU%, MEM%, 连接池状态, 系统负载等。
-+  **Metric**	  用于记录业务指标、指标可能包含对一个指标记录次数、记录平均值、记录总和，业务指标最低统计粒度为1分钟。
-+  **Trace**     用于记录基本的trace信息，类似于log4j的info信息，这些信息仅用于查看一些相关信息
+##### CAT支持以下消息类型监控：
++  **Transaction** 适合记录跨越系统边界的程序访问行为,比如远程调用，数据库调用，也适合执行时间较长的业务逻辑监控，Transaction用来记录一段代码的执行时间和次数。
++  **Event** 用来记录一件事发生的次数，比如记录系统异常，它和transaction相比缺少了时间的统计，开销比transaction要小。
++  **Heartbeat** 表示程序内定期产生的统计信息, 如CPU%, MEM%, 连接池状态, 系统负载等。
++  **Metric**  用于记录业务指标、指标可能包含对一个指标记录次数、记录平均值、记录总和，业务指标最低统计粒度为1分钟。
++  **Trace** 用于记录基本的trace信息，类似于log4j的info信息，这些信息仅用于查看一些相关信息
 
 消息树
 ===
-CAT监控系统将每次URL、Service的请求内部执行情况都封装为一个完整的消息树、消息树可能包括Transaction、Event、Heartbeat、Metric和Trace信息。
+CAT监控系统将每次用户请求(URL)、服务调用(Service)和数据库访问(SQL)等内部执行步骤封装成一个完整的消息树(由Transaction、Event、Heartbeat、Metric和Trace等消息组成)，呈现出来，方便用户进行故障诊断和性能调优。
 
 完整的消息树
 ---------------------
@@ -33,9 +33,9 @@ CAT监控系统将每次URL、Service的请求内部执行情况都封装为一�
 
 Requirements
 ---------------------
-* Java 6
-* Maven 3
-* MySQL
+* Java 6+
+* Maven 3.2.1+
+* MySQL 5.6+
 
 Quick Started
 ---------------------
