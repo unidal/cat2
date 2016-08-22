@@ -99,7 +99,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
          }
       }
 
-      if (index >= 0 && index < list.size()) {
+      if (list != null && index >= 0 && index < list.size()) {
          return list.get(index);
       } else {
          return null;

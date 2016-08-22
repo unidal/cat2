@@ -22,6 +22,10 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.plugin.transactions.config.TransactionsConfigService</role>
+			<implementation>org.unidal.cat.plugin.transactions.config.TransactionsConfigService</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>
 			<role-hint>transactions</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.model.TransactionsReportManager</implementation>
@@ -31,6 +35,9 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.core.config.DomainOrgConfigService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.config.TransactionsConfigService</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>

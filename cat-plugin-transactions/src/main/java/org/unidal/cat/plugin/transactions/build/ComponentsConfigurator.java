@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.plugin.transactions.TransactionsPipeline;
+import org.unidal.cat.plugin.transactions.config.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;
@@ -28,6 +29,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       List<Component> all = new ArrayList<Component>();
 
       all.add(A(TransactionsPipeline.class));
+      all.add(A(TransactionsConfigService.class));
+      
       all.add(A(TransactionsReportManager.class));
       all.add(A(TransactionsReportDelegate.class));
       all.add(A(TransactionsReportAggregator.class));

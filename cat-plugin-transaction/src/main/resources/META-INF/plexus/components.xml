@@ -77,7 +77,7 @@
 		<component>
 			<role>org.unidal.cat.spi.analysis.MessageAnalyzer</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportAnalyzer</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>

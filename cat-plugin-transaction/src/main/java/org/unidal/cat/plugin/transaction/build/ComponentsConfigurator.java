@@ -5,13 +5,13 @@ import java.util.List;
 
 import org.unidal.cat.plugin.transaction.TransactionConfigProvider;
 import org.unidal.cat.plugin.transaction.TransactionPipeline;
+import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.TransactionReportAggregator;
-import org.unidal.cat.plugin.transaction.model.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.model.TransactionReportDelegate;
 import org.unidal.cat.plugin.transaction.model.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer;
