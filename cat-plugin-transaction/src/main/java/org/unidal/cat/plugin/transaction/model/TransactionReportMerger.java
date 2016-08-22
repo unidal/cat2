@@ -1,8 +1,14 @@
 package org.unidal.cat.plugin.transaction.model;
 
-import com.dianping.cat.Constants;
-import org.unidal.cat.plugin.transaction.model.entity.*;
+import org.unidal.cat.plugin.transaction.model.entity.Duration;
+import org.unidal.cat.plugin.transaction.model.entity.Machine;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.DefaultMerger;
+
+import com.dianping.cat.Constants;
 
 public class TransactionReportMerger extends DefaultMerger {
 	public TransactionReportMerger(TransactionReport transactionReport) {
@@ -147,27 +153,5 @@ public class TransactionReportMerger extends DefaultMerger {
 		super.visitTransactionReport(transactionReport);
 		getTransactionReport().getDomainNames().addAll(transactionReport.getDomainNames());
 		getTransactionReport().getIps().addAll(transactionReport.getIps());
-	}
-
-	@Override
-	public void mergeDomainStat(DomainStat to, DomainStat from){
-		to.setTotalCount(from.getTotalCount() + to.getTotalCount());
-		to.setFailCount(from.getFailCount() + to.getFailCount());
-
-		if (from.getMin() < to.getMin()) {
-			to.setMin(from.getMin());
-		}
-
-		if (from.getMax() > to.getMax()) {
-			to.setMax(from.getMax());
-		}
-
-		to.setSum(to.getSum() + from.getSum());
-		to.setSum2(to.getSum2() + from.getSum2());
-		to.setTps(to.getTps() + from.getTps());
-
-		if (to.getTotalCount() > 0) {
-			to.setAvg(to.getSum() / to.getTotalCount());
-		}
 	}
 }

@@ -38,7 +38,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    private ReportManagerManager m_rmm;
 
    @Inject
-   private DomainOrgConfigService m_config;
+   private DomainOrgConfigService m_orgConfig;
 
    private TransactionsReport buildReport(int hour, String bu) {
       ReportManager<TransactionReport> rm = m_rmm.getReportManager(TransactionConstants.NAME);
@@ -47,7 +47,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
 
       for (Map<String, TransactionReport> map : list) {
          for (Map.Entry<String, TransactionReport> e : map.entrySet()) {
-            if (bu == null || m_config.isIn(bu, e.getKey())) {
+            if (bu == null || m_orgConfig.isIn(bu, e.getKey())) {
                e.getValue().accept(maker);
             }
          }
@@ -135,7 +135,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
             TransactionsDuration oldDuration = dst.get(key);
 
             if (oldDuration == null) {
-               oldDuration = new TransactionsDuration(duration.getValue());
+               oldDuration = new TransactionsDuration(key);
                dst.put(key, oldDuration);
             }
 
@@ -305,7 +305,7 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       @Override
       public void visitTransactionReport(TransactionReport report) {
          TransactionsReport r = m_ts.getReport();
-         String d = m_config.findDepartment(report.getDomain());
+         String d = m_orgConfig.findDepartment(report.getDomain());
 
          r.setPeriod(report.getPeriod()).addBu(d);
          r.setStartTime(report.getStartTime()).setEndTime(report.getEndTime());

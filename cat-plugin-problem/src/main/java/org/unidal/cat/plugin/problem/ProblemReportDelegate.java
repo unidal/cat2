@@ -45,11 +45,6 @@ public class ProblemReportDelegate implements ReportDelegate<ProblemReport> {
    }
 
    @Override
-   public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
-      return null;
-   }
-
-   @Override
    public ProblemReport parseXml(String xml) {
       try {
          return DefaultSaxParser.parse(xml);

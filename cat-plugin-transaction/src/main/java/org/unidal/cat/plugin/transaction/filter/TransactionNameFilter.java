@@ -149,13 +149,11 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
       public void visitName(TransactionName name) {
          name.getRanges().clear();
          name.getDurations().clear();
-         name.getAllDurations().clear();
       }
 
       @Override
       public void visitType(TransactionType type) {
          type.getRange2s().clear();
-         type.getAllDurations().clear();
       }
    }
 }

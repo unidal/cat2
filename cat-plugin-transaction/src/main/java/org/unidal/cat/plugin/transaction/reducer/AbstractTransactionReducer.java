@@ -3,12 +3,6 @@ package org.unidal.cat.plugin.transaction.reducer;
 import java.util.List;
 
 import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.report.ReportReducer;
-
-import com.dianping.cat.Constants;
-import org.unidal.cat.plugin.transaction.model.entity.AllDuration;
-import org.unidal.cat.plugin.transaction.model.entity.DomainStat;
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
@@ -16,6 +10,10 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.DefaultMerger;
+import org.unidal.cat.spi.ReportPeriod;
+import org.unidal.cat.spi.report.ReportReducer;
+
+import com.dianping.cat.Constants;
 
 public abstract class AbstractTransactionReducer implements ReportReducer<TransactionReport> {
 	protected abstract int getRangeValue(TransactionReport report, Range range);
@@ -53,28 +51,6 @@ public abstract class AbstractTransactionReducer implements ReportReducer<Transa
 
 		public Merger(TransactionReport report) {
 			super(report);
-		}
-
-		@Override
-		protected void mergeDomainStat(DomainStat to, DomainStat from) {
-			to.setTotalCount(from.getTotalCount() + to.getTotalCount());
-			to.setFailCount(from.getFailCount() + to.getFailCount());
-
-			if (from.getMin() < to.getMin()) {
-				to.setMin(from.getMin());
-			}
-
-			if (from.getMax() > to.getMax()) {
-				to.setMax(from.getMax());
-			}
-
-			to.setSum(to.getSum() + from.getSum());
-			to.setSum2(to.getSum2() + from.getSum2());
-			to.setTps(to.getTps() + from.getTps());
-
-			if (to.getTotalCount() > 0) {
-				to.setAvg(to.getSum() / to.getTotalCount());
-			}
 		}
 
 		@Override
@@ -232,19 +208,6 @@ public abstract class AbstractTransactionReducer implements ReportReducer<Transa
 				if (target == null) {
 					target = new Duration(source.getValue());
 					to.addDuration(target);
-				}
-
-				getObjects().push(target);
-				source.accept(this);
-				getObjects().pop();
-			}
-
-			for (AllDuration source : from.getAllDurations().values()) {
-				AllDuration target = to.findAllDuration(source.getValue());
-
-				if (target == null) {
-					target = new AllDuration(source.getValue());
-					to.addAllDuration(target);
 				}
 
 				getObjects().push(target);

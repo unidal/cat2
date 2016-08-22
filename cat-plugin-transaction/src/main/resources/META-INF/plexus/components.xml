@@ -145,58 +145,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>transaction:all-type</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>transaction:all-type-graph</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>transaction:all-name</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.ReportFilter</role>
-			<role-hint>transaction:all-name-graph</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.service.ProjectService</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>transaction:day</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.reducer.TransactionDailyReducer</implementation>

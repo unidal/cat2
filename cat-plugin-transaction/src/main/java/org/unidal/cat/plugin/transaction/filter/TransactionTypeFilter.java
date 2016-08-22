@@ -135,7 +135,6 @@ public class TransactionTypeFilter implements ReportFilter<TransactionReport> {
       public void visitType(TransactionType type) {
          type.getNames().clear();
          type.getRange2s().clear();
-         type.getAllDurations().clear();
       }
    }
 }

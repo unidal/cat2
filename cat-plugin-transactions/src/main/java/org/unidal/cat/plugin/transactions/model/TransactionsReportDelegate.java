@@ -45,11 +45,6 @@ public class TransactionsReportDelegate implements ReportDelegate<TransactionsRe
    }
 
    @Override
-   public TransactionsReport makeAll(ReportPeriod period, Collection<TransactionsReport> reports) {
-      return m_aggregator.makeAll(period, reports);
-   }
-
-   @Override
    public TransactionsReport parseXml(String xml) {
       try {
          return DefaultSaxParser.parse(xml);

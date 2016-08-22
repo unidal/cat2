@@ -5,13 +5,9 @@ import java.util.List;
 
 import org.unidal.cat.plugin.transaction.TransactionConfigProvider;
 import org.unidal.cat.plugin.transaction.TransactionPipeline;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionAllTypeGraphFilter;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;
-import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionTypeGraphFilter;
 import org.unidal.cat.plugin.transaction.model.TransactionReportAggregator;
@@ -47,10 +43,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(A(TransactionTypeGraphFilter.class));
 		all.add(A(TransactionNameFilter.class));
 		all.add(A(TransactionNameGraphFilter.class));
-		all.add(A(TransactionAllTypeFilter.class));
-		all.add(A(TransactionAllTypeGraphFilter.class));
-		all.add(A(TransactionAllNameFilter.class));
-		all.add(A(TransactionAllNameGraphFilter.class));
 
 		// reducer
 		all.add(A(TransactionDailyReducer.class));
