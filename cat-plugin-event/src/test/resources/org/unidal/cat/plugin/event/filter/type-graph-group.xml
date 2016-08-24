@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<event-report domain="cat" startTime="2015-12-30 11:00:00">
+   <ip>192.168.31.158</ip>
+   <ip>192.168.31.159</ip>
+   <ip>192.168.31.160</ip>
+   <machine ip="192.168.31.158">
+      <type id="URL" totalCount="11" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="2796.7" sum2="5150490.7" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      </type>
+   </machine>
+   <machine ip="192.168.31.159">
+      <type id="URL" totalCount="11" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="2796.7" sum2="5150490.7" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      </type>
+   </machine>
+   <machine ip="All">
+      <type id="URL" totalCount="22" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="5593.4" sum2="10300981.4" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <name id="All" totalCount="22" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="5593.4" sum2="10300981.4" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <range value="15" count="18" sum="5518.5" avg="306.6" fails="0"/>
+            <range value="16" count="4" sum="74.8" avg="18.7" fails="0"/>
+            <duration value="4" count="2"/>
+            <duration value="8" count="4"/>
+            <duration value="16" count="4"/>
+            <duration value="32" count="4"/>
+            <duration value="64" count="4"/>
+            <duration value="512" count="2"/>
+            <duration value="4096" count="2"/>
+         </name>
+      </type>
+   </machine>
+</event-report>

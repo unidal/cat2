@@ -1,26 +1,28 @@
 package org.unidal.cat.plugin.event.filter;
 
-import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.event.model.entity.EventName;
-import com.dianping.cat.consumer.event.model.entity.EventReport;
-import com.dianping.cat.consumer.event.model.entity.EventType;
-import com.dianping.cat.consumer.event.model.entity.Machine;
-import com.dianping.cat.consumer.event.model.transform.BaseVisitor;
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
+import org.unidal.cat.plugin.event.model.entity.EventName;
+import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.event.model.entity.EventType;
+import org.unidal.cat.plugin.event.model.entity.Machine;
+import org.unidal.cat.plugin.event.model.transform.BaseVisitor;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.dianping.cat.Constants;
 
 @Named(type = ReportFilter.class, value = EventConstants.NAME + ":" + EventNameGraphFilter.ID)
 public class EventNameGraphFilter implements ReportFilter<EventReport> {
    public static final String ID = "name-graph";
 
    @Inject
-   private EventReportHelper m_helper;
+   private EventHelper m_helper;
+
+   @Inject
+   private DomainGroupConfigService m_configService;
 
    @Override
    public String getId() {
@@ -34,10 +36,11 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
 
    @Override
    public EventReport screen(RemoteContext ctx, EventReport report) {
+      String group = ctx.getProperty("group", null);
+      String ip = ctx.getProperty("ip", null);
       String type = ctx.getProperty("type", null);
       String name = ctx.getProperty("name", null);
-      String ip = ctx.getProperty("ip", null);
-      NameGraphScreener visitor = new NameGraphScreener(report.getDomain(), ip, type, name);
+      NameGraphScreener visitor = new NameGraphScreener(report.getDomain(), group, ip, type, name);
 
       report.accept(visitor);
       return visitor.getReport();
@@ -45,15 +48,14 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
 
    @Override
    public void tailor(RemoteContext ctx, EventReport report) {
-      String type = ctx.getProperty("type", null);
-      String name = ctx.getProperty("name", null);
-      String ip = ctx.getProperty("ip", null);
-      NameGraphTailor visitor = new NameGraphTailor(ip, type, name);
+      NameGraphTailor visitor = new NameGraphTailor();
 
       report.accept(visitor);
    }
 
    private class NameGraphScreener extends BaseVisitor {
+      private String m_group;
+
       private String m_ip;
 
       private String m_type;
@@ -64,10 +66,11 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
 
       private EventHolder m_all = new EventHolder();
 
-      public NameGraphScreener(String domain, String ip, String type, String name) {
+      public NameGraphScreener(String domain, String group, String ip, String type, String name) {
+         m_group = group;
+         m_ip = ip;
          m_type = type;
          m_name = name;
-         m_ip = ip;
          m_holder.setReport(new EventReport(domain));
       }
 
@@ -75,64 +78,18 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
          return m_holder.getReport();
       }
 
-      private void mergeName(EventName n, EventName name) {
-         m_helper.mergeName(n, name);
-         n.setSuccessMessageUrl(null);
-         n.setFailMessageUrl(null);
-      }
-
-      private void mergeType(EventType t, EventType type) {
-         m_helper.mergeType(t, type);
-         t.setSuccessMessageUrl(null);
-         t.setFailMessageUrl(null);
-      }
-
-      @Override
-      public void visitEventReport(EventReport report) {
-         EventReport r = m_holder.getReport();
-
-         m_helper.mergeReport(r, report);
-
-         if (m_ip == null || m_ip.equals(Constants.ALL)) {
-            Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
-
-            for (Machine machine : machines) {
-               r.findOrCreateMachine(machine.getIp());
-            }
-
-            Machine machineAll = r.findOrCreateMachine(Constants.ALL);
-
-            m_all.setMachine(machineAll);
-
-            for (Machine machine : machines) {
-               Machine m = r.findMachine(machine.getIp());
-
-               m_holder.setMachine(m);
-               visitMachine(machine);
-            }
-         } else {
-            Machine machine = report.findMachine(m_ip);
-            Machine m = r.findOrCreateMachine(m_ip);
-
-            if (machine != null) {
-               m_holder.setMachine(m);
-               visitMachine(machine);
-            }
-         }
-      }
-
       @Override
       public void visitMachine(Machine machine) {
-         Machine machineAll = m_all.getMachine();
+         Machine all = m_all.getMachine();
          Machine m = m_holder.getMachine();
          EventType type = machine.findType(m_type);
 
-         if (machineAll != null) {
-            m_helper.mergeMachine(machineAll, machine);
+         if (all != null) {
+            m_helper.mergeMachine(all, machine);
             m_helper.mergeMachine(m, machine);
 
             if (type != null) {
-               EventType ta = machineAll.findOrCreateType(m_type);
+               EventType ta = all.findOrCreateType(m_type);
                EventType t = m.findOrCreateType(m_type);
 
                m_all.setType(ta);
@@ -157,14 +114,64 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
          EventName n = m_holder.getName();
 
          if (na != null) {
-            mergeName(n, name);
+            m_helper.mergeName(n, name);
 
             n = na;
          }
 
-         mergeName(n, name);
+         m_helper.mergeName(n, name);
 
          m_helper.mergeRanges(n.getRanges(), name.getRanges());
+      }
+
+      @Override
+      public void visitEventReport(EventReport report) {
+         EventReport r = m_holder.getReport();
+         boolean isAll = (m_ip == null ? true : m_ip.equals(Constants.ALL));
+
+         m_helper.mergeReport(r, report);
+
+         if (m_group != null && isAll) {
+            String domain = report.getDomain();
+
+            for (Machine machine : report.getMachines().values()) {
+               if (m_configService.isInGroup(domain, m_group, machine.getIp())) {
+                  r.findOrCreateMachine(machine.getIp());
+               }
+            }
+
+            Machine m = r.findOrCreateMachine(Constants.ALL);
+
+            m_all.setMachine(m);
+
+            for (Machine machine : report.getMachines().values()) {
+               if (m_configService.isInGroup(domain, m_group, machine.getIp())) {
+                  m_holder.setMachine(r.findMachine(machine.getIp()));
+                  visitMachine(machine);
+               }
+            }
+         } else if (isAll) {
+            for (Machine machine : report.getMachines().values()) {
+               r.findOrCreateMachine(machine.getIp());
+            }
+
+            Machine m = r.findOrCreateMachine(Constants.ALL);
+
+            m_all.setMachine(m);
+
+            for (Machine machine : report.getMachines().values()) {
+               m_holder.setMachine(r.findMachine(machine.getIp()));
+               visitMachine(machine);
+            }
+         } else {
+            Machine machine = report.findMachine(m_ip);
+            Machine m = r.findOrCreateMachine(m_ip);
+
+            if (machine != null) {
+               m_holder.setMachine(m);
+               visitMachine(machine);
+            }
+         }
       }
 
       @Override
@@ -177,13 +184,13 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
             if (ta != null) {
                EventName na = ta.findOrCreateName(m_name);
 
-               mergeType(ta, type);
+               m_helper.mergeType(ta, type);
                m_all.setName(na);
             }
 
             EventName n = t.findOrCreateName(m_name);
 
-            mergeType(t, type);
+            m_helper.mergeType(t, type);
             m_holder.setName(n);
             visitName(name);
          }
@@ -191,85 +198,20 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
    }
 
    private class NameGraphTailor extends BaseVisitor {
-      private String m_ip;
-
-      private String m_type;
-
-      private String m_name;
-
-      private EventHolder m_holder = new EventHolder();
-
-      public NameGraphTailor(String ip, String type, String name) {
-         m_ip = ip;
-         m_type = type;
-         m_name = name;
-      }
-
       @Override
-      public void visitEventReport(EventReport eventReport) {
-         boolean all = m_ip == null || m_ip.equals(Constants.ALL);
+      public void visitName(EventName name) {
+         name.setSuccessMessageUrl(null);
+         name.setFailMessageUrl(null);
 
-         if (all) {
-            Machine machine = new Machine(Constants.ALL);
-
-            m_holder.setMachine(machine);
-         } else {
-            Machine machine = new Machine(m_ip);
-            Machine m = eventReport.findMachine(m_ip);
-
-            eventReport.getMachines().clear();
-            if (null != m) {
-               eventReport.addMachine(m);
-            }
-            m_holder.setMachine(machine);
-         }
-
-         super.visitEventReport(eventReport);
-
-         eventReport.addMachine(m_holder.getMachine());
-      }
-
-      @Override
-      public void visitMachine(Machine machine) {
-         EventType type = machine.findType(m_type);
-
-         machine.getTypes().clear();
-
-         if (type != null) {
-            EventType t = m_holder.getMachine().findOrCreateType(type.getId());
-
-            machine.addType(type);
-            m_helper.mergeType(t, type);
-            m_holder.setType(t);
-         }
-
-         super.visitMachine(machine);
+         super.visitName(name);
       }
 
       @Override
       public void visitType(EventType type) {
-         EventType t = m_holder.getType();
-         EventName n = t.findOrCreateName(m_name);
-         EventName name = type.findName(m_name);
-
-         t.setSuccessMessageUrl(null);
-         t.setFailMessageUrl(null);
          type.setSuccessMessageUrl(null);
          type.setFailMessageUrl(null);
-         type.getNames().clear();
 
-         if (name != null) {
-            m_helper.mergeName(n, name);
-            n.setSuccessMessageUrl(null);
-            n.setFailMessageUrl(null);
-            m_helper.mergeRanges(n.getRanges(), name.getRanges());
-
-            type.addName(name);
-
-            name.getRanges().clear();
-            name.setSuccessMessageUrl(null);
-            name.setFailMessageUrl(null);
-         }
+         super.visitType(type);
       }
    }
 }

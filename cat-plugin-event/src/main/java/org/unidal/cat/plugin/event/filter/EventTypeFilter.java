@@ -1,25 +1,30 @@
 package org.unidal.cat.plugin.event.filter;
 
-import com.dianping.cat.Constants;
-import com.dianping.cat.consumer.event.model.entity.EventReport;
-import com.dianping.cat.consumer.event.model.entity.EventType;
-import com.dianping.cat.consumer.event.model.entity.Machine;
-import com.dianping.cat.consumer.event.model.transform.BaseVisitor;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.unidal.cat.core.config.DomainGroupConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
+import org.unidal.cat.plugin.event.model.entity.Machine;
+import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.event.model.entity.EventType;
+import org.unidal.cat.plugin.event.model.transform.BaseVisitor;
 import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.dianping.cat.Constants;
 
 @Named(type = ReportFilter.class, value = EventConstants.NAME + ":" + EventTypeFilter.ID)
 public class EventTypeFilter implements ReportFilter<EventReport> {
    public static final String ID = "type";
 
    @Inject
-   private EventReportHelper m_helper;
+   private EventHelper m_helper;
+
+   @Inject
+   private DomainGroupConfigService m_configService;
 
    @Override
    public String getId() {
@@ -33,8 +38,9 @@ public class EventTypeFilter implements ReportFilter<EventReport> {
 
    @Override
    public EventReport screen(RemoteContext ctx, EventReport report) {
+      String group = ctx.getProperty("group", null);
       String ip = ctx.getProperty("ip", null);
-      TypeScreener visitor = new TypeScreener(report.getDomain(), ip);
+      TypeScreener visitor = new TypeScreener(report.getDomain(), group, ip);
 
       report.accept(visitor);
       return visitor.getReport();
@@ -42,50 +48,26 @@ public class EventTypeFilter implements ReportFilter<EventReport> {
 
    @Override
    public void tailor(RemoteContext ctx, EventReport report) {
-      String ip = ctx.getProperty("ip", null);
-      TypeTailor visitor = new TypeTailor(ip);
+      TypeTailor visitor = new TypeTailor();
 
       report.accept(visitor);
    }
 
    private class TypeScreener extends BaseVisitor {
+      private String m_group;
+
       private String m_ip;
 
       private EventHolder m_holder = new EventHolder();
 
-      public TypeScreener(String domain, String ip) {
+      public TypeScreener(String domain, String group, String ip) {
+         m_group = group;
          m_ip = ip;
          m_holder.setReport(new EventReport(domain));
       }
 
       public EventReport getReport() {
          return m_holder.getReport();
-      }
-
-      @Override
-      public void visitEventReport(EventReport report) {
-         EventReport r = m_holder.getReport();
-
-         m_helper.mergeReport(r, report);
-
-         if (m_ip == null || m_ip.equals(Constants.ALL)) {
-            Machine m = r.findOrCreateMachine(Constants.ALL);
-            Collection<Machine> machines = new ArrayList<Machine>(report.getMachines().values());
-
-            m_holder.setMachine(m);
-
-            for (Machine machine : machines) {
-               visitMachine(machine);
-            }
-         } else {
-            Machine machine = report.findMachine(m_ip);
-            Machine m = r.findOrCreateMachine(m_ip);
-
-            if (machine != null) {
-               m_holder.setMachine(m);
-               visitMachine(machine);
-            }
-         }
       }
 
       @Override
@@ -105,6 +87,42 @@ public class EventTypeFilter implements ReportFilter<EventReport> {
       }
 
       @Override
+      public void visitEventReport(EventReport report) {
+         EventReport r = m_holder.getReport();
+
+         m_helper.mergeReport(r, report);
+
+         if (m_group != null) {
+            Machine m = r.findOrCreateMachine(m_group);
+            String domain = report.getDomain();
+
+            m_holder.setMachine(m);
+
+            for (Machine machine : report.getMachines().values()) {
+               if (m_configService.isInGroup(domain, m_group, machine.getIp())) {
+                  visitMachine(machine);
+               }
+            }
+         } else if (m_ip == null || m_ip.equals(Constants.ALL)) {
+            Machine m = r.findOrCreateMachine(Constants.ALL);
+
+            m_holder.setMachine(m);
+
+            for (Machine machine : report.getMachines().values()) {
+               visitMachine(machine);
+            }
+         } else {
+            Machine machine = report.findMachine(m_ip);
+            Machine m = r.findOrCreateMachine(m_ip);
+
+            if (machine != null) {
+               m_holder.setMachine(m);
+               visitMachine(machine);
+            }
+         }
+      }
+
+      @Override
       public void visitType(EventType type) {
          EventType t = m_holder.getType();
 
@@ -113,42 +131,9 @@ public class EventTypeFilter implements ReportFilter<EventReport> {
    }
 
    private class TypeTailor extends BaseVisitor {
-      private String m_ip;
-
-      private Machine m_machine;
-
-      public TypeTailor(String ip) {
-         m_ip = ip;
-      }
-
-      @Override
-      public void visitEventReport(EventReport eventReport) {
-         boolean all = m_ip == null || m_ip.equals(Constants.ALL);
-
-         if (all) {
-            m_machine = new Machine(Constants.ALL);
-         } else {
-            m_machine = new Machine(m_ip);
-
-            Machine m = eventReport.findMachine(m_ip);
-            eventReport.getMachines().clear();
-
-            if (m != null) {
-               eventReport.addMachine(m);
-            }
-         }
-
-         super.visitEventReport(eventReport);
-
-         eventReport.getMachines().clear();
-         eventReport.addMachine(m_machine);
-      }
-
       @Override
       public void visitType(EventType type) {
          type.getNames().clear();
-         EventType t = m_machine.findOrCreateType(type.getId());
-         m_helper.mergeType(t, type);
       }
    }
 }

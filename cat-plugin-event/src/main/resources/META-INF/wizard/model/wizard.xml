@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wizard package="com.dianping.cat.plugin.event">
-   
+   <model package="org.unidal.cat.plugin.event.model" name="event-report">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/event/event.xml</sample-model>
+   </model>
+   <model package="org.unidal.cat.plugin.event.config" name="event-config">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/event/event-config.xml</sample-model>
+   </model>
 </wizard>
