@@ -14,7 +14,7 @@ import org.unidal.web.mvc.ActionContext;
 public class EventPipeline extends AbstractPipeline implements Initializable {
    @Override
    public void initialize() throws InitializationException {
-      lookup(MenuManager.class).register(EventConstants.NAME, "Event", "glyphicon glyphicon-time",
+      lookup(MenuManager.class).register(EventConstants.NAME, "Event", "fa fa-flag",
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {

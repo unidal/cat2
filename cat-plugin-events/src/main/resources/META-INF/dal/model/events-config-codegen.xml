@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="events-config" root="true">
+    <entity-ref name="config" type="list" names="configs" />
+  </entity>
+  <entity name="config">
+    <attribute name="type" value-type="String" />
+    <attribute name="name" value-type="String" />
+  </entity>
+</model>
+

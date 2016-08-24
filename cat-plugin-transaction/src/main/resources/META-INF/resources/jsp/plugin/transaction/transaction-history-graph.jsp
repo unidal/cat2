@@ -11,14 +11,6 @@
 <script src="${model.webapp}/js/baseGraph.js"></script>
 <script src="${model.webapp}/js/transaction.js"></script>
 
-<style type="text/css">
-.graph {
-	width: 400px;
-	height: 300px;
-	margin: 4px auto;
-}
-</style>
-
 <table>
 	<tr>
 		<td><div id="responseTrend" class="graph"></div></td>

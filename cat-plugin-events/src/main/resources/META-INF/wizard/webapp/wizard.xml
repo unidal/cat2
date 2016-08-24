@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.plugin.events">
+   <webapp package="org.unidal.cat.plugin.events" name="events" module="true" webres="false" cat="false" plugin-management="false" jstl="true">
+      <module name="report" path="r" default="true" package="org.unidal.cat.plugin.events.report">
+         <page name="events" title="Events" default="true" package="org.unidal.cat.plugin.events.report.page" path="ts" template="default">
+            <description>Events</description>
+         </page>
+      </module>
+   </webapp>
+</wizard>

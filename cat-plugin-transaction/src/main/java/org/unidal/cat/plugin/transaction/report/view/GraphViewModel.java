@@ -413,7 +413,7 @@ public class GraphViewModel {
          double value;
 
          if ("total".equals(m_metric)) {
-            value = range.getSum();
+            value = range.getCount();
          } else if ("avg".equals(m_metric)) {
             value = range.getAvg();
          } else if ("failure".equals(m_metric)) {
