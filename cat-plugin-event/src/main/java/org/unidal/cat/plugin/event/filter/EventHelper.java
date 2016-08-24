@@ -18,9 +18,9 @@ public class EventHelper {
    }
 
    public void mergeName(EventName dst, EventName src) {
-      long totalCountSum = dst.getTotalCount() + src.getTotalCount();
+      long totalCount = dst.getTotalCount() + src.getTotalCount();
 
-      dst.setTotalCount(totalCountSum);
+      dst.setTotalCount(totalCount);
       dst.setFailCount(dst.getFailCount() + src.getFailCount());
       dst.setTps(dst.getTps() + src.getTps());
 
@@ -86,18 +86,6 @@ public class EventHelper {
 
       if (dst.getFailMessageUrl() == null) {
          dst.setFailMessageUrl(src.getFailMessageUrl());
-      }
-   }
-
-   double std(long count, double avg, double sum2, double max) {
-      double value = sum2 / count - avg * avg;
-
-      if (value <= 0 || count <= 1) {
-         return 0;
-      } else if (count == 2) {
-         return max - avg;
-      } else {
-         return Math.sqrt(value);
       }
    }
 }

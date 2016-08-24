@@ -39,10 +39,10 @@ public class EventReportMerger extends DefaultMerger {
    }
 
    @Override
-   public void visitEventReport(EventReport eventReport) {
-      super.visitEventReport(eventReport);
+   public void visitEventReport(EventReport report) {
+      super.visitEventReport(report);
 
-      getEventReport().getDomainNames().addAll(eventReport.getDomainNames());
-      getEventReport().getIps().addAll(eventReport.getIps());
+      getEventReport().getDomainNames().addAll(report.getDomainNames());
+      getEventReport().getIps().addAll(report.getIps());
    }
 }
