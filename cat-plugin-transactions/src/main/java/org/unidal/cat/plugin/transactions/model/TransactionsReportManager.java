@@ -148,18 +148,19 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       }
 
       private void mergeName(TransactionsName dst, TransactionName src) {
-         long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-         if (totalCountSum > 0) {
+         long totalCount = dst.getTotalCount() + src.getTotalCount();
+         
+         if (totalCount > 0) {
             double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value()
                   * src.getTotalCount();
             double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value()
                   * src.getTotalCount();
 
-            dst.setLine95Value(line95Values / totalCountSum);
-            dst.setLine99Value(line99Values / totalCountSum);
+            dst.setLine95Value(line95Values / totalCount);
+            dst.setLine99Value(line99Values / totalCount);
          }
 
-         dst.setTotalCount(totalCountSum);
+         dst.setTotalCount(totalCount);
          dst.setFailCount(dst.getFailCount() + src.getFailCount());
          dst.setTps(dst.getTps() + src.getTps());
 

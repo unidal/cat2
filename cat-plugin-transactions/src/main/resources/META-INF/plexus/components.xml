@@ -72,6 +72,11 @@
 			<role>org.unidal.cat.spi.report.ReportAggregator</role>
 			<role-hint>transactions</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.model.TransactionsReportAggregator</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
@@ -130,16 +135,31 @@
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>transactions:day</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsDailyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>transactions:week</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsWeeklyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>transactions:month</role-hint>
 			<implementation>org.unidal.cat.plugin.transactions.reducer.TransactionsMonthlyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.transactions.filter.TransactionsHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
