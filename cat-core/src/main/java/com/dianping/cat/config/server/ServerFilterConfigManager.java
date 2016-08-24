@@ -177,4 +177,8 @@ public class ServerFilterConfigManager implements Initializable {
 		}
 	}
 
+   public boolean discardEvent(String type, String name) {
+      return false;
+   }
+
 }

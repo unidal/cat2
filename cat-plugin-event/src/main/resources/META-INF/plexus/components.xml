@@ -145,16 +145,31 @@
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>event:day</role-hint>
 			<implementation>org.unidal.cat.plugin.event.reducer.EventDailyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>event:week</role-hint>
 			<implementation>org.unidal.cat.plugin.event.reducer.EventWeeklyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportReducer</role>
 			<role-hint>event:month</role-hint>
 			<implementation>org.unidal.cat.plugin.event.reducer.EventMonthlyReducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.plugin.event.filter.EventHelper</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>

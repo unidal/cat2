@@ -21,7 +21,7 @@ public class EventReportAggregator extends ContainerHolder implements ReportAggr
       EventReport aggregated = new EventReport();
 
       if (reports.size() > 0) {
-         EventReportMerger merger = new EventReportMerger(aggregated);
+         EventReportMerger merger = new EventReportMerger(m_helper, aggregated);
 
          // must be same domain
          aggregated.setDomain(reports.iterator().next().getDomain());

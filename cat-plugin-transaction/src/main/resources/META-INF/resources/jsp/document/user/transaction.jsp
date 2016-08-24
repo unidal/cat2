@@ -15,7 +15,7 @@
 <img  class="img-polaroid"  src="${model.webapp}/images/transaction03.png" width="770px"/>
 <br/>
 <h4 class="text-success">Transaction历史统计报表</h4>
-<p class="text-danger">a）Transaction\Event月报表支持每天的趋势图，以天为单位,如下图</p>
+<p class="text-danger">a）Transaction月报表支持每天的趋势图，以天为单位,如下图</p>
 <img  class="img-polaroid"  src="${model.webapp}/images/transaction06.png" width="770px"/>
-<p class="text-danger">b）Transaction\Event报表日报表、周报表支持同比、环比对比,时间精度为5分钟</p>
+<p class="text-danger">b）Transaction报表日报表、周报表支持同比、环比对比,时间精度为5分钟</p>
 <img  class="img-polaroid"  src="${model.webapp}/images/transaction05.png" width="770px"/>
