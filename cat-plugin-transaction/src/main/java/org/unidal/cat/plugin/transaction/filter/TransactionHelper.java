@@ -14,6 +14,11 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = TransactionHelper.class)
 public class TransactionHelper {
+   public void mergeDuration(Duration dst, Duration src) {
+      dst.setCount(dst.getCount() + src.getCount());
+      dst.setValue(src.getValue());
+   }
+
    public void mergeDurations(Map<Integer, Duration> dst, Map<Integer, Duration> src) {
       for (Map.Entry<Integer, Duration> e : src.entrySet()) {
          Integer key = e.getKey();
@@ -34,16 +39,17 @@ public class TransactionHelper {
    }
 
    public void mergeName(TransactionName dst, TransactionName src) {
-      long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-      if (totalCountSum > 0) {
+      long totalCount = dst.getTotalCount() + src.getTotalCount();
+
+      if (totalCount > 0) {
          double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
          double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value() * src.getTotalCount();
 
-         dst.setLine95Value(line95Values / totalCountSum);
-         dst.setLine99Value(line99Values / totalCountSum);
+         dst.setLine95Value(line95Values / totalCount);
+         dst.setLine99Value(line99Values / totalCount);
       }
 
-      dst.setTotalCount(totalCountSum);
+      dst.setTotalCount(totalCount);
       dst.setFailCount(dst.getFailCount() + src.getFailCount());
       dst.setTps(dst.getTps() + src.getTps());
 
@@ -71,6 +77,16 @@ public class TransactionHelper {
 
       if (dst.getFailMessageUrl() == null) {
          dst.setFailMessageUrl(src.getFailMessageUrl());
+      }
+   }
+
+   public void mergeRange(Range dst, Range src) {
+      dst.setCount(dst.getCount() + src.getCount());
+      dst.setFails(dst.getFails() + src.getFails());
+      dst.setSum(dst.getSum() + src.getSum());
+
+      if (dst.getCount() > 0) {
+         dst.setAvg(dst.getSum() / dst.getCount());
       }
    }
 
@@ -154,7 +170,7 @@ public class TransactionHelper {
       }
    }
 
-   double std(long count, double avg, double sum2, double max) {
+   private double std(long count, double avg, double sum2, double max) {
       double value = sum2 / count - avg * avg;
 
       if (value <= 0 || count <= 1) {

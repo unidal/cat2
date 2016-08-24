@@ -214,7 +214,6 @@ public class GraphViewModel {
 
       public List<DistributionDetail> getDetails() {
          Collections.sort(m_details, new Comparator<DistributionDetail>() {
-
             @Override
             public int compare(DistributionDetail o1, DistributionDetail o2) {
                long gap = o2.getTotalCount() - o1.getTotalCount();

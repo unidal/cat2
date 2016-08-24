@@ -21,7 +21,7 @@ public class TransactionReportAggregator extends ContainerHolder implements Repo
       TransactionReport aggregated = new TransactionReport();
 
       if (reports.size() > 0) {
-         TransactionReportMerger merger = new TransactionReportMerger(aggregated);
+         TransactionReportMerger merger = new TransactionReportMerger(m_helper, aggregated);
 
          // must be same domain
          aggregated.setDomain(reports.iterator().next().getDomain());
