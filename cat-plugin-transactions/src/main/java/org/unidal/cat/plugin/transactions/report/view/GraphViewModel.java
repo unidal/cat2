@@ -69,18 +69,16 @@ public class GraphViewModel {
       TransactionsType t = report.findOrCreateDepartment(bu == null ? Constants.ALL : bu).findOrCreateType(type);
       TransactionsName n = t.findOrCreateName(name == null ? Constants.ALL : name);
 
-      if (n != null) {
-         DurationPayload duration = new DurationPayload("Duration Distribution", "Duration (ms)", "Count", n);
-         HitPayload hits = new HitPayload("Hits Over Time", "Time (min)", "Count", n);
-         AverageTimePayload average = new AverageTimePayload("Average Duration Over Time", "Time (min)",
-               "Average Duration (ms)", n);
-         FailurePayload failure = new FailurePayload("Failures Over Time", "Time (min)", "Count", n);
+      DurationPayload duration = new DurationPayload("Duration Distribution", "Duration (ms)", "Count", n);
+      HitPayload hits = new HitPayload("Hits Over Time", "Time (min)", "Count", n);
+      AverageTimePayload average = new AverageTimePayload("Average Duration Over Time", "Time (min)",
+            "Average Duration (ms)", n);
+      FailurePayload failure = new FailurePayload("Failures Over Time", "Time (min)", "Count", n);
 
-         m_barCharts.put("duration", builder.build(duration));
-         m_barCharts.put("hits", builder.build(hits));
-         m_barCharts.put("average", builder.build(average));
-         m_barCharts.put("failures", builder.build(failure));
-      }
+      m_barCharts.put("duration", builder.build(duration));
+      m_barCharts.put("hits", builder.build(hits));
+      m_barCharts.put("average", builder.build(average));
+      m_barCharts.put("failures", builder.build(failure));
    }
 
    private void buildDistribution(TransactionsReport report, String type, String name) {
@@ -414,7 +412,7 @@ public class GraphViewModel {
          double value;
 
          if ("total".equals(m_metric)) {
-            value = range.getSum();
+            value = range.getCount();
          } else if ("avg".equals(m_metric)) {
             value = range.getAvg();
          } else if ("failure".equals(m_metric)) {
@@ -462,7 +460,7 @@ public class GraphViewModel {
       @Override
       public void visitDepartment(TransactionsDepartment department) {
          String bu = department.getId();
-         
+
          if (bu != null && !bu.equals(Constants.ALL)) {
             m_bu = bu;
 

@@ -1,10 +1,10 @@
 package org.unidal.cat.plugin.event.filter;
 
-import com.dianping.cat.consumer.event.model.entity.EventName;
-import com.dianping.cat.consumer.event.model.entity.EventReport;
-import com.dianping.cat.consumer.event.model.entity.EventType;
-import com.dianping.cat.consumer.event.model.entity.Machine;
-import com.dianping.cat.consumer.event.model.entity.Range;
+import org.unidal.cat.plugin.event.model.entity.EventName;
+import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.event.model.entity.EventType;
+import org.unidal.cat.plugin.event.model.entity.Machine;
+import org.unidal.cat.plugin.event.model.entity.Range;
 
 public class EventHolder {
    private EventReport m_report;

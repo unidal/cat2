@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<events-report startTime="2016-08-14 11:00:00" endTime="2016-08-14 11:59:59" period="HOUR">
+   <bu>Business</bu>
+   <bu>Framework</bu>
+   <department id="Business">
+      <type id="URL" totalCount="66" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="16780.2" sum2="30902944.2" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <name id="/cat/r/t" totalCount="24" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="2910.0" sum2="894696.6" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         </name>
+      </type>
+   </department>
+   <department id="Framework">
+      <type id="URL" totalCount="33" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="8390.1" sum2="15451472.1" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <name id="/cat/r/t" totalCount="12" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="1455.0" sum2="447348.3" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         </name>
+      </type>
+   </department>
+   <department id="All">
+      <type id="URL" totalCount="99" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="25170.3" sum2="46354416.3" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <name id="/cat/r/t" totalCount="36" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="4365.0" sum2="1342044.9" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <range value="15" count="27" sum="4080.6" avg="151.1" fails="0"/>
+            <range value="16" count="9" sum="284.2" avg="31.6" fails="0"/>
+            <duration value="32" count="18"/>
+            <duration value="64" count="9"/>
+            <duration value="512" count="9"/>
+         </name>
+      </type>
+   </department>
+</events-report>

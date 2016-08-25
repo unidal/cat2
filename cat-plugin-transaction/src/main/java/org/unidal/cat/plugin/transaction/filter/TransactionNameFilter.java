@@ -150,10 +150,5 @@ public class TransactionNameFilter implements ReportFilter<TransactionReport> {
          name.getRanges().clear();
          name.getDurations().clear();
       }
-
-      @Override
-      public void visitType(TransactionType type) {
-         type.getRange2s().clear();
-      }
    }
 }

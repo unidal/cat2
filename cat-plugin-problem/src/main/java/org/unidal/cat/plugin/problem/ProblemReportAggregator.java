@@ -26,9 +26,4 @@ public class ProblemReportAggregator implements ReportAggregator<ProblemReport> 
 
       return aggregated;
    }
-
-   @Override
-   public ProblemReport makeAll(ReportPeriod period, Collection<ProblemReport> reports) {
-      return null;
-   }
 }

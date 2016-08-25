@@ -17,6 +17,7 @@
 		<module>cat-plugin-transaction</module>
 		<module>cat-plugin-transactions</module>
 		<module>cat-plugin-event</module>
+		<module>cat-plugin-events</module>
 		<module>cat-plugin-problem</module>
 		<module>cat-hadoop</module>
 		<module>cat-consumer</module>
@@ -119,6 +120,11 @@
 			<dependency>
 				<groupId>org.unidal.cat</groupId>
 				<artifactId>cat-plugin-event</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.unidal.cat</groupId>
+				<artifactId>cat-plugin-events</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

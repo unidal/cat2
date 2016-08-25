@@ -12,14 +12,6 @@
 <script src="${model.webapp}/js/baseGraph.js"></script>
 <script src="${model.webapp}/js/transaction.js"></script>
 
-<style type="text/css">
-.graph {
-	width: 500px;
-	height: 300px;
-	margin: 4px auto;
-}
-</style>
-
 <svg version="1.1" width="980" height="380" xmlns="http://www.w3.org/2000/svg">
   ${model.graph.barCharts.duration}
   ${model.graph.barCharts.hits}

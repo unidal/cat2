@@ -11,6 +11,7 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
+import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.junit.Test;
 import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
@@ -18,6 +19,7 @@ import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
+import org.unidal.cat.plugin.transactions.config.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
@@ -46,6 +48,8 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
    @SuppressWarnings("unchecked")
    public void test() throws Exception {
       defineComponent(DomainOrgConfigService.class, MockDomainOrgConfigService.class);
+      defineComponent(TransactionsConfigService.class, MockTransactionsConfigService.class);
+
       defineComponent(ReportManager.class, TransactionConstants.NAME, MockTransactionReportManager.class) //
             .req(ReportDelegateManager.class);
 
@@ -81,6 +85,25 @@ public class TransactionsReportManagerTest extends ComponentTestCase {
       @Override
       public boolean isIn(String bu, String domain) {
          return true;
+      }
+   }
+
+   public static class MockTransactionsConfigService extends TransactionsConfigService {
+      @Override
+      public boolean isEligible(String type) {
+         return "URL".equals(type) || "SQL".equals(type);
+      }
+
+      @Override
+      public boolean isEligible(String type, String name) {
+         if ("SQL".equals(type)) {
+            return name.startsWith("hostinfo.");
+         }
+         return true;
+      }
+
+      @Override
+      public void initialize() throws InitializationException {
       }
    }
 

@@ -34,16 +34,17 @@ public class TransactionsHelper {
    }
 
    public void mergeName(TransactionsName dst, TransactionsName src) {
-      long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-      if (totalCountSum > 0) {
+      long totalCount = dst.getTotalCount() + src.getTotalCount();
+      
+      if (totalCount > 0) {
          double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
          double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value() * src.getTotalCount();
 
-         dst.setLine95Value(line95Values / totalCountSum);
-         dst.setLine99Value(line99Values / totalCountSum);
+         dst.setLine95Value(line95Values / totalCount);
+         dst.setLine99Value(line99Values / totalCount);
       }
 
-      dst.setTotalCount(totalCountSum);
+      dst.setTotalCount(totalCount);
       dst.setFailCount(dst.getFailCount() + src.getFailCount());
       dst.setTps(dst.getTps() + src.getTps());
 
@@ -113,16 +114,17 @@ public class TransactionsHelper {
    }
 
    public void mergeType(TransactionsType dst, TransactionsType src) {
-      long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-      if (totalCountSum > 0) {
+      long totalCount = dst.getTotalCount() + src.getTotalCount();
+      
+      if (totalCount > 0) {
          double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value() * src.getTotalCount();
          double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value() * src.getTotalCount();
 
-         dst.setLine95Value(line95Values / totalCountSum);
-         dst.setLine99Value(line99Values / totalCountSum);
+         dst.setLine95Value(line95Values / totalCount);
+         dst.setLine99Value(line99Values / totalCount);
       }
 
-      dst.setTotalCount(totalCountSum);
+      dst.setTotalCount(totalCount);
       dst.setFailCount(dst.getFailCount() + src.getFailCount());
       dst.setTps(dst.getTps() + src.getTps());
 
@@ -153,7 +155,7 @@ public class TransactionsHelper {
       }
    }
 
-   double std(long count, double avg, double sum2, double max) {
+   private double std(long count, double avg, double sum2, double max) {
       double value = sum2 / count - avg * avg;
 
       if (value <= 0 || count <= 1) {
@@ -163,5 +165,20 @@ public class TransactionsHelper {
       } else {
          return Math.sqrt(value);
       }
+   }
+
+   public void mergeDuration(TransactionsDuration dst, TransactionsDuration src) {
+      dst.setCount(dst.getCount() + src.getCount());
+      dst.setValue(src.getValue());      
+   }
+
+   public void mergeRange(TransactionsRange dst, TransactionsRange src) {
+      dst.setCount(dst.getCount() + src.getCount());
+      dst.setFails(dst.getFails() + src.getFails());
+      dst.setSum(dst.getSum() + src.getSum());
+
+      if (dst.getCount() > 0) {
+         dst.setAvg(dst.getSum() / dst.getCount());
+      }      
    }
 }

@@ -1,0 +1,6 @@
+<events-config>
+   <config type="URL" name="*"/>
+   <config type="Call" name="MyService.*"/>
+   <config type="SQL" name="*"/>
+   <config type="Cache.*" name="*"/>
+</events-config>

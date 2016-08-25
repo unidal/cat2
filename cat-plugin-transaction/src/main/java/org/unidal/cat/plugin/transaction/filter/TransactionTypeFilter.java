@@ -134,7 +134,6 @@ public class TransactionTypeFilter implements ReportFilter<TransactionReport> {
       @Override
       public void visitType(TransactionType type) {
          type.getNames().clear();
-         type.getRange2s().clear();
       }
    }
 }

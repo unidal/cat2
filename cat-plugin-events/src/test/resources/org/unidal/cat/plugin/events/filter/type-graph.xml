@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<events-report startTime="2016-08-14 11:00:00" endTime="2016-08-14 11:59:59" period="HOUR">
+   <bu>Business</bu>
+   <bu>Framework</bu>
+   <department id="Business">
+      <type id="URL" totalCount="66" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="16780.2" sum2="30902944.2" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      </type>
+   </department>
+   <department id="Framework">
+      <type id="URL" totalCount="33" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="8390.1" sum2="15451472.1" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+      </type>
+   </department>
+   <department id="All">
+      <type id="URL" totalCount="99" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="25170.3" sum2="46354416.3" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <name id="All" totalCount="87" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="133.5" sum="11613.0" sum2="16351462.8" std="412.5" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <range value="15" count="69" sum="11275.9" avg="163.4" fails="0"/>
+            <range value="16" count="18" sum="336.7" avg="18.7" fails="0"/>
+            <duration value="4" count="9"/>
+            <duration value="8" count="18"/>
+            <duration value="16" count="15"/>
+            <duration value="32" count="18"/>
+            <duration value="64" count="15"/>
+            <duration value="512" count="9"/>
+            <duration value="4096" count="3"/>
+         </name>
+      </type>
+   </department>
+</events-report>

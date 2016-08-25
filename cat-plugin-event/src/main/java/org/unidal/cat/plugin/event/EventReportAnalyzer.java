@@ -1,21 +1,26 @@
 package org.unidal.cat.plugin.event;
 
-import com.dianping.cat.consumer.event.model.entity.EventName;
-import com.dianping.cat.consumer.event.model.entity.EventReport;
-import com.dianping.cat.consumer.event.model.entity.EventType;
-import com.dianping.cat.consumer.event.model.entity.Range;
-import com.dianping.cat.message.Event;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.spi.MessageTree;
+import java.util.List;
+
+import org.unidal.cat.plugin.event.model.entity.EventName;
+import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.event.model.entity.EventType;
+import org.unidal.cat.plugin.event.model.entity.Range;
 import org.unidal.cat.spi.analysis.AbstractMessageAnalyzer;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import java.util.List;
+import com.dianping.cat.config.server.ServerFilterConfigManager;
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.spi.MessageTree;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @Named(type = MessageAnalyzer.class, value = EventConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
+   @Inject
+   private ServerFilterConfigManager m_serverFilterConfigManager;
+
    private Range findOrCreateRange(List<Range> ranges, int min) {
       if (min > ranges.size() - 1) {
          synchronized (ranges) {
@@ -26,35 +31,48 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
             }
          }
       }
+
       Range range = ranges.get(min);
       return range;
    }
 
    @Override
    public void process(MessageTree tree) {
-      String domain = tree.getDomain();
-      EventReport report = getLocalReport(domain);
-      Message message = tree.getMessage();
-      String ip = tree.getIpAddress();
+      if (tree instanceof DefaultMessageTree) {
+         List<Event> events = ((DefaultMessageTree) tree).getEvents();
+         EventReport report = getLocalReport(tree.getDomain());
 
-      report.addIp(ip);
-
-      if (message instanceof Transaction) {
-         processTransaction(report, tree, (Transaction) message);
-      } else if (message instanceof Event) {
-         processEvent(report, tree, (Event) message);
+         for (Event event : events) {
+            processEvent(report, tree, event);
+         }
       }
    }
 
-   private void processEvent(EventReport report, MessageTree tree, Event event) {
-      int count = 1;
-      EventType type = report.findOrCreateMachine(tree.getIpAddress()).findOrCreateType(event.getType());
-      EventName name = type.findOrCreateName(event.getName());
-      String messageId = tree.getMessageId();
+   private void processNameGraph(EventName name, int min) {
+      Range range = findOrCreateRange(name.getRanges(), min);
 
-      report.addIp(tree.getIpAddress());
-      type.incTotalCount(count);
-      name.incTotalCount(count);
+      range.incCount();
+   }
+
+   private void processEvent(EventReport report, MessageTree tree, Event event) {
+      String type = event.getType();
+      String name = event.getName();
+
+      if (m_serverFilterConfigManager.discardEvent(type, name)) {
+         return;
+      } else {
+         String ip = tree.getIpAddress();
+         EventType eventType = report.findOrCreateMachine(ip).findOrCreateType(type);
+         EventName eventName = eventType.findOrCreateName(name);
+
+         report.addIp(ip);
+         processTypeAndName(event, eventType, eventName, tree.getMessageId());
+      }
+   }
+
+   private void processTypeAndName(Event event, EventType type, EventName name, String messageId) {
+      type.incTotalCount();
+      name.incTotalCount();
 
       if (event.isSuccess()) {
          if (type.getSuccessMessageUrl() == null) {
@@ -65,8 +83,8 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
             name.setSuccessMessageUrl(messageId);
          }
       } else {
-         type.incFailCount(count);
-         name.incFailCount(count);
+         type.incFailCount();
+         name.incFailCount();
 
          if (type.getFailMessageUrl() == null) {
             type.setFailMessageUrl(messageId);
@@ -76,32 +94,10 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
             name.setFailMessageUrl(messageId);
          }
       }
-      type.setFailPercent(type.getFailCount() * 100.0 / type.getTotalCount());
-      name.setFailPercent(name.getFailCount() * 100.0 / name.getTotalCount());
 
-      processEventGraph(name, event, count);
-   }
+      long current = event.getTimestamp() / 1000 / 60;
+      int min = (int) (current % 60);
 
-   private void processEventGraph(EventName name, Event t, int count) {
-      long current = t.getTimestamp() / 1000 / 60;
-      int min = (int) (current % (60));
-      Range range = findOrCreateRange(name.getRanges(), min);
-
-      range.incCount(count);
-      if (!t.isSuccess()) {
-         range.incFails(count);
-      }
-   }
-
-   private void processTransaction(EventReport report, MessageTree tree, Transaction t) {
-      List<Message> children = t.getChildren();
-
-      for (Message child : children) {
-         if (child instanceof Transaction) {
-            processTransaction(report, tree, (Transaction) child);
-         } else if (child instanceof Event) {
-            processEvent(report, tree, (Event) child);
-         }
-      }
+      processNameGraph(name, min);
    }
 }

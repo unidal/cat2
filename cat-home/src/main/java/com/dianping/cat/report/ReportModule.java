@@ -11,8 +11,6 @@ com.dianping.cat.report.page.home.Handler.class,
 
 org.unidal.cat.plugin.problem.page.Handler.class,
 
-org.unidal.cat.plugin.event.page.Handler.class,
-
 com.dianping.cat.report.page.heartbeat.Handler.class,
 
 com.dianping.cat.report.page.logview.Handler.class,

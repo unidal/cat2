@@ -12,13 +12,13 @@ import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
-import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
+import org.unidal.cat.plugin.transactions.config.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDomain;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
@@ -38,7 +38,10 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
    private ReportManagerManager m_rmm;
 
    @Inject
-   private DomainOrgConfigService m_orgConfig;
+   private DomainOrgConfigService m_orgConfigService;
+
+   @Inject
+   private TransactionsConfigService m_configService;
 
    private TransactionsReport buildReport(int hour, String bu) {
       ReportManager<TransactionReport> rm = m_rmm.getReportManager(TransactionConstants.NAME);
@@ -47,12 +50,13 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
 
       for (Map<String, TransactionReport> map : list) {
          for (Map.Entry<String, TransactionReport> e : map.entrySet()) {
-            if (bu == null || m_orgConfig.isIn(bu, e.getKey())) {
+            if (bu == null || m_orgConfigService.isIn(bu, e.getKey())) {
                e.getValue().accept(maker);
             }
          }
       }
 
+      m_configService.reset();
       TransactionsReport report = maker.getReport();
       return report;
    }
@@ -144,18 +148,19 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       }
 
       private void mergeName(TransactionsName dst, TransactionName src) {
-         long totalCountSum = dst.getTotalCount() + src.getTotalCount();
-         if (totalCountSum > 0) {
+         long totalCount = dst.getTotalCount() + src.getTotalCount();
+         
+         if (totalCount > 0) {
             double line95Values = dst.getLine95Value() * dst.getTotalCount() + src.getLine95Value()
                   * src.getTotalCount();
             double line99Values = dst.getLine99Value() * dst.getTotalCount() + src.getLine99Value()
                   * src.getTotalCount();
 
-            dst.setLine95Value(line95Values / totalCountSum);
-            dst.setLine99Value(line99Values / totalCountSum);
+            dst.setLine95Value(line95Values / totalCount);
+            dst.setLine99Value(line99Values / totalCount);
          }
 
-         dst.setTotalCount(totalCountSum);
+         dst.setTotalCount(totalCount);
          dst.setFailCount(dst.getFailCount() + src.getFailCount());
          dst.setTps(dst.getTps() + src.getTps());
 
@@ -279,33 +284,28 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
       }
 
       @Override
-      public void visitMachine(Machine machine) {
-         m_t.setMachine(machine);
-
-         super.visitMachine(machine);
-      }
-
-      @Override
       public void visitName(TransactionName name) {
-         TransactionsName n = m_ts.getType().findOrCreateName(name.getId());
-         TransactionsDomain d = n.findOrCreateDomain(m_t.getReport().getDomain());
+         if (m_configService.isEligible(m_ts.getType().getId(), name.getId())) {
+            TransactionsName n = m_ts.getType().findOrCreateName(name.getId());
+            TransactionsDomain d = n.findOrCreateDomain(m_t.getReport().getDomain());
 
-         m_ts.setName(n);
-         mergeName(n, name);
+            m_ts.setName(n);
+            mergeName(n, name);
 
-         m_ts.setDomain(d);
-         mergeDomain(d, name);
+            m_ts.setDomain(d);
+            mergeDomain(d, name);
 
-         mergeRanges(n.getRanges(), name.getRanges());
-         mergeDurations(n.getDurations(), name.getDurations());
+            mergeRanges(n.getRanges(), name.getRanges());
+            mergeDurations(n.getDurations(), name.getDurations());
 
-         super.visitName(name);
+            super.visitName(name);
+         }
       }
 
       @Override
       public void visitTransactionReport(TransactionReport report) {
          TransactionsReport r = m_ts.getReport();
-         String d = m_orgConfig.findDepartment(report.getDomain());
+         String d = m_orgConfigService.findDepartment(report.getDomain());
 
          r.setPeriod(report.getPeriod()).addBu(d);
          r.setStartTime(report.getStartTime()).setEndTime(report.getEndTime());
@@ -317,12 +317,14 @@ public class TransactionsReportManager extends AbstractReportManager<Transaction
 
       @Override
       public void visitType(TransactionType type) {
-         TransactionsType t = m_ts.getDepartment().findOrCreateType(type.getId());
+         if (m_configService.isEligible(type.getId())) {
+            TransactionsType t = m_ts.getDepartment().findOrCreateType(type.getId());
 
-         m_ts.setType(t);
-         mergeType(t, type);
+            m_ts.setType(t);
+            mergeType(t, type);
 
-         super.visitType(type);
+            super.visitType(type);
+         }
       }
    }
 }

@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transaction.reducer;
 import java.util.List;
 
 import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.Range;
@@ -12,225 +13,118 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.DefaultMerger;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportReducer;
-
-import com.dianping.cat.Constants;
+import org.unidal.lookup.annotation.Inject;
 
 public abstract class AbstractTransactionReducer implements ReportReducer<TransactionReport> {
-	protected abstract int getRangeValue(TransactionReport report, Range range);
+   @Inject
+   private TransactionHelper m_helper;
 
-	@Override
-	public String getReportName() {
-		return TransactionConstants.NAME;
-	}
+   protected abstract int getRangeValue(TransactionReport report, Range range);
 
-	@Override
-	public TransactionReport reduce(List<TransactionReport> reports) {
-		TransactionReport r = new TransactionReport();
+   @Override
+   public String getReportName() {
+      return TransactionConstants.NAME;
+   }
 
-		if (!reports.isEmpty()) {
-			TransactionReport first = reports.get(0);
-			Merger merger = new Merger(r);
+   @Override
+   public TransactionReport reduce(List<TransactionReport> reports) {
+      TransactionReport r = new TransactionReport();
 
-			r.setDomain(first.getDomain());
+      if (!reports.isEmpty()) {
+         TransactionReport first = reports.get(0);
+         Merger merger = new Merger(r);
 
-			for (TransactionReport report : reports) {
-				report.accept(merger.setMapping(new ValueMapping(report)));
-			}
+         r.setDomain(first.getDomain());
 
-			ReportPeriod period = getPeriod();
+         for (TransactionReport report : reports) {
+            report.accept(merger.setMapping(new ValueMapping(report)));
+         }
 
-			r.setPeriod(period);
-			r.setStartTime(period.getStartTime(first.getStartTime()));
-		}
+         ReportPeriod period = getPeriod();
 
-		return r;
-	}
+         r.setPeriod(period);
+         r.setStartTime(period.getStartTime(first.getStartTime()));
+      }
 
-	protected static class Merger extends DefaultMerger {
-		private RangeMapping m_mapping;
+      return r;
+   }
 
-		public Merger(TransactionReport report) {
-			super(report);
-		}
+   protected class Merger extends DefaultMerger {
+      private RangeMapping m_mapping;
 
-		@Override
-		protected void mergeDuration(Duration old, Duration duration) {
-			old.setCount(old.getCount() + duration.getCount());
-			old.setValue(duration.getValue());
-		}
+      public Merger(TransactionReport report) {
+         super(report);
+      }
 
-		@Override
-		protected void mergeMachine(Machine old, Machine machine) {
-		}
+      @Override
+      protected void mergeDuration(Duration old, Duration other) {
+         m_helper.mergeDuration(old, other);
+      }
 
-		@Override
-		protected void mergeName(TransactionName old, TransactionName other) {
-			long totalCount = old.getTotalCount() + other.getTotalCount();
-			if (totalCount > 0) {
-				double line95Values = old.getLine95Value() * old.getTotalCount() + other.getLine95Value()
-				      * other.getTotalCount();
-				double line99Values = old.getLine99Value() * old.getTotalCount() + other.getLine99Value()
-				      * other.getTotalCount();
+      @Override
+      protected void mergeMachine(Machine old, Machine other) {
+         m_helper.mergeMachine(old, other);
+      }
 
-				old.setLine95Value(line95Values / totalCount);
-				old.setLine99Value(line99Values / totalCount);
-			}
+      @Override
+      protected void mergeName(TransactionName old, TransactionName other) {
+         m_helper.mergeName(old, other);
+      }
 
-			old.setTotalCount(totalCount);
-			old.setFailCount(old.getFailCount() + other.getFailCount());
-			old.setTps(old.getTps() + other.getTps());
+      @Override
+      protected void mergeRange(Range old, Range other) {
+         m_helper.mergeRange(old, other);
+      }
 
-			if (other.getMin() < old.getMin()) {
-				old.setMin(other.getMin());
-			}
+      @Override
+      protected void mergeType(TransactionType old, TransactionType other) {
+         m_helper.mergeType(old, other);
+      }
 
-			if (other.getMax() > old.getMax()) {
-				old.setMax(other.getMax());
-				old.setSlowestMessageUrl(other.getSlowestMessageUrl());
-			}
+      public Merger setMapping(RangeMapping mapping) {
+         m_mapping = mapping;
+         return this;
+      }
 
-			old.setSum(old.getSum() + other.getSum());
-			old.setSum2(old.getSum2() + other.getSum2());
+      protected void visitNameChildren(TransactionName to, TransactionName from) {
+         for (Range source : from.getRanges()) {
+            int value = m_mapping.getValue(source);
+            Range r = to.findOrCreateRange(value);
 
-			if (old.getTotalCount() > 0) {
-				old.setFailPercent(old.getFailCount() * 100.0 / old.getTotalCount());
-				old.setAvg(old.getSum() / old.getTotalCount());
-				old.setStd(std(old.getTotalCount(), old.getAvg(), old.getSum2(), old.getMax()));
-			}
+            getObjects().push(r);
+            source.accept(this);
+            getObjects().pop();
+         }
 
-			if (old.getSuccessMessageUrl() == null) {
-				old.setSuccessMessageUrl(other.getSuccessMessageUrl());
-			}
+         for (Duration source : from.getDurations().values()) {
+            Duration target = to.findDuration(source.getValue());
 
-			if (old.getFailMessageUrl() == null) {
-				old.setFailMessageUrl(other.getFailMessageUrl());
-			}
-		}
+            if (target == null) {
+               target = new Duration(source.getValue());
+               to.addDuration(target);
+            }
 
-		@Override
-		protected void mergeRange(Range old, Range range) {
-			old.setCount(old.getCount() + range.getCount());
-			old.setFails(old.getFails() + range.getFails());
-			old.setSum(old.getSum() + range.getSum());
+            getObjects().push(target);
+            source.accept(this);
+            getObjects().pop();
+         }
+      }
+   }
 
-			if (old.getCount() > 0) {
-				old.setAvg(old.getSum() / old.getCount());
-			}
-		}
+   protected static interface RangeMapping {
+      public int getValue(Range range);
+   }
 
-		Machine mergesForAllMachine(TransactionReport report) {
-			Machine all = new Machine(Constants.ALL);
+   class ValueMapping implements RangeMapping {
+      private TransactionReport m_report;
 
-			for (Machine m : report.getMachines().values()) {
-				if (!m.getIp().equals(Constants.ALL)) {
-					visitMachineChildren(all, m);
-				}
-			}
+      public ValueMapping(TransactionReport report) {
+         m_report = report;
+      }
 
-			return all;
-		}
-
-		@Override
-		protected void mergeType(TransactionType old, TransactionType other) {
-			long totalCount = old.getTotalCount() + other.getTotalCount();
-
-			if (totalCount > 0) {
-				double line95Values = old.getLine95Value() * old.getTotalCount() + other.getLine95Value()
-				      * other.getTotalCount();
-				double line99Values = old.getLine99Value() * old.getTotalCount() + other.getLine99Value()
-				      * other.getTotalCount();
-
-				old.setLine95Value(line95Values / totalCount);
-				old.setLine99Value(line99Values / totalCount);
-			}
-
-			old.setTotalCount(totalCount);
-			old.setFailCount(old.getFailCount() + other.getFailCount());
-			old.setTps(old.getTps() + other.getTps());
-
-			if (other.getMin() < old.getMin()) {
-				old.setMin(other.getMin());
-			}
-
-			if (other.getMax() > old.getMax()) {
-				old.setMax(other.getMax());
-				old.setSlowestMessageUrl(other.getSlowestMessageUrl());
-			}
-
-			old.setSum(old.getSum() + other.getSum());
-			old.setSum2(old.getSum2() + other.getSum2());
-
-			if (old.getTotalCount() > 0) {
-				old.setFailPercent(old.getFailCount() * 100.0 / old.getTotalCount());
-				old.setAvg(old.getSum() / old.getTotalCount());
-				old.setStd(std(old.getTotalCount(), old.getAvg(), old.getSum2(), old.getMax()));
-			}
-
-			if (old.getSuccessMessageUrl() == null) {
-				old.setSuccessMessageUrl(other.getSuccessMessageUrl());
-			}
-
-			if (old.getFailMessageUrl() == null) {
-				old.setFailMessageUrl(other.getFailMessageUrl());
-			}
-		}
-
-		public Merger setMapping(RangeMapping mapping) {
-			m_mapping = mapping;
-			return this;
-		}
-
-		double std(long count, double avg, double sum2, double max) {
-			double value = sum2 / count - avg * avg;
-
-			if (value <= 0 || count <= 1) {
-				return 0;
-			} else if (count == 2) {
-				return max - avg;
-			} else {
-				return Math.sqrt(value);
-			}
-		}
-
-		protected void visitNameChildren(TransactionName to, TransactionName from) {
-			for (Range source : from.getRanges()) {
-				int value = m_mapping.getValue(source);
-				Range r = to.findOrCreateRange(value);
-
-				getObjects().push(r);
-				source.accept(this);
-				getObjects().pop();
-			}
-
-			for (Duration source : from.getDurations().values()) {
-				Duration target = to.findDuration(source.getValue());
-
-				if (target == null) {
-					target = new Duration(source.getValue());
-					to.addDuration(target);
-				}
-
-				getObjects().push(target);
-				source.accept(this);
-				getObjects().pop();
-			}
-		}
-	}
-
-	protected static interface RangeMapping {
-		public int getValue(Range range);
-	}
-
-	class ValueMapping implements RangeMapping {
-		private TransactionReport m_report;
-
-		public ValueMapping(TransactionReport report) {
-			m_report = report;
-		}
-
-		@Override
-		public int getValue(Range range) {
-			return getRangeValue(m_report, range);
-		}
-	}
+      @Override
+      public int getValue(Range range) {
+         return getRangeValue(m_report, range);
+      }
+   }
 }

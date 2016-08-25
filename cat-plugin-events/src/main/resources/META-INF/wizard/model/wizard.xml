@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.events">
+   <model package="org.unidal.cat.plugin.events.config" name="events-config">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/events/events-config.xml</sample-model>
+   </model>
+   <model package="org.unidal.cat.plugin.events.model" name="events-report">
+      <sample-model>src/test/resources/org/unidal/cat/plugin/events/events.xml</sample-model>
+   </model>
+</wizard>

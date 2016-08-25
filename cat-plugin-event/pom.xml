@@ -44,7 +44,8 @@
                   <configuration>
                      <manifest>
                      	${basedir}/src/main/resources/META-INF/dal/model/event-report-manifest.xml,
-					</manifest>
+                        ${basedir}/src/main/resources/META-INF/dal/model/event-config-manifest.xml,
+                     </manifest>
                   </configuration>
                </execution>
             </executions>

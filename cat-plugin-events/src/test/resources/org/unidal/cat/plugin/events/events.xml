@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<events-report startTime="2016-08-14 11:00:00" endTime="2016-08-14 11:59:59" period="HOUR">
+   <bu>Framework</bu>
+   <bu>Business</bu>
+   <department id="Framework">
+      <type id="URL" totalCount="33" failCount="0" failPercent="0.00" min="3.91" max="2236.04" avg="254.2" sum="8390.1" sum2="15451472.1" std="635.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+         <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+         <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+         <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+         <name id="/cat/r/t" totalCount="12" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="1455.0" sum2="447348.3" std="150.3" tps="0.00" line95Value="0.00" line99Value="0.00">
+            <successMessageUrl>cat-c0a81f9e-403179-128</successMessageUrl>
+            <failMessageUrl>cat-c0a81f9e-403179-128</failMessageUrl>
+            <slowestMessageUrl>cat-c0a81f9e-403179-128</slowestMessageUrl>
+            <range value="15" count="9" sum="1360.2" avg="151.1" fails="0"/>
+            <range value="16" count="3" sum="94.7" avg="31.6" fails="0"/>
+            <duration value="32" count="6"/>
+            <duration value="64" count="3"/>
+            <domain id="cat" totalCount="12" failCount="0" failPercent="0.00" min="30.46" max="381.40" avg="121.2" sum="1455.0" sum2="447348.3" std="150.3" tps="0.00"/>
+            <domain/>
+         </name>
+         <name/>
+      </type>
+      <type/>
+   </department>
+   <department id="Business"/>
+</events-report>
