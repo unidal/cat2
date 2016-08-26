@@ -87,7 +87,7 @@ public class EventReportFilterTest extends ComponentTestCase {
       EventReport source = loadReport("source.xml");
       EventReport expected = loadReport("name-graph-ip.xml");
       EventReport filtered = filter(EventNameGraphFilter.ID, source, //
-            "type", "URL", "name", "/cat/r/t", "ip", "192.168.31.158");
+            "type", "URL", "name", "/cat/r/t", "ip", "10.38.0.14");
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
@@ -107,7 +107,7 @@ public class EventReportFilterTest extends ComponentTestCase {
       EventReport source = loadReport("source.xml");
       EventReport expected = loadReport("name-group.xml");
       EventReport filtered = filter(EventNameFilter.ID, source, //
-            "type", "URL", "group", "mock", "ip", "192.168.31.158");
+            "type", "URL", "group", "mock", "ip", "10.38.0.14");
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
@@ -117,7 +117,7 @@ public class EventReportFilterTest extends ComponentTestCase {
       EventReport source = loadReport("source.xml");
       EventReport expected = loadReport("name-ip.xml");
       EventReport filtered = filter(EventNameFilter.ID, source, //
-            "type", "URL", "ip", "192.168.31.158");
+            "type", "URL", "ip", "10.38.0.14");
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
@@ -156,7 +156,7 @@ public class EventReportFilterTest extends ComponentTestCase {
       EventReport source = loadReport("source.xml");
       EventReport expected = loadReport("type-graph-ip.xml");
       EventReport filtered = filter(EventTypeGraphFilter.ID, source, //
-            "type", "URL", "ip", "192.168.31.158");
+            "type", "URL", "ip", "10.38.0.14");
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
@@ -176,7 +176,7 @@ public class EventReportFilterTest extends ComponentTestCase {
       EventReport source = loadReport("source.xml");
       EventReport expected = loadReport("type-ip.xml");
       EventReport filtered = filter(EventTypeFilter.ID, source, //
-            "ip", "192.168.31.158");
+            "ip", "10.38.0.14");
 
       Assert.assertEquals(expected.toString(), filtered.toString());
    }
@@ -189,7 +189,7 @@ public class EventReportFilterTest extends ComponentTestCase {
 
       @Override
       public boolean isInGroup(String domain, String group, String ip) {
-         return "192.168.31.158".equals(ip) || "192.168.31.159".equals(ip);
+         return "10.38.0.14".equals(ip) || "10.38.0.15".equals(ip);
       }
    }
 }
