@@ -123,6 +123,9 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
          TransactionsType t = m_holder.getType();
 
          m_helper.mergeType(t, type);
+         t.setSuccessMessageUrl(null);
+         t.setFailMessageUrl(null);
+         t.setSlowestMessageUrl(null);
 
          for (TransactionsName name : type.getNames().values()) {
             TransactionsName n = t.findOrCreateName(name.getId());
