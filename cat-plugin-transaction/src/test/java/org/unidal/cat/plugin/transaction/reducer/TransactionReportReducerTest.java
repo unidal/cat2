@@ -13,7 +13,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
+import org.unidal.cat.plugin.transaction.model.entity.Range;
+import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
+import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.storage.ReportStorage;
@@ -64,6 +67,23 @@ public class TransactionReportReducerTest extends ComponentTestCase {
       Assert.assertEquals("", REF.get().toString());
    }
 
+   static class EmptyRangeRemover extends BaseVisitor {
+      @Override
+      public void visitName(TransactionName name) {
+         List<Range> ranges = name.getRanges();
+
+         for (int i = ranges.size() - 1; i >= 0; i--) {
+            Range range = ranges.get(i);
+
+            if (range.getCount() == 0) {
+               ranges.remove(i);
+            }
+         }
+
+         super.visitName(name);
+      }
+   }
+
    public static class MockReportStorage implements ReportStorage<TransactionReport> {
       @Override
       public List<TransactionReport> loadAll(ReportDelegate<TransactionReport> delegate, ReportPeriod period,
@@ -111,6 +131,8 @@ public class TransactionReportReducerTest extends ComponentTestCase {
       public void store(ReportDelegate<TransactionReport> delegate, ReportPeriod period, TransactionReport report,
             int index) throws IOException {
          TransactionReport expected = loadReport(delegate, period.getName() + ".xml");
+
+         report.accept(new EmptyRangeRemover());
 
          Assert.assertEquals(String.format("TransactionReport(%s) mismatched!", period), expected.toString(),
                report.toString());

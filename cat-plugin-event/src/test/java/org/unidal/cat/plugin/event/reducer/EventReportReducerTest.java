@@ -13,7 +13,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.plugin.event.EventConstants;
+import org.unidal.cat.plugin.event.model.entity.EventName;
 import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.event.model.entity.Range;
+import org.unidal.cat.plugin.event.model.transform.BaseVisitor;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.storage.ReportStorage;
@@ -64,10 +67,27 @@ public class EventReportReducerTest extends ComponentTestCase {
       Assert.assertEquals("", REF.get().toString());
    }
 
+   static class EmptyRangeRemover extends BaseVisitor {
+      @Override
+      public void visitName(EventName name) {
+         List<Range> ranges = name.getRanges();
+
+         for (int i = ranges.size() - 1; i >= 0; i--) {
+            Range range = ranges.get(i);
+
+            if (range.getCount() == 0) {
+               ranges.remove(i);
+            }
+         }
+
+         super.visitName(name);
+      }
+   }
+
    public static class MockReportStorage implements ReportStorage<EventReport> {
       @Override
-      public List<EventReport> loadAll(ReportDelegate<EventReport> delegate, ReportPeriod period,
-            Date startTime, String domain) throws IOException {
+      public List<EventReport> loadAll(ReportDelegate<EventReport> delegate, ReportPeriod period, Date startTime,
+            String domain) throws IOException {
          List<EventReport> reports = new ArrayList<EventReport>();
 
          for (int i = 1; i <= 3; i++) {
@@ -80,8 +100,8 @@ public class EventReportReducerTest extends ComponentTestCase {
       }
 
       @Override
-      public List<EventReport> loadAllByDateRange(ReportDelegate<EventReport> delegate,
-            ReportPeriod period, Date startTime, Date endTime, String domain) throws IOException {
+      public List<EventReport> loadAllByDateRange(ReportDelegate<EventReport> delegate, ReportPeriod period,
+            Date startTime, Date endTime, String domain) throws IOException {
          List<EventReport> reports = new ArrayList<EventReport>();
 
          for (int i = 1; i <= 3; i++) {
@@ -93,8 +113,7 @@ public class EventReportReducerTest extends ComponentTestCase {
          return reports;
       }
 
-      private EventReport loadReport(ReportDelegate<EventReport> delegate, String resource)
-            throws IOException {
+      private EventReport loadReport(ReportDelegate<EventReport> delegate, String resource) throws IOException {
          InputStream in = getClass().getResourceAsStream(resource);
 
          if (in == null) {
@@ -108,9 +127,11 @@ public class EventReportReducerTest extends ComponentTestCase {
       }
 
       @Override
-      public void store(ReportDelegate<EventReport> delegate, ReportPeriod period, EventReport report,
-            int index) throws IOException {
+      public void store(ReportDelegate<EventReport> delegate, ReportPeriod period, EventReport report, int index)
+            throws IOException {
          EventReport expected = loadReport(delegate, period.getName() + ".xml");
+
+         report.accept(new EmptyRangeRemover());
 
          Assert.assertEquals(String.format("EventReport(%s) mismatched!", period), expected.toString(),
                report.toString());

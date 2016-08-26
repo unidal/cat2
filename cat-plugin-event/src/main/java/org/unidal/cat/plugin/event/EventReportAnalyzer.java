@@ -21,21 +21,6 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
    @Inject
    private ServerFilterConfigManager m_serverFilterConfigManager;
 
-   private Range findOrCreateRange(List<Range> ranges, int min) {
-      if (min > ranges.size() - 1) {
-         synchronized (ranges) {
-            if (min > ranges.size() - 1) {
-               for (int i = ranges.size(); i < 60; i++) {
-                  ranges.add(new Range(i));
-               }
-            }
-         }
-      }
-
-      Range range = ranges.get(min);
-      return range;
-   }
-
    @Override
    public void process(MessageTree tree) {
       if (tree instanceof DefaultMessageTree) {
@@ -48,12 +33,6 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
       }
    }
 
-   private void processNameGraph(EventName name, int min) {
-      Range range = findOrCreateRange(name.getRanges(), min);
-
-      range.incCount();
-   }
-
    private void processEvent(EventReport report, MessageTree tree, Event event) {
       String type = event.getType();
       String name = event.getName();
@@ -62,11 +41,11 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
          return;
       } else {
          String ip = tree.getIpAddress();
-         EventType eventType = report.findOrCreateMachine(ip).findOrCreateType(type);
-         EventName eventName = eventType.findOrCreateName(name);
+         EventType t = report.findOrCreateMachine(ip).findOrCreateType(type);
+         EventName n = t.findOrCreateName(name);
 
          report.addIp(ip);
-         processTypeAndName(event, eventType, eventName, tree.getMessageId());
+         processTypeAndName(event, t, n, tree.getMessageId());
       }
    }
 
@@ -98,6 +77,8 @@ public class EventReportAnalyzer extends AbstractMessageAnalyzer<EventReport> {
       long current = event.getTimestamp() / 1000 / 60;
       int min = (int) (current % 60);
 
-      processNameGraph(name, min);
+      Range range = name.findOrCreateRange(min);
+
+      range.incCount();
    }
 }

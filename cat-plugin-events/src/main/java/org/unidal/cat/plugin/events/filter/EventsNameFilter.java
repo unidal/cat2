@@ -123,6 +123,8 @@ public class EventsNameFilter implements ReportFilter<EventsReport> {
          EventsType t = m_holder.getType();
 
          m_helper.mergeType(t, type);
+         t.setSuccessMessageUrl(null);
+         t.setFailMessageUrl(null);
 
          for (EventsName name : type.getNames().values()) {
             EventsName n = t.findOrCreateName(name.getId());
