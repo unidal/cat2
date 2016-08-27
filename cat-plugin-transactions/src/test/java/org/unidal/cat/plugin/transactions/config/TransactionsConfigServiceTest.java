@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.transactions.config;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.transactions.TransactionsConfigService;
 import org.unidal.lookup.ComponentTestCase;
 
 public class TransactionsConfigServiceTest extends ComponentTestCase {

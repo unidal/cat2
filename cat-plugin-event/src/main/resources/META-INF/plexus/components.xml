@@ -22,13 +22,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.event.EventConfigProvider</role>
-			<implementation>org.unidal.cat.plugin.event.EventConfigProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.config.ConfigManager</role>
-				</requirement>
-			</requirements>
+			<role>org.unidal.cat.plugin.event.EventConfigService</role>
+			<implementation>org.unidal.cat.plugin.event.EventConfigService</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>
@@ -81,7 +76,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
+					<role>org.unidal.cat.plugin.event.EventConfigService</role>
 				</requirement>
 			</requirements>
 		</component>

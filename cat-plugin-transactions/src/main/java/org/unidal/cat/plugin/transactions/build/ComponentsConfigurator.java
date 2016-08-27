@@ -3,8 +3,8 @@ package org.unidal.cat.plugin.transactions.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.plugin.transactions.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.TransactionsPipeline;
-import org.unidal.cat.plugin.transactions.config.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameFilter;
 import org.unidal.cat.plugin.transactions.filter.TransactionsNameGraphFilter;

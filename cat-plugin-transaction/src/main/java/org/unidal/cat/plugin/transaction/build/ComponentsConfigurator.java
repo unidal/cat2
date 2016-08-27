@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.transaction.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.plugin.transaction.TransactionConfigProvider;
+import org.unidal.cat.plugin.transaction.TransactionConfigService;
 import org.unidal.cat.plugin.transaction.TransactionPipeline;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
 import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
@@ -21,36 +21,36 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
-	public static void main(String[] args) {
-		generatePlexusComponentsXmlFile(new ComponentsConfigurator());
-	}
+   public static void main(String[] args) {
+      generatePlexusComponentsXmlFile(new ComponentsConfigurator());
+   }
 
-	@Override
-	public List<Component> defineComponents() {
-		List<Component> all = new ArrayList<Component>();
+   @Override
+   public List<Component> defineComponents() {
+      List<Component> all = new ArrayList<Component>();
 
-		all.add(A(TransactionPipeline.class));
-		all.add(A(TransactionConfigProvider.class));
+      all.add(A(TransactionPipeline.class));
+      all.add(A(TransactionConfigService.class));
 
-		all.add(A(TransactionReportManager.class));
-		all.add(A(TransactionReportAggregator.class));
-		all.add(A(TransactionReportDelegate.class));
-		all.add(A(TransactionReportAnalyzer.class));
+      all.add(A(TransactionReportManager.class));
+      all.add(A(TransactionReportAggregator.class));
+      all.add(A(TransactionReportDelegate.class));
+      all.add(A(TransactionReportAnalyzer.class));
 
-		// filter
-		all.add(A(TransactionHelper.class));
-		all.add(A(TransactionTypeFilter.class));
-		all.add(A(TransactionTypeGraphFilter.class));
-		all.add(A(TransactionNameFilter.class));
-		all.add(A(TransactionNameGraphFilter.class));
+      // filter
+      all.add(A(TransactionHelper.class));
+      all.add(A(TransactionTypeFilter.class));
+      all.add(A(TransactionTypeGraphFilter.class));
+      all.add(A(TransactionNameFilter.class));
+      all.add(A(TransactionNameGraphFilter.class));
 
-		// reducer
-		all.add(A(TransactionDailyReducer.class));
-		all.add(A(TransactionWeeklyReducer.class));
-		all.add(A(TransactionMonthlyReducer.class));
+      // reducer
+      all.add(A(TransactionDailyReducer.class));
+      all.add(A(TransactionWeeklyReducer.class));
+      all.add(A(TransactionMonthlyReducer.class));
 
-		all.addAll(new WebComponentConfigurator().defineComponents());
+      all.addAll(new WebComponentConfigurator().defineComponents());
 
-		return all;
-	}
+      return all;
+   }
 }

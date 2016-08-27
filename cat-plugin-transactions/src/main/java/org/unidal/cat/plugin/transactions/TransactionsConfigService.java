@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transactions.config;
+package org.unidal.cat.plugin.transactions;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -23,30 +23,34 @@ public class TransactionsConfigService implements Initializable {
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("transactions-config.xml"); // TODO for test
-         TransactionsConfigModel transactonsConfig = DefaultSaxParser.parse(in);
+         InputStream in = getClass().getResourceAsStream("config/transactions-config.xml"); // TODO for test
+         TransactionsConfigModel root = DefaultSaxParser.parse(in);
 
-         for (ConfigModel config : transactonsConfig.getConfigs()) {
-            String type = config.getType().trim();
-            String name = config.getName().trim();
-            Pair<String, Boolean> pair = new Pair<String, Boolean>();
-
-            if (name.endsWith("*")) {
-               pair.setKey(name.substring(0, name.length() - 1));
-               pair.setValue(true);
-            } else {
-               pair.setKey(name);
-               pair.setValue(false);
-            }
-
-            if (type.endsWith("*")) {
-               m_startingTypes.put(type.substring(0, type.length() - 1), pair);
-            } else {
-               m_matchedTypes.put(type, pair);
-            }
-         }
+         initialize(root);
       } catch (Exception e) {
          throw new InitializationException("Unable to load transactions-config.xml!", e);
+      }
+   }
+
+   private void initialize(TransactionsConfigModel root) {
+      for (ConfigModel config : root.getConfigs()) {
+         String type = config.getType().trim();
+         String name = config.getName().trim();
+         Pair<String, Boolean> pair = new Pair<String, Boolean>();
+
+         if (name.endsWith("*")) { // suffix with "*"
+            pair.setKey(name.substring(0, name.length() - 1));
+            pair.setValue(true);
+         } else {
+            pair.setKey(name);
+            pair.setValue(false);
+         }
+
+         if (type.endsWith("*")) { // suffix with "*"
+            m_startingTypes.put(type.substring(0, type.length() - 1), pair);
+         } else {
+            m_matchedTypes.put(type, pair);
+         }
       }
    }
 

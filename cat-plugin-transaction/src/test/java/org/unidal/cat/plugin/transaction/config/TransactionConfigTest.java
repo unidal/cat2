@@ -14,6 +14,6 @@ public class TransactionConfigTest {
       InputStream in = getClass().getResourceAsStream("transaction-config.xml");
       TransactionConfigModel config = DefaultSaxParser.parse(in);
 
-      Assert.assertEquals(4, config.getLimits().size());
+      Assert.assertEquals(2, config.getIgnores().size());
    }
 }
