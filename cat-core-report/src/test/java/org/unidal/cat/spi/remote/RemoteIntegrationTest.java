@@ -412,6 +412,8 @@ public class RemoteIntegrationTest extends JettyServer {
 
          List<String> keys = Collections.list(req.getParameterNames());
 
+         Collections.sort(keys);
+
          for (String key : keys) {
             String value = req.getParameter(key);
 

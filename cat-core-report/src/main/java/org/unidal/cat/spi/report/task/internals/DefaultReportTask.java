@@ -2,7 +2,7 @@ package org.unidal.cat.spi.report.task.internals;
 
 import java.util.Date;
 
-import org.unidal.cat.dal.report.ReportTaskDo;
+import org.unidal.cat.core.report.dal.ReportTaskDo;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.task.ReportTask;
 

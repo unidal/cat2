@@ -1,0 +1,23 @@
+<plexus>
+	<components>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+			<implementation>org.unidal.cat.spi.remote.RemoteIntegrationTest$MockReportConfiguration</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportManager</role>
+			<role-hint>mock</role-hint>
+			<implementation>org.unidal.cat.spi.remote.RemoteIntegrationTest$MockReportManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportDelegate</role>
+			<role-hint>mock</role-hint>
+			<implementation>org.unidal.cat.spi.remote.RemoteIntegrationTest$MockReportDelegate</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.ReportFilter</role>
+			<role-hint>mock:mock</role-hint>
+			<implementation>org.unidal.cat.spi.remote.RemoteIntegrationTest$MockReportFilter</implementation>
+		</component>
+	</components>
+</plexus>

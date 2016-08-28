@@ -10,12 +10,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.unidal.cat.dal.report.HistoryReportContentDao;
-import org.unidal.cat.dal.report.HistoryReportContentDo;
-import org.unidal.cat.dal.report.HistoryReportContentEntity;
-import org.unidal.cat.dal.report.HistoryReportDao;
-import org.unidal.cat.dal.report.HistoryReportDo;
-import org.unidal.cat.dal.report.HistoryReportEntity;
+import org.unidal.cat.core.report.dal.HistoryReportContentDao;
+import org.unidal.cat.core.report.dal.HistoryReportContentDo;
+import org.unidal.cat.core.report.dal.HistoryReportContentEntity;
+import org.unidal.cat.core.report.dal.HistoryReportDao;
+import org.unidal.cat.core.report.dal.HistoryReportDo;
+import org.unidal.cat.core.report.dal.HistoryReportEntity;
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
