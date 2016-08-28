@@ -1,6 +1,5 @@
 package org.unidal.cat.plugin.transaction;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,13 +7,18 @@ import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.config.ConfigProviderManager;
 import org.unidal.cat.plugin.transaction.config.entity.IgnoreModel;
 import org.unidal.cat.plugin.transaction.config.entity.TransactionConfigModel;
 import org.unidal.cat.plugin.transaction.config.transform.DefaultSaxParser;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named
 public class TransactionConfigService implements Initializable {
+   @Inject
+   private ConfigProviderManager m_manager;
+
    private Set<String> m_matchedDomains = new HashSet<String>();
 
    private List<String> m_startingDomains = new ArrayList<String>();
@@ -36,12 +40,15 @@ public class TransactionConfigService implements Initializable {
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("config/transaction-config.xml"); // TODO for test
-         TransactionConfigModel root = DefaultSaxParser.parse(in);
+         String xml = m_manager.getConfigProvider(TransactionConstants.NAME).getConfig();
 
-         initialize(root);
+         if (xml != null) {
+            TransactionConfigModel root = DefaultSaxParser.parse(xml);
+
+            initialize(root);
+         }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load transaction-config.xml!", e);
+         throw new InitializationException("Unable to load transaction config!", e);
       }
    }
 

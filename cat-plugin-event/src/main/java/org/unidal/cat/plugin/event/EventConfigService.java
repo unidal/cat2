@@ -1,6 +1,5 @@
 package org.unidal.cat.plugin.event;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,13 +7,18 @@ import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.config.ConfigProviderManager;
 import org.unidal.cat.plugin.event.config.entity.EventConfigModel;
 import org.unidal.cat.plugin.event.config.entity.IgnoreModel;
 import org.unidal.cat.plugin.event.config.transform.DefaultSaxParser;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named
 public class EventConfigService implements Initializable {
+   @Inject
+   private ConfigProviderManager m_manager;
+
    private Set<String> m_matchedDomains = new HashSet<String>();
 
    private List<String> m_startingDomains = new ArrayList<String>();
@@ -36,12 +40,15 @@ public class EventConfigService implements Initializable {
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("config/event-config.xml"); // TODO for test
-         EventConfigModel root = DefaultSaxParser.parse(in);
+         String xml = m_manager.getConfigProvider(EventConstants.NAME).getConfig();
 
-         initialize(root);
+         if (xml != null) {
+            EventConfigModel root = DefaultSaxParser.parse(xml);
+
+            initialize(root);
+         }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load event-config.xml!", e);
+         throw new InitializationException("Unable to load event config!", e);
       }
    }
 

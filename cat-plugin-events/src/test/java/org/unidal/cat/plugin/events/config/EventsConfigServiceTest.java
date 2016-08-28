@@ -3,6 +3,7 @@ package org.unidal.cat.plugin.events.config;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.plugin.events.EventsConfigService;
 import org.unidal.lookup.ComponentTestCase;
 
 public class EventsConfigServiceTest extends ComponentTestCase {

@@ -24,6 +24,11 @@
 		<component>
 			<role>org.unidal.cat.plugin.event.EventConfigService</role>
 			<implementation>org.unidal.cat.plugin.event.EventConfigService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.ConfigProviderManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>

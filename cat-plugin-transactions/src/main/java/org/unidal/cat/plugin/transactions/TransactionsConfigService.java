@@ -1,19 +1,23 @@
 package org.unidal.cat.plugin.transactions;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.config.ConfigProviderManager;
 import org.unidal.cat.plugin.transactions.config.entity.ConfigModel;
 import org.unidal.cat.plugin.transactions.config.entity.TransactionsConfigModel;
 import org.unidal.cat.plugin.transactions.config.transform.DefaultSaxParser;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;
 
 @Named
 public class TransactionsConfigService implements Initializable {
+   @Inject
+   private ConfigProviderManager m_manager;
+
    private Map<String, Pair<String, Boolean>> m_matchedTypes = new HashMap<String, Pair<String, Boolean>>();
 
    private Map<String, Pair<String, Boolean>> m_startingTypes = new HashMap<String, Pair<String, Boolean>>();
@@ -23,12 +27,15 @@ public class TransactionsConfigService implements Initializable {
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("config/transactions-config.xml"); // TODO for test
-         TransactionsConfigModel root = DefaultSaxParser.parse(in);
+         String xml = m_manager.getConfigProvider(TransactionsConstants.NAME).getConfig();
 
-         initialize(root);
+         if (xml != null) {
+            TransactionsConfigModel root = DefaultSaxParser.parse(xml);
+
+            initialize(root);
+         }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load transactions-config.xml!", e);
+         throw new InitializationException("Unable to load transactions config!", e);
       }
    }
 

@@ -1,19 +1,23 @@
-package org.unidal.cat.plugin.events.config;
+package org.unidal.cat.plugin.events;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.config.ConfigProviderManager;
 import org.unidal.cat.plugin.events.config.entity.ConfigModel;
 import org.unidal.cat.plugin.events.config.entity.EventsConfigModel;
 import org.unidal.cat.plugin.events.config.transform.DefaultSaxParser;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;
 
 @Named
 public class EventsConfigService implements Initializable {
+   @Inject
+   private ConfigProviderManager m_manager;
+
    private Map<String, Pair<String, Boolean>> m_matchedTypes = new HashMap<String, Pair<String, Boolean>>();
 
    private Map<String, Pair<String, Boolean>> m_startingTypes = new HashMap<String, Pair<String, Boolean>>();
@@ -23,30 +27,37 @@ public class EventsConfigService implements Initializable {
    @Override
    public void initialize() throws InitializationException {
       try {
-         InputStream in = getClass().getResourceAsStream("events-config.xml"); // TODO for test
-         EventsConfigModel transactonsConfig = DefaultSaxParser.parse(in);
+         String xml = m_manager.getConfigProvider(EventsConstants.NAME).getConfig();
 
-         for (ConfigModel config : transactonsConfig.getConfigs()) {
-            String type = config.getType().trim();
-            String name = config.getName().trim();
-            Pair<String, Boolean> pair = new Pair<String, Boolean>();
+         if (xml != null) {
+            EventsConfigModel root = DefaultSaxParser.parse(xml);
 
-            if (name.endsWith("*")) {
-               pair.setKey(name.substring(0, name.length() - 1));
-               pair.setValue(true);
-            } else {
-               pair.setKey(name);
-               pair.setValue(false);
-            }
-
-            if (type.endsWith("*")) {
-               m_startingTypes.put(type.substring(0, type.length() - 1), pair);
-            } else {
-               m_matchedTypes.put(type, pair);
-            }
+            initialize(root);
          }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load events-config.xml!", e);
+         throw new InitializationException("Unable to load events config!", e);
+      }
+   }
+
+   private void initialize(EventsConfigModel root) {
+      for (ConfigModel config : root.getConfigs()) {
+         String type = config.getType().trim();
+         String name = config.getName().trim();
+         Pair<String, Boolean> pair = new Pair<String, Boolean>();
+
+         if (name.endsWith("*")) {
+            pair.setKey(name.substring(0, name.length() - 1));
+            pair.setValue(true);
+         } else {
+            pair.setKey(name);
+            pair.setValue(false);
+         }
+
+         if (type.endsWith("*")) {
+            m_startingTypes.put(type.substring(0, type.length() - 1), pair);
+         } else {
+            m_matchedTypes.put(type, pair);
+         }
       }
    }
 

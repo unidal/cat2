@@ -24,6 +24,11 @@
 		<component>
 			<role>org.unidal.cat.plugin.transaction.TransactionConfigService</role>
 			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.ConfigProviderManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>
