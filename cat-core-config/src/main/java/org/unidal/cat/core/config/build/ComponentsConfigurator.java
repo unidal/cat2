@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.config.CatConfigModule;
+import org.unidal.cat.core.config.DefaultConfigProviderManager;
 import org.unidal.cat.core.config.DefaultDomainGroupConfigService;
 import org.unidal.cat.core.config.DefaultDomainOrgConfigService;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -22,6 +23,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
       all.add(A(DefaultDomainGroupConfigService.class));
       all.add(A(DefaultDomainOrgConfigService.class));
+      all.add(A(DefaultConfigProviderManager.class));
+
+      all.addAll(new CatDatabaseConfigurator().defineComponents());
 
       return all;
    }
