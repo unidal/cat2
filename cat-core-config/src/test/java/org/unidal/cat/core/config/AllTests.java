@@ -7,7 +7,11 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-// add test classes here
+DomainGroupConfigTest.class,
+
+DomainOrgConfigTest.class,
+
+DomainOrgConfigServiceTest.class,
 
 })
 public class AllTests {
