@@ -16,7 +16,7 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
    public void initialize() throws InitializationException {
       MenuManagerManager manager = lookup(MenuManagerManager.class);
 
-      manager.report().register(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
+      manager.report().menu(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
@@ -24,7 +24,13 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
                         .get("type").get("").get("name").get("").get("group").get("").toString();
                }
             });
-      manager.config().register(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time",
+      manager.config().menu("config", "Configuration", "fa fa-cogs", //
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/system/config").toString();
+               }
+            }).submenu(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time", //
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {

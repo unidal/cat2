@@ -16,7 +16,7 @@ public class ProblemPipeline extends AbstractPipeline implements Initializable {
    public void initialize() throws InitializationException {
       MenuManagerManager manager = lookup(MenuManagerManager.class);
 
-      manager.report().register(ProblemConstants.NAME, "Problem", "fa fa-bug", new MenuLinkBuilder() {
+      manager.report().menu(ProblemConstants.NAME, "Problem", "fa fa-bug", new MenuLinkBuilder() {
          @Override
          public String build(ActionContext<?> ctx) {
             return ctx.getQuery().uri("/r/p").toString();

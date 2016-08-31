@@ -24,11 +24,12 @@ public class DefaultMenuManager implements MenuManager {
    }
 
    @Override
-   public MenuDef register(String id, String title, String styleClasses, MenuLinkBuilder builder) {
+   public MenuDef menu(String id, String title, String styleClasses, MenuLinkBuilder builder) {
       MenuDef def = m_defs.get(id);
 
       if (def == null) {
-         m_defs.put(id, new MenuDef(id, title, styleClasses, builder));
+         def = new MenuDef(id, title, styleClasses, builder);
+         m_defs.put(id, def);
       }
 
       return def;

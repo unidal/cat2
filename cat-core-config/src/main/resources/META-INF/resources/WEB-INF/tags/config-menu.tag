@@ -2,10 +2,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <div id="sidebar" class="sidebar responsive">
-   <script type="text/javascript">
-      try{ace.settings.check('sidebar', 'fixed')}catch(e){}
-   </script>
-   
    <div class="sidebar-shortcuts" id="sidebar-shortcuts">
       <div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
          <c:forEach var="group" items="${ctx.menuGroups}">
@@ -23,12 +19,16 @@
    
    <ul class="nav nav-list" style="top: 0px;">
       <c:forEach var="menu" items="${ctx.menus}">
-         <li id="${menu.id}" class="${menu.id eq model.id ? 'active open' : ''}">
-            <a href="${menu.link}">
-               <i class="menu-icon ${menu.styleClasses}"></i>
-               <span class="menu-text">${menu.title}</span>
-            </a>
-         </li>
+         <li id="${menu.id}" class="hsub ${ctx.payload.page.name eq menu.id ? 'active open' : ''}">
+         <a href="/cat/s/config?op=projects" class="dropdown-toggle"> 
+            <i class="menu-icon ${menu.styleClasses}"></i><span class="menu-text">${menu.title}</span><b class="arrow fa fa-angle-down"></b>
+         </a>
+         <b class="arrow"></b>
+         <ul class="submenu">
+            <c:forEach var="submenu" items="${menu.subMenus}">
+               <li id="${submenu.id}" class="${ctx.payload.id eq submenu.id ? 'active' : ''}"><a href="${submenu.link}"><i class="menu-icon ${submenu.styleClasses}"></i>${submenu.title}</a><b class="arrow"></b></li>
+            </c:forEach>
+         </ul>
       </c:forEach>
    </ul>
    

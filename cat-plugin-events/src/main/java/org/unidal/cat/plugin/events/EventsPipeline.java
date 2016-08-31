@@ -21,7 +21,7 @@ public class EventsPipeline extends AbstractPipeline implements Initializable {
    public void initialize() throws InitializationException {
       MenuManagerManager manager = lookup(MenuManagerManager.class);
 
-      manager.report().register(EventsConstants.NAME, "Events", "fa fa-flag", new MenuLinkBuilder() {
+      manager.report().menu(EventsConstants.NAME, "Events", "fa fa-flag", new MenuLinkBuilder() {
          @Override
          public String build(ActionContext<?> ctx) {
             return ctx.getQuery().uri("/r/es") //

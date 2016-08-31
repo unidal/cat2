@@ -21,7 +21,7 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
    public void initialize() throws InitializationException {
       MenuManagerManager manager = lookup(MenuManagerManager.class);
 
-      manager.report().register(TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time",
+      manager.report().menu(TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time",
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {

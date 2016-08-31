@@ -16,19 +16,26 @@ public class EventPipeline extends AbstractPipeline implements Initializable {
    public void initialize() throws InitializationException {
       MenuManagerManager manager = lookup(MenuManagerManager.class);
 
-      manager.report().register(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
+      manager.report().menu(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
          @Override
          public String build(ActionContext<?> ctx) {
             return ctx.getQuery().uri("/r/e") //
                   .get("type").get("").get("name").get("").get("group").get("").toString();
          }
       });
-      manager.config().register(EventConstants.NAME, "Event", "fa fa-flag", new MenuLinkBuilder() {
-         @Override
-         public String build(ActionContext<?> ctx) {
-            return ctx.getQuery().uri("/system/config/event").toString();
-         }
-      });
+      manager.config().menu("config", "Configuration", "fa fa-cogs", //
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/system/config").toString();
+               }
+            }).submenu(EventConstants.NAME, "Event", "fa fa-flag", //
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/system/config/event").toString();
+               }
+            });
 
       Document.USER.register(EventConstants.NAME, "Event");
    }
