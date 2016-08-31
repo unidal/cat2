@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.core.config.DomainOrgConfigService;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.filter.EventHolder;
 import org.unidal.cat.plugin.event.model.entity.EventName;

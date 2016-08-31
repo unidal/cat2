@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.event.filter;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.unidal.cat.core.config.DomainGroupConfigService;
+import org.unidal.cat.core.config.service.DomainGroupConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.model.entity.Machine;
 import org.unidal.cat.plugin.event.model.entity.EventReport;

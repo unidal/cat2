@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transaction.filter;
 
-import org.unidal.cat.core.config.DomainGroupConfigService;
+import org.unidal.cat.core.config.service.DomainGroupConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;

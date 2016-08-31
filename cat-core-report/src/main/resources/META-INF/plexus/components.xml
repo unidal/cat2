@@ -402,7 +402,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>

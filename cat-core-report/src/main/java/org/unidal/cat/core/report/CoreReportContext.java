@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.core.report.nav.DomainBar;
 import org.unidal.cat.core.report.nav.GroupBar;
 import org.unidal.cat.core.report.nav.TimeBar;

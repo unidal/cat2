@@ -13,8 +13,8 @@ import junit.framework.Assert;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.junit.Test;
-import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.model.EventReportManager;
 import org.unidal.cat.plugin.event.model.entity.EventReport;

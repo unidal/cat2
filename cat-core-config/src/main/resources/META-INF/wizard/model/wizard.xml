@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <wizard package="org.unidal.cat.core.config">
    <model package="org.unidal.cat.core.config.domain" name="domain-group-config">
-      <sample-model>src/test/resources/org/unidal/cat/core/config/domain-group-config.xml</sample-model>
+      <sample-model>src/test/resources/org/unidal/cat/core/config/service/domain-group-config.xml</sample-model>
    </model>
    <model package="org.unidal.cat.core.config.domain.org" name="domain-org-config">
-      <sample-model>src/test/resources/org/unidal/cat/core/config/domain-org-config.xml</sample-model>
+      <sample-model>src/test/resources/org/unidal/cat/core/config/service/domain-org-config.xml</sample-model>
    </model>
 </wizard>

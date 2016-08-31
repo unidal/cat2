@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.event.filter;
 
-import org.unidal.cat.core.config.DomainGroupConfigService;
+import org.unidal.cat.core.config.service.DomainGroupConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.model.entity.Machine;
 import org.unidal.cat.plugin.event.model.entity.EventName;

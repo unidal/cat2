@@ -7,7 +7,7 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.core.config.DomainGroupConfigService;
+import org.unidal.cat.core.config.service.DomainGroupConfigService;
 import org.unidal.cat.plugin.events.EventsConstants;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;
 import org.unidal.cat.spi.ReportPeriod;

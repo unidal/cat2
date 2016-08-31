@@ -1,4 +1,4 @@
-package org.unidal.cat.core.config;
+package org.unidal.cat.core.config.service;
 
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 

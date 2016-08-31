@@ -1,8 +1,9 @@
-package org.unidal.cat.core.config;
+package org.unidal.cat.core.config.service;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.lookup.ComponentTestCase;
 
 public class DomainOrgConfigServiceTest extends ComponentTestCase {

@@ -13,8 +13,8 @@ import junit.framework.Assert;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.junit.Test;
-import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.TransactionReportManager;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
