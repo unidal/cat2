@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.report.CatReportModule;
-import org.unidal.cat.core.report.menu.DefaultMenuManager;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
-import org.unidal.cat.core.report.view.svg.DefaultGraphBuilder;
-import org.unidal.cat.core.report.view.svg.DefaultValueTranslater;
+import org.unidal.cat.core.view.svg.DefaultGraphBuilder;
+import org.unidal.cat.core.view.svg.DefaultValueTranslater;
 import org.unidal.cat.spi.analysis.DefaultCheckpointService;
 import org.unidal.cat.spi.analysis.DefaultMessageDispatcher;
 import org.unidal.cat.spi.analysis.DefaultPipelineManager;
@@ -75,11 +74,14 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(MysqlHourlyReportStorage.class));
       all.add(A(MysqlHistoryReportStorage.class));
 
+      all.add(A(DefaultReportProvider.class));
+      all.add(A(RecentReportProvider.class));
+      all.add(A(HistoricalReportProvider.class));
+
       all.add(A(DefaultRemoteStub.class));
       all.add(A(DefaultRemoteSkeleton.class));
 
       all.add(A(TcpSocketSkeleton.class));
-
       all.add(A(DefaultMessageDispatcher.class));
       all.add(A(DefaultServerTransportConfiguration.class));
       all.add(A(DefaultServerTransportHub.class));
@@ -94,18 +96,13 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DomainHashStrategy.class));
       all.add(A(RoundRobinStrategy.class));
 
-      all.add(A(DefaultReportProvider.class));
-      all.add(A(RecentReportProvider.class));
-      all.add(A(HistoricalReportProvider.class));
-
-      all.add(A(DefaultMenuManager.class));
       all.add(A(DomainGroupBar.class));
 
       all.add(A(DefaultGraphBuilder.class));
       all.add(A(DefaultValueTranslater.class));
 
       all.addAll(new CatDatabaseConfigurator().defineComponents());
-      
+
       return all;
    }
 }

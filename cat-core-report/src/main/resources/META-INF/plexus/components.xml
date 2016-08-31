@@ -190,6 +190,45 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<implementation>org.unidal.cat.spi.report.provider.DefaultReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+					<role-hint>recent</role-hint>
+					<field-name>m_recent</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+					<role-hint>historical</role-hint>
+					<field-name>m_historical</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<role-hint>recent</role-hint>
+			<implementation>org.unidal.cat.spi.report.provider.RecentReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.remote.RemoteStub</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<role-hint>historical</role-hint>
+			<implementation>org.unidal.cat.spi.report.provider.HistoricalReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.remote.RemoteStub</role>
 			<implementation>org.unidal.cat.spi.remote.DefaultRemoteStub</implementation>
 			<requirements>
@@ -358,49 +397,6 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<implementation>org.unidal.cat.spi.report.provider.DefaultReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-					<role-hint>recent</role-hint>
-					<field-name>m_recent</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-					<role-hint>historical</role-hint>
-					<field-name>m_historical</field-name>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<role-hint>recent</role-hint>
-			<implementation>org.unidal.cat.spi.report.provider.RecentReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.remote.RemoteStub</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<role-hint>historical</role-hint>
-			<implementation>org.unidal.cat.spi.report.provider.HistoricalReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.report.menu.MenuManager</role>
-			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
-		</component>
-		<component>
 			<role>org.unidal.cat.core.report.nav.DomainGroupBar</role>
 			<implementation>org.unidal.cat.core.report.nav.DomainGroupBar</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
@@ -411,17 +407,17 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
-			<implementation>org.unidal.cat.core.report.view.svg.DefaultGraphBuilder</implementation>
+			<role>org.unidal.cat.core.view.svg.GraphBuilder</role>
+			<implementation>org.unidal.cat.core.view.svg.DefaultGraphBuilder</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
+					<role>org.unidal.cat.core.view.svg.ValueTranslater</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
-			<implementation>org.unidal.cat.core.report.view.svg.DefaultValueTranslater</implementation>
+			<role>org.unidal.cat.core.view.svg.ValueTranslater</role>
+			<implementation>org.unidal.cat.core.view.svg.DefaultValueTranslater</implementation>
 		</component>
 		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>

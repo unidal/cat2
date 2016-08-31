@@ -9,12 +9,12 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
-import org.unidal.cat.core.report.menu.Menu;
-import org.unidal.cat.core.report.menu.MenuGroup;
-import org.unidal.cat.core.report.menu.MenuManager;
 import org.unidal.cat.core.report.nav.DomainBar;
 import org.unidal.cat.core.report.nav.GroupBar;
 import org.unidal.cat.core.report.nav.TimeBar;
+import org.unidal.cat.core.view.menu.Menu;
+import org.unidal.cat.core.view.menu.MenuGroup;
+import org.unidal.cat.core.view.menu.MenuManagerManager;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.web.mvc.ActionContext;
@@ -34,7 +34,7 @@ public abstract class CoreReportContext<T extends CoreReportPayload<?, ?>> exten
 
    public CoreReportContext() {
       try {
-         m_menus = lookup(MenuManager.class).getMenus(this);
+         m_menus = lookup(MenuManagerManager.class).report().getMenus(this);
          m_domainOrgConfig = lookup(DomainOrgConfigService.class).getConfig();
       } catch (Exception e) {
          Cat.logError(e);

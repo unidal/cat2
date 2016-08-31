@@ -12,7 +12,7 @@
    <dependencies>
       <dependency>
          <groupId>org.unidal.cat</groupId>
-         <artifactId>cat-core</artifactId>
+         <artifactId>cat-core-view</artifactId>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>

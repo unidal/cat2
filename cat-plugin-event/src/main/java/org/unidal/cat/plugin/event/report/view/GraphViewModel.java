@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.core.report.view.LineChart;
-import org.unidal.cat.core.report.view.PieChart;
-import org.unidal.cat.core.report.view.svg.GraphBuilder;
+import org.unidal.cat.core.view.LineChart;
+import org.unidal.cat.core.view.PieChart;
+import org.unidal.cat.core.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.event.model.entity.EventName;
 import org.unidal.cat.plugin.event.model.entity.EventReport;
 import org.unidal.cat.plugin.event.model.entity.EventType;

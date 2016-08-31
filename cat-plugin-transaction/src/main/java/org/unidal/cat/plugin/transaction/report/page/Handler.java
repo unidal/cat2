@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.servlet.ServletException;
 
-import org.unidal.cat.core.report.view.svg.GraphBuilder;
+import org.unidal.cat.core.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameGraphFilter;

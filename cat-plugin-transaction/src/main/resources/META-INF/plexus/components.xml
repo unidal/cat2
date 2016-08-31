@@ -188,7 +188,7 @@
 			<implementation>org.unidal.cat.plugin.transaction.report.page.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
+					<role>org.unidal.cat.core.view.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.report.page.JspViewer</role>

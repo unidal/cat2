@@ -1,0 +1,13 @@
+<plexus>
+	<components>
+		<component>
+			<role>org.unidal.cat.core.view.menu.MenuManagerManager</role>
+			<implementation>org.unidal.cat.core.view.menu.DefaultMenuManagerManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.view.menu.MenuManager</role>
+			<implementation>org.unidal.cat.core.view.menu.DefaultMenuManager</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+		</component>
+	</components>
+</plexus>

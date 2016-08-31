@@ -1,4 +1,4 @@
-package org.unidal.cat.core.report.menu;
+package org.unidal.cat.core.view.menu;
 
 public enum MenuGroup {
 	REALTIME("realtime", "Realtime", "fa fa-signal", "btn btn-success", "/r/t"),

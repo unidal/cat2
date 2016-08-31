@@ -1,4 +1,4 @@
-package org.unidal.cat.core.report.view;
+package org.unidal.cat.core.view;
 
 import java.util.ArrayList;
 import java.util.Collections;

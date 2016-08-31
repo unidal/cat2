@@ -1,4 +1,4 @@
-package org.unidal.cat.core.report.menu;
+package org.unidal.cat.core.view.menu;
 
 import org.unidal.web.mvc.ActionContext;
 

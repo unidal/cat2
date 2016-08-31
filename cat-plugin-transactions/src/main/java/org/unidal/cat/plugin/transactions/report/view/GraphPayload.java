@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.transactions.report.view;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.unidal.cat.core.report.view.svg.AbstractGraphPayload;
+import org.unidal.cat.core.view.svg.AbstractGraphPayload;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsRange;
