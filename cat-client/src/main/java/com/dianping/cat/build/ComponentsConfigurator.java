@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.message.MessageIdFactory;
+import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.initialization.Module;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -19,7 +20,6 @@ import com.dianping.cat.message.io.TransportManager;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageManager;
 import com.dianping.cat.message.spi.MessageStatistics;
-import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 import com.dianping.cat.message.spi.internal.DefaultMessageStatistics;
 import com.dianping.cat.status.StatusUpdateTask;
 
@@ -42,7 +42,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 		all.add(C(TcpSocketSender.class) //
 		      .req(ClientConfigManager.class) //
 		      .req(MessageStatistics.class, "default", "m_statistics") //
-		      .req(MessageCodec.class, PlainTextMessageCodec.ID, "m_codec"));
+		      .req(MessageCodec.class, NativeMessageCodec.ID, "m_codec"));
 		all.add(C(TransportManager.class, DefaultTransportManager.class) //
 		      .req(ClientConfigManager.class, TcpSocketSender.class));
 

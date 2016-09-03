@@ -14,57 +14,59 @@ import com.dianping.cat.CatConstants;
 import com.dianping.cat.analysis.MessageConsumer;
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.message.spi.MessageCodec;
-import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import com.dianping.cat.statistic.ServerStatisticManager;
 
 @Named(type = DecodeHandler.class, value = NativeMessageCodec.ID)
 public class NativeMessageDecodeHandler implements DecodeHandler, LogEnabled {
-	@Inject(NativeMessageCodec.ID)
-	private MessageCodec m_codec;
+   @Inject(NativeMessageCodec.ID)
+   private MessageCodec m_codec;
 
-	@Inject
-	private MessageConsumer m_consumer;
+   @Inject
+   private MessageConsumer m_consumer;
 
-	@Inject
-	private MessageDispatcher m_dispatcher;
+   @Inject
+   private MessageDispatcher m_dispatcher;
 
-	@Inject
-	protected ServerConfigManager m_serverConfigManager;
+   @Inject
+   protected ServerConfigManager m_serverConfigManager;
 
-	@Inject
-	private ServerStatisticManager m_serverStateManager;
+   @Inject
+   private ServerStatisticManager m_serverStateManager;
 
-	private volatile long m_processCount;
+   private volatile long m_processCount;
 
-	private Logger m_logger;
+   private Logger m_logger;
 
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
-	@Override
-	public void handle(ByteBuf buf) {
-		try {
-			MessageTree tree = new DefaultMessageTree();
-			
-			m_codec.decode(buf, tree);
+   @Override
+   public void handle(ByteBuf buf) {
+      try {
+         DefaultMessageTree tree = new DefaultMessageTree();
 
-			// TODO remove m_consumer after all analyzers migrated
-			m_consumer.consume(tree);
-			m_dispatcher.dispatch(tree);
+         buf.markReaderIndex();
+         m_codec.decode(buf, tree);
+         buf.resetReaderIndex();
+         tree.setBuffer(buf); // buf with length at first
 
-			m_processCount++;
+         // TODO remove m_consumer after all analyzers migrated
+         m_consumer.consume(tree);
+         m_dispatcher.dispatch(tree);
 
-			long flag = m_processCount % CatConstants.SUCCESS_COUNT;
+         m_processCount++;
 
-			if (flag == 0) {
-				m_serverStateManager.addMessageTotal(CatConstants.SUCCESS_COUNT);
-			}
-		} catch (Exception e) {
-			m_serverStateManager.addMessageTotalLoss(1);
-			m_logger.error(e.getMessage(), e);
-		}
-	}
+         long flag = m_processCount % CatConstants.SUCCESS_COUNT;
+
+         if (flag == 0) {
+            m_serverStateManager.addMessageTotal(CatConstants.SUCCESS_COUNT);
+         }
+      } catch (Exception e) {
+         m_serverStateManager.addMessageTotalLoss(1);
+         m_logger.error(e.getMessage(), e);
+      }
+   }
 }

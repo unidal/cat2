@@ -31,114 +31,116 @@ import org.unidal.lookup.annotation.Named;
 
 @Named(type = TcpSocketReceiver.class)
 public final class TcpSocketReceiver implements Initializable, LogEnabled {
-	@Inject
-	private DecodeHandlerManager m_manager;
+   @Inject
+   private DecodeHandlerManager m_manager;
 
-	@Inject
-	private ServerTransportConfiguration m_config;
+   @Inject
+   private ServerTransportConfiguration m_config;
 
-	private ChannelFuture m_future;
+   private ChannelFuture m_future;
 
-	private EventLoopGroup m_bossGroup;
+   private EventLoopGroup m_bossGroup;
 
-	private EventLoopGroup m_workerGroup;
+   private EventLoopGroup m_workerGroup;
 
-	private int m_port;
+   private int m_port;
 
-	private Class<? extends ServerSocketChannel> m_channelClass;
+   private Class<? extends ServerSocketChannel> m_channelClass;
 
-	private Logger m_logger;
+   private Logger m_logger;
 
-	public synchronized void destory() {
-		try {
-			m_future.channel().closeFuture();
-			m_bossGroup.shutdownGracefully();
-			m_workerGroup.shutdownGracefully();
-			m_logger.info(String.format("Netty server stopped on port %s", m_port));
-		} catch (Exception e) {
-			m_logger.warn(e.getMessage(), e);
-		}
-	}
+   public synchronized void destory() {
+      try {
+         m_future.channel().closeFuture();
+         m_bossGroup.shutdownGracefully();
+         m_workerGroup.shutdownGracefully();
+         m_logger.info(String.format("Netty server stopped on port %s", m_port));
+      } catch (Exception e) {
+         m_logger.warn(e.getMessage(), e);
+      }
+   }
 
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
-	private boolean getOSMatches(String osNamePrefix) {
-		String os = System.getProperty("os.name");
+   private boolean getOSMatches(String osNamePrefix) {
+      String os = System.getProperty("os.name");
 
-		if (os == null) {
-			return false;
-		}
+      if (os == null) {
+         return false;
+      }
 
-		return os.startsWith(osNamePrefix);
-	}
+      return os.startsWith(osNamePrefix);
+   }
 
-	@Override
-	public void initialize() throws InitializationException {
-		int bossThreads = m_config.getBossThreads();
-		int workerThreads = m_config.getWorkerThreads();
-		boolean linux = getOSMatches("Linux") || getOSMatches("LINUX");
+   @Override
+   public void initialize() throws InitializationException {
+      int bossThreads = m_config.getBossThreads();
+      int workerThreads = m_config.getWorkerThreads();
+      boolean linux = getOSMatches("Linux") || getOSMatches("LINUX");
 
-		m_port = m_config.getTcpPort();
-		m_bossGroup = linux ? new EpollEventLoopGroup(bossThreads) : new NioEventLoopGroup(bossThreads);
-		m_workerGroup = linux ? new EpollEventLoopGroup(workerThreads) : new NioEventLoopGroup(workerThreads);
-		m_channelClass = linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
-	}
+      m_port = m_config.getTcpPort();
+      m_bossGroup = linux ? new EpollEventLoopGroup(bossThreads) : new NioEventLoopGroup(bossThreads);
+      m_workerGroup = linux ? new EpollEventLoopGroup(workerThreads) : new NioEventLoopGroup(workerThreads);
+      m_channelClass = linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
+   }
 
-	public synchronized void init() throws Exception {
-		ServerBootstrap bootstrap = new ServerBootstrap();
+   public synchronized void init() throws Exception {
+      ServerBootstrap bootstrap = new ServerBootstrap();
 
-		bootstrap.group(m_bossGroup, m_workerGroup).channel(m_channelClass);
-		bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
-			@Override
-			protected void initChannel(SocketChannel ch) throws Exception {
-				ChannelPipeline pipeline = ch.pipeline();
+      bootstrap.group(m_bossGroup, m_workerGroup).channel(m_channelClass);
+      bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
+         @Override
+         protected void initChannel(SocketChannel ch) throws Exception {
+            ChannelPipeline pipeline = ch.pipeline();
 
-				pipeline.addLast("decode", new MessageDecoder());
-			}
-		});
+            pipeline.addLast("decode", new MessageDecoder());
+         }
+      });
 
-		bootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
-		bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
-		bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
-		bootstrap.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
+      bootstrap.childOption(ChannelOption.SO_REUSEADDR, true);
+      bootstrap.childOption(ChannelOption.TCP_NODELAY, true);
+      bootstrap.childOption(ChannelOption.SO_KEEPALIVE, true);
+      bootstrap.childOption(ChannelOption.ALLOCATOR, PooledByteBufAllocator.DEFAULT);
 
-		try {
-			m_future = bootstrap.bind(m_port).sync();
-			m_logger.info(String.format("CAT is listening on port %s", m_port));
-		} catch (Exception e) {
-			m_logger.error(String.format("Error when binding to port %s!", m_port), e);
+      try {
+         m_future = bootstrap.bind(m_port).sync();
+         m_logger.info(String.format("CAT is listening on port %s", m_port));
+      } catch (Exception e) {
+         m_logger.error(String.format("Error when binding to port %s!", m_port), e);
 
-			throw e;
-		}
-	}
+         throw e;
+      }
+   }
 
-	public class MessageDecoder extends ByteToMessageDecoder {
-		@Override
-		protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
-			if (buffer.readableBytes() < 4) {
-				return;
-			}
+   public class MessageDecoder extends ByteToMessageDecoder {
+      @Override
+      protected void decode(ChannelHandlerContext ctx, ByteBuf buffer, List<Object> out) throws Exception {
+         if (buffer.readableBytes() < 4) {
+            return;
+         }
 
-            buffer.markReaderIndex();
-			int length = buffer.readInt();
-            buffer.resetReaderIndex();
+         buffer.markReaderIndex();
 
-			if (buffer.readableBytes() < length + 4) {
-				return;
-			}
+         int length = buffer.readInt();
 
-			buffer.readInt(); // get rid of length
+         buffer.resetReaderIndex();
 
-			ByteBuf buf = buffer.readSlice(length);
-			DecodeHandler handler = m_manager.getHandler(buf);
+         if (buffer.readableBytes() < length + 4) {
+            return;
+         }
 
-			if (handler != null) {
-				buf.retain(); // hold reference to avoid being GC, the buf will be released in dump analyzer
-				handler.handle(buf);
-			}
-		}
-	}
+         buffer.readInt(); // get rid of length
+
+         ByteBuf buf = buffer.readSlice(length);
+         DecodeHandler handler = m_manager.getHandler(buf);
+
+         if (handler != null) {
+            buf.retain(); // hold reference to avoid being GC, the buf will be released in dump analyzer
+            handler.handle(buf);
+         }
+      }
+   }
 }
