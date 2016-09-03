@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.core.config.DomainOrgConfigService;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.filter.TransactionHolder;
 import org.unidal.cat.plugin.transaction.model.entity.Duration;
@@ -17,8 +17,8 @@ import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
+import org.unidal.cat.plugin.transactions.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
-import org.unidal.cat.plugin.transactions.config.TransactionsConfigService;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDomain;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDuration;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;

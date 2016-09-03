@@ -5,6 +5,7 @@ import java.util.Date;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.core.report.CoreReportPayload;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.helper.Dates;
 import org.unidal.helper.Reflects;
@@ -43,7 +44,7 @@ public class PayloadTest {
 	public void testStartTime() {
 		Payload payload = new Payload();
 
-		Reflects.forField().setDeclaredFieldValue(Payload.class, "m_date", payload, 2016073115L);
+		Reflects.forField().setDeclaredFieldValue(CoreReportPayload.class, "m_date", payload, 2016073115L);
 
 		payload.validate(null);
 

@@ -22,11 +22,11 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.plugin.transaction.TransactionConfigProvider</role>
-			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigProvider</implementation>
+			<role>org.unidal.cat.plugin.transaction.TransactionConfigService</role>
+			<implementation>org.unidal.cat.plugin.transaction.TransactionConfigService</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.ConfigManager</role>
+					<role>org.unidal.cat.core.config.ConfigProviderManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -81,7 +81,7 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.config.server.ServerFilterConfigManager</role>
+					<role>org.unidal.cat.plugin.transaction.TransactionConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -98,7 +98,7 @@
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -111,7 +111,7 @@
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -124,7 +124,7 @@
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -137,7 +137,7 @@
 					<role>org.unidal.cat.plugin.transaction.filter.TransactionHelper</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -188,7 +188,7 @@
 			<implementation>org.unidal.cat.plugin.transaction.report.page.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
+					<role>org.unidal.cat.core.view.svg.GraphBuilder</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.report.page.JspViewer</role>

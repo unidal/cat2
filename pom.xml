@@ -11,6 +11,7 @@
 	<modules>
 		<module>cat-client</module>
 		<module>cat-core</module>
+		<module>cat-core-view</module>
 		<module>cat-core-config</module>
 		<module>cat-core-report</module>
 		<module>cat-core-document</module>
@@ -80,6 +81,11 @@
 			<dependency>
 				<groupId>org.unidal.cat</groupId>
 				<artifactId>cat-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.unidal.cat</groupId>
+				<artifactId>cat-core-view</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.event.build;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unidal.cat.plugin.event.EventConfigProvider;
+import org.unidal.cat.plugin.event.EventConfigService;
 import org.unidal.cat.plugin.event.EventPipeline;
 import org.unidal.cat.plugin.event.EventReportAnalyzer;
 import org.unidal.cat.plugin.event.filter.EventHelper;
@@ -21,36 +21,36 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 public class ComponentsConfigurator extends AbstractResourceConfigurator {
-	public static void main(String[] args) {
-		generatePlexusComponentsXmlFile(new ComponentsConfigurator());
-	}
+   public static void main(String[] args) {
+      generatePlexusComponentsXmlFile(new ComponentsConfigurator());
+   }
 
-	@Override
-	public List<Component> defineComponents() {
-		List<Component> all = new ArrayList<Component>();
+   @Override
+   public List<Component> defineComponents() {
+      List<Component> all = new ArrayList<Component>();
 
-		all.add(A(EventPipeline.class));
-		all.add(A(EventConfigProvider.class));
+      all.add(A(EventPipeline.class));
+      all.add(A(EventConfigService.class));
 
-		all.add(A(EventReportManager.class));
-		all.add(A(EventReportAggregator.class));
-		all.add(A(EventReportDelegate.class));
-		all.add(A(EventReportAnalyzer.class));
+      all.add(A(EventReportManager.class));
+      all.add(A(EventReportAggregator.class));
+      all.add(A(EventReportDelegate.class));
+      all.add(A(EventReportAnalyzer.class));
 
-		// filter
-		all.add(A(EventHelper.class));
-		all.add(A(EventTypeFilter.class));
-		all.add(A(EventTypeGraphFilter.class));
-		all.add(A(EventNameFilter.class));
-		all.add(A(EventNameGraphFilter.class));
+      // filter
+      all.add(A(EventHelper.class));
+      all.add(A(EventTypeFilter.class));
+      all.add(A(EventTypeGraphFilter.class));
+      all.add(A(EventNameFilter.class));
+      all.add(A(EventNameGraphFilter.class));
 
-		// reducer
-		all.add(A(EventDailyReducer.class));
-		all.add(A(EventWeeklyReducer.class));
-		all.add(A(EventMonthlyReducer.class));
+      // reducer
+      all.add(A(EventDailyReducer.class));
+      all.add(A(EventWeeklyReducer.class));
+      all.add(A(EventMonthlyReducer.class));
 
-		all.addAll(new WebComponentConfigurator().defineComponents());
+      all.addAll(new WebComponentConfigurator().defineComponents());
 
-		return all;
-	}
+      return all;
+   }
 }

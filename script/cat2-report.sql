@@ -55,3 +55,16 @@ CREATE TABLE `report_task` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UIDX_StartTime_Name_Type` (`report_start_time`,`report_name`,`task_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='后台任务';
+
+CREATE TABLE `report_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `report_name` varchar(50) NOT NULL COMMENT '报表名称',
+  `format` int(4) COMMENT '报表格式，1/xml',
+  `version` int(4) COMMENT '报表配置版本号',
+  `content` longtext COMMENT '报表配置内容',
+  `creation_date` datetime NOT NULL COMMENT '创建时间',
+  `last_modified_date` datetime NOT NULL COMMENT '上次修改时间',
+  `last_modified_by` varchar(50) DEFAULT NULL COMMENT '上次修改人',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UIDX_ReportName` (`report_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPRESSED COMMENT='报表配置表';

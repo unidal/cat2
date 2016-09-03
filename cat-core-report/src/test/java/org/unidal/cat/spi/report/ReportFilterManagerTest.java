@@ -11,8 +11,8 @@ public class ReportFilterManagerTest extends ComponentTestCase {
 	@Test
 	public void testMissing() throws Exception {
 		ReportFilterManager manager = lookup(ReportFilterManager.class);
-		ReportFilter<Report> filter = manager.getFilter("mock", "mock");
-		ReportFilter<Report> filter2 = manager.getFilter("mock", "mock");
+		ReportFilter<Report> filter = manager.getFilter("missing", "missing");
+		ReportFilter<Report> filter2 = manager.getFilter("missing", "missing");
 
 		Assert.assertEquals(null, filter);
 		Assert.assertSame(null, filter2);

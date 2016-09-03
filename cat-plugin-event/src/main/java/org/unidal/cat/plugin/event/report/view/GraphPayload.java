@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.event.report.view;
 
-import org.unidal.cat.core.report.view.svg.AbstractGraphPayload;
+import org.unidal.cat.core.view.svg.AbstractGraphPayload;
 import org.unidal.cat.plugin.event.model.entity.EventName;
 import org.unidal.cat.plugin.event.model.entity.Range;
 

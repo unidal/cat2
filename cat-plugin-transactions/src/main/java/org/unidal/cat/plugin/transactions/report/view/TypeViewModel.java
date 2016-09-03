@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.core.report.view.TableViewModel;
+import org.unidal.cat.core.view.TableViewModel;
 import org.unidal.cat.plugin.transactions.filter.TransactionsHelper;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;

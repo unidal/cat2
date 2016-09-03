@@ -14,7 +14,6 @@ import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.config.server.ServerFilterConfigManager;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
@@ -23,7 +22,7 @@ import com.dianping.cat.message.spi.MessageTree;
 @Named(type = MessageAnalyzer.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
 public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<TransactionReport> {
    @Inject
-   private ServerFilterConfigManager m_serverFilterConfigManager;
+   private TransactionConfigService m_configService;
 
    private Pair<Boolean, Long> checkForTruncatedMessage(MessageTree tree, Transaction t) {
       Pair<Boolean, Long> pair = new Pair<Boolean, Long>(true, t.getDurationInMicros());
@@ -96,20 +95,15 @@ public class TransactionReportAnalyzer extends AbstractMessageAnalyzer<Transacti
    }
 
    private void processTransaction(TransactionReport report, MessageTree tree, Transaction t) {
-      String type = t.getType();
-      String name = t.getName();
-
-      if (m_serverFilterConfigManager.discardTransaction(type, name)) {
-         return;
-      } else {
+      if (m_configService.isEligible(tree.getDomain())) {
          Pair<Boolean, Long> pair = checkForTruncatedMessage(tree, t);
 
          report.addIp(tree.getIpAddress());
 
          if (pair.getKey().booleanValue()) {
             String ip = tree.getIpAddress();
-            TransactionType transactionType = report.findOrCreateMachine(ip).findOrCreateType(type);
-            TransactionName transactionName = transactionType.findOrCreateName(name);
+            TransactionType transactionType = report.findOrCreateMachine(ip).findOrCreateType(t.getType());
+            TransactionName transactionName = transactionType.findOrCreateName(t.getName());
             String messageId = tree.getMessageId();
 
             processTypeAndName(t, transactionType, transactionName, messageId, pair.getValue().doubleValue() / 1000d);

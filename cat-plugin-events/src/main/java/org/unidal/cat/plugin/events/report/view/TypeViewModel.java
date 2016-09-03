@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.core.report.view.TableViewModel;
+import org.unidal.cat.core.view.TableViewModel;
 import org.unidal.cat.plugin.events.filter.EventsHelper;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;
 import org.unidal.cat.plugin.events.model.entity.EventsType;

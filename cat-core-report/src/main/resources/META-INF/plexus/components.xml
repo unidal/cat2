@@ -63,7 +63,7 @@
 			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskService</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.dal.report.ReportTaskDao</role>
+					<role>org.unidal.cat.core.report.dal.ReportTaskDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -80,10 +80,10 @@
 					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HourlyReportDao</role>
+					<role>org.unidal.cat.core.report.dal.HourlyReportDao</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HistoryReportDao</role>
+					<role>org.unidal.cat.core.report.dal.HistoryReportDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -166,10 +166,10 @@
 					<role>org.unidal.cat.service.CompressionService</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HourlyReportDao</role>
+					<role>org.unidal.cat.core.report.dal.HourlyReportDao</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HourlyReportContentDao</role>
+					<role>org.unidal.cat.core.report.dal.HourlyReportContentDao</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -182,10 +182,49 @@
 					<role>org.unidal.cat.service.CompressionService</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HistoryReportDao</role>
+					<role>org.unidal.cat.core.report.dal.HistoryReportDao</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.dal.report.HistoryReportContentDao</role>
+					<role>org.unidal.cat.core.report.dal.HistoryReportContentDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<implementation>org.unidal.cat.spi.report.provider.DefaultReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+					<role-hint>recent</role-hint>
+					<field-name>m_recent</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+					<role-hint>historical</role-hint>
+					<field-name>m_historical</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<role-hint>recent</role-hint>
+			<implementation>org.unidal.cat.spi.report.provider.RecentReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.remote.RemoteStub</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
+			<role-hint>historical</role-hint>
+			<implementation>org.unidal.cat.spi.report.provider.HistoricalReportProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -358,70 +397,117 @@
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<implementation>org.unidal.cat.spi.report.provider.DefaultReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-					<role-hint>recent</role-hint>
-					<field-name>m_recent</field-name>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-					<role-hint>historical</role-hint>
-					<field-name>m_historical</field-name>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<role-hint>recent</role-hint>
-			<implementation>org.unidal.cat.spi.report.provider.RecentReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.remote.RemoteStub</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-			<role-hint>historical</role-hint>
-			<implementation>org.unidal.cat.spi.report.provider.HistoricalReportProvider</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.report.menu.MenuManager</role>
-			<implementation>org.unidal.cat.core.report.menu.DefaultMenuManager</implementation>
-		</component>
-		<component>
 			<role>org.unidal.cat.core.report.nav.DomainGroupBar</role>
 			<implementation>org.unidal.cat.core.report.nav.DomainGroupBar</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.config.DomainGroupConfigService</role>
+					<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.report.view.svg.GraphBuilder</role>
-			<implementation>org.unidal.cat.core.report.view.svg.DefaultGraphBuilder</implementation>
+			<role>org.unidal.cat.core.view.svg.GraphBuilder</role>
+			<implementation>org.unidal.cat.core.view.svg.DefaultGraphBuilder</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
+					<role>org.unidal.cat.core.view.svg.ValueTranslater</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.report.view.svg.ValueTranslater</role>
-			<implementation>org.unidal.cat.core.report.view.svg.DefaultValueTranslater</implementation>
+			<role>org.unidal.cat.core.view.svg.ValueTranslater</role>
+			<implementation>org.unidal.cat.core.view.svg.DefaultValueTranslater</implementation>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>history-report</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>history_report</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>history-report-content</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>history_report_content</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>hourly-report</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>hourly_report</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>hourly-report-content</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>hourly_report_content</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>report-task</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>report_task</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.HistoryReportDao</role>
+			<implementation>org.unidal.cat.core.report.dal.HistoryReportDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.HistoryReportContentDao</role>
+			<implementation>org.unidal.cat.core.report.dal.HistoryReportContentDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.HourlyReportDao</role>
+			<implementation>org.unidal.cat.core.report.dal.HourlyReportDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.HourlyReportContentDao</role>
+			<implementation>org.unidal.cat.core.report.dal.HourlyReportContentDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.ReportTaskDao</role>
+			<implementation>org.unidal.cat.core.report.dal.ReportTaskDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
 		</component>
 	</components>
 </plexus>

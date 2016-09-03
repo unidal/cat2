@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.cat.core.report.view.PieChart;
-import org.unidal.cat.core.report.view.TableViewModel;
+import org.unidal.cat.core.view.PieChart;
+import org.unidal.cat.core.view.TableViewModel;
 import org.unidal.cat.plugin.event.filter.EventHelper;
 import org.unidal.cat.plugin.event.model.entity.EventName;
 import org.unidal.cat.plugin.event.model.entity.EventReport;

@@ -14,6 +14,6 @@ public class EventConfigTest {
       InputStream in = getClass().getResourceAsStream("event-config.xml");
       EventConfigModel config = DefaultSaxParser.parse(in);
 
-      Assert.assertEquals(4, config.getLimits().size());
+      Assert.assertEquals(2, config.getIgnores().size());
    }
 }

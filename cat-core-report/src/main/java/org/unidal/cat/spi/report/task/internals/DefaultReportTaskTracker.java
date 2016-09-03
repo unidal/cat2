@@ -9,12 +9,12 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.unidal.cat.dal.report.HistoryReportDao;
-import org.unidal.cat.dal.report.HistoryReportDo;
-import org.unidal.cat.dal.report.HistoryReportEntity;
-import org.unidal.cat.dal.report.HourlyReportDao;
-import org.unidal.cat.dal.report.HourlyReportDo;
-import org.unidal.cat.dal.report.HourlyReportEntity;
+import org.unidal.cat.core.report.dal.HistoryReportDao;
+import org.unidal.cat.core.report.dal.HistoryReportDo;
+import org.unidal.cat.core.report.dal.HistoryReportEntity;
+import org.unidal.cat.core.report.dal.HourlyReportDao;
+import org.unidal.cat.core.report.dal.HourlyReportDo;
+import org.unidal.cat.core.report.dal.HourlyReportEntity;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportConfiguration;
 import org.unidal.cat.spi.report.task.ReportTask;

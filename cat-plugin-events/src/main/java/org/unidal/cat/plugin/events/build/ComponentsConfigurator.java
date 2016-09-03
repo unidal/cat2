@@ -3,8 +3,8 @@ package org.unidal.cat.plugin.events.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.plugin.events.EventsConfigService;
 import org.unidal.cat.plugin.events.EventsPipeline;
-import org.unidal.cat.plugin.events.config.EventsConfigService;
 import org.unidal.cat.plugin.events.filter.EventsHelper;
 import org.unidal.cat.plugin.events.filter.EventsNameFilter;
 import org.unidal.cat.plugin.events.filter.EventsNameGraphFilter;

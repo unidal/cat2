@@ -3,8 +3,8 @@ package org.unidal.cat.plugin.transactions;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.document.spi.Document;
-import org.unidal.cat.core.report.menu.MenuLinkBuilder;
-import org.unidal.cat.core.report.menu.MenuManager;
+import org.unidal.cat.core.view.menu.MenuLinkBuilder;
+import org.unidal.cat.core.view.menu.MenuManagerManager;
 import org.unidal.cat.spi.analysis.pipeline.AbstractPipeline;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
 import org.unidal.lookup.annotation.Named;
@@ -19,7 +19,9 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
 
    @Override
    public void initialize() throws InitializationException {
-      lookup(MenuManager.class).register(TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time",
+      MenuManagerManager manager = lookup(MenuManagerManager.class);
+
+      manager.report().menu(TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time",
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {

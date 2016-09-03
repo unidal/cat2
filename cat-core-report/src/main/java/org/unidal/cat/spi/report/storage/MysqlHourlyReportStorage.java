@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.unidal.cat.dal.report.HourlyReportContentDao;
-import org.unidal.cat.dal.report.HourlyReportContentDo;
-import org.unidal.cat.dal.report.HourlyReportContentEntity;
-import org.unidal.cat.dal.report.HourlyReportDao;
-import org.unidal.cat.dal.report.HourlyReportDo;
-import org.unidal.cat.dal.report.HourlyReportEntity;
+import org.unidal.cat.core.report.dal.HourlyReportContentDao;
+import org.unidal.cat.core.report.dal.HourlyReportContentDo;
+import org.unidal.cat.core.report.dal.HourlyReportContentEntity;
+import org.unidal.cat.core.report.dal.HourlyReportDao;
+import org.unidal.cat.core.report.dal.HourlyReportDo;
+import org.unidal.cat.core.report.dal.HourlyReportEntity;
 import org.unidal.cat.service.CompressionService;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;

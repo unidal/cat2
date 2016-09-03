@@ -5,7 +5,7 @@ import java.util.Date;
 
 import javax.servlet.ServletException;
 
-import org.unidal.cat.core.report.view.svg.GraphBuilder;
+import org.unidal.cat.core.view.svg.GraphBuilder;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.filter.EventNameFilter;
 import org.unidal.cat.plugin.event.filter.EventNameGraphFilter;

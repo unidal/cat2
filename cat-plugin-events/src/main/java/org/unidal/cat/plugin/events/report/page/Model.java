@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.unidal.cat.core.report.CoreReportModel;
-import org.unidal.cat.core.report.view.LineChart;
-import org.unidal.cat.core.report.view.TableViewModel;
+import org.unidal.cat.core.view.LineChart;
+import org.unidal.cat.core.view.TableViewModel;
 import org.unidal.cat.plugin.events.report.view.GraphViewModel;
 import org.unidal.cat.plugin.events.EventsConstants;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;

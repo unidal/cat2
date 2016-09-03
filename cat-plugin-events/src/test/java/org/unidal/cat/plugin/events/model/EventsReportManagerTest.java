@@ -13,13 +13,13 @@ import junit.framework.Assert;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.junit.Test;
-import org.unidal.cat.core.config.DomainOrgConfigService;
 import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
+import org.unidal.cat.core.config.service.DomainOrgConfigService;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.model.EventReportManager;
 import org.unidal.cat.plugin.event.model.entity.EventReport;
+import org.unidal.cat.plugin.events.EventsConfigService;
 import org.unidal.cat.plugin.events.EventsConstants;
-import org.unidal.cat.plugin.events.config.EventsConfigService;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.ReportDelegate;
