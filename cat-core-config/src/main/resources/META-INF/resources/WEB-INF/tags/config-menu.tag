@@ -20,7 +20,7 @@
    <ul class="nav nav-list" style="top: 0px;">
       <c:forEach var="menu" items="${ctx.menus}">
          <li id="${menu.id}" class="hsub ${ctx.payload.page.name eq menu.id ? 'active open' : ''}">
-         <a href="/cat/s/config?op=projects" class="dropdown-toggle"> 
+         <a href="${menu.link}" class="dropdown-toggle"> 
             <i class="menu-icon ${menu.styleClasses}"></i><span class="menu-text">${menu.title}</span><b class="arrow fa fa-angle-down"></b>
          </a>
          <b class="arrow"></b>
