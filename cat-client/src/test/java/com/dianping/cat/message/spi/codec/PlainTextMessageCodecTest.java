@@ -53,7 +53,9 @@ public class PlainTextMessageCodecTest {
 
 		Assert.assertEquals(expected, actual);
 
-		MessageTree t = codec.decode(buf);
+		MessageTree t = new DefaultMessageTree();
+		
+		codec.decode(buf, t);
 
 		Assert.assertEquals(expected, t.toString());
 	}

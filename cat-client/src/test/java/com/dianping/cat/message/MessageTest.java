@@ -28,297 +28,295 @@ import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 
 public class MessageTest extends ComponentTestCase {
-	private Queue<MessageTree> m_queue = new LinkedBlockingQueue<MessageTree>();
+   private Queue<MessageTree> m_queue = new LinkedBlockingQueue<MessageTree>();
 
-	private void checkMessage(String expected) {
-		StringBuilder sb = new StringBuilder(1024);
-		MessageCodec codec = new MockMessageCodec(sb);
+   private void checkMessage(String expected) {
+      StringBuilder sb = new StringBuilder(1024);
+      MessageCodec codec = new MockMessageCodec(sb);
 
-		while (true) {
-			MessageTree tree = m_queue.poll();
+      while (true) {
+         MessageTree tree = m_queue.poll();
 
-			if (tree != null) {
-				codec.encode(tree, null);
-			} else {
-				break;
-			}
-		}
-		
-		Assert.assertEquals(expected, sb.toString());
-	}
+         if (tree != null) {
+            codec.encode(tree, null);
+         } else {
+            break;
+         }
+      }
 
-	protected File getConfigurationFile() {
-		try {
-			ClientConfig config = new ClientConfig();
+      Assert.assertEquals(expected, sb.toString());
+   }
 
-			config.setMode("client");
-			config.addDomain(new Domain("cat").setMaxMessageSize(8));
-			config.addServer(new Server("localhost"));
+   protected File getConfigurationFile() {
+      try {
+         ClientConfig config = new ClientConfig();
 
-			File file = new File("target/cat-config.xml");
+         config.setMode("client");
+         config.addDomain(new Domain("cat").setMaxMessageSize(8));
+         config.addServer(new Server("localhost"));
 
-			Files.forIO().writeTo(file, config.toString());
-			return file;
-		} catch (IOException e) {
-			throw new RuntimeException("Unable to create cat-config.xml file!");
-		}
-	}
+         File file = new File("target/cat-config.xml");
 
-	@Override
-	public void setUp() throws Exception {
-		super.setUp();
-		
-		defineComponent(TransportManager.class, null, MockTransportManager.class);
+         Files.forIO().writeTo(file, config.toString());
+         return file;
+      } catch (IOException e) {
+         throw new RuntimeException("Unable to create cat-config.xml file!");
+      }
+   }
 
-		MockTransportManager transportManager = (MockTransportManager) lookup(TransportManager.class);
-		transportManager.setQueue(m_queue);
+   @Override
+   public void setUp() throws Exception {
+      super.setUp();
 
-		File configurationFile = getConfigurationFile();
-		Cat.initialize(configurationFile);
+      defineComponent(TransportManager.class, null, MockTransportManager.class);
 
-		ClientConfigManager configManager = lookup(ClientConfigManager.class);
-		configManager.initialize(configurationFile);
+      MockTransportManager transportManager = (MockTransportManager) lookup(TransportManager.class);
+      transportManager.setQueue(m_queue);
 
-		m_queue.clear();
-		
-		Reflects.forMethod().invokeDeclaredMethod(Cat.getInstance(), "setContainer", PlexusContainer.class, getContainer());
-	}
+      File configurationFile = getConfigurationFile();
+      Cat.initialize(configurationFile);
 
-	@Test
-	public void testEvent() {
-		Event event = Cat.getProducer().newEvent("Review", "New");
+      ClientConfigManager configManager = lookup(ClientConfigManager.class);
+      configManager.initialize(configurationFile);
 
-		event.addData("id", 12345);
-		event.addData("user", "john");
-		event.setStatus(Message.SUCCESS);
-		event.complete();
+      m_queue.clear();
 
-		checkMessage("E Review New 0 id=12345&user=john\n");
-	}
+      Reflects.forMethod().invokeDeclaredMethod(Cat.getInstance(), "setContainer", PlexusContainer.class,
+            getContainer());
+   }
 
-	@Test
-	public void testHeartbeat() {
-		Heartbeat heartbeat = Cat.getProducer().newHeartbeat("System", "Status");
+   @Test
+   public void testEvent() {
+      Event event = Cat.getProducer().newEvent("Review", "New");
 
-		heartbeat.addData("ip", "192.168.10.111");
-		heartbeat.addData("host", "host-1");
-		heartbeat.addData("load", "2.1");
-		heartbeat.addData("cpu", "0.12,0.10");
-		heartbeat.addData("memory.total", "2G");
-		heartbeat.addData("memory.free", "456M");
-		heartbeat.setStatus(Message.SUCCESS);
-		heartbeat.complete();
+      event.addData("id", 12345);
+      event.addData("user", "john");
+      event.setStatus(Message.SUCCESS);
+      event.complete();
 
-		checkMessage("H System Status 0 ip=192.168.10.111&host=host-1&load=2.1&cpu=0.12,0.10&memory.total=2G&memory.free=456M\n");
-	}
+      checkMessage("E Review New 0 id=12345&user=john\n");
+   }
 
-	@Test
-	public void testMessageTruncatedForDuration() throws IOException {
-		Transaction t = Cat.newTransaction("URL", "MyPage");
+   @Test
+   public void testHeartbeat() {
+      Heartbeat heartbeat = Cat.getProducer().newHeartbeat("System", "Status");
 
-		try {
-			// do your business here
-			t.addData("k1", "v1");
+      heartbeat.addData("ip", "192.168.10.111");
+      heartbeat.addData("host", "host-1");
+      heartbeat.addData("load", "2.1");
+      heartbeat.addData("cpu", "0.12,0.10");
+      heartbeat.addData("memory.total", "2G");
+      heartbeat.addData("memory.free", "456M");
+      heartbeat.setStatus(Message.SUCCESS);
+      heartbeat.complete();
 
-			for (int i = 0; i < 3; i++) {
-				Cat.logEvent("Event", "Name" + i);
-			}
+      checkMessage("H System Status 0 ip=192.168.10.111&host=host-1&load=2.1&cpu=0.12,0.10&memory.total=2G&memory.free=456M\n");
+   }
 
-			Transaction t1 = Cat.newTransaction("URL1", "MyPage");
+   @Test
+   public void testMessageTruncatedForDuration() throws IOException {
+      Transaction t = Cat.newTransaction("URL", "MyPage");
 
-			t1.setStatus(Message.SUCCESS);
-			t1.complete();
+      try {
+         // do your business here
+         t.addData("k1", "v1");
 
-			// move root transaction to one hour ago
-			((DefaultTransaction) t).setTimestamp(t.getTimestamp() - 3600 * 1000L + 1);
+         for (int i = 0; i < 3; i++) {
+            Cat.logEvent("Event", "Name" + i);
+         }
 
-			Transaction t2 = Cat.newTransaction("URL2", "MyPage");
+         Transaction t1 = Cat.newTransaction("URL1", "MyPage");
 
-			for (int i = 0; i < 3; i++) {
-				Cat.logEvent("Event2", "Name" + i);
-			}
+         t1.setStatus(Message.SUCCESS);
+         t1.complete();
 
-			t2.setStatus(Message.SUCCESS);
-			t2.complete();
+         // move root transaction to one hour ago
+         ((DefaultTransaction) t).setTimestamp(t.getTimestamp() - 3600 * 1000L + 1);
 
-			t.setStatus(Message.SUCCESS);
-		} catch (Exception e) {
-			t.setStatus(e);
-		} finally {
-			t.complete();
-		}
+         Transaction t2 = Cat.newTransaction("URL2", "MyPage");
 
-		String expected = Files.forIO().readFrom(getClass().getResourceAsStream("message-truncated-for-duration.txt"), "utf-8");
+         for (int i = 0; i < 3; i++) {
+            Cat.logEvent("Event2", "Name" + i);
+         }
 
-		checkMessage(expected);
-	}
+         t2.setStatus(Message.SUCCESS);
+         t2.complete();
 
-	@Test
-	public void testMessageTruncatedForSize() throws IOException {
-		Transaction t = Cat.newTransaction("URL", "MyPage");
+         t.setStatus(Message.SUCCESS);
+      } catch (Exception e) {
+         t.setStatus(e);
+      } finally {
+         t.complete();
+      }
 
-		try {
-			// do your business here
-			t.addData("k1", "v1");
-			for (int i = 0; i < 20; i++) {
-				Transaction t0 = Cat.newTransaction("URL0", "MyPage");
+      String expected = Files.forIO().readFrom(getClass().getResourceAsStream("message-truncated-for-duration.txt"),
+            "utf-8");
 
-				t0.setStatus(Message.SUCCESS);
-				t0.complete();
-			}
+      checkMessage(expected);
+   }
 
-			Transaction t1 = Cat.newTransaction("URL1", "MyPage");
-			Transaction t2 = Cat.newTransaction("URL2", "MyPage");
+   @Test
+   public void testMessageTruncatedForSize() throws IOException {
+      Transaction t = Cat.newTransaction("URL", "MyPage");
 
-			for (int i = 0; i < 20; i++) {
-				Cat.logEvent("Event", "Name" + i);
-			}
-			t2.complete();
-			t1.complete();
+      try {
+         // do your business here
+         t.addData("k1", "v1");
+         for (int i = 0; i < 20; i++) {
+            Transaction t0 = Cat.newTransaction("URL0", "MyPage");
 
-			t.setStatus(Message.SUCCESS);
-		} catch (Exception e) {
-			t.setStatus(e);
-		} finally {
-			t.complete();
-		}
+            t0.setStatus(Message.SUCCESS);
+            t0.complete();
+         }
 
-		String expected = Files.forIO().readFrom(getClass().getResourceAsStream("message-truncated-for-size.txt"), "utf-8");
+         Transaction t1 = Cat.newTransaction("URL1", "MyPage");
+         Transaction t2 = Cat.newTransaction("URL2", "MyPage");
 
-		checkMessage(expected);
-	}
+         for (int i = 0; i < 20; i++) {
+            Cat.logEvent("Event", "Name" + i);
+         }
+         t2.complete();
+         t1.complete();
 
-	@Test
-	public void testTransaction() throws Exception {
-		Transaction t = Cat.newTransaction("URL", "MyPage");
+         t.setStatus(Message.SUCCESS);
+      } catch (Exception e) {
+         t.setStatus(e);
+      } finally {
+         t.complete();
+      }
 
-		try {
-			// do your business here
-			t.addData("k1", "v1");
-			t.addData("k2", "v2");
-			t.addData("k3", "v3");
+      String expected = Files.forIO().readFrom(getClass().getResourceAsStream("message-truncated-for-size.txt"),
+            "utf-8");
 
-			t.setStatus(Message.SUCCESS);
-		} catch (Exception e) {
-			t.setStatus(e);
-		} finally {
-			t.complete();
-		}
+      checkMessage(expected);
+   }
 
-		checkMessage("A URL MyPage 0 k1=v1&k2=v2&k3=v3\n");
-	}
+   @Test
+   public void testTransaction() throws Exception {
+      Transaction t = Cat.newTransaction("URL", "MyPage");
 
-	protected static class MockMessageCodec implements MessageCodec {
-		private StringBuilder m_sb;
+      try {
+         // do your business here
+         t.addData("k1", "v1");
+         t.addData("k2", "v2");
+         t.addData("k3", "v3");
 
-		public MockMessageCodec(StringBuilder sb) {
-			m_sb = sb;
-		}
+         t.setStatus(Message.SUCCESS);
+      } catch (Exception e) {
+         t.setStatus(e);
+      } finally {
+         t.complete();
+      }
 
-		@Override
-		public MessageTree decode(ByteBuf buf) {
-			throw new UnsupportedOperationException();
-		}
+      checkMessage("A URL MyPage 0 k1=v1&k2=v2&k3=v3\n");
+   }
 
-		@Override
-		public void decode(ByteBuf buf, MessageTree tree) {
-			throw new UnsupportedOperationException();
-		}
+   protected static class MockMessageCodec implements MessageCodec {
+      private StringBuilder m_sb;
 
-		@Override
-		public void encode(MessageTree tree, ByteBuf buf) {
-			encodeMessage(tree.getMessage(), buf);
-		}
+      public MockMessageCodec(StringBuilder sb) {
+         m_sb = sb;
+      }
 
-		private void encodeEvent(Event e, ByteBuf buf) {
-			m_sb.append('E');
-			m_sb.append(' ').append(e.getType());
-			m_sb.append(' ').append(e.getName());
-			m_sb.append(' ').append(e.getStatus());
+      @Override
+      public void decode(ByteBuf buf, MessageTree tree) {
+         throw new UnsupportedOperationException();
+      }
 
-			if (!e.getType().equals("RemoteCall") && !e.getType().equals("TruncatedTransaction")) {
-				m_sb.append(' ').append(e.getData());
-			}
+      @Override
+      public void encode(MessageTree tree, ByteBuf buf) {
+         encodeMessage(tree.getMessage(), buf);
+      }
 
-			m_sb.append('\n');
+      private void encodeEvent(Event e, ByteBuf buf) {
+         m_sb.append('E');
+         m_sb.append(' ').append(e.getType());
+         m_sb.append(' ').append(e.getName());
+         m_sb.append(' ').append(e.getStatus());
 
-		}
+         if (!e.getType().equals("RemoteCall") && !e.getType().equals("TruncatedTransaction")) {
+            m_sb.append(' ').append(e.getData());
+         }
 
-		private void encodeHeartbeat(Heartbeat h, ByteBuf buf) {
-			m_sb.append('H');
-			m_sb.append(' ').append(h.getType());
-			m_sb.append(' ').append(h.getName());
-			m_sb.append(' ').append(h.getStatus());
-			m_sb.append(' ').append(h.getData());
-			m_sb.append('\n');
-		}
+         m_sb.append('\n');
 
-		private void encodeMessage(Message message, ByteBuf buf) {
-			if (message instanceof Transaction) {
-				encodeTransaction((Transaction) message, buf);
-			} else if (message instanceof Event) {
-				encodeEvent((Event) message, buf);
-			} else if (message instanceof Heartbeat) {
-				encodeHeartbeat((Heartbeat) message, buf);
-			}
-		}
+      }
 
-		private void encodeTransaction(Transaction t, ByteBuf buf) {
-			List<Message> children = t.getChildren();
+      private void encodeHeartbeat(Heartbeat h, ByteBuf buf) {
+         m_sb.append('H');
+         m_sb.append(' ').append(h.getType());
+         m_sb.append(' ').append(h.getName());
+         m_sb.append(' ').append(h.getStatus());
+         m_sb.append(' ').append(h.getData());
+         m_sb.append('\n');
+      }
 
-			if (children.isEmpty()) {
-				m_sb.append('A');
-				m_sb.append(' ').append(t.getType());
-				m_sb.append(' ').append(t.getName());
-				m_sb.append(' ').append(t.getStatus());
-				m_sb.append(' ').append(t.getData());
-				m_sb.append('\n');
-			} else {
-				m_sb.append('t');
-				m_sb.append(' ').append(t.getType());
-				m_sb.append(' ').append(t.getName());
-				m_sb.append('\n');
+      private void encodeMessage(Message message, ByteBuf buf) {
+         if (message instanceof Transaction) {
+            encodeTransaction((Transaction) message, buf);
+         } else if (message instanceof Event) {
+            encodeEvent((Event) message, buf);
+         } else if (message instanceof Heartbeat) {
+            encodeHeartbeat((Heartbeat) message, buf);
+         }
+      }
 
-				for (Message message : children) {
-					encodeMessage(message, buf);
-				}
+      private void encodeTransaction(Transaction t, ByteBuf buf) {
+         List<Message> children = t.getChildren();
 
-				m_sb.append('T');
-				m_sb.append(' ').append(t.getType());
-				m_sb.append(' ').append(t.getName());
-				m_sb.append(' ').append(t.getStatus());
-				m_sb.append(' ').append(t.getData());
-				m_sb.append('\n');
-			}
-		}
-	}
+         if (children.isEmpty()) {
+            m_sb.append('A');
+            m_sb.append(' ').append(t.getType());
+            m_sb.append(' ').append(t.getName());
+            m_sb.append(' ').append(t.getStatus());
+            m_sb.append(' ').append(t.getData());
+            m_sb.append('\n');
+         } else {
+            m_sb.append('t');
+            m_sb.append(' ').append(t.getType());
+            m_sb.append(' ').append(t.getName());
+            m_sb.append('\n');
 
-	public static class MockTransportManager implements TransportManager {
-		private MessageSender m_sender;
+            for (Message message : children) {
+               encodeMessage(message, buf);
+            }
 
-		public MockTransportManager() {
-		}
+            m_sb.append('T');
+            m_sb.append(' ').append(t.getType());
+            m_sb.append(' ').append(t.getName());
+            m_sb.append(' ').append(t.getStatus());
+            m_sb.append(' ').append(t.getData());
+            m_sb.append('\n');
+         }
+      }
+   }
 
-		@Override
-		public MessageSender getSender() {
-			return m_sender;
-		}
+   public static class MockTransportManager implements TransportManager {
+      private MessageSender m_sender;
 
-		public void setQueue(final Queue<MessageTree> queue) {
-			m_sender = new MessageSender() {
-				@Override
-				public void initialize() {
-				}
+      public MockTransportManager() {
+      }
 
-				@Override
-				public void send(MessageTree tree) {
-					queue.offer(tree);
-				}
+      @Override
+      public MessageSender getSender() {
+         return m_sender;
+      }
 
-				@Override
-				public void shutdown() {
-				}
-			};
-		}
-	}
+      public void setQueue(final Queue<MessageTree> queue) {
+         m_sender = new MessageSender() {
+            @Override
+            public void initialize() {
+            }
+
+            @Override
+            public void send(MessageTree tree) {
+               queue.offer(tree);
+            }
+
+            @Override
+            public void shutdown() {
+            }
+         };
+      }
+   }
 }

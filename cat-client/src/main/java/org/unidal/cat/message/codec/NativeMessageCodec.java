@@ -28,15 +28,6 @@ public class NativeMessageCodec implements MessageCodec {
    public static final String ID = "NT1"; // native message tree version 1
 
    @Override
-   public MessageTree decode(ByteBuf buf) {
-      DefaultMessageTree tree = new DefaultMessageTree();
-
-      decode(buf, tree);
-      tree.setBuffer(buf);
-      return tree;
-   }
-
-   @Override
    public void decode(ByteBuf buf, MessageTree tree) {
       Context ctx = new Context(tree);
 
@@ -157,7 +148,7 @@ public class NativeMessageCodec implements MessageCodec {
          protected void encode(Context ctx, ByteBuf buf, Message msg) {
             MessageTree tree = ctx.getMessageTree();
 
-            ctx.writeVersion(buf, "BT1");
+            ctx.writeVersion(buf, ID);
             ctx.writeString(buf, tree.getDomain());
             ctx.writeString(buf, tree.getHostName());
             ctx.writeString(buf, tree.getIpAddress());
@@ -458,7 +449,7 @@ public class NativeMessageCodec implements MessageCodec {
       }
 
       public void writeTimestamp(ByteBuf buf, long timestamp) {
-         writeVarint(buf, timestamp); // TODO use relative value of root message timestamp
+         writeVarint(buf, timestamp);
       }
 
       private void writeVarint(ByteBuf buf, long value) {
