@@ -136,7 +136,7 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
+					<role-hint>NT1</role-hint>
 					<field-name>m_codec</field-name>
 				</requirement>
 			</requirements>
