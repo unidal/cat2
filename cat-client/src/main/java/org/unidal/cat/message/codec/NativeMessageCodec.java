@@ -28,15 +28,6 @@ public class NativeMessageCodec implements MessageCodec {
    public static final String ID = "NT1"; // native message tree version 1
 
    @Override
-   public MessageTree decode(ByteBuf buf) {
-      DefaultMessageTree tree = new DefaultMessageTree();
-
-      decode(buf, tree);
-      tree.setBuffer(buf);
-      return tree;
-   }
-
-   @Override
    public void decode(ByteBuf buf, MessageTree tree) {
       Context ctx = new Context(tree);
 

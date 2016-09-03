@@ -15,6 +15,7 @@ import com.dianping.cat.analysis.MessageConsumer;
 import com.dianping.cat.config.server.ServerConfigManager;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import com.dianping.cat.statistic.ServerStatisticManager;
 
 @Named(type = DecodeHandler.class, value = NativeMessageCodec.ID)
@@ -46,7 +47,9 @@ public class NativeMessageDecodeHandler implements DecodeHandler, LogEnabled {
 	@Override
 	public void handle(ByteBuf buf) {
 		try {
-			MessageTree tree = m_codec.decode(buf);
+			MessageTree tree = new DefaultMessageTree();
+			
+			m_codec.decode(buf, tree);
 
 			// TODO remove m_consumer after all analyzers migrated
 			m_consumer.consume(tree);

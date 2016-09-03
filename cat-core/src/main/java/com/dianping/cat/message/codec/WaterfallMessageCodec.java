@@ -51,11 +51,6 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
 	}
 
 	@Override
-	public MessageTree decode(ByteBuf buf) {
-		throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
-	}
-
-	@Override
 	public void decode(ByteBuf buf, MessageTree tree) {
 		throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
 	}

@@ -46,11 +46,6 @@ public class HtmlMessageCodec implements MessageCodec, Initializable {
 	private DateHelper m_dateHelper = new DateHelper();
 
 	@Override
-	public MessageTree decode(ByteBuf buf) {
-		throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
-	}
-
-	@Override
 	public void decode(ByteBuf buf, MessageTree tree) {
 		throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
 	}

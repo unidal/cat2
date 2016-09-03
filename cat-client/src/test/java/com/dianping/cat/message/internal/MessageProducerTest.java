@@ -29,6 +29,7 @@ import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.io.TransportManager;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @RunWith(JUnit4.class)
 public class MessageProducerTest extends CatTestCase {
@@ -140,7 +141,9 @@ public class MessageProducerTest extends CatTestCase {
 		codec.encode(tree, buf);
 
 		buf.readInt();
-		MessageTree tree2 = codec.decode(buf);
+		MessageTree tree2 = new DefaultMessageTree();
+		
+		codec.decode(buf, tree2);
 
 		Assert.assertEquals(tree.toString(), tree2.toString());
 	}

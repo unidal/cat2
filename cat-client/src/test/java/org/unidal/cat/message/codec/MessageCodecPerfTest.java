@@ -10,6 +10,7 @@ import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 public class MessageCodecPerfTest extends ComponentTestCase {
 	@Test
@@ -52,7 +53,7 @@ public class MessageCodecPerfTest extends ComponentTestCase {
 
 		size = buf.readableBytes();
 
-		codec.decode(buf);
+		codec.decode(buf, new DefaultMessageTree());
 		return size;
 	}
 }

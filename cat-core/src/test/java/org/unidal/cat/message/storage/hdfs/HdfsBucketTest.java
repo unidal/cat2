@@ -15,48 +15,51 @@ import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
+import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 public class HdfsBucketTest extends ComponentTestCase {
-	
-	@Before
-	public void before() throws Exception{
-		ServerConfigManager config = lookup(ServerConfigManager.class);
-		
-		config.initialize(new File(HdfsBucketTest.class.getClassLoader().getResource("server.xml").getFile() ));
-	}
-	
-	@Test
-	public void testManager(){
-		HdfsBucketManager manager = lookup(HdfsBucketManager.class);
 
-		for (int i = 0; i < 1000; i++) {
-			MessageId id = MessageId.parse("cat-0a420d73-405915-" + i);
+   @Before
+   public void before() throws Exception {
+      ServerConfigManager config = lookup(ServerConfigManager.class);
 
-			MessageTree message = manager.loadMessage(id);
+      config.initialize(new File(HdfsBucketTest.class.getClassLoader().getResource("server.xml").getFile()));
+   }
 
-			if (message != null) {
-				System.err.println(message);
-			}
-		}
-	}
+   @Test
+   public void testManager() {
+      HdfsBucketManager manager = lookup(HdfsBucketManager.class);
 
-	@Test
-	public void test() {
-		Bucket hdfsbucket = lookup(Bucket.class, "hdfs");
-		MessageCodec m_plainText = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
+      for (int i = 0; i < 1000; i++) {
+         MessageId id = MessageId.parse("cat-0a420d73-405915-" + i);
 
-		try {
-			MessageId id = MessageId.parse("shop-web-0a420d56-405915-16");
-			hdfsbucket.initialize(id.getDomain(), "10.66.13.115", id.getHour());
+         MessageTree message = manager.loadMessage(id);
 
-			ByteBuf byteBuf = hdfsbucket.get(id);
+         if (message != null) {
+            System.err.println(message);
+         }
+      }
+   }
 
-			if (byteBuf != null) {
-				MessageTree tree = m_plainText.decode(byteBuf);
-				System.out.println(tree.toString());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+   @Test
+   public void test() {
+      Bucket hdfsbucket = lookup(Bucket.class, "hdfs");
+      MessageCodec m_plainText = lookup(MessageCodec.class, PlainTextMessageCodec.ID);
+
+      try {
+         MessageId id = MessageId.parse("shop-web-0a420d56-405915-16");
+         hdfsbucket.initialize(id.getDomain(), "10.66.13.115", id.getHour());
+
+         ByteBuf byteBuf = hdfsbucket.get(id);
+
+         if (byteBuf != null) {
+            MessageTree tree = new DefaultMessageTree();
+
+            m_plainText.decode(byteBuf, tree);
+            System.out.println(tree.toString());
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
 }

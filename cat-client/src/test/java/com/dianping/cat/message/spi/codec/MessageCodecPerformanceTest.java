@@ -29,7 +29,10 @@ public class MessageCodecPerformanceTest extends CatTestCase {
 			buf.markReaderIndex();
 			// read the size of the message
 			buf.readInt();
-			DefaultMessageTree result = (DefaultMessageTree) codec.decode(buf);
+			
+			DefaultMessageTree result = new DefaultMessageTree();
+			
+			codec.decode(buf, result);
 			buf.resetReaderIndex();
 			result.setBuffer(buf);
 		}

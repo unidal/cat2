@@ -58,15 +58,6 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
    private Logger m_logger;
 
    @Override
-   public MessageTree decode(ByteBuf buf) {
-      DefaultMessageTree tree = new DefaultMessageTree();
-
-      decode(buf, tree);
-      tree.setBuffer(buf);
-      return tree;
-   }
-
-   @Override
    public void decode(ByteBuf buf, MessageTree tree) {
       Context ctx = m_ctx.get().setBuffer(buf);
 
