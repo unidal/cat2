@@ -6,6 +6,11 @@
 			<implementation>org.unidal.cat.core.config.CatConfigModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.view.menu.MenuManager</role>
+			<role-hint>config</role-hint>
+			<implementation>org.unidal.cat.core.config.view.ConfigMenuManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.config.service.DomainGroupConfigService</role>
 			<implementation>org.unidal.cat.core.config.service.DefaultDomainGroupConfigService</implementation>
 		</component>

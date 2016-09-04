@@ -6,6 +6,11 @@
 			<implementation>org.unidal.cat.core.report.CatReportModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.view.menu.MenuManager</role>
+			<role-hint>report</role-hint>
+			<implementation>org.unidal.cat.core.report.view.ReportMenuManager</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.report.ReportConfiguration</role>
 			<implementation>org.unidal.cat.spi.report.DefaultReportConfiguration</implementation>
 		</component>

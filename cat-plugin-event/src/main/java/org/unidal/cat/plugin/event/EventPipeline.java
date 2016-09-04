@@ -23,13 +23,7 @@ public class EventPipeline extends AbstractPipeline implements Initializable {
                   .get("type").get("").get("name").get("").get("group").get("").toString();
          }
       });
-      manager.config().menu("config", "Configuration", "fa fa-cogs", //
-            new MenuLinkBuilder() {
-               @Override
-               public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config").toString();
-               }
-            }).submenu(EventConstants.NAME, "Event", "fa fa-flag", //
+      manager.config().submenu("config", EventConstants.NAME, "Event", "fa fa-flag", //
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {

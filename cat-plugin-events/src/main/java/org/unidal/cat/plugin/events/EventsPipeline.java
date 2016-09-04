@@ -28,6 +28,13 @@ public class EventsPipeline extends AbstractPipeline implements Initializable {
                   .get("type").get("").get("name").get("").get("group").get("").toString();
          }
       });
+      manager.config().submenu("config", EventsConstants.NAME, "Events", "fa fa-flag", //
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/system/config/events").toString();
+               }
+            });
 
       Document.USER.register(EventsConstants.NAME, "Event Summary");
    }

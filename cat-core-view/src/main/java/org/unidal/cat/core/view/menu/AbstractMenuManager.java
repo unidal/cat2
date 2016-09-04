@@ -5,11 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.unidal.lookup.annotation.Named;
 import org.unidal.web.mvc.ActionContext;
 
-@Named(type = MenuManager.class, instantiationStrategy = Named.PER_LOOKUP)
-public class DefaultMenuManager implements MenuManager {
+public abstract class AbstractMenuManager implements MenuManager {
    private Map<String, MenuDef> m_defs = new LinkedHashMap<String, MenuDef>();
 
    @Override
@@ -33,5 +31,16 @@ public class DefaultMenuManager implements MenuManager {
       }
 
       return def;
+   }
+
+   @Override
+   public void submenu(String menuId, String id, String title, String styleClasses, MenuLinkBuilder builder) {
+      MenuDef def = m_defs.get(menuId);
+
+      if (def == null) {
+         throw new IllegalStateException(String.format("Menu(%s) is not defined!", menuId));
+      }
+
+      def.submenu(id, title, styleClasses, builder);
    }
 }
