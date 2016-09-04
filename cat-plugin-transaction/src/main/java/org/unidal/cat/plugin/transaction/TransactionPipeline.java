@@ -28,10 +28,10 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config/transaction").toString();
+                  return ctx.getQuery().uri("/config/transaction").toString();
                }
             });
 
-      Document.USER.register(TransactionConstants.NAME, "Transaction");
+      Document.USER.register(TransactionConstants.NAME, "Transaction", "/jsp/document/user/transaction.jsp");
    }
 }

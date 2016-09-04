@@ -29,7 +29,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultConfigProviderManager.class));
 
       all.addAll(new CatDatabaseConfigurator().defineComponents());
-      all.addAll(new WebComponentConfigurator().defineComponents());
 
       return all;
    }

@@ -16,7 +16,7 @@ public class ConfigMenuManager extends AbstractMenuManager implements Initializa
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config").toString();
+                  return ctx.getQuery().uri("/config").toString();
                }
             });
    }

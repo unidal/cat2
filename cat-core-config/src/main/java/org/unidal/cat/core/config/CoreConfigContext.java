@@ -1,4 +1,4 @@
-package org.unidal.cat.core.config.system;
+package org.unidal.cat.core.config;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import org.unidal.web.mvc.Page;
 
 import com.dianping.cat.Cat;
 
-public class SystemContext<T extends ActionPayload<? extends Page, ? extends Action>> extends ActionContext<T> {
+public abstract class CoreConfigContext<T extends ActionPayload<? extends Page, ? extends Action>> extends ActionContext<T> {
    private List<Menu> m_menus;
 
    private MenuGroup[] m_menuGroups;
 
-   public SystemContext() {
+   public CoreConfigContext() {
       try {
          m_menus = lookup(MenuManagerManager.class).config().getMenus(this);
       } catch (Exception e) {

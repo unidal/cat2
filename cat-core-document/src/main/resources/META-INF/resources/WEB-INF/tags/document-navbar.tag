@@ -76,7 +76,7 @@
                   window.location.href = "${model.webapp}/doc?${ctx.query}";
                });
                $("#tab_config").click(function(){
-                  window.location.href = "${model.webapp}/s/config?${ctx.query.op['projects']}";
+                  window.location.href = "${model.webapp}/config?${ctx.query.op['projects']}";
                });
             });
 		</script>

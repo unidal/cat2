@@ -45,35 +45,5 @@
 				</requirement>
 			</requirements>
 		</component>
-		<component>
-			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
-			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
-			<configuration>
-				<defaultModule>org.unidal.cat.core.config.system.SystemModule</defaultModule>
-			</configuration>
-		</component>
-		<component>
-			<role>org.unidal.web.mvc.Module</role>
-			<role-hint>org.unidal.cat.core.config.system.SystemModule</role-hint>
-			<implementation>org.unidal.cat.core.config.system.SystemModule</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.config.system.page.Handler</role>
-			<implementation>org.unidal.cat.core.config.system.page.Handler</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.core.config.system.page.JspViewer</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.config.system.page.JspViewer</role>
-			<implementation>org.unidal.cat.core.config.system.page.JspViewer</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
-				</requirement>
-			</requirements>
-		</component>
 	</components>
 </plexus>

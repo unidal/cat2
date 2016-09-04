@@ -19,14 +19,14 @@
    
    <ul class="nav nav-list" style="top: 0px;">
       <c:forEach var="menu" items="${ctx.menus}">
-         <li id="${menu.id}" class="hsub ${ctx.payload.page.name eq menu.id ? 'active open' : ''}">
+         <li id="${menu.id}" class="hsub ${model.menuId eq menu.id ? 'active open' : ''}">
          <a href="${menu.link}" class="dropdown-toggle"> 
             <i class="menu-icon ${menu.styleClasses}"></i><span class="menu-text">${menu.title}</span><b class="arrow fa fa-angle-down"></b>
          </a>
          <b class="arrow"></b>
          <ul class="submenu">
             <c:forEach var="submenu" items="${menu.subMenus}">
-               <li id="${submenu.id}" class="${ctx.payload.id eq submenu.id ? 'active' : ''}"><a href="${submenu.link}"><i class="menu-icon ${submenu.styleClasses}"></i>${submenu.title}</a><b class="arrow"></b></li>
+               <li id="${submenu.id}" class="${model.id eq submenu.id ? 'active' : ''}"><a href="${submenu.link}"><i class="menu-icon ${submenu.styleClasses}"></i>${submenu.title}</a><b class="arrow"></b></li>
             </c:forEach>
          </ul>
       </c:forEach>
