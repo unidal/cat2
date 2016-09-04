@@ -1,9 +1,9 @@
-package org.unidal.cat.plugin.transaction.report;
+package org.unidal.cat.plugin.transaction.config;
 
 import org.unidal.web.mvc.Page;
 import org.unidal.web.mvc.annotation.ModuleMeta;
 
-public enum ReportPage implements Page {
+public enum ConfigPage implements Page {
 
    TRANSACTION("transaction", "transaction", "Transaction", "Transaction", true);
 
@@ -17,7 +17,7 @@ public enum ReportPage implements Page {
 
    private boolean m_standalone;
 
-   private ReportPage(String name, String path, String title, String description, boolean standalone) {
+   private ConfigPage(String name, String path, String title, String description, boolean standalone) {
       m_name = name;
       m_path = path;
       m_title = title;
@@ -25,8 +25,8 @@ public enum ReportPage implements Page {
       m_standalone = standalone;
    }
 
-   public static ReportPage getByName(String name, ReportPage defaultPage) {
-      for (ReportPage action : ReportPage.values()) {
+   public static ConfigPage getByName(String name, ConfigPage defaultPage) {
+      for (ConfigPage action : ConfigPage.values()) {
          if (action.getName().equals(name)) {
             return action;
          }
@@ -40,7 +40,7 @@ public enum ReportPage implements Page {
    }
 
    public String getModuleName() {
-      ModuleMeta meta = ReportModule.class.getAnnotation(ModuleMeta.class);
+      ModuleMeta meta = ConfigModule.class.getAnnotation(ModuleMeta.class);
 
       if (meta != null) {
          return meta.name();
@@ -67,7 +67,7 @@ public enum ReportPage implements Page {
       return m_standalone;
    }
 
-   public ReportPage[] getValues() {
-      return ReportPage.values();
+   public ConfigPage[] getValues() {
+      return ConfigPage.values();
    }
 }
