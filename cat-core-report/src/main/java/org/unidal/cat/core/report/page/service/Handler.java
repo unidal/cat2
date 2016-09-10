@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.service;
+package org.unidal.cat.core.report.page.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
+import org.unidal.cat.core.report.page.ReportPage;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.remote.DefaultRemoteContext;
 import org.unidal.cat.spi.remote.RemoteContext;
@@ -24,7 +25,6 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
    @Inject

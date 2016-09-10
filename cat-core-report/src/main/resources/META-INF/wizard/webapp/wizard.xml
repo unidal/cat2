@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.core.report">
+   <webapp package="org.unidal.cat.core.report" name="cat" module="true" webres="false" cat="false" plugin-management="false" jstl="false">
+      <module name="report" path="r" default="true" package="org.unidal.cat.core.report.page">
+         <page name="service" title="Service" default="true" package="org.unidal.cat.core.report.page.service" path="service" template="default">
+            <description>Service</description>
+         </page>
+      </module>
+   </webapp>
+</wizard>

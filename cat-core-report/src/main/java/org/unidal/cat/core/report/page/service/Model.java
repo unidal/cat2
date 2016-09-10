@@ -1,6 +1,6 @@
-package com.dianping.cat.report.page.service;
+package org.unidal.cat.core.report.page.service;
 
-import com.dianping.cat.report.ReportPage;
+import org.unidal.cat.core.report.page.ReportPage;
 import org.unidal.web.mvc.ViewModel;
 
 public class Model extends ViewModel<ReportPage, Action, Context> {

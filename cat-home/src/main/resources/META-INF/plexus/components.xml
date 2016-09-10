@@ -5987,18 +5987,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.report.page.service.Handler</role>
-			<implementation>com.dianping.cat.report.page.service.Handler</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.remote.RemoteSkeleton</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>org.unidal.web.mvc.Module</role>
 			<role-hint>com.dianping.cat.system.SystemModule</role-hint>
 			<implementation>com.dianping.cat.system.SystemModule</implementation>

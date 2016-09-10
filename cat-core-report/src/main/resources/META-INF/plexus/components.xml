@@ -514,5 +514,29 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
+			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
+			<configuration>
+				<defaultModule>org.unidal.cat.core.report.page.ReportModule</defaultModule>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.Module</role>
+			<role-hint>org.unidal.cat.core.report.page.ReportModule</role-hint>
+			<implementation>org.unidal.cat.core.report.page.ReportModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.page.service.Handler</role>
+			<implementation>org.unidal.cat.core.report.page.service.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.spi.remote.RemoteSkeleton</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>

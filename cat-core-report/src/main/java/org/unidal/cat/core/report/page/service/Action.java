@@ -1,4 +1,4 @@
-package com.dianping.cat.report.page.service;
+package org.unidal.cat.core.report.page.service;
 
 public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view");
