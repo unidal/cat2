@@ -28,7 +28,7 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/config/transaction").empty().toString();
+                  return ctx.getQuery().uri("/config/update/transaction").empty().toString();
                }
             });
 

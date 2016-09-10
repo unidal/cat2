@@ -5,7 +5,9 @@ import org.unidal.web.mvc.annotation.ModuleMeta;
 
 public enum ConfigPage implements Page {
 
-   SERVICE("service", "service", "Service", "Service", true);
+   SERVICE("service", "service", "Service", "Service", true),
+
+   UPDATE("update", "update", "Update", "Update", true);
 
    private String m_name;
 

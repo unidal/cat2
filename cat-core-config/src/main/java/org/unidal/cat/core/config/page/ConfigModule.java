@@ -7,7 +7,9 @@ import org.unidal.web.mvc.annotation.ModulePagesMeta;
 @ModuleMeta(name = "config", defaultInboundAction = "service", defaultTransition = "default", defaultErrorAction = "default")
 @ModulePagesMeta({
 
-org.unidal.cat.core.config.page.service.Handler.class
+org.unidal.cat.core.config.page.service.Handler.class,
+
+org.unidal.cat.core.config.page.update.Handler.class
 })
 public class ConfigModule extends AbstractModule {
 

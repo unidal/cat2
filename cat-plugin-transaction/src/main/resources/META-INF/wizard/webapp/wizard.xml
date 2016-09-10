@@ -6,10 +6,5 @@
             <description>Transaction</description>
          </page>
       </module>
-      <module name="config" path="config" package="org.unidal.cat.plugin.transaction.config">
-         <page name="transaction" title="Transaction" default="true" package="org.unidal.cat.plugin.transaction.config.page" path="transaction" template="default">
-            <description>Transaction</description>
-         </page>
-      </module>
    </webapp>
 </wizard>

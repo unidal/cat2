@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.config.page;
+package org.unidal.cat.core.config.page.update;
 
 public enum Action implements org.unidal.web.mvc.Action {
 	VIEW("view"),

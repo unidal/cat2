@@ -1,4 +1,4 @@
-package org.unidal.cat.plugin.transaction.config.page;
+package org.unidal.cat.core.config.page.update;
 
 import org.unidal.cat.core.config.page.CoreConfigContext;
 

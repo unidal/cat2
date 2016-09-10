@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.plugin.transaction.report.ReportModule;
-import org.unidal.cat.plugin.transaction.config.ConfigModule;
-
 import org.unidal.lookup.configuration.Component;
 import org.unidal.web.configuration.AbstractWebComponentsConfigurator;
 
@@ -15,7 +13,7 @@ class WebComponentConfigurator extends AbstractWebComponentsConfigurator {
 	public List<Component> defineComponents() {
 		List<Component> all = new ArrayList<Component>();
 
-		defineModuleRegistry(all, ReportModule.class, ReportModule.class, ConfigModule.class);
+		defineModuleRegistry(all, ReportModule.class, ReportModule.class);
 
 		return all;
 	}

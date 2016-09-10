@@ -1,7 +1,7 @@
-package org.unidal.cat.plugin.transaction.config.page;
+package org.unidal.cat.core.config.page.update;
 
 public enum JspFile {
-	VIEW("/jsp/config/transaction.jsp"),
+	VIEW("/jsp/config/update.jsp"),
 
 	;
 

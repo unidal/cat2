@@ -1,9 +1,10 @@
-package org.unidal.cat.plugin.transaction.config.page;
+package org.unidal.cat.core.config.page.update;
 
-import org.unidal.cat.plugin.transaction.config.ConfigPage;
+import org.unidal.cat.core.config.page.ConfigPage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
+import org.unidal.web.mvc.payload.annotation.PathMeta;
 
 public class Payload implements ActionPayload<ConfigPage, Action> {
    private ConfigPage m_page;
@@ -16,6 +17,9 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
 
    @FieldMeta("update")
    private boolean m_update;
+
+   @PathMeta("path")
+   private String[] m_path;
 
    @Override
    public Action getAction() {
@@ -31,6 +35,14 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
       return m_page;
    }
 
+   public String getReport() {
+      if (m_path != null && m_path.length > 0) {
+         return m_path[0];
+      } else {
+         return null;
+      }
+   }
+
    public boolean isUpdate() {
       return m_update;
    }
@@ -41,13 +53,17 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
 
    @Override
    public void setPage(String page) {
-      m_page = ConfigPage.getByName(page, ConfigPage.TRANSACTION);
+      m_page = ConfigPage.getByName(page, ConfigPage.UPDATE);
    }
 
    @Override
    public void validate(ActionContext<?> ctx) {
       if (m_action == null) {
          m_action = Action.VIEW;
+      }
+
+      if (getReport() == null) {
+         ctx.addError("report.invalid");
       }
    }
 }

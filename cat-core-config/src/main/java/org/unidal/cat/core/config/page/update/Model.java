@@ -1,14 +1,13 @@
-package org.unidal.cat.plugin.transaction.config.page;
+package org.unidal.cat.core.config.page.update;
 
+import org.unidal.cat.core.config.page.ConfigPage;
 import org.unidal.cat.core.config.page.CoreConfigModel;
-import org.unidal.cat.plugin.transaction.TransactionConstants;
-import org.unidal.cat.plugin.transaction.config.ConfigPage;
 
 public class Model extends CoreConfigModel<ConfigPage, Action, Context> {
    private String m_content;
 
    public Model(Context ctx) {
-      super(TransactionConstants.NAME, ctx);
+      super(ConfigPage.UPDATE.getName(), ctx);
    }
 
    public String getContent() {

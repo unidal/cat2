@@ -32,7 +32,7 @@ public class EventsPipeline extends AbstractPipeline implements Initializable {
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config/events").empty().toString();
+                  return ctx.getQuery().uri("/config/update/events").empty().toString();
                }
             });
 
