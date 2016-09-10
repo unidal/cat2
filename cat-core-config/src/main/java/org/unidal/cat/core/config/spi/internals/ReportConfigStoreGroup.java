@@ -5,6 +5,8 @@ import org.unidal.cat.core.config.dal.ReportConfigDao;
 import org.unidal.cat.core.config.dal.ReportConfigEntity;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreGroup;
+import org.unidal.dal.jdbc.DalException;
+import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -19,15 +21,66 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
 
    @Override
    public ConfigStore getConfigStore(String name) {
-      try {
-         String key = ID + ":" + name;
-         ReportConfig config = m_dao.findByReportName(key, ReportConfigEntity.READSET_FULL);
+      return new ReportConfigStore(name);
+   }
 
-         return new DefaultConfigStore(config.getContent());
-      } catch (Throwable e) {
-         Cat.logError(e);
+   private class ReportConfigStore implements ConfigStore {
+      private String m_name;
+
+      private String m_config;
+
+      public ReportConfigStore(String name) {
+         m_name = name;
       }
 
-      return null;
+      @Override
+      public String getConfig() {
+         if (m_config == null) {
+            try {
+               ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+
+               m_config = c.getContent();
+            } catch (Throwable e) {
+               Cat.logError(e);
+            }
+         }
+
+         return m_config;
+      }
+
+      @Override
+      public void setConfig(String config) {
+         try {
+            ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+
+            c.setContent(config);
+            c.setVersion(c.getVersion() + 1);
+            c.setFormat(1);
+            c.setLastModifiedBy("Admin"); // TODO
+
+            m_dao.updateByReportName(c, ReportConfigEntity.UPDATESET_FULL);
+            m_config = config;
+            return;
+         } catch (DalNotFoundException e) {
+            // continue
+         } catch (DalException e) {
+            throw new RuntimeException(String.format("Error when adding report config(%s)!", m_name), e);
+         }
+
+         try {
+            ReportConfig c = m_dao.createLocal();
+
+            c.setReportName(m_name);
+            c.setContent(config);
+            c.setVersion(1);
+            c.setFormat(1);
+            c.setLastModifiedBy("Admin"); // TODO
+
+            m_dao.insert(c);
+            m_config = config;
+         } catch (DalException e) {
+            throw new RuntimeException(String.format("Error when updating report config(%s)!", m_name), e);
+         }
+      }
    }
 }

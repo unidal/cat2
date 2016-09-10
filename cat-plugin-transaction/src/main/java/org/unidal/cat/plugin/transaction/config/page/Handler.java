@@ -1,10 +1,14 @@
 package org.unidal.cat.plugin.transaction.config.page;
 
+import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_REPORT;
+import static org.unidal.cat.plugin.transaction.TransactionConstants.NAME;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
 
-import org.unidal.cat.plugin.transaction.TransactionConfigService;
+import org.unidal.cat.core.config.spi.ConfigStore;
+import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.cat.plugin.transaction.config.ConfigPage;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
@@ -17,7 +21,7 @@ public class Handler implements PageHandler<Context> {
    private JspViewer m_jspViewer;
 
    @Inject
-   private TransactionConfigService m_configService;
+   private ConfigStoreManager m_storeManager;
 
    @Override
    @PayloadMeta(Payload.class)
@@ -28,10 +32,12 @@ public class Handler implements PageHandler<Context> {
 
       if (action == Action.EDIT) {
          if (payload.isUpdate() && !ctx.hasErrors()) {
+            ConfigStore store = m_storeManager.getConfigStore(GROUP_REPORT, NAME);
             String content = payload.getContent();
 
             try {
-               m_configService.setConfig(content);
+               store.setConfig(content);
+               m_storeManager.refresh(GROUP_REPORT, NAME);
             } catch (Exception e) {
                ctx.addError("config.update.error", e);
             }
@@ -48,8 +54,10 @@ public class Handler implements PageHandler<Context> {
 
       model.setAction(action);
       model.setPage(ConfigPage.TRANSACTION);
-      model.setContent(m_configService.getConfig());
-      
+
+      ConfigStore store = m_storeManager.getConfigStore(GROUP_REPORT, NAME);
+      model.setContent(store.getConfig());
+
       if (!ctx.isProcessStopped()) {
          m_jspViewer.view(ctx, model);
       }

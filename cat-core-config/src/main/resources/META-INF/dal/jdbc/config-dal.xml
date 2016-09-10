@@ -10,14 +10,6 @@
         WHERE <FIELD name='report-name'/> = ${report-name}
         ]]></statement>
       </query>
-      <query name="update-by-report-name" type="UPDATE">
-        <param name="report-name" />
-        <statement><![CDATA[
-        UPDATE <TABLE/>
-        SET <FIELDS/>
-        WHERE <FIELD name='report-name'/> = ${report-name}
-        ]]></statement>
-      </query>
     </query-defs>
   </entity></entities>
 

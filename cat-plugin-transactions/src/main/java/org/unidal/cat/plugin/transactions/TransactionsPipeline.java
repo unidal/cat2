@@ -33,7 +33,7 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config/transactions").toString();
+                  return ctx.getQuery().uri("/system/config/transactions").empty().toString();
                }
             });
 

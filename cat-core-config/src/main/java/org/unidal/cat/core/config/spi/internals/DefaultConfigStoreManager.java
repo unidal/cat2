@@ -56,6 +56,14 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
          ConfigStore store = createConfigStore(key, group, name);
 
          if (store != null) {
+            ConfigStore existed = m_stores.get(key);
+
+            if (existed != null) {
+               existed.setConfig(store.getConfig());
+            } else {
+               m_stores.put(key, store);
+            }
+
             callback.onConfigChange(store.getConfig());
          }
       }

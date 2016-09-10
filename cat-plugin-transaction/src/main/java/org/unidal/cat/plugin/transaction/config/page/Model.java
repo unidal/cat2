@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transaction.config.page;
 
-import org.unidal.cat.core.config.CoreConfigModel;
+import org.unidal.cat.core.config.page.CoreConfigModel;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.config.ConfigPage;
 

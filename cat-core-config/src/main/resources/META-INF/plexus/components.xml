@@ -38,15 +38,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.config.ConfigProviderManager</role>
-			<implementation>org.unidal.cat.core.config.DefaultConfigProviderManager</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.core.config.dal.ReportConfigDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
 			<role-hint>report-config</role-hint>
 			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
@@ -61,6 +52,39 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
+			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
+			<configuration>
+				<defaultModule>org.unidal.cat.core.config.page.ConfigModule</defaultModule>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.web.mvc.Module</role>
+			<role-hint>org.unidal.cat.core.config.page.ConfigModule</role-hint>
+			<implementation>org.unidal.cat.core.config.page.ConfigModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.config.page.service.Handler</role>
+			<implementation>org.unidal.cat.core.config.page.service.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.page.service.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.config.page.service.JspViewer</role>
+			<implementation>org.unidal.cat.core.config.page.service.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
 				</requirement>
 			</requirements>
 		</component>

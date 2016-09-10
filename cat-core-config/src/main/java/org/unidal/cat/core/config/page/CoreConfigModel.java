@@ -1,4 +1,4 @@
-package org.unidal.cat.core.config;
+package org.unidal.cat.core.config.page;
 
 import org.unidal.web.mvc.Action;
 import org.unidal.web.mvc.Page;

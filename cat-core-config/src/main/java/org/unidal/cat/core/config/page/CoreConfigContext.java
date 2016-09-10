@@ -1,4 +1,4 @@
-package org.unidal.cat.core.config;
+package org.unidal.cat.core.config.page;
 
 import java.util.List;
 
