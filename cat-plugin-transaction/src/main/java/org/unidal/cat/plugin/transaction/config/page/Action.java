@@ -1,7 +1,9 @@
 package org.unidal.cat.plugin.transaction.config.page;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	VIEW("view");
+	VIEW("view"),
+	
+	EDIT("edit");
 
 	private String m_name;
 

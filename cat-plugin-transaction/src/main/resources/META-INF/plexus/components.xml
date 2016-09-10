@@ -236,6 +236,9 @@
 				<requirement>
 					<role>org.unidal.cat.plugin.transaction.config.page.JspViewer</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.plugin.transaction.TransactionConfigService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

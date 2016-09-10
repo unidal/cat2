@@ -11,18 +11,32 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
    @FieldMeta("op")
    private Action m_action;
 
-   public void setAction(String action) {
-      m_action = Action.getByName(action, Action.VIEW);
-   }
+   @FieldMeta("content")
+   private String m_content;
+
+   @FieldMeta("update")
+   private boolean m_update;
 
    @Override
    public Action getAction() {
       return m_action;
    }
 
+   public String getContent() {
+      return m_content;
+   }
+
    @Override
    public ConfigPage getPage() {
       return m_page;
+   }
+
+   public boolean isUpdate() {
+      return m_update;
+   }
+
+   public void setAction(String action) {
+      m_action = Action.getByName(action, Action.VIEW);
    }
 
    @Override
