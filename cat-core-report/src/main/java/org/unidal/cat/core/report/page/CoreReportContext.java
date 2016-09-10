@@ -1,4 +1,4 @@
-package org.unidal.cat.core.report;
+package org.unidal.cat.core.report.page;
 
 import java.util.List;
 

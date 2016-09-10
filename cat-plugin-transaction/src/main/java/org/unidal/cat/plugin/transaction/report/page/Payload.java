@@ -2,7 +2,7 @@ package org.unidal.cat.plugin.transaction.report.page;
 
 import java.net.URLEncoder;
 
-import org.unidal.cat.core.report.CoreReportPayload;
+import org.unidal.cat.core.report.page.CoreReportPayload;
 import org.unidal.cat.plugin.transaction.report.ReportPage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;

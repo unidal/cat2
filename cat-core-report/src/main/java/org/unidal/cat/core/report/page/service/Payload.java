@@ -3,7 +3,7 @@ package org.unidal.cat.core.report.page.service;
 import java.util.Date;
 import java.util.List;
 
-import org.unidal.cat.core.report.CoreReportPayload;
+import org.unidal.cat.core.report.page.CoreReportPayload;
 import org.unidal.cat.core.report.page.ReportPage;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.web.mvc.ActionContext;

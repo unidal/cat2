@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.event.report.page;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.unidal.cat.core.report.CoreReportModel;
+import org.unidal.cat.core.report.page.CoreReportModel;
 import org.unidal.cat.core.view.LineChart;
 import org.unidal.cat.core.view.TableViewModel;
 import org.unidal.cat.plugin.event.EventConstants;
