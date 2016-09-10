@@ -6,6 +6,20 @@
 			<implementation>org.unidal.cat.core.config.CatConfigModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+			<implementation>org.unidal.cat.core.config.spi.internals.DefaultConfigStoreManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
+			<role-hint>report</role-hint>
+			<implementation>org.unidal.cat.core.config.spi.internals.ReportConfigStoreGroup</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.dal.ReportConfigDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.view.menu.MenuManager</role>
 			<role-hint>config</role-hint>
 			<implementation>org.unidal.cat.core.config.view.ConfigMenuManager</implementation>
@@ -17,6 +31,11 @@
 		<component>
 			<role>org.unidal.cat.core.config.service.DomainOrgConfigService</role>
 			<implementation>org.unidal.cat.core.config.service.DefaultDomainOrgConfigService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.config.ConfigProviderManager</role>
