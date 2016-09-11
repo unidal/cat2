@@ -2318,6 +2318,41 @@
 			</requirements>
 		</component>
 		<component>
+			<role>com.dianping.cat.report.service.ModelService</role>
+			<role-hint>logview-local</role-hint>
+			<implementation>com.dianping.cat.report.page.logview.service.LocalMessageService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.analysis.MessageConsumer</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.config.server.ServerConfigManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.storage.BucketManager</role>
+					<role-hint>local</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.storage.MessageFinderManager</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>html</role-hint>
+					<field-name>m_html</field-name>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>waterfall</role-hint>
+					<field-name>m_waterfall</field-name>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>NT1</role-hint>
+					<field-name>m_plainText</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.cat.report.service.LocalModelService</role>
 			<role-hint>logview</role-hint>
 			<implementation>com.dianping.cat.report.page.logview.service.LocalMessageService</implementation>
@@ -2347,7 +2382,7 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
+					<role-hint>NT1</role-hint>
 					<field-name>m_plainText</field-name>
 				</requirement>
 			</requirements>

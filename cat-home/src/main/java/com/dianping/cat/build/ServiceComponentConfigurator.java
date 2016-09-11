@@ -3,6 +3,7 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -25,7 +26,6 @@ import com.dianping.cat.hadoop.hdfs.HdfsMessageBucketManager;
 import com.dianping.cat.message.codec.HtmlMessageCodec;
 import com.dianping.cat.message.codec.WaterfallMessageCodec;
 import com.dianping.cat.message.spi.MessageCodec;
-import com.dianping.cat.message.spi.codec.PlainTextMessageCodec;
 import com.dianping.cat.message.storage.MessageBucketManager;
 import com.dianping.cat.report.ReportBucketManager;
 import com.dianping.cat.report.page.cross.service.CompositeCrossService;
@@ -80,115 +80,123 @@ import com.dianping.cat.report.service.ModelService;
 import com.dianping.cat.service.IpService;
 
 class ServiceComponentConfigurator extends AbstractResourceConfigurator {
-	@Override
-	public List<Component> defineComponents() {
-		List<Component> all = new ArrayList<Component>();
+   @Override
+   public List<Component> defineComponents() {
+      List<Component> all = new ArrayList<Component>();
 
-		all.add(C(LocalModelService.class, LocalTransactionService.ID, LocalTransactionService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "transaction-historical", HistoricalTransactionService.class) //
-		      .req(TransactionReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, TransactionAnalyzer.ID, CompositeTransactionService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "transaction-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalTransactionService.ID, LocalTransactionService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "transaction-historical", HistoricalTransactionService.class) //
+            .req(TransactionReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, TransactionAnalyzer.ID, CompositeTransactionService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "transaction-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalEventService.ID, LocalEventService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "event-historical", HistoricalEventService.class) //
-		      .req(EventReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, EventAnalyzer.ID, CompositeEventService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "event-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalEventService.ID, LocalEventService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "event-historical", HistoricalEventService.class) //
+            .req(EventReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, EventAnalyzer.ID, CompositeEventService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "event-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalProblemService.ID, LocalProblemService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "problem-historical", HistoricalProblemService.class) //
-		      .req(ProblemReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, ProblemAnalyzer.ID, CompositeProblemService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "problem-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalProblemService.ID, LocalProblemService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "problem-historical", HistoricalProblemService.class) //
+            .req(ProblemReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, ProblemAnalyzer.ID, CompositeProblemService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "problem-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalHeartbeatService.ID, LocalHeartbeatService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "heartbeat-historical", HistoricalHeartbeatService.class) //
-		      .req(HeartbeatReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, HeartbeatAnalyzer.ID, CompositeHeartbeatService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "heartbeat-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalHeartbeatService.ID, LocalHeartbeatService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "heartbeat-historical", HistoricalHeartbeatService.class) //
+            .req(HeartbeatReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, HeartbeatAnalyzer.ID, CompositeHeartbeatService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "heartbeat-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalMatrixService.ID, LocalMatrixService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "matrix-historical", HistoricalMatrixService.class) //
-		      .req(MatrixReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, MatrixAnalyzer.ID, CompositeMatrixService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "matrix-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalMatrixService.ID, LocalMatrixService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "matrix-historical", HistoricalMatrixService.class) //
+            .req(MatrixReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, MatrixAnalyzer.ID, CompositeMatrixService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "matrix-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalStateService.ID, LocalStateService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "state-historical", HistoricalStateService.class) //
-		      .req(StateReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, StateAnalyzer.ID, CompositeStateService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "state-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalStateService.ID, LocalStateService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "state-historical", HistoricalStateService.class) //
+            .req(StateReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, StateAnalyzer.ID, CompositeStateService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "state-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalCrossService.ID, LocalCrossService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "cross-historical", HistoricalCrossService.class) //
-		      .req(CrossReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, CrossAnalyzer.ID, CompositeCrossService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "cross-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalCrossService.ID, LocalCrossService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "cross-historical", HistoricalCrossService.class) //
+            .req(CrossReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, CrossAnalyzer.ID, CompositeCrossService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "cross-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalTopService.ID, LocalTopService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "top-historical", HistoricalTopService.class) //
-		      .req(TopReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, TopAnalyzer.ID, CompositeTopService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "top-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalTopService.ID, LocalTopService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "top-historical", HistoricalTopService.class) //
+            .req(TopReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, TopAnalyzer.ID, CompositeTopService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "top-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalDependencyService.ID, LocalDependencyService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "dependency-historical", HistoricalDependencyService.class) //
-		      .req(DependencyReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, DependencyAnalyzer.ID, CompositeDependencyService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "dependency-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalDependencyService.ID, LocalDependencyService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "dependency-historical", HistoricalDependencyService.class) //
+            .req(DependencyReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, DependencyAnalyzer.ID, CompositeDependencyService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "dependency-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalStorageService.ID, LocalStorageService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, "storage-historical", HistoricalStorageService.class) //
-		      .req(StorageReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, StorageAnalyzer.ID, CompositeStorageService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "storage-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalStorageService.ID, LocalStorageService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, "storage-historical", HistoricalStorageService.class) //
+            .req(StorageReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, StorageAnalyzer.ID, CompositeStorageService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "storage-historical" }, "m_services"));
 
-		all.add(C(LocalModelService.class, LocalMetricService.ID, LocalMetricService.class) //
-		      .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class, IpService.class));
-		all.add(C(ModelService.class, "metric-historical", HistoricalMetricService.class) //
-		      .req(MetricReportService.class, ServerConfigManager.class));
-		all.add(C(ModelService.class, MetricAnalyzer.ID, CompositeMetricService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "metric-historical" }, "m_services"));
+      all.add(C(LocalModelService.class, LocalMetricService.ID, LocalMetricService.class) //
+            .req(ReportBucketManager.class, MessageConsumer.class, ServerConfigManager.class, IpService.class));
+      all.add(C(ModelService.class, "metric-historical", HistoricalMetricService.class) //
+            .req(MetricReportService.class, ServerConfigManager.class));
+      all.add(C(ModelService.class, MetricAnalyzer.ID, CompositeMetricService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "metric-historical" }, "m_services"));
 
-		all.add(C(ModelService.class, "logview", CompositeLogViewService.class) //
-		      .req(ServerConfigManager.class) //
-		      .req(ModelService.class, new String[] { "logview-historical", "logview-local" }, "m_services"));
+      all.add(C(ModelService.class, "logview", CompositeLogViewService.class) //
+            .req(ServerConfigManager.class) //
+            .req(ModelService.class, new String[] { "logview-historical", "logview-local" }, "m_services"));
 
-		all.add(C(LocalModelService.class, "logview", LocalMessageService.class)
-		      .req(MessageConsumer.class, ServerConfigManager.class)//
-		      .req(BucketManager.class, "local")//
-		      .req(MessageFinderManager.class)//
-		      .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html")//
-		      .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall")//
-		      .req(MessageCodec.class, PlainTextMessageCodec.ID, "m_plainText"));
+      all.add(C(ModelService.class, "logview-local", LocalMessageService.class)
+            .req(MessageConsumer.class, ServerConfigManager.class)//
+            .req(BucketManager.class, "local")//
+            .req(MessageFinderManager.class)//
+            .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html")//
+            .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall")//
+            .req(MessageCodec.class, NativeMessageCodec.ID, "m_plainText"));
 
-		all.add(C(ModelService.class, "logview-historical", HistoricalMessageService.class) //
-		      .req(MessageBucketManager.class, HdfsMessageBucketManager.ID) //
-		      .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html") //
-		      .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall").req(ServerConfigManager.class));
+      all.add(C(LocalModelService.class, "logview", LocalMessageService.class)
+            .req(MessageConsumer.class, ServerConfigManager.class)//
+            .req(BucketManager.class, "local")//
+            .req(MessageFinderManager.class)//
+            .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html")//
+            .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall")//
+            .req(MessageCodec.class, NativeMessageCodec.ID, "m_plainText"));
 
-		return all;
-	}
+      all.add(C(ModelService.class, "logview-historical", HistoricalMessageService.class) //
+            .req(MessageBucketManager.class, HdfsMessageBucketManager.ID) //
+            .req(MessageCodec.class, HtmlMessageCodec.ID, "m_html") //
+            .req(MessageCodec.class, WaterfallMessageCodec.ID, "m_waterfall").req(ServerConfigManager.class));
+
+      return all;
+   }
 }
