@@ -24,20 +24,14 @@ public class TransactionPipeline extends AbstractPipeline implements Initializab
                         .get("type").get("").get("name").get("").get("group").get("").toString();
                }
             });
-      manager.config().menu("config", "Configuration", "fa fa-cogs", //
+      manager.config().submenu("config", TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time", //
             new MenuLinkBuilder() {
                @Override
                public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config").toString();
-               }
-            }).submenu(TransactionConstants.NAME, "Transaction", "glyphicon glyphicon-time", //
-            new MenuLinkBuilder() {
-               @Override
-               public String build(ActionContext<?> ctx) {
-                  return ctx.getQuery().uri("/system/config/transaction").toString();
+                  return ctx.getQuery().uri("/config/transaction").empty().toString();
                }
             });
 
-      Document.USER.register(TransactionConstants.NAME, "Transaction");
+      Document.USER.register(TransactionConstants.NAME, "Transaction", "/jsp/document/user/transaction.jsp");
    }
 }

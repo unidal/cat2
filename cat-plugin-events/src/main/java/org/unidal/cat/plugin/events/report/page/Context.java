@@ -1,8 +1,8 @@
 package org.unidal.cat.plugin.events.report.page;
 
-import org.unidal.cat.core.report.CoreReportContext;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
 import org.unidal.cat.core.report.nav.GroupBar;
+import org.unidal.cat.core.report.page.CoreReportContext;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;
 
 public class Context extends CoreReportContext<Payload> {

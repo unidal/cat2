@@ -26,7 +26,7 @@
 			<implementation>org.unidal.cat.plugin.event.EventConfigService</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.config.ConfigProviderManager</role>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
 				</requirement>
 			</requirements>
 		</component>

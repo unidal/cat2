@@ -1,7 +1,5 @@
 package org.unidal.cat.core.config.service;
 
-import java.io.InputStream;
-
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.config.domain.org.entity.DepartmentModel;
@@ -9,10 +7,17 @@ import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 import org.unidal.cat.core.config.domain.org.entity.ProductLineModel;
 import org.unidal.cat.core.config.domain.org.entity.ProjectModel;
 import org.unidal.cat.core.config.domain.org.transform.DefaultSaxParser;
+import org.unidal.cat.core.config.spi.ConfigChangeListener;
+import org.unidal.cat.core.config.spi.ConfigException;
+import org.unidal.cat.core.config.spi.ConfigStoreManager;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = DomainOrgConfigService.class)
-public class DefaultDomainOrgConfigService implements DomainOrgConfigService, Initializable {
+public class DefaultDomainOrgConfigService implements DomainOrgConfigService, ConfigChangeListener, Initializable {
+   @Inject
+   private ConfigStoreManager m_manager;
+
    private DomainOrgConfigModel m_config;
 
    @Override
@@ -39,14 +44,19 @@ public class DefaultDomainOrgConfigService implements DomainOrgConfigService, In
 
    @Override
    public void initialize() throws InitializationException {
-      try {
-         InputStream in = getClass().getResourceAsStream("domain-org-config.xml"); // TODO for test
-         DomainOrgConfigModel config = DefaultSaxParser.parse(in);
+      String config = m_manager.getConfigStore("application", "domain.org").getConfig();
 
-         m_config = config;
-      } catch (Exception e) {
-         throw new InitializationException("Unable to load domain-org-config.xml!", e);
+      if (config == null) {
+         m_config = new DomainOrgConfigModel();
+      } else {
+         try {
+            m_config = DefaultSaxParser.parse(config);
+         } catch (Exception e) {
+            throw new InitializationException("Unable to load config(application:domain.org)!", e);
+         }
       }
+
+      m_manager.register("application", "domain.org", this);
    }
 
    @Override
@@ -68,5 +78,14 @@ public class DefaultDomainOrgConfigService implements DomainOrgConfigService, In
       }
 
       return false;
+   }
+
+   @Override
+   public void onChanged(String config) throws ConfigException {
+      try {
+         m_config = DefaultSaxParser.parse(config);
+      } catch (Exception e) {
+         throw new ConfigException("Unable to parse config(application:domain.org)!", e);
+      }
    }
 }

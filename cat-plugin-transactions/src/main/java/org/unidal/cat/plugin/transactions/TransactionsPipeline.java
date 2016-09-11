@@ -29,6 +29,13 @@ public class TransactionsPipeline extends AbstractPipeline implements Initializa
                         .get("type").get("").get("name").get("").get("group").get("").toString();
                }
             });
+      manager.config().submenu("config", TransactionsConstants.NAME, "Transactions", "glyphicon glyphicon-time", //
+            new MenuLinkBuilder() {
+               @Override
+               public String build(ActionContext<?> ctx) {
+                  return ctx.getQuery().uri("/config/transactions").empty().toString();
+               }
+            });
 
       Document.USER.register(TransactionsConstants.NAME, "Transaction Summary");
    }

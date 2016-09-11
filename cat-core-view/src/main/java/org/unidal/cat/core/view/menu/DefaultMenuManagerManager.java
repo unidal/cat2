@@ -25,7 +25,7 @@ public class DefaultMenuManagerManager extends ContainerHolder implements MenuMa
       MenuManager manager = m_cached.get(id);
 
       if (manager == null) {
-         manager = lookup(MenuManager.class);
+         manager = lookup(MenuManager.class, id);
          m_cached.put(id, manager);
       }
 

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.unidal.cat.core.report.CatReportModule;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
+import org.unidal.cat.core.report.view.ReportMenuManager;
 import org.unidal.cat.core.view.svg.DefaultGraphBuilder;
 import org.unidal.cat.core.view.svg.DefaultValueTranslater;
 import org.unidal.cat.spi.analysis.DefaultCheckpointService;
@@ -54,6 +55,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
       all.add(A(CatReportModule.class));
 
+      all.add(A(ReportMenuManager.class));
+
       all.add(A(DefaultReportConfiguration.class));
       all.add(A(DefaultReportManagerManager.class));
       all.add(A(DefaultReportFilterManager.class));
@@ -102,6 +105,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultValueTranslater.class));
 
       all.addAll(new CatDatabaseConfigurator().defineComponents());
+      all.addAll(new WebComponentConfigurator().defineComponents());
 
       return all;
    }

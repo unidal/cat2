@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.plugin.transaction">
+   <webapp package="org.unidal.cat.plugin.transaction" name="cat" module="true" webres="false" cat="false" plugin-management="false" jstl="false">
+      <module name="report" path="r" default="true" package="org.unidal.cat.plugin.transaction.report">
+         <page name="transaction" title="Transaction" default="true" package="org.unidal.cat.plugin.transaction.report.page" path="transaction" template="default">
+            <description>Transaction</description>
+         </page>
+      </module>
+   </webapp>
+</wizard>

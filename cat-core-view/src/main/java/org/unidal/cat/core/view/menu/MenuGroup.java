@@ -7,7 +7,7 @@ public enum MenuGroup {
 
 	DOCUMENT("document", "Document", "fa fa-users", "btn btn-warning", "/doc"),
 
-	CONFIG("setting", "Setting", "fa fa-cogs", "btn btn-danger", "/system/config");
+	CONFIG("setting", "Setting", "fa fa-cogs", "btn btn-danger", "/config");
 
 	private String m_id;
 

@@ -1,11 +1,17 @@
 package org.unidal.cat.plugin.transactions;
 
+import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_REPORT;
+import static org.unidal.cat.plugin.transactions.TransactionsConstants.NAME;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.config.ConfigProviderManager;
+import org.unidal.cat.core.config.spi.ConfigChangeListener;
+import org.unidal.cat.core.config.spi.ConfigException;
+import org.unidal.cat.core.config.spi.ConfigStore;
+import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.cat.plugin.transactions.config.entity.ConfigModel;
 import org.unidal.cat.plugin.transactions.config.entity.TransactionsConfigModel;
 import org.unidal.cat.plugin.transactions.config.transform.DefaultSaxParser;
@@ -14,9 +20,9 @@ import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;
 
 @Named
-public class TransactionsConfigService implements Initializable {
+public class TransactionsConfigService implements Initializable, ConfigChangeListener {
    @Inject
-   private ConfigProviderManager m_manager;
+   private ConfigStoreManager m_manager;
 
    private Map<String, Pair<String, Boolean>> m_matchedTypes = new HashMap<String, Pair<String, Boolean>>();
 
@@ -26,20 +32,26 @@ public class TransactionsConfigService implements Initializable {
 
    @Override
    public void initialize() throws InitializationException {
-      try {
-         String xml = m_manager.getConfigProvider(TransactionsConstants.NAME).getConfig();
+      m_manager.register(GROUP_REPORT, NAME, this);
 
-         if (xml != null) {
-            TransactionsConfigModel root = DefaultSaxParser.parse(xml);
+      ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
+      String config = store.getConfig();
+
+      try {
+         if (config != null) {
+            TransactionsConfigModel root = DefaultSaxParser.parse(config);
 
             initialize(root);
          }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load transactions config!", e);
+         throw new InitializationException("Invalid transactions config:\r\n" + config, e);
       }
    }
 
    private void initialize(TransactionsConfigModel root) {
+      Map<String, Pair<String, Boolean>> startingTypes = new HashMap<String, Pair<String, Boolean>>();
+      Map<String, Pair<String, Boolean>> matchedTypes = new HashMap<String, Pair<String, Boolean>>();
+
       for (ConfigModel config : root.getConfigs()) {
          String type = config.getType().trim();
          String name = config.getName().trim();
@@ -54,11 +66,14 @@ public class TransactionsConfigService implements Initializable {
          }
 
          if (type.endsWith("*")) { // suffix with "*"
-            m_startingTypes.put(type.substring(0, type.length() - 1), pair);
+            startingTypes.put(type.substring(0, type.length() - 1), pair);
          } else {
-            m_matchedTypes.put(type, pair);
+            matchedTypes.put(type, pair);
          }
       }
+
+      m_startingTypes = startingTypes;
+      m_matchedTypes = matchedTypes;
    }
 
    public boolean isEligible(String type) {
@@ -89,6 +104,19 @@ public class TransactionsConfigService implements Initializable {
          return name.startsWith(pair.getKey());
       } else {
          return pair.getKey().equals(name);
+      }
+   }
+
+   @Override
+   public void onChanged(String config) throws ConfigException {
+      try {
+         if (config != null) {
+            TransactionsConfigModel root = DefaultSaxParser.parse(config);
+
+            initialize(root);
+         }
+      } catch (Exception e) {
+         throw new ConfigException("Invalid transactions config:\r\n" + config, e);
       }
    }
 
