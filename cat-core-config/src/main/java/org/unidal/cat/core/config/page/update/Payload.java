@@ -4,7 +4,6 @@ import org.unidal.cat.core.config.page.ConfigPage;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.ActionPayload;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
-import org.unidal.web.mvc.payload.annotation.PathMeta;
 
 public class Payload implements ActionPayload<ConfigPage, Action> {
    private ConfigPage m_page;
@@ -18,8 +17,7 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
    @FieldMeta("update")
    private boolean m_update;
 
-   @PathMeta("path")
-   private String[] m_path;
+   private String m_report;
 
    @Override
    public Action getAction() {
@@ -36,11 +34,7 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
    }
 
    public String getReport() {
-      if (m_path != null && m_path.length > 0) {
-         return m_path[0];
-      } else {
-         return null;
-      }
+      return m_report;
    }
 
    public boolean isUpdate() {
@@ -62,8 +56,10 @@ public class Payload implements ActionPayload<ConfigPage, Action> {
          m_action = Action.VIEW;
       }
 
-      if (getReport() == null) {
-         ctx.addError("report.invalid");
+      m_report = ctx.getRequestContext().getAction();
+
+      if (m_report != null && m_report.length() == 0) {
+         m_report = null;
       }
    }
 }

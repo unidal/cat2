@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.config.spi.ConfigChangeCallback;
+import org.unidal.cat.core.config.spi.ConfigChangeListener;
 import org.unidal.cat.core.config.spi.ConfigException;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
@@ -21,7 +21,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named
-public class EventConfigService implements Initializable, ConfigChangeCallback {
+public class EventConfigService implements Initializable, ConfigChangeListener {
    @Inject
    private ConfigStoreManager m_manager;
 
@@ -33,17 +33,17 @@ public class EventConfigService implements Initializable, ConfigChangeCallback {
    public void initialize() throws InitializationException {
       m_manager.register(GROUP_REPORT, NAME, this);
 
-      try {
-         ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
-         String config = store.getConfig();
+      ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
+      String config = store.getConfig();
 
+      try {
          if (config != null) {
             EventConfigModel root = DefaultSaxParser.parse(config);
 
             initialize(root);
          }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load transaction config!", e);
+         throw new InitializationException("Invalid event config:\r\n" + config, e);
       }
    }
 
@@ -84,7 +84,7 @@ public class EventConfigService implements Initializable, ConfigChangeCallback {
    }
 
    @Override
-   public void onConfigChange(String config) throws ConfigException {
+   public void onChanged(String config) throws ConfigException {
       try {
          if (config != null) {
             EventConfigModel root = DefaultSaxParser.parse(config);
@@ -92,7 +92,7 @@ public class EventConfigService implements Initializable, ConfigChangeCallback {
             initialize(root);
          }
       } catch (Exception e) {
-         throw new ConfigException("Unable to update transaction config!", e);
+         throw new ConfigException("Invalid event config:\r\n" + config, e);
       }
    }
 }

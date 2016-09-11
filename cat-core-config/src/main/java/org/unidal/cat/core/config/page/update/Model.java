@@ -7,7 +7,7 @@ public class Model extends CoreConfigModel<ConfigPage, Action, Context> {
    private String m_content;
 
    public Model(Context ctx) {
-      super(ConfigPage.UPDATE.getName(), ctx);
+      super(ctx.getPayload().getReport(), ctx);
    }
 
    public String getContent() {

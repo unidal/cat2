@@ -28,18 +28,16 @@ public class Handler implements PageHandler<Context> {
    public void handleInbound(Context ctx) throws ServletException, IOException {
       Payload payload = ctx.getPayload();
       Action action = payload.getAction();
+      String report = payload.getReport();
 
       if (action == Action.EDIT) {
-         if (payload.isUpdate() && !ctx.hasErrors()) {
-            String name = payload.getReport();
-            ConfigStore store = m_storeManager.getConfigStore(GROUP_REPORT, name);
+         if (report != null && payload.isUpdate() && !ctx.hasErrors()) {
             String content = payload.getContent();
 
             try {
-               store.setConfig(content);
-               m_storeManager.refresh(GROUP_REPORT, name);
+               m_storeManager.onChanged(GROUP_REPORT, report, content);
             } catch (Exception e) {
-               ctx.addError("config.update.error", e);
+               ctx.addError("config.update.error", e).addArgument("report", payload.getReport());
             }
          }
       }
@@ -56,8 +54,19 @@ public class Handler implements PageHandler<Context> {
       model.setAction(action);
       model.setPage(ConfigPage.UPDATE);
 
-      ConfigStore store = m_storeManager.getConfigStore(GROUP_REPORT, name);
-      model.setContent(store.getConfig());
+      switch (action) {
+      case EDIT:
+         if (payload.isUpdate()) {
+            model.setContent(payload.getContent());
+
+            break;
+         }
+      default:
+         ConfigStore store = m_storeManager.getConfigStore(GROUP_REPORT, name);
+
+         model.setContent(store.getConfig());
+         break;
+      }
 
       if (!ctx.isProcessStopped()) {
          m_jspViewer.view(ctx, model);

@@ -7,14 +7,14 @@ import org.unidal.cat.core.config.domain.org.entity.DomainOrgConfigModel;
 import org.unidal.cat.core.config.domain.org.entity.ProductLineModel;
 import org.unidal.cat.core.config.domain.org.entity.ProjectModel;
 import org.unidal.cat.core.config.domain.org.transform.DefaultSaxParser;
-import org.unidal.cat.core.config.spi.ConfigChangeCallback;
+import org.unidal.cat.core.config.spi.ConfigChangeListener;
 import org.unidal.cat.core.config.spi.ConfigException;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = DomainOrgConfigService.class)
-public class DefaultDomainOrgConfigService implements DomainOrgConfigService, ConfigChangeCallback, Initializable {
+public class DefaultDomainOrgConfigService implements DomainOrgConfigService, ConfigChangeListener, Initializable {
    @Inject
    private ConfigStoreManager m_manager;
 
@@ -49,7 +49,11 @@ public class DefaultDomainOrgConfigService implements DomainOrgConfigService, Co
       if (config == null) {
          m_config = new DomainOrgConfigModel();
       } else {
-         onConfigChange(config);
+         try {
+            m_config = DefaultSaxParser.parse(config);
+         } catch (Exception e) {
+            throw new InitializationException("Unable to load config(application:domain.org)!", e);
+         }
       }
 
       m_manager.register("application", "domain.org", this);
@@ -77,11 +81,11 @@ public class DefaultDomainOrgConfigService implements DomainOrgConfigService, Co
    }
 
    @Override
-   public void onConfigChange(String config) throws ConfigException {
+   public void onChanged(String config) throws ConfigException {
       try {
          m_config = DefaultSaxParser.parse(config);
       } catch (Exception e) {
-         throw new ConfigException("Unable to load config(application:domain.org)!", e);
+         throw new ConfigException("Unable to parse config(application:domain.org)!", e);
       }
    }
 }

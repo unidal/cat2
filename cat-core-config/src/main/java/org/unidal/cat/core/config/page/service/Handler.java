@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import org.unidal.cat.core.config.page.ConfigPage;
+import org.unidal.cat.core.config.spi.ConfigException;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
@@ -29,7 +30,12 @@ public class Handler implements PageHandler<Context> {
 
          switch (action) {
          case REFRESH:
-            m_manager.refresh(payload.getGroup(), payload.getName());
+            try {
+               m_manager.reloadConfigStore(payload.getGroup(), payload.getName());
+            } catch (ConfigException e) {
+               ctx.addError("config.refresh.error", e);
+            }
+
             break;
          default:
             break;

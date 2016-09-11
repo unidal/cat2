@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=utf-8" isELIgnored="false" trimDirectiveWhitespaces="true" %>
+<%@ taglib prefix="w" uri="http://www.unidal.org/web/core"%>
 <%@ taglib prefix="c" uri="/WEB-INF/config.tld"%>
 <jsp:useBean id="ctx" type="org.unidal.cat.core.config.page.update.Context" scope="request"/>
 <jsp:useBean id="payload" type="org.unidal.cat.core.config.page.update.Payload" scope="request"/>
@@ -6,7 +7,13 @@
 
 <c:config>
    <br>
-
+   
+   <div class="error">
+   <w:errors>
+      <w:error code="config.update.error">Error while updating config(\${report})! Message: <xmp>\${exception}</xmp></w:error> 
+   </w:errors>
+   </div>
+   
    <form method="POST">
       <input type="hidden" name="op" value="edit">
       <div>Report(${payload.report}) Configuration(in XML):</div>

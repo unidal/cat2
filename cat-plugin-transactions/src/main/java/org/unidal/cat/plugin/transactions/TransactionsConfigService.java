@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.config.spi.ConfigChangeCallback;
+import org.unidal.cat.core.config.spi.ConfigChangeListener;
 import org.unidal.cat.core.config.spi.ConfigException;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
@@ -20,7 +20,7 @@ import org.unidal.lookup.annotation.Named;
 import org.unidal.tuple.Pair;
 
 @Named
-public class TransactionsConfigService implements Initializable, ConfigChangeCallback {
+public class TransactionsConfigService implements Initializable, ConfigChangeListener {
    @Inject
    private ConfigStoreManager m_manager;
 
@@ -34,17 +34,17 @@ public class TransactionsConfigService implements Initializable, ConfigChangeCal
    public void initialize() throws InitializationException {
       m_manager.register(GROUP_REPORT, NAME, this);
 
-      try {
-         ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
-         String config = store.getConfig();
+      ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
+      String config = store.getConfig();
 
+      try {
          if (config != null) {
             TransactionsConfigModel root = DefaultSaxParser.parse(config);
 
             initialize(root);
          }
       } catch (Exception e) {
-         throw new InitializationException("Unable to load transactions config!", e);
+         throw new InitializationException("Invalid transactions config:\r\n" + config, e);
       }
    }
 
@@ -108,7 +108,7 @@ public class TransactionsConfigService implements Initializable, ConfigChangeCal
    }
 
    @Override
-   public void onConfigChange(String config) throws ConfigException {
+   public void onChanged(String config) throws ConfigException {
       try {
          if (config != null) {
             TransactionsConfigModel root = DefaultSaxParser.parse(config);
@@ -116,7 +116,7 @@ public class TransactionsConfigService implements Initializable, ConfigChangeCal
             initialize(root);
          }
       } catch (Exception e) {
-         throw new ConfigException("Unable to update transactions config!", e);
+         throw new ConfigException("Invalid transactions config:\r\n" + config, e);
       }
    }
 
