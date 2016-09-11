@@ -1,10 +1,12 @@
 <%@ tag trimDirectiveWhitespaces="true" pageEncoding="UTF-8"%>
 <%@ taglib prefix="r" uri="/WEB-INF/report.tld"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ attribute name="title"%>
 <%@ attribute name="navUrlPrefix"%>
 <%@ attribute name="timestamp"%>
-<%@ attribute name="subtitle" fragment="true"%>
-<%@ attribute name="resource" fragment="true"%>
+<%@ attribute name="subtitle" fragment="true" required="false"%>
+<%@ attribute name="resource" fragment="true" required="false"%>
+<%@ attribute name="navbar" required="false"%>
 
 <html lang="en">
 <head>
@@ -39,7 +41,9 @@
       <r:report-menu/>
          
       <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
-         <r:report-navbar/>
+         <c:if test="${navbar ne 'false'}">
+            <r:report-navbar/>
+         </c:if>
             
          <jsp:doBody/>
       </div>

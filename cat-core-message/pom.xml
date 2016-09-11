@@ -12,7 +12,7 @@
    <dependencies>
       <dependency>
          <groupId>org.unidal.cat</groupId>
-         <artifactId>cat-core-view</artifactId>
+         <artifactId>cat-core-report</artifactId>
       </dependency>
       <dependency>
          <groupId>org.unidal.framework</groupId>
@@ -45,6 +45,25 @@
          <scope>test</scope>
       </dependency>
    </dependencies>
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.unidal.maven.plugins</groupId>
+            <artifactId>plexus-maven-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>generate plexus component descriptor</id>
+                  <goals>
+                     <goal>plexus</goal>
+                  </goals>
+                  <configuration>
+                     <className>org.unidal.cat.core.message.build.ComponentsConfigurator</className>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
    <properties>
       <project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
    </properties>
