@@ -99,15 +99,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.config.ConfigManager</role>
-			<implementation>org.unidal.cat.config.internal.DBConfigManager</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.core.config.ConfigDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>com.dianping.cat.task.TaskManager</role>
 			<implementation>com.dianping.cat.task.TaskManager</implementation>
 			<requirements>
