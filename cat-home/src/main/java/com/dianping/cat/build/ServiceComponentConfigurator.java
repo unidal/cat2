@@ -3,6 +3,8 @@ package com.dianping.cat.build;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.core.message.codec.HtmlMessageCodec;
+import org.unidal.cat.core.message.codec.WaterfallMessageCodec;
 import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageFinderManager;
@@ -23,8 +25,6 @@ import com.dianping.cat.consumer.storage.StorageAnalyzer;
 import com.dianping.cat.consumer.top.TopAnalyzer;
 import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
 import com.dianping.cat.hadoop.hdfs.HdfsMessageBucketManager;
-import com.dianping.cat.message.codec.HtmlMessageCodec;
-import com.dianping.cat.message.codec.WaterfallMessageCodec;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.storage.MessageBucketManager;
 import com.dianping.cat.report.ReportBucketManager;

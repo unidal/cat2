@@ -11,6 +11,14 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    @FieldMeta("op")
    private Action m_action;
 
+   @FieldMeta("noHeader")
+   private boolean m_noHeader;
+
+   @FieldMeta("waterfall")
+   private boolean m_waterfall;
+
+   private String m_messageId;
+
    public Payload() {
       super(MessagePage.HOME);
    }
@@ -20,9 +28,21 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
       return m_action;
    }
 
+   public String getMessageId() {
+      return m_messageId;
+   }
+
    @Override
    public MessagePage getPage() {
       return m_page;
+   }
+
+   public boolean isNoHeader() {
+      return m_noHeader;
+   }
+
+   public boolean isWaterfall() {
+      return m_waterfall;
    }
 
    public void setAction(String action) {
@@ -37,9 +57,11 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    @Override
    public void validate(ActionContext<?> ctx) {
       super.validate(ctx);
-      
+
       if (m_action == null) {
          m_action = Action.VIEW;
       }
+
+      m_messageId = ctx.getRequestContext().getAction();
    }
 }

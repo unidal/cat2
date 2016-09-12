@@ -1,4 +1,4 @@
-package com.dianping.cat.message.codec;
+package org.unidal.cat.core.message.codec;
 
 import java.io.File;
 import java.util.ArrayList;

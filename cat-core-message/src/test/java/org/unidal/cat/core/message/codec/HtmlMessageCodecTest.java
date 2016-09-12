@@ -1,4 +1,4 @@
-package com.dianping.cat.message.codec;
+package org.unidal.cat.core.message.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -10,6 +10,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.unidal.cat.core.message.codec.HtmlMessageCodec;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 

@@ -1,4 +1,4 @@
-package com.dianping.cat.message.codec;
+package org.unidal.cat.core.message.codec;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -11,11 +11,12 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unidal.cat.core.message.codec.WaterfallMessageCodec;
+import org.unidal.cat.core.message.codec.WaterfallMessageCodec.Ruler;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.message.MockMessageTreeBuilder;
-import com.dianping.cat.message.codec.WaterfallMessageCodec.Ruler;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 

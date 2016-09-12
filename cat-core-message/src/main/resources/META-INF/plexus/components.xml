@@ -1,8 +1,43 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.cat.core.message.config.MessageConfiguration</role>
+			<implementation>org.unidal.cat.core.message.config.DefaultMessageConfiguration</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.message.service.MessageService</role>
+			<implementation>org.unidal.cat.core.message.service.DefaultMessageService</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.metric.BenchmarkManager</role>
 			<implementation>org.unidal.cat.metric.DefaultBenchmarkManager</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
+			<role-hint>html</role-hint>
+			<implementation>org.unidal.cat.core.message.codec.HtmlEncodingBufferWriter</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.spi.MessageCodec</role>
+			<role-hint>html</role-hint>
+			<implementation>org.unidal.cat.core.message.codec.HtmlMessageCodec</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
+					<role-hint>html</role-hint>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.spi.MessageCodec</role>
+			<role-hint>waterfall</role-hint>
+			<implementation>org.unidal.cat.core.message.codec.WaterfallMessageCodec</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
+					<role-hint>html</role-hint>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.service.CompressionService</role>
@@ -384,6 +419,15 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.message.page.home.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.message.config.MessageConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.message.service.MessageService</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
 				</requirement>
 			</requirements>
 		</component>

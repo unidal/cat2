@@ -97,7 +97,6 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 		all.addAll(new CatDatabaseConfigurator().defineComponents());
 		all.addAll(new AppDatabaseConfigurator().defineComponents());
 
-		all.addAll(new CodecComponentConfigurator().defineComponents());
 		all.addAll(new StorageComponentConfigurator().defineComponents());
 
 		return all;
