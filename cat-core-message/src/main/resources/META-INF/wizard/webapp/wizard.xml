@@ -2,7 +2,7 @@
 <wizard package="org.unidal.cat.core.message">
    <webapp package="org.unidal.cat.core.message" name="cat" module="true" webres="false" cat="false" plugin-management="false" jstl="false">
       <module name="message" path="message" default="true" package="org.unidal.cat.core.message.page">
-         <page name="home" title="Home" default="true" package="org.unidal.cat.core.message.page.home" path="home" template="default">
+         <page name="home" title="Home" default="true" package="org.unidal.cat.core.message.page.home" path="home" template="default" view="message.jsp">
             <description>Home</description>
          </page>
       </module>

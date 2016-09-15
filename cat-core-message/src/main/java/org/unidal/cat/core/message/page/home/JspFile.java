@@ -1,7 +1,7 @@
 package org.unidal.cat.core.message.page.home;
 
 public enum JspFile {
-	VIEW("/jsp/message/home.jsp"),
+	VIEW("/jsp/message/message.jsp"),
 
 	;
 

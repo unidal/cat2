@@ -74,7 +74,7 @@
 				<td class="nowrap">${w:format(e.total,'#,###,###,###,##0')}</td>
 				<td class="nowrap">${w:format(e.failure,'#,###,###,###,##0')}</td>
 				<td class="nowrap">&nbsp;${w:format(e.failurePercent/100,'#.####%')}</td>
-				<td class="longText"><a href="${model.webapp}/r/m/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
+				<td class="longText"><a href="${model.webapp}/message/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
 				<td>${w:format(e.min,'###,##0.#')}</td>
 				<td>${w:format(e.max,'###,##0.#')}</td>
 				<td class="nowrap">${w:format(e.avg,'###,##0.0')}</td>

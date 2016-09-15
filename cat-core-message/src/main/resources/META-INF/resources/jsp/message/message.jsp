@@ -7,13 +7,16 @@
 <r:report>
 <jsp:attribute name="navbar">false</jsp:attribute>
 <jsp:attribute name="resource">
+    <link rel="stylesheet" href="${model.webapp}/css/message.css">
     <script src="${model.webapp}/js/message.js"></script>
 </jsp:attribute>
 
 <jsp:body>
-HELLO MESSAGE
+
+ID: ${model.messageId}
 
 ${model.html}
+
 </jsp:body>
 
 </r:report>

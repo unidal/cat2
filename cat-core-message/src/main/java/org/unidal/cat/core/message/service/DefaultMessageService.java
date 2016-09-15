@@ -11,6 +11,7 @@ import org.unidal.cat.message.storage.MessageFinderManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
 import com.dianping.cat.message.internal.MessageId;
 import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
@@ -38,6 +39,14 @@ public class DefaultMessageService implements MessageService {
             bucket.flush();
 
             buf = bucket.get(id);
+
+            if (buf != null) {
+               Cat.logEvent("LogTree.Source", "File");
+            }
+         }
+      } else {
+         if (buf != null) {
+            Cat.logEvent("LogTree.Source", "Memory");
          }
       }
 
@@ -47,6 +56,7 @@ public class DefaultMessageService implements MessageService {
          m_nativeCodec.decode(buf, tree);
          return tree;
       } else {
+         Cat.logEvent("LogTree.Source", "Missing");
          return null;
       }
    }
