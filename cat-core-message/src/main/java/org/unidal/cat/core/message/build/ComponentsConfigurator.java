@@ -40,6 +40,8 @@ import org.unidal.cat.service.internals.DefaultCompressionService;
 import org.unidal.cat.service.internals.GzipCompressionService;
 import org.unidal.cat.service.internals.ZlibCompressionService;
 import org.unidal.cat.spi.command.DefaultCommandDispatcher;
+import org.unidal.cat.spi.message.NativeMessageDecodeHandler;
+import org.unidal.cat.spi.message.PlainTextMessageDecodeHandler;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -56,6 +58,9 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(HtmlEncodingBufferWriter.class));
       all.add(A(HtmlMessageCodec.class));
       all.add(A(WaterfallMessageCodec.class));
+
+      all.add(A(NativeMessageDecodeHandler.class));
+      all.add(A(PlainTextMessageDecodeHandler.class));
 
       return all;
    }

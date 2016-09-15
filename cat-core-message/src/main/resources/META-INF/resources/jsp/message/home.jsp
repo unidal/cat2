@@ -12,6 +12,8 @@
 
 <jsp:body>
 HELLO MESSAGE
+
+${model.html}
 </jsp:body>
 
 </r:report>

@@ -287,7 +287,7 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.transport.ServerTransportHub</role>
-			<implementation>org.unidal.cat.spi.message.DefaultServerTransportHub</implementation>
+			<implementation>org.unidal.cat.spi.transport.DefaultServerTransportHub</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
@@ -296,52 +296,6 @@
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.transport.decode.DecodeHandlerManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.transport.decode.DecodeHandler</role>
-			<role-hint>NT1</role-hint>
-			<implementation>org.unidal.cat.spi.message.NativeMessageDecodeHandler</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>NT1</role-hint>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.analysis.MessageConsumer</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.analysis.MessageDispatcher</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.statistic.ServerStatisticManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.transport.decode.DecodeHandler</role>
-			<role-hint>PT1</role-hint>
-			<implementation>org.unidal.cat.spi.message.PlainTextMessageDecodeHandler</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.analysis.MessageConsumer</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.analysis.MessageDispatcher</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.statistic.ServerStatisticManager</role>
 				</requirement>
 			</requirements>
 		</component>

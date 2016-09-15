@@ -1,11 +1,17 @@
 package org.unidal.cat.core.message.page.home;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
+
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
 
+import org.unidal.cat.core.message.codec.HtmlMessageCodec;
+import org.unidal.cat.core.message.codec.WaterfallMessageCodec;
 import org.unidal.cat.core.message.config.MessageConfiguration;
 import org.unidal.cat.core.message.page.MessagePage;
 import org.unidal.cat.core.message.service.MessageService;
@@ -31,8 +37,11 @@ public class Handler implements PageHandler<Context> {
    @Inject
    private MessageService m_service;
 
-   @Inject
-   private MessageCodec m_htmlCodec;
+   @Inject(HtmlMessageCodec.ID)
+   private MessageCodec m_html;
+
+   @Inject(WaterfallMessageCodec.ID)
+   private MessageCodec m_waterfall;
 
    private MessageId getMessageId(String messageId) {
       try {
@@ -79,8 +88,17 @@ public class Handler implements PageHandler<Context> {
                Cat.logEvent("LogTree", "Failure:" + id.getDomain());
             }
          } else {
-            model.setMessageTree(tree);
+            ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
 
+            if (payload.isWaterfall()) {
+               m_waterfall.encode(tree, buf);
+            } else {
+               m_html.encode(tree, buf);
+            }
+
+            buf.readInt(); // get rid of length
+            model.setHtml(buf.toString(Charset.forName("utf-8")));
+            model.setMessageTree(tree);
             Cat.logEvent("LogTree", "Success");
          }
       }

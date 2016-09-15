@@ -12,6 +12,8 @@ public class Model extends CoreReportModel<MessagePage, Action, Context> {
 
    private MessageTree m_messageTree;
 
+   private String m_html;
+
    public Model(Context ctx) {
       super("", ctx);
    }
@@ -26,6 +28,10 @@ public class Model extends CoreReportModel<MessagePage, Action, Context> {
       return null;
    }
 
+   public String getHtml() {
+      return m_html;
+   }
+
    public MessageId getMessageId() {
       return m_messageId;
    }
@@ -37,6 +43,10 @@ public class Model extends CoreReportModel<MessagePage, Action, Context> {
    @Override
    public Report getReport() {
       return null;
+   }
+
+   public void setHtml(String html) {
+      m_html = html;
    }
 
    public void setMessageId(MessageId messageId) {
