@@ -13,6 +13,7 @@
 		<module>cat-core</module>
 		<module>cat-core-view</module>
 		<module>cat-core-config</module>
+		<module>cat-core-message</module>
 		<module>cat-core-report</module>
 		<module>cat-core-document</module>
 		<module>cat-plugin-transaction</module>
@@ -91,6 +92,11 @@
 			<dependency>
 				<groupId>org.unidal.cat</groupId>
 				<artifactId>cat-core-config</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.unidal.cat</groupId>
+				<artifactId>cat-core-message</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

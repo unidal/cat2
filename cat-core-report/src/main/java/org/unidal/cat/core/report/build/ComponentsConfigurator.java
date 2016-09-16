@@ -14,9 +14,6 @@ import org.unidal.cat.spi.analysis.DefaultPipelineManager;
 import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.DomainHashStrategy;
 import org.unidal.cat.spi.analysis.pipeline.RoundRobinStrategy;
-import org.unidal.cat.spi.message.DefaultServerTransportHub;
-import org.unidal.cat.spi.message.NativeMessageDecodeHandler;
-import org.unidal.cat.spi.message.PlainTextMessageDecodeHandler;
 import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
 import org.unidal.cat.spi.remote.DefaultRemoteStub;
 import org.unidal.cat.spi.report.DefaultReportConfiguration;
@@ -40,6 +37,7 @@ import org.unidal.cat.spi.report.task.internals.DefaultReportTaskService;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskTracker;
 import org.unidal.cat.spi.report.task.internals.DefaultReportTaskTrackerManager;
 import org.unidal.cat.spi.transport.DefaultServerTransportConfiguration;
+import org.unidal.cat.spi.transport.DefaultServerTransportHub;
 import org.unidal.cat.spi.transport.TcpSocketSkeleton;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -88,9 +86,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultMessageDispatcher.class));
       all.add(A(DefaultServerTransportConfiguration.class));
       all.add(A(DefaultServerTransportHub.class));
-
-      all.add(A(NativeMessageDecodeHandler.class));
-      all.add(A(PlainTextMessageDecodeHandler.class));
 
       all.add(A(DefaultTimeWindowManager.class));
 

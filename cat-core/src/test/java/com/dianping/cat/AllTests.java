@@ -8,8 +8,6 @@ import org.unidal.cat.service.CompressionServiceTest;
 import com.dianping.cat.analysis.AbstractMessageAnalyzerTest;
 import com.dianping.cat.analysis.PeriodTaskTest;
 import com.dianping.cat.config.CommandFormatManagerTest;
-import com.dianping.cat.message.codec.HtmlMessageCodecTest;
-import com.dianping.cat.message.codec.WaterfallMessageCodecTest;
 import com.dianping.cat.server.ServerConfigManagerTest;
 import com.dianping.cat.service.DefaultReportManagerTest;
 import com.dianping.cat.service.ModelPeriodTest;
@@ -22,10 +20,6 @@ import com.dianping.cat.task.TaskManagerTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-
-HtmlMessageCodecTest.class,
-
-WaterfallMessageCodecTest.class,
 
 /* .storage.dump */
 LocalMessageBucketTest.class,
