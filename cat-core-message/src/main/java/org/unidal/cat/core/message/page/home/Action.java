@@ -1,7 +1,9 @@
 package org.unidal.cat.core.message.page.home;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	VIEW("view");
+	VIEW("view"),
+	
+	LOCAL("local");
 
 	private String m_name;
 

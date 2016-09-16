@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 
-import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.cat.message.storage.Bucket;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageFinderManager;
@@ -13,20 +12,18 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.internal.MessageId;
-import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
-import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @Named(type = MessageService.class)
-public class DefaultMessageService implements MessageService {
+public class LocalMessageService implements MessageService {
    @Inject
    private MessageFinderManager m_finderManager;
 
    @Inject("local")
    private BucketManager m_localBucketManager;
 
-   @Inject(NativeMessageCodec.ID)
-   private MessageCodec m_nativeCodec;
+   @Inject
+   private MessageCodecService m_codec;
 
    @Override
    public MessageTree getMessageTree(MessageId id) throws IOException {
@@ -51,10 +48,7 @@ public class DefaultMessageService implements MessageService {
       }
 
       if (buf != null) {
-         MessageTree tree = new DefaultMessageTree();
-
-         m_nativeCodec.decode(buf, tree);
-         return tree;
+         return m_codec.decodeNative(buf);
       } else {
          Cat.logEvent("LogTree.Source", "Missing");
          return null;

@@ -6,7 +6,7 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.core.message.service.MessageService</role>
-			<implementation>org.unidal.cat.core.message.service.DefaultMessageService</implementation>
+			<implementation>org.unidal.cat.core.message.service.LocalMessageService</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.message.storage.MessageFinderManager</role>
@@ -16,14 +16,68 @@
 					<role-hint>local</role-hint>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>NT1</role-hint>
+					<role>org.unidal.cat.core.message.service.MessageCodecService</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+			<implementation>org.unidal.cat.core.message.provider.DefaultMessageProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+					<role-hint>recent</role-hint>
+					<field-name>m_recent</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+					<role-hint>historical</role-hint>
+					<field-name>m_historical</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+			<role-hint>recent</role-hint>
+			<implementation>org.unidal.cat.core.message.provider.RecentMessageProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.message.service.MessageCodecService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.message.config.MessageConfiguration</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+			<role-hint>historical</role-hint>
+			<implementation>org.unidal.cat.core.message.provider.HistoricalMessageProvider</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.metric.BenchmarkManager</role>
 			<implementation>org.unidal.cat.metric.DefaultBenchmarkManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.message.service.MessageCodecService</role>
+			<implementation>org.unidal.cat.core.message.service.DefaultMessageCodecService</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>NT1</role-hint>
+					<field-name>m_native</field-name>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>html</role-hint>
+					<field-name>m_html</field-name>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>waterfall</role-hint>
+					<field-name>m_waterfall</field-name>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.codec.BufferWriter</role>
@@ -483,17 +537,13 @@
 					<role>org.unidal.cat.core.message.config.MessageConfiguration</role>
 				</requirement>
 				<requirement>
+					<role>org.unidal.cat.core.message.provider.MessageProvider</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.core.message.service.MessageService</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>html</role-hint>
-					<field-name>m_html</field-name>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>waterfall</role-hint>
-					<field-name>m_waterfall</field-name>
+					<role>org.unidal.cat.core.message.service.MessageCodecService</role>
 				</requirement>
 			</requirements>
 		</component>

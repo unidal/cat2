@@ -1,19 +1,24 @@
 package org.unidal.cat.core.message.page.home;
 
+import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
 
-import org.unidal.cat.core.message.codec.HtmlMessageCodec;
-import org.unidal.cat.core.message.codec.WaterfallMessageCodec;
 import org.unidal.cat.core.message.config.MessageConfiguration;
 import org.unidal.cat.core.message.page.MessagePage;
+import org.unidal.cat.core.message.provider.DefaultMessageContext;
+import org.unidal.cat.core.message.provider.MessageContext;
+import org.unidal.cat.core.message.provider.MessageProvider;
+import org.unidal.cat.core.message.service.MessageCodecService;
 import org.unidal.cat.core.message.service.MessageService;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.lookup.annotation.Inject;
@@ -24,7 +29,6 @@ import org.unidal.web.mvc.annotation.PayloadMeta;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.internal.MessageId;
-import com.dianping.cat.message.spi.MessageCodec;
 import com.dianping.cat.message.spi.MessageTree;
 
 public class Handler implements PageHandler<Context> {
@@ -35,26 +39,38 @@ public class Handler implements PageHandler<Context> {
    private MessageConfiguration m_config;
 
    @Inject
+   private MessageProvider m_provider;
+
+   @Inject
    private MessageService m_service;
 
-   @Inject(HtmlMessageCodec.ID)
-   private MessageCodec m_html;
+   @Inject
+   private MessageCodecService m_codec;
 
-   @Inject(WaterfallMessageCodec.ID)
-   private MessageCodec m_waterfall;
+   private void handleAggregatedMessage(Context ctx, Model model, Payload payload) throws IOException {
+      MessageId msgId = payload.getId();
 
-   private MessageId getMessageId(String messageId) {
-      try {
-         if (messageId != null) {
-            MessageId id = MessageId.parse(messageId);
+      model.setMessageId(msgId);
 
-            return id;
+      if (msgId != null) {
+         MessageContext context = new DefaultMessageContext(msgId, m_config.isUseHdfs()) //
+               .setProperty("op", "local");
+         MessageTree tree = m_provider.getMessage(context);
+
+         if (tree != null) {
+            ByteBuf buf = null;
+
+            if (payload.isWaterfall()) {
+               buf = m_codec.encodeWaterfall(tree);
+            } else {
+               buf = m_codec.encodeHtml(tree);
+            }
+
+            buf.readInt(); // get rid of length
+            model.setHtml(buf.toString(Charset.forName("utf-8")));
+            model.setMessageTree(tree);
          }
-      } catch (Exception e) {
-         // ignore it
       }
-
-      return null;
    }
 
    @Override
@@ -64,43 +80,63 @@ public class Handler implements PageHandler<Context> {
       // display only, no action here
    }
 
+   private void handleLocalMessage(Context ctx, Model model, Payload payload) throws IOException {
+      MessageId msgId = payload.getId();
+      String id = payload.getMessageId();
+      HttpServletResponse res = ctx.getHttpServletResponse();
+
+      model.setMessageId(msgId);
+
+      if (msgId != null) {
+         MessageTree tree = m_service.getMessageTree(msgId);
+
+         if (tree == null) {
+            if (isArchived(msgId)) {
+               Cat.logEvent("LogTree.State", "Archived:" + msgId.getDomain());
+            } else {
+               Cat.logEvent("LogTree.State", "Failure:" + msgId.getDomain());
+            }
+
+            res.sendError(SC_NOT_FOUND, String.format("Message(%s) is not found!", id));
+         } else {
+            Cat.logEvent("LogTree.State", "Success");
+
+            ByteBuf buf = m_codec.encodeNative(tree);
+            int length = buf.readableBytes();
+            OutputStream out = res.getOutputStream();
+
+            res.setContentLength(length);
+            res.setContentType("application/octet-stream");
+            buf.readBytes(out, length);
+            out.flush();
+         }
+      } else {
+         Cat.logEvent("LogTree.State", "BadMessageId");
+         res.sendError(SC_BAD_REQUEST, String.format("Invalid message id(%s)!", id));
+      }
+
+      ctx.stopProcess();
+   }
+
    @Override
    @OutboundActionMeta(name = "home")
    public void handleOutbound(Context ctx) throws ServletException, IOException {
       Model model = new Model(ctx);
       Payload payload = ctx.getPayload();
+      Action action = payload.getAction();
 
       model.setAction(Action.VIEW);
       model.setPage(MessagePage.HOME);
 
-      String msgId = payload.getMessageId();
-      MessageId id = getMessageId(msgId);
-
-      model.setMessageId(id);
-
-      if (id != null) {
-         MessageTree tree = m_service.getMessageTree(id);
-
-         if (tree == null) {
-            if (isArchived(id)) {
-               Cat.logEvent("LogTree", "Archived:" + id.getDomain());
-            } else {
-               Cat.logEvent("LogTree", "Failure:" + id.getDomain());
-            }
-         } else {
-            ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
-
-            if (payload.isWaterfall()) {
-               m_waterfall.encode(tree, buf);
-            } else {
-               m_html.encode(tree, buf);
-            }
-
-            buf.readInt(); // get rid of length
-            model.setHtml(buf.toString(Charset.forName("utf-8")));
-            model.setMessageTree(tree);
-            Cat.logEvent("LogTree", "Success");
-         }
+      switch (action) {
+      case VIEW:
+         handleAggregatedMessage(ctx, model, payload);
+         break;
+      case LOCAL:
+         handleLocalMessage(ctx, model, payload);
+         break;
+      default:
+         break;
       }
 
       if (!ctx.isProcessStopped()) {
