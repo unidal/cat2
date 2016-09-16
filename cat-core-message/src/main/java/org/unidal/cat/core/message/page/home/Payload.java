@@ -53,6 +53,7 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
       return m_page;
    }
 
+   /* used by message.jsp */
    public boolean isNoHeader() {
       return m_noHeader;
    }
@@ -62,7 +63,7 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    }
 
    public void setAction(String action) {
-      m_action = Action.getByName(action, Action.VIEW);
+      m_action = Action.getByName(action, Action.DEFAULT);
    }
 
    @Override
@@ -75,7 +76,7 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
       super.validate(ctx);
 
       if (m_action == null) {
-         m_action = Action.VIEW;
+         m_action = Action.DEFAULT;
       }
 
       m_messageId = ctx.getRequestContext().getAction();

@@ -9,7 +9,7 @@ public class JspViewer extends BaseJspViewer<MessagePage, Action, Context, Model
       Action action = model.getAction();
 
       switch (action) {
-      case VIEW:
+      case DEFAULT:
          return JspFile.VIEW.getPath();
       default:
          break;

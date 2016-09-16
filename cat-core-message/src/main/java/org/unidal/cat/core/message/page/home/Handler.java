@@ -9,8 +9,10 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.unidal.cat.core.message.config.MessageConfiguration;
@@ -54,7 +56,7 @@ public class Handler implements PageHandler<Context> {
 
       if (msgId != null) {
          MessageContext context = new DefaultMessageContext(msgId, m_config.isUseHdfs()) //
-               .setProperty("op", "local");
+               .setProperty("op", "native");
          MessageTree tree = m_provider.getMessage(context);
 
          if (tree != null) {
@@ -82,6 +84,7 @@ public class Handler implements PageHandler<Context> {
 
    private void handleLocalMessage(Context ctx, Model model, Payload payload) throws IOException {
       MessageId msgId = payload.getId();
+      Action action = payload.getAction();
       String id = payload.getMessageId();
       HttpServletResponse res = ctx.getHttpServletResponse();
 
@@ -101,14 +104,15 @@ public class Handler implements PageHandler<Context> {
          } else {
             Cat.logEvent("LogTree.State", "Success");
 
-            ByteBuf buf = m_codec.encodeNative(tree);
-            int length = buf.readableBytes();
-            OutputStream out = res.getOutputStream();
+            ByteBuf buf;
 
-            res.setContentLength(length);
-            res.setContentType("application/octet-stream");
-            buf.readBytes(out, length);
-            out.flush();
+            if (action == Action.NATIVE) {
+               buf = m_codec.encodeNative(tree);
+            } else {
+               buf = m_codec.encodeHtml(tree);
+            }
+
+            sendResponse(ctx.getHttpServletRequest(), res, buf);
          }
       } else {
          Cat.logEvent("LogTree.State", "BadMessageId");
@@ -125,14 +129,15 @@ public class Handler implements PageHandler<Context> {
       Payload payload = ctx.getPayload();
       Action action = payload.getAction();
 
-      model.setAction(Action.VIEW);
+      model.setAction(Action.DEFAULT);
       model.setPage(MessagePage.HOME);
 
       switch (action) {
-      case VIEW:
+      case DEFAULT:
          handleAggregatedMessage(ctx, model, payload);
          break;
-      case LOCAL:
+      case NATIVE:
+      case HTML:
          handleLocalMessage(ctx, model, payload);
          break;
       default:
@@ -149,5 +154,27 @@ public class Handler implements PageHandler<Context> {
       int maxDays = m_config.getHdfsMaxStorageTime();
 
       return startTime.getTime() < System.currentTimeMillis() - TimeUnit.DAYS.toMillis(maxDays);
+   }
+
+   private void sendResponse(HttpServletRequest req, HttpServletResponse res, ByteBuf buf) throws IOException {
+      String acceptEncoding = req.getHeader("Accept-Encoding");
+      int length = buf.readableBytes();
+
+      if (acceptEncoding != null && acceptEncoding.toLowerCase().contains("gzip")) {
+         GZIPOutputStream out = new GZIPOutputStream(res.getOutputStream());
+
+         res.setContentType("text/html; charset=utf-8");
+         res.setHeader("Content-Encoding", "gzip");
+         buf.readBytes(out, length);
+         out.finish();
+         out.flush();
+      } else {
+         OutputStream out = res.getOutputStream();
+
+         res.setContentLength(length);
+         res.setContentType("application/octet-stream");
+         buf.readBytes(out, length);
+         out.flush();
+      }
    }
 }
