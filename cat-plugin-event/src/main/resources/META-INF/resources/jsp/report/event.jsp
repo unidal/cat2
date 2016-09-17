@@ -13,7 +13,6 @@
 <jsp:attribute name="subtitle">${w:format(model.report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(model.report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
-	<script src="${model.webapp}/js/appendHostname.js"></script>
     <script src="${model.webapp}/js/event.js"></script>
 </jsp:attribute>
 <jsp:body>
@@ -67,7 +66,7 @@
 				</c:choose>
 				<td class="nowrap">${w:format(e.total,'#,###,###,###,##0')}</td>
 				<td class="nowrap">${w:format(e.failure,'#,###,###,###,##0')}</td>
-				<td class="nowrap">&nbsp;${w:format(e.failurePercent/100,'#.####%')}</td>
+				<td class="nowrap">&nbsp;${w:format(e.failurePercent,'#.####%')}</td>
 				<td class="longText"><a href="${model.webapp}/message/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
 				<td class="nowrap">${w:format(e.tps,'###,##0.0')}</td>
 				<c:if test="${not empty payload.type}">

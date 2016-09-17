@@ -152,7 +152,7 @@ public class NameViewModel implements TableViewModel<NameEntry> {
          long total = m_name.getTotalCount();
 
          if (total > 0) {
-            return m_name.getFailCount() / total;
+            return m_name.getFailCount() * 1.0 / total;
          } else {
             return 0;
          }
