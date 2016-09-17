@@ -7,7 +7,11 @@ import org.unidal.cat.core.message.codec.HtmlEncodingBufferWriter;
 import org.unidal.cat.core.message.codec.HtmlMessageCodec;
 import org.unidal.cat.core.message.codec.WaterfallMessageCodec;
 import org.unidal.cat.core.message.config.DefaultMessageConfiguration;
-import org.unidal.cat.core.message.service.DefaultMessageService;
+import org.unidal.cat.core.message.provider.DefaultMessageProvider;
+import org.unidal.cat.core.message.provider.HistoricalMessageProvider;
+import org.unidal.cat.core.message.provider.RecentMessageProvider;
+import org.unidal.cat.core.message.service.DefaultMessageCodecService;
+import org.unidal.cat.core.message.service.LocalMessageService;
 import org.unidal.cat.message.storage.hdfs.HdfsBucket;
 import org.unidal.cat.message.storage.hdfs.HdfsBucketManager;
 import org.unidal.cat.message.storage.hdfs.HdfsFileBuilder;
@@ -55,6 +59,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
    public List<Component> defineCodecComponents() {
       List<Component> all = new ArrayList<Component>();
 
+      all.add(A(DefaultMessageCodecService.class));
+
       all.add(A(HtmlEncodingBufferWriter.class));
       all.add(A(HtmlMessageCodec.class));
       all.add(A(WaterfallMessageCodec.class));
@@ -70,7 +76,10 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       List<Component> all = new ArrayList<Component>();
 
       all.add(A(DefaultMessageConfiguration.class));
-      all.add(A(DefaultMessageService.class));
+      all.add(A(LocalMessageService.class));
+      all.add(A(DefaultMessageProvider.class));
+      all.add(A(RecentMessageProvider.class));
+      all.add(A(HistoricalMessageProvider.class));
 
       all.add(A(DefaultBenchmarkManager.class));
 

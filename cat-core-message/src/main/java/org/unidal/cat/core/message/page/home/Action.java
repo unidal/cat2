@@ -1,7 +1,11 @@
 package org.unidal.cat.core.message.page.home;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	VIEW("view");
+	DEFAULT("default"),
+	
+	NATIVE("native"),
+	
+	HTML("html");
 
 	private String m_name;
 

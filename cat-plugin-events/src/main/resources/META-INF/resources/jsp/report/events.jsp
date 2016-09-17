@@ -5,16 +5,15 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="res" uri="http://www.unidal.org/webres"%>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<jsp:useBean id="ctx" type="org.unidal.cat.plugin.event.report.page.Context" scope="request" />
-<jsp:useBean id="payload" type="org.unidal.cat.plugin.event.report.page.Payload" scope="request" />
-<jsp:useBean id="model"	type="org.unidal.cat.plugin.event.report.page.Model" scope="request" />
+<jsp:useBean id="ctx" type="org.unidal.cat.plugin.events.report.page.Context" scope="request" />
+<jsp:useBean id="payload" type="org.unidal.cat.plugin.events.report.page.Payload" scope="request" />
+<jsp:useBean id="model"	type="org.unidal.cat.plugin.events.report.page.Model" scope="request" />
 
 <r:report>
 <jsp:attribute name="subtitle">${w:format(model.report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(model.report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
-	<script src="${model.webapp}/js/appendHostname.js"></script>
-    <script src="${model.webapp}/js/event.js"></script>
+    <script src="${model.webapp}/js/events.js"></script>
 </jsp:attribute>
 <jsp:body>
 	
@@ -22,7 +21,7 @@
 		<tr>
 		   <th class="left" colspan="13">
 		   	  <input type="text" name="query" id="query" size="40" value="${payload.query}">
-		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${payload.formattedStartTime}','${payload.domain}','${payload.ip}','${payload.type}')" type="submit">
+		      <input  class="btn btn-primary btn-sm"  value="Filter" onclick="selectByName('${payload.formattedStartTime}','${payload.domain}','${payload.bu}','${payload.type}')" type="submit">
 			  支持多个字符串查询，例如sql|url|task，查询结果为包含任一sql、url、task的列。
 		   </th>
 		</tr>
@@ -67,8 +66,8 @@
 				</c:choose>
 				<td class="nowrap">${w:format(e.total,'#,###,###,###,##0')}</td>
 				<td class="nowrap">${w:format(e.failure,'#,###,###,###,##0')}</td>
-				<td class="nowrap">&nbsp;${w:format(e.failurePercent/100,'#.####%')}</td>
-				<td class="longText"><a href="${model.webapp}/r/m/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
+				<td class="nowrap">&nbsp;${w:format(e.failurePercent,'#.####%')}</td>
+				<td class="longText"><a href="${model.webapp}/message/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
 				<td class="nowrap">${w:format(e.tps,'###,##0.0')}</td>
 				<c:if test="${not empty payload.type}">
 					<td class="nowrap">${w:format(e.total / (model.table.total eq 0 ? 1 : model.table.total),'0.00%')}</td>

@@ -13,7 +13,6 @@
 <jsp:attribute name="subtitle">${w:format(model.report.startTime,'yyyy-MM-dd HH:mm:ss')} to ${w:format(model.report.endTime,'yyyy-MM-dd HH:mm:ss')}</jsp:attribute>
 <jsp:attribute name="resource">
 	<script src="${model.webapp}/js/baseGraph.js"></script>
-	<script src="${model.webapp}/js/appendHostname.js"></script>
     <script src="${model.webapp}/js/transaction.js"></script>
 </jsp:attribute>
 <jsp:body>
@@ -35,12 +34,12 @@
 			<th class="right"><a href="?${ctx.query.sort['failure']}">Failure</a></th>
 			<th class="right"><a href="?${ctx.query.sort['failurePercent']}">Failure %</a></th>
 			<th class="right longText">Sample Link</th>
-			<th class="right"><a href="?${ctx.query.sort['min']}">Min</a>(ms)</th>
-			<th class="right"><a href="?${ctx.query.sort['max']}">Max</a>(ms)</th>
-			<th class="right"><a href="?${ctx.query.sort['avg']}">Avg</a>(ms)</th>
-			<th class="right"><a href="?${ctx.query.sort['95line']}">95Line</a>(ms)</th>
-			<th class="right"><a href="?${ctx.query.sort['99line']}">99.9Line</a>(ms)</th>
-			<th class="right"><a href="?${ctx.query.sort['std']}">Std</a>(ms)</th>
+			<th class="right"><a href="?${ctx.query.sort['min']}">Min</a><span class="nowrap">(ms)</span></th>
+			<th class="right"><a href="?${ctx.query.sort['max']}">Max</a><div>(ms)</div></th>
+			<th class="right"><a href="?${ctx.query.sort['avg']}">Avg</a><div>(ms)</div></th>
+			<th class="right"><a href="?${ctx.query.sort['95line']}">95Line</a><div>(ms)</div></th>
+			<th class="right"><a href="?${ctx.query.sort['99line']}">99.9Line</a><div>(ms)</div></th>
+			<th class="right"><a href="?${ctx.query.sort['std']}">Std</a><div>(ms)</div></th>
 			<th class="right nowrap"><a href="?${ctx.query.sort['total']}">QPS</a></th>
 			<c:if test="${not empty payload.type}">
 			   <th class="right"><a href="?${ctx.query.sort['total']}">Percent %</a></th>
@@ -73,8 +72,8 @@
 				</c:choose>
 				<td class="nowrap">${w:format(e.total,'#,###,###,###,##0')}</td>
 				<td class="nowrap">${w:format(e.failure,'#,###,###,###,##0')}</td>
-				<td class="nowrap">&nbsp;${w:format(e.failurePercent/100,'#.####%')}</td>
-				<td class="longText"><a href="${model.webapp}/r/m/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
+				<td class="nowrap">&nbsp;${w:format(e.failurePercent,'#.####%')}</td>
+				<td class="longText"><a href="${model.webapp}/message/${e.sampleMessageId}?${ctx.query}">Log View</a></td>
 				<td>${w:format(e.min,'###,##0.#')}</td>
 				<td>${w:format(e.max,'###,##0.#')}</td>
 				<td class="nowrap">${w:format(e.avg,'###,##0.0')}</td>

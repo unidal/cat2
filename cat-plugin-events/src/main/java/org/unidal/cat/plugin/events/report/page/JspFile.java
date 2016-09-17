@@ -1,11 +1,11 @@
 package org.unidal.cat.plugin.events.report.page;
 
 public enum JspFile {
-   REPORT("/jsp/plugin/events/events.jsp"),
+   REPORT("/jsp/report/events.jsp"),
 
-   HOURLY_GRAPH("/jsp/plugin/events/events-hourly-graph.jsp"),
+   HOURLY_GRAPH("/jsp/report/events-hourly-graph.jsp"),
 
-   HISTORY_GRAPH("/jsp/plugin/events/events-history-graph.jsp");
+   HISTORY_GRAPH("/jsp/report/events-history-graph.jsp");
 
    private String m_path;
 

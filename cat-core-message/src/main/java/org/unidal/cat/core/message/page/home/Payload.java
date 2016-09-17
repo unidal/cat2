@@ -5,6 +5,8 @@ import org.unidal.cat.core.report.page.CoreReportPayload;
 import org.unidal.web.mvc.ActionContext;
 import org.unidal.web.mvc.payload.annotation.FieldMeta;
 
+import com.dianping.cat.message.internal.MessageId;
+
 public class Payload extends CoreReportPayload<MessagePage, Action> {
    private MessagePage m_page;
 
@@ -32,11 +34,26 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
       return m_messageId;
    }
 
+   public MessageId getId() {
+      try {
+         if (m_messageId != null) {
+            MessageId id = MessageId.parse(m_messageId);
+
+            return id;
+         }
+      } catch (Exception e) {
+         // ignore it
+      }
+
+      return null;
+   }
+
    @Override
    public MessagePage getPage() {
       return m_page;
    }
 
+   /* used by message.jsp */
    public boolean isNoHeader() {
       return m_noHeader;
    }
@@ -46,7 +63,7 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    }
 
    public void setAction(String action) {
-      m_action = Action.getByName(action, Action.VIEW);
+      m_action = Action.getByName(action, Action.DEFAULT);
    }
 
    @Override
@@ -59,7 +76,7 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
       super.validate(ctx);
 
       if (m_action == null) {
-         m_action = Action.VIEW;
+         m_action = Action.DEFAULT;
       }
 
       m_messageId = ctx.getRequestContext().getAction();

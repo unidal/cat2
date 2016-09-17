@@ -20,7 +20,7 @@ public class Model extends CoreReportModel<MessagePage, Action, Context> {
 
    @Override
    public Action getDefaultAction() {
-      return Action.VIEW;
+      return Action.DEFAULT;
    }
 
    @Override

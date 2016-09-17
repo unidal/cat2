@@ -6,7 +6,10 @@
 <%@ attribute name="timestamp"%>
 <%@ attribute name="subtitle" fragment="true" required="false"%>
 <%@ attribute name="resource" fragment="true" required="false"%>
-<%@ attribute name="navbar" required="false"%>
+
+<%@ attribute name="head" required="false" rtexprvalue="true"%>
+<%@ attribute name="menu" required="false" rtexprvalue="true"%>
+<%@ attribute name="navbar" required="false" rtexprvalue="true"%>
 
 <html lang="en">
 <head>
@@ -35,10 +38,14 @@
    <jsp:invoke fragment="resource"/>
 </head>
 <body class="no-skin">
-   <r:report-header/>
+   <c:if test="${head ne 'false'}">
+      <r:report-header/>
+   </c:if>
    
    <div class="main-container" id="main-container">
-      <r:report-menu/>
+      <c:if test="${menu ne 'false'}">
+         <r:report-menu/>
+      </c:if>
          
       <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
          <c:if test="${navbar ne 'false'}">
