@@ -1,13 +1,14 @@
-package org.unidal.cat;
+package org.unidal.cat.core.document;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.unidal.cat.core.document.markdown.MarkdownTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 
-// add test classes here
+MarkdownTest.class,
 
 })
 public class AllTests {

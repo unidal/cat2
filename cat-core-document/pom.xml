@@ -15,6 +15,11 @@
          <artifactId>cat-core</artifactId>
       </dependency>
       <dependency>
+          <groupId>org.commonjava.googlecode.markdown4j</groupId>
+          <artifactId>markdown4j</artifactId>
+          <version>2.2-cj-1.1</version>
+      </dependency>
+      <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
          <scope>provided</scope>
