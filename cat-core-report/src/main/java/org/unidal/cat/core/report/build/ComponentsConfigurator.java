@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.unidal.cat.core.report.CatReportModule;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
+import org.unidal.cat.core.report.remote.DefaultRemoteReportSkeleton;
+import org.unidal.cat.core.report.remote.DefaultRemoteReportStub;
 import org.unidal.cat.core.report.view.ReportMenuManager;
 import org.unidal.cat.core.view.svg.DefaultGraphBuilder;
 import org.unidal.cat.core.view.svg.DefaultValueTranslater;
@@ -14,8 +16,6 @@ import org.unidal.cat.spi.analysis.DefaultPipelineManager;
 import org.unidal.cat.spi.analysis.event.DefaultTimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.DomainHashStrategy;
 import org.unidal.cat.spi.analysis.pipeline.RoundRobinStrategy;
-import org.unidal.cat.spi.remote.DefaultRemoteSkeleton;
-import org.unidal.cat.spi.remote.DefaultRemoteStub;
 import org.unidal.cat.spi.report.DefaultReportConfiguration;
 import org.unidal.cat.spi.report.internals.DefaultReportDelegateManager;
 import org.unidal.cat.spi.report.internals.DefaultReportFilterManager;
@@ -79,8 +79,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(RecentReportProvider.class));
       all.add(A(HistoricalReportProvider.class));
 
-      all.add(A(DefaultRemoteStub.class));
-      all.add(A(DefaultRemoteSkeleton.class));
+      all.add(A(DefaultRemoteReportStub.class));
+      all.add(A(DefaultRemoteReportSkeleton.class));
 
       all.add(A(TcpSocketSkeleton.class));
       all.add(A(DefaultMessageDispatcher.class));

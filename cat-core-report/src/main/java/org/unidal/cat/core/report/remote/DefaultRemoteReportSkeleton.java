@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.remote;
+package org.unidal.cat.core.report.remote;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,8 +15,8 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = RemoteSkeleton.class)
-public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkeleton {
+@Named(type = RemoteReportSkeleton.class)
+public class DefaultRemoteReportSkeleton extends ContainerHolder implements RemoteReportSkeleton {
    @Inject
    private ReportManagerManager m_rmm;
 
@@ -24,7 +24,7 @@ public class DefaultRemoteSkeleton extends ContainerHolder implements RemoteSkel
    private ReportDelegateManager m_rdg;
 
    @Override
-   public void handleReport(RemoteContext ctx, OutputStream out) throws IOException {
+   public void handleReport(RemoteReportContext ctx, OutputStream out) throws IOException {
       String name = ctx.getName();
       ReportManager<Report> rm = m_rmm.getReportManager(name);
 

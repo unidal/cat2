@@ -7,8 +7,9 @@ import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;
 import com.dianping.cat.consumer.problem.model.entity.Segment;
 import com.dianping.cat.consumer.problem.model.transform.BaseVisitor;
+
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.problem.ProblemConstants;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -31,7 +32,7 @@ public class ProblemThreadFilter implements ReportFilter<ProblemReport> {
    }
 
    @Override
-   public ProblemReport screen(RemoteContext ctx, ProblemReport report) {
+   public ProblemReport screen(RemoteReportContext ctx, ProblemReport report) {
       String ip = ctx.getProperty("ip", null);
       ThreadScreener visitor = new ThreadScreener(report.getDomain(), ip);
 
@@ -40,7 +41,7 @@ public class ProblemThreadFilter implements ReportFilter<ProblemReport> {
    }
 
    @Override
-   public void tailor(RemoteContext ctx, ProblemReport report) {
+   public void tailor(RemoteReportContext ctx, ProblemReport report) {
       String ip = ctx.getProperty("ip", null);
       ThreadTailor visitor = new ThreadTailor(ip);
 

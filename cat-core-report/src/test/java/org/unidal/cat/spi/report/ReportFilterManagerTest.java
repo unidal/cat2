@@ -3,8 +3,8 @@ package org.unidal.cat.spi.report;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.lookup.ComponentTestCase;
 
 public class ReportFilterManagerTest extends ComponentTestCase {
@@ -43,12 +43,12 @@ public class ReportFilterManagerTest extends ComponentTestCase {
 		}
 
 		@Override
-      public Report screen(RemoteContext ctx, Report report) {
+      public Report screen(RemoteReportContext ctx, Report report) {
 			throw new UnsupportedOperationException();
       }
 
 		@Override
-		public void tailor(RemoteContext ctx, Report report) {
+		public void tailor(RemoteReportContext ctx, Report report) {
 			throw new UnsupportedOperationException();
 		}
 	}

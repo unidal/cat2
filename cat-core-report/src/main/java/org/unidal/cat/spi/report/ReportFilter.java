@@ -1,7 +1,7 @@
 package org.unidal.cat.spi.report;
 
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.remote.RemoteContext;
 
 public interface ReportFilter<T extends Report> {
 	/**
@@ -27,7 +27,7 @@ public interface ReportFilter<T extends Report> {
 	 *           the report should keep unchanged
 	 * @return new created report
 	 */
-	public T screen(RemoteContext ctx, T report);
+	public T screen(RemoteReportContext ctx, T report);
 
 	/**
 	 * Tailors the given report to satisfy the context.
@@ -37,5 +37,5 @@ public interface ReportFilter<T extends Report> {
 	 * @param report
 	 *           the report should be changed
 	 */
-	public void tailor(RemoteContext ctx, T report);
+	public void tailor(RemoteReportContext ctx, T report);
 }

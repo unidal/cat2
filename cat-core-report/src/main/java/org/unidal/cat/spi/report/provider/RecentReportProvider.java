@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportStub;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.remote.RemoteContext;
-import org.unidal.cat.spi.remote.RemoteStub;
 import org.unidal.cat.spi.report.ReportConfiguration;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
@@ -30,7 +30,7 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 	public static final String ID = "recent";
 
 	@Inject
-	private RemoteStub m_stub;
+	private RemoteReportStub m_stub;
 
 	@Inject
 	private ReportConfiguration m_configuration;
@@ -38,12 +38,12 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
 	private ExecutorService m_pool;
 
 	@Override
-	public boolean isEligible(RemoteContext ctx, ReportDelegate<T> delegate) {
+	public boolean isEligible(RemoteReportContext ctx, ReportDelegate<T> delegate) {
 		return !ctx.getPeriod().isHistorical(ctx.getStartTime());
 	}
 
 	@Override
-	public T getReport(final RemoteContext ctx, final ReportDelegate<T> delegate) {
+	public T getReport(final RemoteReportContext ctx, final ReportDelegate<T> delegate) {
 		final Transaction t = Cat.getProducer().newTransaction("Service", "Recent");
 
 		try {

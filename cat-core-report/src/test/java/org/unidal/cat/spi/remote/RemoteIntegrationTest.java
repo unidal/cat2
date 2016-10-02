@@ -38,6 +38,10 @@ import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
+import org.unidal.cat.core.report.remote.DefaultRemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportSkeleton;
+import org.unidal.cat.core.report.remote.RemoteReportStub;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.DefaultReportConfiguration;
@@ -74,16 +78,16 @@ public class RemoteIntegrationTest extends JettyServer {
       super.startServer();
    }
 
-   private RemoteContext buildContext(ReportFilter<?> filter) {
+   private RemoteReportContext buildContext(ReportFilter<?> filter) {
       ReportPeriod period = ReportPeriod.HOUR;
       Date startTime = period.getStartTime(new Date());
 
-      return new DefaultRemoteContext("mock", "domain", startTime, period, filter);
+      return new DefaultRemoteReportContext("mock", "domain", startTime, period, filter);
    }
 
-   private void check(RemoteStub stub, ReportFilter<?> filter, String expected, String... keyValuePairs)
+   private void check(RemoteReportStub stub, ReportFilter<?> filter, String expected, String... keyValuePairs)
          throws IOException {
-      RemoteContext ctx = buildContext(filter);
+      RemoteReportContext ctx = buildContext(filter);
 
       for (int i = 0; i < keyValuePairs.length; i += 2) {
          String key = keyValuePairs[i];
@@ -151,7 +155,7 @@ public class RemoteIntegrationTest extends JettyServer {
 
    @Test(expected = IOException.class)
    public void testWithBadFilter() throws Exception {
-      RemoteStub stub = lookup(RemoteStub.class);
+      RemoteReportStub stub = lookup(RemoteReportStub.class);
       ReportFilter<?> filter = lookup(ReportFilter.class, "mock:mock");
 
       // make sure component configuration work
@@ -162,7 +166,7 @@ public class RemoteIntegrationTest extends JettyServer {
 
    @Test
    public void testWithFilter() throws Exception {
-      RemoteStub stub = lookup(RemoteStub.class);
+      RemoteReportStub stub = lookup(RemoteReportStub.class);
       ReportFilter<?> filter = lookup(ReportFilter.class, "mock:mock");
 
       // make sure component configuration work
@@ -173,7 +177,7 @@ public class RemoteIntegrationTest extends JettyServer {
 
    @Test
    public void testWithGzip() throws Exception {
-      RemoteStub stub = lookup(RemoteStub.class);
+      RemoteReportStub stub = lookup(RemoteReportStub.class);
       ReportFilter<?> filter = lookup(ReportFilter.class, "mock:mock");
 
       // make sure component configuration work
@@ -184,7 +188,7 @@ public class RemoteIntegrationTest extends JettyServer {
 
    @Test
    public void testWithoutFilter() throws Exception {
-      RemoteStub stub = lookup(RemoteStub.class);
+      RemoteReportStub stub = lookup(RemoteReportStub.class);
 
       // make sure component configuration work
       Assert.assertEquals(MockReportConfiguration.class, lookup(ReportConfiguration.class).getClass());
@@ -340,12 +344,12 @@ public class RemoteIntegrationTest extends JettyServer {
       }
 
       @Override
-      public MockReport screen(RemoteContext ctx, MockReport report) {
+      public MockReport screen(RemoteReportContext ctx, MockReport report) {
          return report;
       }
 
       @Override
-      public void tailor(RemoteContext ctx, MockReport report) {
+      public void tailor(RemoteReportContext ctx, MockReport report) {
          if ("true".equals(ctx.getProperty("error", null))) {
             throw new RuntimeException("Unknown issue.");
          } else {
@@ -394,10 +398,10 @@ public class RemoteIntegrationTest extends JettyServer {
 
       private ReportFilterManager m_manager;
 
-      private RemoteSkeleton m_skeleton;
+      private RemoteReportSkeleton m_skeleton;
 
       @SuppressWarnings("unchecked")
-      private RemoteContext createContext(HttpServletRequest req) {
+      private RemoteReportContext createContext(HttpServletRequest req) {
          String path = req.getPathInfo();
          List<String> parts = Splitters.by('/').trim().split(path.substring(1));
          String name = parts.size() > 0 ? parts.get(0) : null;
@@ -408,7 +412,7 @@ public class RemoteIntegrationTest extends JettyServer {
 
          ReportPeriod p = ReportPeriod.getByName(period, null);
          ReportFilter<Report> filter = m_manager.getFilter(name, filterId);
-         DefaultRemoteContext ctx = new DefaultRemoteContext(name, domain, p.parse(startTime, null), p, filter);
+         DefaultRemoteReportContext ctx = new DefaultRemoteReportContext(name, domain, p.parse(startTime, null), p, filter);
 
          List<String> keys = Collections.list(req.getParameterNames());
 
@@ -430,7 +434,7 @@ public class RemoteIntegrationTest extends JettyServer {
          PlexusContainer container = RemoteIntegrationTest.this.getContainer();
 
          try {
-            m_skeleton = container.lookup(RemoteSkeleton.class);
+            m_skeleton = container.lookup(RemoteReportSkeleton.class);
             m_manager = container.lookup(ReportFilterManager.class);
          } catch (ComponentLookupException e) {
             throw new ServletException(String.format("Error when init MockServlet."), e);
@@ -440,7 +444,7 @@ public class RemoteIntegrationTest extends JettyServer {
       @Override
       protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
          OutputStream out = res.getOutputStream();
-         RemoteContext ctx = createContext(req);
+         RemoteReportContext ctx = createContext(req);
 
          try {
             m_skeleton.handleReport(ctx, out);

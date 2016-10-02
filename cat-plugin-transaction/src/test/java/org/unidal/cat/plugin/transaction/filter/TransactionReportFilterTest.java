@@ -8,11 +8,11 @@ import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.cat.core.config.service.DomainGroupConfigService;
+import org.unidal.cat.core.report.remote.DefaultRemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.remote.DefaultRemoteContext;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.helper.Files;
@@ -27,7 +27,7 @@ public class TransactionReportFilterTest extends ComponentTestCase {
    @SuppressWarnings("unchecked")
    private TransactionReport filter(String filterId, TransactionReport report, String... args) {
       ReportFilter<TransactionReport> filter = lookup(ReportFilter.class, TransactionConstants.NAME + ":" + filterId);
-      RemoteContext ctx = new DefaultRemoteContext(TransactionConstants.NAME, report.getDomain(),
+      RemoteReportContext ctx = new DefaultRemoteReportContext(TransactionConstants.NAME, report.getDomain(),
             report.getStartTime(), ReportPeriod.HOUR, filter);
 
       if (args.length % 2 != 0) {

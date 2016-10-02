@@ -1,13 +1,13 @@
 package org.unidal.cat.plugin.transaction.filter;
 
 import org.unidal.cat.core.config.service.DomainGroupConfigService;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionType;
 import org.unidal.cat.plugin.transaction.model.transform.BaseVisitor;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -35,7 +35,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
    }
 
    @Override
-   public TransactionReport screen(RemoteContext ctx, TransactionReport report) {
+   public TransactionReport screen(RemoteReportContext ctx, TransactionReport report) {
       String group = ctx.getProperty("group", null);
       String ip = ctx.getProperty("ip", null);
       String type = ctx.getProperty("type", null);
@@ -46,7 +46,7 @@ public class TransactionTypeGraphFilter implements ReportFilter<TransactionRepor
    }
 
    @Override
-   public void tailor(RemoteContext ctx, TransactionReport report) {
+   public void tailor(RemoteReportContext ctx, TransactionReport report) {
       TypeGraphTailor visitor = new TypeGraphTailor();
 
       report.accept(visitor);

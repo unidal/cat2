@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.remote;
+package org.unidal.cat.core.report.remote;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,13 +17,13 @@ import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultMessageProducer;
 
-@Named(type = RemoteStub.class)
-public class DefaultRemoteStub implements RemoteStub {
+@Named(type = RemoteReportStub.class)
+public class DefaultRemoteReportStub implements RemoteReportStub {
 	@Inject
 	private ReportConfiguration m_configuration;
 
 	@Override
-	public InputStream getReport(RemoteContext ctx, String server) throws IOException {
+	public InputStream getReport(RemoteReportContext ctx, String server) throws IOException {
 		DefaultMessageProducer cat = (DefaultMessageProducer) Cat.getProducer();
 		Transaction t = cat.newTransaction(ctx.getParentTransaction(), "Remote", server);
 

@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.remote;
+package org.unidal.cat.core.report.remote;
 
 import java.util.Date;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.unidal.cat.spi.report.ReportFilter;
 
 import com.dianping.cat.message.Transaction;
 
-public interface RemoteContext {
+public interface RemoteReportContext {
 	public String buildURL(String serverUriPrefix);
 
 	public void destroy();
@@ -34,6 +34,6 @@ public interface RemoteContext {
 
 	public void setParentTransaction(Transaction parent);
 
-	public RemoteContext setProperty(String property, String newValue);
+	public RemoteReportContext setProperty(String property, String newValue);
 
 }

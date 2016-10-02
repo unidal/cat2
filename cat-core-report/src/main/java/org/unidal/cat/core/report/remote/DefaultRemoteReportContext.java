@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.remote;
+package org.unidal.cat.core.report.remote;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -14,7 +14,7 @@ import org.unidal.cat.spi.report.ReportFilter;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
 
-public class DefaultRemoteContext implements RemoteContext {
+public class DefaultRemoteReportContext implements RemoteReportContext {
    private String m_name;
 
    private String m_domain;
@@ -29,7 +29,7 @@ public class DefaultRemoteContext implements RemoteContext {
 
    private ThreadLocal<Transaction> m_parent = new ThreadLocal<Transaction>();
 
-   public DefaultRemoteContext(String name, String domain, Date startTime, ReportPeriod period,
+   public DefaultRemoteReportContext(String name, String domain, Date startTime, ReportPeriod period,
          ReportFilter<? extends Report> filter) {
       m_name = name;
       m_domain = domain;
@@ -38,7 +38,7 @@ public class DefaultRemoteContext implements RemoteContext {
       m_filter = filter;
    }
 
-   public DefaultRemoteContext(String name, String domain, long startTime, ReportPeriod period,
+   public DefaultRemoteReportContext(String name, String domain, long startTime, ReportPeriod period,
          ReportFilter<? extends Report> filter) {
       m_name = name;
       m_domain = domain;
@@ -174,7 +174,7 @@ public class DefaultRemoteContext implements RemoteContext {
    }
 
    @Override
-   public RemoteContext setProperty(String property, String newValue) {
+   public RemoteReportContext setProperty(String property, String newValue) {
       if (newValue == null) {
          if (m_properties != null) {
             m_properties.remove(property);

@@ -5,8 +5,9 @@ import com.dianping.cat.consumer.problem.model.entity.Entity;
 import com.dianping.cat.consumer.problem.model.entity.Machine;
 import com.dianping.cat.consumer.problem.model.entity.ProblemReport;
 import com.dianping.cat.consumer.problem.model.transform.BaseVisitor;
+
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.problem.ProblemConstants;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -29,7 +30,7 @@ public class ProblemHomePageFilter implements ReportFilter<ProblemReport> {
    }
 
    @Override
-   public ProblemReport screen(RemoteContext ctx, ProblemReport report) {
+   public ProblemReport screen(RemoteReportContext ctx, ProblemReport report) {
       String ip = ctx.getProperty("ip", null);
       HomePageScreener visitor = new HomePageScreener(report.getDomain(), ip);
 
@@ -38,7 +39,7 @@ public class ProblemHomePageFilter implements ReportFilter<ProblemReport> {
    }
 
    @Override
-   public void tailor(RemoteContext ctx, ProblemReport report) {
+   public void tailor(RemoteReportContext ctx, ProblemReport report) {
       String ip = ctx.getProperty("ip", null);
       HomePageTailor visitor = new HomePageTailor(ip);
 
