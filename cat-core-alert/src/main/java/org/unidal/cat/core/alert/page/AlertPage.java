@@ -5,7 +5,9 @@ import org.unidal.web.mvc.annotation.ModuleMeta;
 
 public enum AlertPage implements Page {
 
-   HOME("home", "home", "Home", "Home", true);
+   HOME("home", "home", "Home", "Home", true),
+
+   SERVICE("service", "service", "Service", "Service", true);
 
    private String m_name;
 

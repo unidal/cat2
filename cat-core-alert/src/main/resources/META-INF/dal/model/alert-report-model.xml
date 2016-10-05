@@ -24,8 +24,13 @@
          return m_dynamicAttributes.get(name);
       }
 
-      public AlertMetric set(String name, String value) {
-         m_dynamicAttributes.put(name, value);
+      public AlertMetric set(String name, Object value) {
+         if (value != null) {
+            m_dynamicAttributes.put(name, String.valueOf(value));
+         } else {
+            m_dynamicAttributes.remove(name);
+         }
+         
          return this;
       }
     </snippet>

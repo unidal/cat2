@@ -1,41 +1,19 @@
 <plexus>
 	<components>
 		<component>
-			<role>org.unidal.cat.spi.report.ReportManager</role>
-			<role-hint>alert</role-hint>
-			<implementation>org.unidal.cat.core.alert.model.AlertReportManager</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.spi.report.provider.ReportProvider</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.storage.ReportStorage</role>
-					<role-hint>file</role-hint>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.internals.ReportDelegateManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.ReportFilterManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.spi.report.task.ReportTaskService</role>
-				</requirement>
-			</requirements>
+			<role>org.unidal.cat.core.alert.AlertConfiguration</role>
+			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertConfiguration</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.report.ReportAggregator</role>
-			<role-hint>alert</role-hint>
-			<implementation>org.unidal.cat.core.alert.model.AlertReportAggregator</implementation>
+			<role>org.unidal.cat.core.alert.AlertReportBuilder</role>
+			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertReportBuilder</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.report.ReportDelegate</role>
-			<role-hint>alert</role-hint>
-			<implementation>org.unidal.cat.core.alert.model.AlertReportDelegate</implementation>
+			<role>org.unidal.cat.core.alert.service.AlertReportService</role>
+			<implementation>org.unidal.cat.core.alert.service.DefaultAlertReportService</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.report.ReportAggregator</role>
-					<role-hint>alert</role-hint>
+					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -63,6 +41,27 @@
 		<component>
 			<role>org.unidal.cat.core.alert.page.home.JspViewer</role>
 			<implementation>org.unidal.cat.core.alert.page.home.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.service.Handler</role>
+			<implementation>org.unidal.cat.core.alert.page.service.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.page.service.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.AlertReportBuilder</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.service.JspViewer</role>
+			<implementation>org.unidal.cat.core.alert.page.service.JspViewer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
