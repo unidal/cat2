@@ -1,4 +1,4 @@
-package org.unidal.cat.spi.remote;
+package org.unidal.cat.core.report.remote;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,10 +38,6 @@ import org.mortbay.jetty.Handler;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
-import org.unidal.cat.core.report.remote.DefaultRemoteReportContext;
-import org.unidal.cat.core.report.remote.RemoteReportContext;
-import org.unidal.cat.core.report.remote.RemoteReportSkeleton;
-import org.unidal.cat.core.report.remote.RemoteReportStub;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
 import org.unidal.cat.spi.report.DefaultReportConfiguration;
@@ -66,7 +62,7 @@ import org.unidal.test.jetty.JettyServer;
  * </ul>
  */
 @RunWith(JUnit4.class)
-public class RemoteIntegrationTest extends JettyServer {
+public class RemoteReportTest extends JettyServer {
    @After
    public void after() throws Exception {
       super.stopServer();
@@ -361,12 +357,18 @@ public class RemoteIntegrationTest extends JettyServer {
    @Named(type = ReportManager.class, value = "mock")
    public static final class MockReportManager implements ReportManager<MockReport> {
       @Override
-      public void loadLocalReports(int hour, int index) throws IOException {
+      public MockReport getLocalReport(String domain, int hour, int index, boolean createIfNotExist) {
          throw new UnsupportedOperationException();
       }
 
       @Override
-      public MockReport getLocalReport(String domain, int hour, int index, boolean createIfNotExist) {
+      public List<Map<String, MockReport>> getLocalReports(int hour) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
+            String... keyValuePairs) throws IOException {
          throw new UnsupportedOperationException();
       }
 
@@ -377,13 +379,7 @@ public class RemoteIntegrationTest extends JettyServer {
       }
 
       @Override
-      public MockReport getReport(ReportPeriod period, Date startTime, String domain, String filterId,
-            String... keyValuePairs) throws IOException {
-         throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public List<Map<String, MockReport>> getLocalReports(int hour) {
+      public void loadLocalReports(int hour, int index) throws IOException {
          throw new UnsupportedOperationException();
       }
 
@@ -393,7 +389,7 @@ public class RemoteIntegrationTest extends JettyServer {
       }
    }
 
-   class MockServlet extends HttpServlet {
+   private class MockServlet extends HttpServlet {
       private static final long serialVersionUID = 1L;
 
       private ReportFilterManager m_manager;
@@ -412,7 +408,8 @@ public class RemoteIntegrationTest extends JettyServer {
 
          ReportPeriod p = ReportPeriod.getByName(period, null);
          ReportFilter<Report> filter = m_manager.getFilter(name, filterId);
-         DefaultRemoteReportContext ctx = new DefaultRemoteReportContext(name, domain, p.parse(startTime, null), p, filter);
+         DefaultRemoteReportContext ctx = new DefaultRemoteReportContext(name, domain, p.parse(startTime, null), p,
+               filter);
 
          List<String> keys = Collections.list(req.getParameterNames());
 
@@ -431,7 +428,7 @@ public class RemoteIntegrationTest extends JettyServer {
       public void init(ServletConfig config) throws ServletException {
          super.init(config);
 
-         PlexusContainer container = RemoteIntegrationTest.this.getContainer();
+         PlexusContainer container = RemoteReportTest.this.getContainer();
 
          try {
             m_skeleton = container.lookup(RemoteReportSkeleton.class);
