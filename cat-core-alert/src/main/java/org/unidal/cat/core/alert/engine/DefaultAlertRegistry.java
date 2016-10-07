@@ -21,7 +21,7 @@ public class DefaultAlertRegistry implements AlertRegistry {
 
    @Override
    public Object buildEvent(AlertMetric metric) {
-      Class<?> eventClass = m_eventClasses.get(metric.getType());
+      Class<?> eventClass = m_eventClasses.get(metric.getTypeName());
 
       return newInstance(eventClass, metric);
    }

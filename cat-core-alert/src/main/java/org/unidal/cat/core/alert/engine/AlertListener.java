@@ -5,7 +5,7 @@ public interface AlertListener {
 
    public void onEvent(AlertContext ctx);
 
-   public Class<?> getEventClass();
+   public Class<? extends AlertEventSource> getEventClass();
 
    public String getEventName();
 }

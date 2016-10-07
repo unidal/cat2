@@ -30,7 +30,7 @@ public class AlertEngineTest extends ComponentTestCase {
 
    private static class MockAlertListener implements AlertListener {
       @Override
-      public Class<?> getEventClass() {
+      public Class<? extends AlertEventSource> getEventClass() {
          return MockEvent.class;
       }
 
@@ -41,7 +41,7 @@ public class AlertEngineTest extends ComponentTestCase {
 
       @Override
       public String getStatement() {
-         return "select total,fail,sum(total) as totalSum, sum(fail) as failSum from mock.win:length_batch(3)";
+         return "select typeName,fromIp,total,fail,sum(total) as totalSum, sum(fail) as failSum from mock.win:length_batch(3)";
       }
 
       @Override
@@ -49,9 +49,13 @@ public class AlertEngineTest extends ComponentTestCase {
          Assert.assertEquals(3, ctx.getRows());
 
          for (int i = 0; i < ctx.getRows(); i++) {
+            Assert.assertEquals("mock", ctx.getCell(i, "typeName"));
+            Assert.assertEquals("localhost", ctx.getCell(i, "fromIp"));
             Assert.assertEquals(68, ctx.getCell(i, "totalSum"));
             Assert.assertEquals(47, ctx.getCell(i, "failSum"));
          }
+
+         System.out.println("Listener triggered!");
       }
    }
 
@@ -67,14 +71,16 @@ public class AlertEngineTest extends ComponentTestCase {
       }
    }
 
-   public static class MockEvent {
+   static class MockEvent extends AbstractEventSource {
       private int m_total;
 
       private int m_fail;
 
       public MockEvent(AlertMetric metric) {
-         m_total = Integer.parseInt(metric.get("total"));
-         m_fail = Integer.parseInt(metric.get("fail"));
+         super(metric);
+
+         m_total = getInt("total", 0);
+         m_fail = getInt("fail", 0);
       }
 
       public int getFail() {

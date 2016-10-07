@@ -12,8 +12,8 @@
     <entity-ref name="metric" type="list" names="metrics" />
   </entity>
   <entity name="metric">
-    <attribute name="ip" value-type="String" />
-    <attribute name="type" value-type="String" />
+    <attribute name="from-ip" value-type="String" />
+    <attribute name="type-name" value-type="String" />
   </entity>
 </model>
 

@@ -2,6 +2,7 @@ package com.dianping.cat;
 
 import java.io.File;
 
+import org.unidal.cat.core.alert.CatAlertModule;
 import org.unidal.cat.core.document.CatDocumentModule;
 import org.unidal.cat.core.report.CatReportModule;
 import org.unidal.helper.Threads;
@@ -95,7 +96,7 @@ public class CatHomeModule extends AbstractModule {
 
 	@Override
 	public Module[] getDependencies(ModuleContext ctx) {
-		return ctx.getModules(CatConsumerModule.ID, CatReportModule.ID, CatDocumentModule.ID);
+		return ctx.getModules(CatConsumerModule.ID, CatReportModule.ID, CatDocumentModule.ID, CatAlertModule.ID);
 	}
 
 	@Override

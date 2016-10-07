@@ -1,6 +1,11 @@
 <plexus>
 	<components>
 		<component>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-core-alert</role-hint>
+			<implementation>org.unidal.cat.core.alert.CatAlertModule</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.alert.AlertConfiguration</role>
 			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertConfiguration</implementation>
 		</component>

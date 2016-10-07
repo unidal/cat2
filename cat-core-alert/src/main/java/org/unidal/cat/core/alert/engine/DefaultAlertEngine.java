@@ -1,6 +1,6 @@
 package org.unidal.cat.core.alert.engine;
 
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,8 +21,6 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
-import com.espertech.esper.client.ConfigurationOperations;
-import com.espertech.esper.client.EPAdministrator;
 import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 
@@ -60,15 +58,12 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
    }
 
    private void initializeEsper() {
+      List<AlertListener> listeners = lookupList(AlertListener.class);
+
       m_esper = EPServiceProviderManager.getDefaultProvider();
 
-      EPAdministrator admin = m_esper.getEPAdministrator();
-      ConfigurationOperations config = admin.getConfiguration();
-
-      Map<String, AlertListener> listeners = lookupMap(AlertListener.class);
-
-      for (Map.Entry<String, AlertListener> e : listeners.entrySet()) {
-         config.addEventType(e.getKey(), AlertMetric.class);
+      for (AlertListener listener : listeners) {
+         m_registry.register(m_esper, listener);
       }
    }
 
@@ -137,26 +132,26 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
    }
 
    private class Feeder extends BaseVisitor {
-      private String m_type;
+      private String m_typeName;
 
-      private String m_ip;
+      private String m_fromIp;
 
       @Override
       public void visitEvent(AlertEvent event) {
-         m_type = event.getType();
+         m_typeName = event.getType();
          super.visitEvent(event);
       }
 
       @Override
       public void visitMachine(AlertMachine machine) {
-         m_ip = machine.getIp();
+         m_fromIp = machine.getIp();
          super.visitMachine(machine);
       }
 
       @Override
       public void visitMetric(AlertMetric metric) {
-         metric.setType(m_type);
-         metric.setIp(m_ip);
+         metric.setTypeName(m_typeName);
+         metric.setFromIp(m_fromIp);
 
          sendEvent(metric);
       }
