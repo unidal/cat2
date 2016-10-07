@@ -34,7 +34,6 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
 import org.unidal.cat.core.alert.AlertConfiguration;
 import org.unidal.cat.core.alert.AlertMetricBuilder;
-import org.unidal.cat.core.alert.AlertReportBuilder;
 import org.unidal.cat.core.alert.internals.DefaultAlertConfiguration;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;

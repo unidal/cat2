@@ -5,8 +5,8 @@
 			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertConfiguration</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.AlertReportBuilder</role>
-			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertReportBuilder</implementation>
+			<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
+			<implementation>org.unidal.cat.core.alert.service.LocalAlertReportBuilder</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.service.AlertReportService</role>
@@ -16,6 +16,25 @@
 					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.engine.AlertEngine</role>
+			<implementation>org.unidal.cat.core.alert.engine.DefaultAlertEngine</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.service.AlertReportService</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.engine.AlertRegistry</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.engine.AlertRegistry</role>
+			<implementation>org.unidal.cat.core.alert.engine.DefaultAlertRegistry</implementation>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -55,7 +74,7 @@
 					<role>org.unidal.cat.core.alert.page.service.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.AlertReportBuilder</role>
+					<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
 				</requirement>
 			</requirements>
 		</component>

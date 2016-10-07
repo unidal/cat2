@@ -1,11 +1,10 @@
-package org.unidal.cat.core.alert.internals;
+package org.unidal.cat.core.alert.service;
 
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.alert.AlertMetricBuilder;
-import org.unidal.cat.core.alert.AlertReportBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
@@ -16,7 +15,7 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.Cat;
 
 @Named(type = AlertReportBuilder.class)
-public class DefaultAlertReportBuilder extends ContainerHolder implements AlertReportBuilder, Initializable {
+public class LocalAlertReportBuilder extends ContainerHolder implements AlertReportBuilder, Initializable {
    private Map<String, AlertMetricBuilder> m_builders;
 
    @Override

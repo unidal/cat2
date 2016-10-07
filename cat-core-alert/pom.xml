@@ -12,7 +12,7 @@
    <dependencies>
       <dependency>
          <groupId>org.unidal.cat</groupId>
-         <artifactId>cat-core-report</artifactId>
+         <artifactId>cat-core</artifactId>
       </dependency>
       <dependency>
          <groupId>com.espertech</groupId>

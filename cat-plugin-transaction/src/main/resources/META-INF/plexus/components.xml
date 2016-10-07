@@ -31,7 +31,7 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.model.AlertMetricBuilder</role>
+			<role>org.unidal.cat.core.alert.AlertMetricBuilder</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionAlertMetricBuilder</implementation>
 			<requirements>

@@ -3,6 +3,7 @@ package org.unidal.cat.core.alert.internals;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
@@ -14,6 +15,11 @@ public class DefaultAlertConfiguration implements Initializable, AlertConfigurat
    private ConcurrentMap<String, Boolean> m_servers = new ConcurrentHashMap<String, Boolean>();
 
    private String m_serverUriPattern = "http://%s/cat/alert/service?op=binary";
+
+   @Override
+   public long getAlertCheckInterval() {
+      return TimeUnit.MINUTES.toMillis(1); // 1m
+   }
 
    @Override
    public int getRemoteCallConnectTimeoutInMillis() {

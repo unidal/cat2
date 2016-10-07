@@ -19,6 +19,10 @@
          <artifactId>cat-core-document</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.unidal.cat</groupId>
+         <artifactId>cat-core-alert</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
          <scope>provided</scope>

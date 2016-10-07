@@ -12,4 +12,6 @@ public interface AlertConfiguration {
    public Map<String, Boolean> getServers();
 
    public String getServerUri(String server);
+
+   public long getAlertCheckInterval();
 }
