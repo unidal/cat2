@@ -42,6 +42,11 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.alert.engine.AlertListener</role>
+			<role-hint>transaction</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionAlertListener</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>
 			<role-hint>transaction</role-hint>
 			<implementation>org.unidal.cat.plugin.transaction.model.TransactionReportManager</implementation>

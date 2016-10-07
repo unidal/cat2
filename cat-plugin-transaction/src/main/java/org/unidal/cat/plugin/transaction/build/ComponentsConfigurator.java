@@ -6,6 +6,7 @@ import java.util.List;
 import org.unidal.cat.plugin.transaction.TransactionConfigService;
 import org.unidal.cat.plugin.transaction.TransactionPipeline;
 import org.unidal.cat.plugin.transaction.TransactionReportAnalyzer;
+import org.unidal.cat.plugin.transaction.alert.TransactionAlertListener;
 import org.unidal.cat.plugin.transaction.alert.TransactionAlertMetricBuilder;
 import org.unidal.cat.plugin.transaction.filter.TransactionHelper;
 import org.unidal.cat.plugin.transaction.filter.TransactionNameFilter;
@@ -35,6 +36,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
       // alert
       all.add(A(TransactionAlertMetricBuilder.class));
+      all.add(A(TransactionAlertListener.class));
 
       // model
       all.add(A(TransactionReportManager.class));

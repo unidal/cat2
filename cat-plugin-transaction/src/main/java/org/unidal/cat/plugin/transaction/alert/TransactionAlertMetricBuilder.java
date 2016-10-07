@@ -58,7 +58,9 @@ public class TransactionAlertMetricBuilder implements AlertMetricBuilder {
          metric.set("name", name.getId());
          metric.set("total", name.getTotalCount());
          metric.set("fail", name.getFailCount());
-         metric.set("sum", name.getSum());
+         metric.set("min", name.getMin());
+         metric.set("max", name.getMax());
+         metric.set("duration", name.getSum());
 
          m_event.addMetric(metric);
       }
