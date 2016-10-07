@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.http.HttpStatus;
 import org.unidal.cat.core.report.page.ReportPage;
+import org.unidal.cat.core.report.remote.DefaultRemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportSkeleton;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.remote.DefaultRemoteContext;
-import org.unidal.cat.spi.remote.RemoteContext;
-import org.unidal.cat.spi.remote.RemoteSkeleton;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.ReportFilterManager;
 import org.unidal.lookup.annotation.Inject;
@@ -28,15 +28,15 @@ import com.dianping.cat.Cat;
 
 public class Handler implements PageHandler<Context> {
    @Inject
-   private RemoteSkeleton m_skeleton;
+   private RemoteReportSkeleton m_skeleton;
 
    @Inject
    private ReportFilterManager m_manager;
 
    @SuppressWarnings("unchecked")
-   private RemoteContext buildContext(HttpServletRequest req, Payload payload) {
+   private RemoteReportContext buildContext(HttpServletRequest req, Payload payload) {
       ReportFilter<Report> filter = m_manager.getFilter(payload.getName(), payload.getFilterId());
-      DefaultRemoteContext ctx = new DefaultRemoteContext(payload.getName(), payload.getDomain(), //
+      DefaultRemoteReportContext ctx = new DefaultRemoteReportContext(payload.getName(), payload.getDomain(), //
             payload.getStartTime(), payload.getPeriod(), filter);
       List<String> names = Collections.list(req.getParameterNames());
 
@@ -75,7 +75,7 @@ public class Handler implements PageHandler<Context> {
       } else {
          OutputStream out = ctx.getHttpServletResponse().getOutputStream();
 
-         RemoteContext rc = buildContext(ctx.getHttpServletRequest(), payload);
+         RemoteReportContext rc = buildContext(ctx.getHttpServletRequest(), payload);
          m_skeleton.handleReport(rc, out);
       }
    }

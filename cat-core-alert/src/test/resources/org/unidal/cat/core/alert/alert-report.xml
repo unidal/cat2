@@ -1,0 +1,10 @@
+<alert-report>
+   <machine ip="127.0.0.1">
+      <event type="Transaction">
+         <metric ip="127.0.0.1" type="Transaction" />
+         <metric/>
+      </event>
+      <event/>
+   </machine>
+   <machine/>
+</alert-report>

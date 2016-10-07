@@ -1,13 +1,13 @@
 package org.unidal.cat.plugin.event.filter;
 
 import org.unidal.cat.core.config.service.DomainGroupConfigService;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.event.EventConstants;
 import org.unidal.cat.plugin.event.model.entity.EventName;
 import org.unidal.cat.plugin.event.model.entity.EventReport;
 import org.unidal.cat.plugin.event.model.entity.EventType;
 import org.unidal.cat.plugin.event.model.entity.Machine;
 import org.unidal.cat.plugin.event.model.transform.BaseVisitor;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -35,7 +35,7 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
    }
 
    @Override
-   public EventReport screen(RemoteContext ctx, EventReport report) {
+   public EventReport screen(RemoteReportContext ctx, EventReport report) {
       String group = ctx.getProperty("group", null);
       String ip = ctx.getProperty("ip", null);
       String type = ctx.getProperty("type", null);
@@ -47,7 +47,7 @@ public class EventNameGraphFilter implements ReportFilter<EventReport> {
    }
 
    @Override
-   public void tailor(RemoteContext ctx, EventReport report) {
+   public void tailor(RemoteReportContext ctx, EventReport report) {
       NameGraphTailor visitor = new NameGraphTailor();
 
       report.accept(visitor);

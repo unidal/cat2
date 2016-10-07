@@ -216,7 +216,7 @@
 			<implementation>org.unidal.cat.spi.report.provider.RecentReportProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.remote.RemoteStub</role>
+					<role>org.unidal.cat.core.report.remote.RemoteReportStub</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
@@ -234,8 +234,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.remote.RemoteStub</role>
-			<implementation>org.unidal.cat.spi.remote.DefaultRemoteStub</implementation>
+			<role>org.unidal.cat.core.report.remote.RemoteReportStub</role>
+			<implementation>org.unidal.cat.core.report.remote.DefaultRemoteReportStub</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportConfiguration</role>
@@ -243,8 +243,8 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.spi.remote.RemoteSkeleton</role>
-			<implementation>org.unidal.cat.spi.remote.DefaultRemoteSkeleton</implementation>
+			<role>org.unidal.cat.core.report.remote.RemoteReportSkeleton</role>
+			<implementation>org.unidal.cat.core.report.remote.DefaultRemoteReportSkeleton</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportManagerManager</role>
@@ -485,7 +485,7 @@
 			<implementation>org.unidal.cat.core.report.page.service.Handler</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.spi.remote.RemoteSkeleton</role>
+					<role>org.unidal.cat.core.report.remote.RemoteReportSkeleton</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportFilterManager</role>

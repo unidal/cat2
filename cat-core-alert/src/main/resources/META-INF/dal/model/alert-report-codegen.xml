@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="alert-report" root="true">
+    <entity-ref name="machine" type="list" names="machines" />
+  </entity>
+  <entity name="machine">
+    <attribute name="ip" value-type="String" />
+    <entity-ref name="event" type="list" names="events" />
+  </entity>
+  <entity name="event">
+    <attribute name="type" value-type="String" />
+    <entity-ref name="metric" type="list" names="metrics" />
+  </entity>
+  <entity name="metric">
+    <attribute name="ip" value-type="String" />
+    <attribute name="type" value-type="String" />
+  </entity>
+</model>
+

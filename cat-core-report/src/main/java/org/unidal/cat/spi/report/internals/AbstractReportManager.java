@@ -11,10 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.cat.core.report.remote.DefaultRemoteReportContext;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.ReportPeriod;
-import org.unidal.cat.spi.remote.DefaultRemoteContext;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.ReportFilterManager;
@@ -111,7 +111,7 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
          throws IOException {
       ReportDelegate<T> delegate = getDelegate();
       ReportFilter<? extends Report> filter = m_filterManager.getFilter(delegate.getName(), filterId);
-      RemoteContext ctx = new DefaultRemoteContext(delegate.getName(), domain, startTime, period, filter);
+      RemoteReportContext ctx = new DefaultRemoteReportContext(delegate.getName(), domain, startTime, period, filter);
       int len = keyValuePairs.length;
 
       if (len % 2 == 0) {

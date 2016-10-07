@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wizard package="org.unidal.cat.core.alert">
+   <webapp package="org.unidal.cat.core.alert" name="cat" module="true" webres="false" cat="false" plugin-management="false" jstl="false">
+      <module name="alert" path="alert" default="true" package="org.unidal.cat.core.alert.page">
+         <page name="home" title="Home" default="true" package="org.unidal.cat.core.alert.page.home" path="home" template="default">
+            <description>Home</description>
+         </page>
+         <page name="service" title="Service" package="org.unidal.cat.core.alert.page.service" path="service" template="default">
+            <description>Service</description>
+         </page>
+      </module>
+   </webapp>
+</wizard>

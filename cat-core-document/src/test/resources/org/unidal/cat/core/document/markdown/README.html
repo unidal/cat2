@@ -1,0 +1,57 @@
+<p>CAT <a href="https://travis-ci.org/unidal/cat2"><img src="https://travis-ci.org/unidal/cat2.svg?branch=master" alt="Build Status" /></a>
+<a href="https://coveralls.io/github/unidal/cat2?branch=master"><img src="https://coveralls.io/repos/github/unidal/cat2/badge.svg?branch=master" alt="Coverage Status" /></a>
+<a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img src="https://img.shields.io/badge/license-Apache%202-4EB1BA.svg" alt="License" /></a></p>
+<p>===</p>
+<h5>CAT(Central Application Tracking)是基于Java开发的分布式实时监控系统，主要包括应用监控、业务监控等。[2013-01-06]</h5>
+<h5>CAT支持以下消息类型监控：</h5>
+<ul>
+<li><strong>Transaction</strong> 适合记录跨越系统边界的程序访问行为,比如远程调用，数据库调用，也适合执行时间较长的业务逻辑监控，Transaction用来记录一段代码的执行时间和次数。</li>
+<li><strong>Event</strong> 用来记录一件事发生的次数，比如记录系统异常，它和transaction相比缺少了时间的统计，开销比transaction要小。</li>
+<li><strong>Heartbeat</strong> 表示程序内定期产生的统计信息, 如CPU%, MEM%, 连接池状态, 系统负载等。</li>
+<li><strong>Metric</strong>  用于记录业务指标、指标可能包含对一个指标记录次数、记录平均值、记录总和，业务指标最低统计粒度为1分钟。</li>
+<li><strong>Trace</strong> 用于记录基本的trace信息，类似于log4j的info信息，这些信息仅用于查看一些相关信息</li>
+</ul>
+<h1>消息树</h1>
+<p>CAT监控系统将每次用户请求(URL)、服务调用(Service)和数据库访问(SQL)等内部执行步骤封装成一个完整的消息树(由Transaction、Event、Heartbeat、Metric和Trace等消息组成)，呈现出来，方便用户进行故障诊断和性能调优。</p>
+<h2>完整的消息树</h2>
+<p><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logviewAll01.png" alt="Alt text" /></p>
+<h2>可视化消息树</h2>
+<p><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logviewAll02.png" alt="Alt text" /></p>
+<h2>分布式消息树【一台机器调用另外一台机器】</h2>
+<p><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logviewAll03.png" alt="Alt text" /></p>
+<h2>Requirements</h2>
+<ul>
+<li>Java 6+</li>
+<li>Maven 3.2.1+</li>
+<li>MySQL 5.6+</li>
+</ul>
+<h2>Quick Started</h2>
+<h5>1、在CAT目录下，用maven构建项目</h5>
+<pre><code>    mvn clean install -DskipTests
+</code></pre>
+<h5>2、配置CAT的环境</h5>
+<pre><code>    mvn cat:install
+</code></pre>
+<p>Note：</p>
+<ul>
+<li>Linux\Mac  需要对/data/appdatas/cat和/data/applogs/cat有读写权限</li>
+<li>Windows    则是对系统运行盘下的/data/appdatas/cat和/data/applogs/cat有读写权限</li>
+</ul>
+<h5>3、(Optional)如果安装了hadoop集群，需到/data/appdatas/cat/server.xml中配置对应hadoop信息。将localmode设置为false，默认情况下，CAT在开发模式（localmode=true）下工作。</h5>
+<h5>4、运行CAT</h5>
+<pre><code>    cd cat-home;mvn jetty:run
+</code></pre>
+<p>然后打开浏览器，输入http://localhost:2281/cat/。</p>
+<p>或者在cat目录下输入</p>
+<pre><code>    mvn eclipse:clean eclipse:eclipse
+</code></pre>
+<p>然后将项目导入到eclipse中，运行cat-home项目里得‘com.dianping.cat.TestServer’来启动CAT。</p>
+<h2>Copyright and license</h2>
+<p>Copyright 2013 DianPing, Inc.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &ldquo;License&rdquo;); you may not use this work except in compliance with the License. You may obtain a copy of the License in the LICENSE file, or at:</p>
+<p><a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></p>
+<p>Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an &ldquo;AS IS&rdquo; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.</p>
+<h1>CAT接入公司</h1>
+<p><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/dianping.png" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/ctrip.png" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/lufax.png" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/ly.png" alt="Alt text" />
+<img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/liepin.png" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/qipeipu.jpg" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/shangping.jpg" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/zhenlv.png" alt="Alt text" /><img src="https://raw.github.com/dianping/cat/master/cat-home/src/main/webapp/images/logo/oppo.png" alt="Alt text" /></p>
+<p>更多接入公司，欢迎在<a href="https://github.com/dianping/cat/issues/753">https://github.com/dianping/cat/issues/753</a>登记</p>

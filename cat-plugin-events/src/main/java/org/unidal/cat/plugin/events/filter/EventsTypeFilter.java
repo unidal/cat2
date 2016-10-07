@@ -1,12 +1,12 @@
 package org.unidal.cat.plugin.events.filter;
 
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.events.EventsConstants;
 import org.unidal.cat.plugin.events.model.EventsHolder;
 import org.unidal.cat.plugin.events.model.entity.EventsDepartment;
 import org.unidal.cat.plugin.events.model.entity.EventsReport;
 import org.unidal.cat.plugin.events.model.entity.EventsType;
 import org.unidal.cat.plugin.events.model.transform.BaseVisitor;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -31,7 +31,7 @@ public class EventsTypeFilter implements ReportFilter<EventsReport> {
    }
 
    @Override
-   public EventsReport screen(RemoteContext ctx, EventsReport report) {
+   public EventsReport screen(RemoteReportContext ctx, EventsReport report) {
       String group = ctx.getProperty("group", null);
       String bu = ctx.getProperty("bu", null);
       TypeScreener visitor = new TypeScreener(report.getDomain(), group, bu);
@@ -41,7 +41,7 @@ public class EventsTypeFilter implements ReportFilter<EventsReport> {
    }
 
    @Override
-   public void tailor(RemoteContext ctx, EventsReport report) {
+   public void tailor(RemoteReportContext ctx, EventsReport report) {
    }
 
    private class TypeScreener extends BaseVisitor {

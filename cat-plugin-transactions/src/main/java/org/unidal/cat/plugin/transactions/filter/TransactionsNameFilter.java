@@ -1,6 +1,7 @@
 package org.unidal.cat.plugin.transactions.filter;
 
 import org.unidal.cat.core.config.service.DomainGroupConfigService;
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.plugin.transactions.TransactionsConstants;
 import org.unidal.cat.plugin.transactions.model.TransactionsHolder;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsDepartment;
@@ -8,7 +9,6 @@ import org.unidal.cat.plugin.transactions.model.entity.TransactionsName;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsReport;
 import org.unidal.cat.plugin.transactions.model.entity.TransactionsType;
 import org.unidal.cat.plugin.transactions.model.transform.BaseVisitor;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -36,7 +36,7 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
    }
 
    @Override
-   public TransactionsReport screen(RemoteContext ctx, TransactionsReport report) {
+   public TransactionsReport screen(RemoteReportContext ctx, TransactionsReport report) {
       String group = ctx.getProperty("group", null);
       String bu = ctx.getProperty("bu", null);
       String type = ctx.getProperty("type", null);
@@ -47,7 +47,7 @@ public class TransactionsNameFilter implements ReportFilter<TransactionsReport> 
    }
 
    @Override
-   public void tailor(RemoteContext ctx, TransactionsReport report) {
+   public void tailor(RemoteReportContext ctx, TransactionsReport report) {
    }
 
    private class NameScreener extends BaseVisitor {

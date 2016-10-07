@@ -3,8 +3,8 @@ package org.unidal.cat.spi.report.provider;
 import java.io.IOException;
 import java.util.List;
 
+import org.unidal.cat.core.report.remote.RemoteReportContext;
 import org.unidal.cat.spi.Report;
-import org.unidal.cat.spi.remote.RemoteContext;
 import org.unidal.cat.spi.report.ReportDelegate;
 import org.unidal.cat.spi.report.ReportFilter;
 import org.unidal.cat.spi.report.storage.ReportStorage;
@@ -23,12 +23,12 @@ public class HistoricalReportProvider<T extends Report> implements ReportProvide
 	private ReportStorage<T> m_storage;
 
 	@Override
-	public boolean isEligible(RemoteContext ctx, ReportDelegate<T> delegate) {
+	public boolean isEligible(RemoteReportContext ctx, ReportDelegate<T> delegate) {
 		return ctx.getPeriod().isHistorical(ctx.getStartTime());
 	}
 
 	@Override
-	public T getReport(RemoteContext ctx, ReportDelegate<T> delegate) throws IOException {
+	public T getReport(RemoteReportContext ctx, ReportDelegate<T> delegate) throws IOException {
 		Transaction t = Cat.getProducer().newTransaction("Service", "Historical");
 
 		t.addData(ctx.toString());

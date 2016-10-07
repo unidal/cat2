@@ -1,0 +1,28 @@
+<model>
+   <machine ip="127.0.0.1">
+      <event type="transaction">
+         <metric domain="cat" type="URL" name="/r/t" count="100" fails="1" sum="12345" />
+      </event>
+      <event type="event">
+         <metric domain="cat" type="System" name="Reboot" count="1" fails="0" />
+      </event>
+      <event type="heartbeat">
+         <metric domain="cat" type="load-average" value="1.1" />
+         <metric domain="cat" type="full-gc-count" value="1" />
+         <metric domain="cat" type="full-gc-time" value="11.1" />
+         <metric domain="cat" type="network-connection-established" value="111" />
+         <metric domain="cat" type="network-connection-timewait" value="234" />
+      </event>
+      <event type="database">
+         <metric name="cat" type="active-connections" value="8" />
+         <metric name="user" type="active-connections" value="1" />
+      </event>
+      <event type="cache">
+         <metric name="user-cache" type="get" value="8" />
+         <metric name="user-cache" type="set" value="2" />
+         <metric name="city-cache" type="mget" value="3" />
+         <metric name="city-cache" type="set" value="1" />
+      </event>
+   </machine>
+   <machine/>
+</model>
