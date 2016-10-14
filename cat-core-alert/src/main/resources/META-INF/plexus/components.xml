@@ -12,6 +12,11 @@
 		<component>
 			<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
 			<implementation>org.unidal.cat.core.alert.service.LocalAlertReportBuilder</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.metric.MetricsManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.service.AlertReportService</role>
@@ -23,8 +28,12 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.engine.AlertEngine</role>
-			<implementation>org.unidal.cat.core.alert.engine.DefaultAlertEngine</implementation>
+			<role>org.unidal.cat.core.alert.metric.MetricsManager</role>
+			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.MetricsEngine</role>
+			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsEngine</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
@@ -33,13 +42,18 @@
 					<role>org.unidal.cat.core.alert.service.AlertReportService</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.engine.AlertRegistry</role>
+					<role>org.unidal.cat.core.alert.metric.MetricsDispatcher</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.engine.AlertRegistry</role>
-			<implementation>org.unidal.cat.core.alert.engine.DefaultAlertRegistry</implementation>
+			<role>org.unidal.cat.core.alert.metric.MetricsDispatcher</role>
+			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsDispatcher</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
+			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsQueue</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>

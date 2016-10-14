@@ -33,8 +33,8 @@ import org.mortbay.jetty.servlet.ServletHolder;
 import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
 import org.unidal.cat.core.alert.AlertConfiguration;
-import org.unidal.cat.core.alert.AlertMetricBuilder;
 import org.unidal.cat.core.alert.internals.DefaultAlertConfiguration;
+import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
@@ -128,11 +128,11 @@ public class AlertReportServiceTest extends JettyServer {
       }
    }
 
-   @Named(type = AlertMetricBuilder.class, value = "mock1")
-   public static class MockAlertMetricBuilder1 implements AlertMetricBuilder {
+   @Named(type = MetricsBuilder.class, value = "mock1")
+   public static class MockAlertMetricBuilder1 implements MetricsBuilder {
       @Override
       public void build(AlertEvent event) {
-         event.setType("mock1");
+         event.setTypeName("mock1");
 
          for (int i = 0; i < 3; i++) {
             event.addMetric(new AlertMetric().set("type", "type" + i).set("name", "name" + i));
@@ -140,11 +140,11 @@ public class AlertReportServiceTest extends JettyServer {
       }
    }
 
-   @Named(type = AlertMetricBuilder.class, value = "mock2")
-   public static class MockAlertMetricBuilder2 implements AlertMetricBuilder {
+   @Named(type = MetricsBuilder.class, value = "mock2")
+   public static class MockAlertMetricBuilder2 implements MetricsBuilder {
       @Override
       public void build(AlertEvent event) {
-         event.setType("mock2");
+         event.setTypeName("mock2");
 
          for (int i = 0; i < 3; i++) {
             event.addMetric(new AlertMetric().set("type", "type" + i).set("name", "name" + i));

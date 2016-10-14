@@ -1,6 +1,5 @@
-package org.unidal.cat.core.alert.engine;
+package org.unidal.cat.core.alert.metric;
 
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -21,11 +20,9 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
-import com.espertech.esper.client.EPServiceProvider;
-import com.espertech.esper.client.EPServiceProviderManager;
 
-@Named(type = AlertEngine.class)
-public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, Initializable {
+@Named(type = MetricsEngine.class)
+public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngine, Initializable {
    @Inject
    private AlertConfiguration m_config;
 
@@ -33,15 +30,13 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
    private AlertReportService m_service;
 
    @Inject
-   private AlertRegistry m_registry;
+   private MetricsDispatcher m_dispatcher;
 
-   private EPServiceProvider m_esper;
+   private Feeder m_feeder;
 
    private AtomicBoolean m_enabled;
 
    private CountDownLatch m_latch;
-
-   private Feeder m_feeder;
 
    @Override
    public String getName() {
@@ -53,23 +48,6 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
       m_enabled = new AtomicBoolean(true);
       m_latch = new CountDownLatch(1);
       m_feeder = new Feeder();
-
-      initializeEsper();
-   }
-
-   private void initializeEsper() {
-      List<AlertListener> listeners = lookupList(AlertListener.class);
-
-      m_esper = EPServiceProviderManager.getDefaultProvider();
-
-      for (AlertListener listener : listeners) {
-         m_registry.register(m_esper, listener);
-      }
-   }
-
-   @Override
-   public void register(AlertListener listener) {
-      m_registry.register(m_esper, listener);
    }
 
    @Override
@@ -114,12 +92,6 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
       m_latch.countDown();
    }
 
-   private void sendEvent(AlertMetric metric) {
-      Object event = m_registry.buildEvent(metric);
-
-      m_esper.getEPRuntime().sendEvent(event);
-   }
-
    @Override
    public void shutdown() {
       m_enabled.set(false);
@@ -132,13 +104,16 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
    }
 
    private class Feeder extends BaseVisitor {
+      private String m_fromIp;
+
       private String m_typeName;
 
-      private String m_fromIp;
+      private String m_typeClass;
 
       @Override
       public void visitEvent(AlertEvent event) {
-         m_typeName = event.getType();
+         m_typeName = event.getTypeName();
+         m_typeClass = event.getTypeClass();
          super.visitEvent(event);
       }
 
@@ -150,10 +125,11 @@ public class DefaultAlertEngine extends ContainerHolder implements AlertEngine, 
 
       @Override
       public void visitMetric(AlertMetric metric) {
-         metric.setTypeName(m_typeName);
          metric.setFromIp(m_fromIp);
+         metric.setTypeName(m_typeName);
+         metric.setTypeClass(m_typeClass);
 
-         sendEvent(metric);
+         m_dispatcher.dispatch(metric.getMetrics());
       }
    }
 }

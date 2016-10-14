@@ -1,9 +1,9 @@
 package org.unidal.cat.plugin.transaction.alert;
 
-import org.unidal.cat.core.alert.engine.AbstractEventSource;
+import org.unidal.cat.core.alert.metric.AbstractMetrics;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 
-public class TransactionEvent extends AbstractEventSource {
+public class TransactionMetrics extends AbstractMetrics {
    private String m_domain;
 
    private String m_type;
@@ -20,7 +20,7 @@ public class TransactionEvent extends AbstractEventSource {
 
    private double m_duration;
 
-   public TransactionEvent(AlertMetric metric) {
+   public TransactionMetrics(AlertMetric metric) {
       super(metric);
 
       m_domain = getString("domain");

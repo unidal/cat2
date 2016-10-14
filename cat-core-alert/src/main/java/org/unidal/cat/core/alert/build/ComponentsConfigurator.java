@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.alert.CatAlertModule;
-import org.unidal.cat.core.alert.engine.DefaultAlertEngine;
-import org.unidal.cat.core.alert.engine.DefaultAlertRegistry;
 import org.unidal.cat.core.alert.internals.DefaultAlertConfiguration;
+import org.unidal.cat.core.alert.metric.DefaultMetricsDispatcher;
+import org.unidal.cat.core.alert.metric.DefaultMetricsEngine;
+import org.unidal.cat.core.alert.metric.DefaultMetricsManager;
+import org.unidal.cat.core.alert.metric.DefaultMetricsQueue;
 import org.unidal.cat.core.alert.service.DefaultAlertReportService;
 import org.unidal.cat.core.alert.service.LocalAlertReportBuilder;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -22,8 +24,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultAlertConfiguration.class));
       all.add(A(LocalAlertReportBuilder.class));
       all.add(A(DefaultAlertReportService.class));
-      all.add(A(DefaultAlertEngine.class));
-      all.add(A(DefaultAlertRegistry.class));
+
+      all.add(A(DefaultMetricsManager.class));
+      all.add(A(DefaultMetricsEngine.class));
+      all.add(A(DefaultMetricsDispatcher.class));
+      all.add(A(DefaultMetricsQueue.class));
 
       // Please keep it as last
       all.addAll(new WebComponentConfigurator().defineComponents());

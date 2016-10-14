@@ -3,7 +3,7 @@ package org.unidal.cat.plugin.transaction.alert;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
-import org.unidal.cat.core.alert.engine.AlertEngine;
+import org.unidal.cat.core.alert.metric.MetricsEngine;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
@@ -19,7 +19,7 @@ public class TransactionAlertTest extends ComponentTestCase {
    public void test() throws Exception {
       defineComponent(AlertReportService.class, MockAlertReportService.class);
 
-      AlertEngine engine = lookup(AlertEngine.class);
+      MetricsEngine engine = lookup(MetricsEngine.class);
 
       Threads.forGroup("cat").start(engine);
 
@@ -33,6 +33,7 @@ public class TransactionAlertTest extends ComponentTestCase {
       public AlertReport getReport() {
          return new AlertReport().addMachine(new AlertMachine("localhost") //
                .addEvent(new AlertEvent(TransactionConstants.NAME) //
+                     .setTypeClass(TransactionMetrics.class.getName()) //
                      .addMetric(metric(10, 3, 100)) //
                      .addMetric(metric(22, 18, 330)) //
                      .addMetric(metric(36, 26, 540)) //

@@ -15,11 +15,6 @@
          <artifactId>cat-core</artifactId>
       </dependency>
       <dependency>
-         <groupId>com.espertech</groupId>
-         <artifactId>esper</artifactId>
-         <version>5.4.0</version>
-      </dependency>
-      <dependency>
          <groupId>org.unidal.framework</groupId>
          <artifactId>web-framework</artifactId>
          <scope>provided</scope>

@@ -31,20 +31,15 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.AlertMetricBuilder</role>
+			<role>org.unidal.cat.core.alert.data.MetricsHandler</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionAlertMetricBuilder</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionMetricsHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.alert.engine.AlertListener</role>
-			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionAlertListener</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.spi.report.ReportManager</role>

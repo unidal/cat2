@@ -2,35 +2,34 @@ package org.unidal.cat.core.alert.service;
 
 import java.util.Map;
 
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.alert.AlertMetricBuilder;
+import org.unidal.cat.core.alert.metric.MetricsBuilder;
+import org.unidal.cat.core.alert.metric.MetricsManager;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.helper.Inets;
-import org.unidal.lookup.ContainerHolder;
+import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 
 @Named(type = AlertReportBuilder.class)
-public class LocalAlertReportBuilder extends ContainerHolder implements AlertReportBuilder, Initializable {
-   private Map<String, AlertMetricBuilder> m_builders;
+public class LocalAlertReportBuilder implements AlertReportBuilder {
+   @Inject
+   private MetricsManager m_manager;
 
    @Override
    public AlertReport build() {
       String ip = Inets.IP4.getLocalHostAddress();
       AlertMachine machine = new AlertMachine(ip);
 
-      for (Map.Entry<String, AlertMetricBuilder> e : m_builders.entrySet()) {
+      for (Map.Entry<String, MetricsBuilder> e : m_manager.getBuilders().entrySet()) {
          AlertEvent event = new AlertEvent(e.getKey());
-         AlertMetricBuilder builder = e.getValue();
 
          machine.addEvent(event);
 
          try {
-            builder.build(event);
+            e.getValue().build(event);
          } catch (Throwable t) {
             Cat.logError(t);
          }
@@ -40,10 +39,5 @@ public class LocalAlertReportBuilder extends ContainerHolder implements AlertRep
 
       report.addMachine(machine);
       return report;
-   }
-
-   @Override
-   public void initialize() throws InitializationException {
-      m_builders = lookupMap(AlertMetricBuilder.class);
    }
 }

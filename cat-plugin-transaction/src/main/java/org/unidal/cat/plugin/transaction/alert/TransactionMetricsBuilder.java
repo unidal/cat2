@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import org.unidal.cat.core.alert.AlertMetricBuilder;
+import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
@@ -16,8 +16,8 @@ import org.unidal.cat.spi.report.ReportManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = AlertMetricBuilder.class, value = TransactionConstants.NAME)
-public class TransactionAlertMetricBuilder implements AlertMetricBuilder {
+@Named(type = MetricsBuilder.class, value = TransactionConstants.NAME)
+public class TransactionMetricsBuilder implements MetricsBuilder {
    @Inject(type = ReportManager.class, value = TransactionConstants.NAME)
    private ReportManager<TransactionReport> m_manager;
 
@@ -30,21 +30,21 @@ public class TransactionAlertMetricBuilder implements AlertMetricBuilder {
          for (Map.Entry<String, TransactionReport> e : item.entrySet()) {
             String domain = e.getKey();
             TransactionReport report = e.getValue();
-            Visitor visitor = new Visitor(event, domain);
+            Collector visitor = new Collector(event, domain);
 
             report.accept(visitor);
          }
       }
    }
 
-   public class Visitor extends BaseVisitor {
+   static class Collector extends BaseVisitor {
       private AlertEvent m_event;
 
       private String m_domain;
 
       private String m_type;
 
-      public Visitor(AlertEvent event, String domain) {
+      public Collector(AlertEvent event, String domain) {
          m_event = event;
          m_domain = domain;
       }
