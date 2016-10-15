@@ -2,6 +2,7 @@ package org.unidal.cat.core.alert.metric;
 
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.unidal.lookup.annotation.Named;
 
@@ -12,5 +13,10 @@ public class DefaultMetricsQueue<T extends Metrics> implements MetricsQueue<T> {
    @Override
    public void add(T metrics) {
       m_queue.add(metrics);
+   }
+
+   @Override
+   public T poll() throws InterruptedException {
+      return m_queue.poll(5, TimeUnit.MILLISECONDS);
    }
 }

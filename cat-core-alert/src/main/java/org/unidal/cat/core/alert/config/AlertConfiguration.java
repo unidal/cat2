@@ -1,8 +1,10 @@
-package org.unidal.cat.core.alert;
+package org.unidal.cat.core.alert.config;
 
 import java.util.Map;
 
 public interface AlertConfiguration {
+   public long getAlertCheckInterval();
+
    public int getRemoteCallConnectTimeoutInMillis();
 
    public int getRemoteCallReadTimeoutInMillis();
@@ -13,5 +15,5 @@ public interface AlertConfiguration {
 
    public String getServerUri(String server);
 
-   public long getAlertCheckInterval();
+   public boolean isEnabled();
 }

@@ -15,7 +15,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.alert.AlertConfiguration;
+import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.DefaultMerger;
 import org.unidal.cat.core.alert.model.transform.DefaultNativeParser;

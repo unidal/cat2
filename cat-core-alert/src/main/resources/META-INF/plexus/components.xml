@@ -6,8 +6,8 @@
 			<implementation>org.unidal.cat.core.alert.CatAlertModule</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.AlertConfiguration</role>
-			<implementation>org.unidal.cat.core.alert.internals.DefaultAlertConfiguration</implementation>
+			<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
+			<implementation>org.unidal.cat.core.alert.config.DefaultAlertConfiguration</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
@@ -23,7 +23,7 @@
 			<implementation>org.unidal.cat.core.alert.service.DefaultAlertReportService</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
+					<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -36,7 +36,7 @@
 			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsEngine</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.alert.AlertConfiguration</role>
+					<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.core.alert.service.AlertReportService</role>

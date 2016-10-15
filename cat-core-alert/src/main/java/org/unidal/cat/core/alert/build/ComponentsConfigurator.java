@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.alert.CatAlertModule;
-import org.unidal.cat.core.alert.internals.DefaultAlertConfiguration;
+import org.unidal.cat.core.alert.config.DefaultAlertConfiguration;
 import org.unidal.cat.core.alert.metric.DefaultMetricsDispatcher;
 import org.unidal.cat.core.alert.metric.DefaultMetricsEngine;
 import org.unidal.cat.core.alert.metric.DefaultMetricsManager;

@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.internals;
+package org.unidal.cat.core.alert.config;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.alert.AlertConfiguration;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = AlertConfiguration.class)
@@ -49,5 +48,10 @@ public class DefaultAlertConfiguration implements Initializable, AlertConfigurat
    @Override
    public void initialize() throws InitializationException {
       m_servers.putIfAbsent("127.0.0.1:2281", true);
+   }
+
+   @Override
+   public boolean isEnabled() {
+      return true;
    }
 }

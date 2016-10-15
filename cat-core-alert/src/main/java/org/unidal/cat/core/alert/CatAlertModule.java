@@ -1,5 +1,6 @@
 package org.unidal.cat.core.alert;
 
+import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.metric.MetricsEngine;
 import org.unidal.helper.Threads;
 import org.unidal.initialization.AbstractModule;
@@ -15,9 +16,13 @@ public class CatAlertModule extends AbstractModule {
 
    @Override
    protected void execute(ModuleContext ctx) throws Exception {
-      MetricsEngine engine = ctx.lookup(MetricsEngine.class);
+      AlertConfiguration configure = ctx.lookup(AlertConfiguration.class);
 
-      Threads.forGroup("cat").start(engine);
+      if (configure.isEnabled()) {
+         MetricsEngine engine = ctx.lookup(MetricsEngine.class);
+
+         Threads.forGroup("cat").start(engine);
+      }
    }
 
    @Override
