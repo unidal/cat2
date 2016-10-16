@@ -9,6 +9,7 @@ import org.unidal.cat.core.alert.metric.DefaultMetricsDispatcher;
 import org.unidal.cat.core.alert.metric.DefaultMetricsEngine;
 import org.unidal.cat.core.alert.metric.DefaultMetricsManager;
 import org.unidal.cat.core.alert.metric.DefaultMetricsQueue;
+import org.unidal.cat.core.alert.rule.DefaultAlertRuleService;
 import org.unidal.cat.core.alert.service.DefaultAlertReportService;
 import org.unidal.cat.core.alert.service.LocalAlertReportBuilder;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
@@ -24,6 +25,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultAlertConfiguration.class));
       all.add(A(LocalAlertReportBuilder.class));
       all.add(A(DefaultAlertReportService.class));
+      all.add(A(DefaultAlertRuleService.class));
 
       all.add(A(DefaultMetricsManager.class));
       all.add(A(DefaultMetricsEngine.class));

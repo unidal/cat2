@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="org.unidal.cat.core.alert.rules" class-prefix="Alert" enable-sax-parser="true" enable-base-visitor="true">
+  <entity name="rule" dynamic-attributes="true">
+    <attribute name="domain" value-type="String" enabled="false" />
+    <attribute name="type" value-type="String" enabled="false" />
+    <attribute name="name" value-type="String" enabled="false" />
+    <snippet lang="java"><![CDATA[
+      public String get(String name) {
+         return m_dynamicAttributes.get(name);
+      }
+
+      public AlertRule set(String name, Object value) {
+         if (value != null) {
+            m_dynamicAttributes.put(name, String.valueOf(value));
+         } else {
+            m_dynamicAttributes.remove(name);
+         }
+         
+         return this;
+      }
+    ]]></snippet>
+  </entity>
+  <entity name="condition">
+    <attribute name="value" value-type="String" />
+  </entity>
+</model>
+

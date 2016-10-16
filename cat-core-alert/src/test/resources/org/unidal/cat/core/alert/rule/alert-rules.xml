@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rules>
+   <rule type-name="transaction" field-name="hits" domain="cat" type="URL" name="/cat/r/t">
+      <constrains start-time="00:00" end-time="24:00" week-days="1,2,3,4,5,6,7">
+         <constrain time-window="3" level="warning">
+            <condition type="min" op="ge" value="100"/>
+            <condition/>
+         </constrain>
+         <constrain>
+         </constrain>
+      </constrains>
+      <constrains>
+      </constrains>
+   </rule>
+   <rule>
+   </rule>
+</rules>

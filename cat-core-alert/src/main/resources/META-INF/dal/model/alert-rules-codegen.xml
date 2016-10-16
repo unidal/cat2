@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="rules" root="true">
+    <entity-ref name="rule" type="list" names="rules" />
+  </entity>
+  <entity name="rule">
+    <attribute name="type-name" value-type="String" />
+    <attribute name="field-name" value-type="String" />
+    <attribute name="domain" value-type="String" />
+    <attribute name="type" value-type="String" />
+    <attribute name="name" value-type="String" />
+    <entity-ref name="constrains" type="list" names="constrainses" />
+  </entity>
+  <entity name="constrains">
+    <attribute name="start-time" value-type="String" />
+    <attribute name="end-time" value-type="String" />
+    <attribute name="week-days" value-type="String" />
+    <entity-ref name="constrain" type="list" names="constrains" />
+  </entity>
+  <entity name="constrain">
+    <attribute name="time-window" value-type="int" />
+    <attribute name="level" value-type="String" />
+    <entity-ref name="condition" type="list" names="conditions" />
+  </entity>
+  <entity name="condition">
+    <attribute name="type" value-type="String" />
+    <attribute name="op" value-type="String" />
+    <attribute name="value" value-type="int" />
+  </entity>
+</model>
+

@@ -76,6 +76,7 @@
                   <configuration>
                      <manifest><![CDATA[
                         ${basedir}/src/main/resources/META-INF/dal/model/alert-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-rules-manifest.xml,
                      ]]></manifest>
                   </configuration>
                </execution>

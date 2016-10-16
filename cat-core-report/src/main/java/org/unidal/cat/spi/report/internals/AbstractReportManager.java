@@ -160,7 +160,9 @@ public abstract class AbstractReportManager<T extends Report> implements ReportM
       }
    }
 
-   public abstract int getThreadsCount();
+   public int getThreadsCount() {
+      return 1;
+   }
 
    @Override
    public void loadLocalReports(int hour, int index) throws IOException {

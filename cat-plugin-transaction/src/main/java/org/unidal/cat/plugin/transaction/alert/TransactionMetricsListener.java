@@ -64,20 +64,6 @@ public class TransactionMetricsListener implements MetricsListener<TransactionMe
       }
    }
 
-   static class Condition {
-
-   }
-
-   static enum Fields {
-      HITS,
-
-      FAILURES,
-
-      DURATION,
-
-      FAILURE_RATE;
-   }
-
    static enum Functions {
       NOW,
 

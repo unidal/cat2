@@ -39,6 +39,9 @@
 					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>transaction</role-hint>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.rule.AlertRuleService</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

@@ -3,4 +3,7 @@
    <model package="org.unidal.cat.core.alert.model" name="alert-report">
       <sample-model>src/test/resources/org/unidal/cat/core/alert/alert-report.xml</sample-model>
    </model>
+   <model package="org.unidal.cat.core.alert.rules" name="alert-rules">
+      <sample-model>src/test/resources/org/unidal/cat/core/alert/rule/alert-rules.xml</sample-model>
+   </model>
 </wizard>
