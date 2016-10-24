@@ -11,7 +11,7 @@ import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.rule.AlertRuleService;
-import org.unidal.cat.core.alert.rules.entity.AlertRule;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleSet;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
@@ -41,7 +41,7 @@ public class TransactionMetricsBuilder implements MetricsBuilder {
             String domain = e.getKey();
 
             if (domains.contains(domain)) {
-               List<AlertRule> rules = m_service.getRulesWithAttribute(type, "domain", domain);
+               List<AlertRuleSet> rules = m_service.getRuleSetByAttribute(type, "domain", domain);
                TransactionReport report = e.getValue();
                Collector visitor = new Collector(event, domain, rules);
 
@@ -60,12 +60,12 @@ public class TransactionMetricsBuilder implements MetricsBuilder {
 
       private Map<String, Set<String>> m_typeNamesMap;
 
-      public Collector(AlertEvent event, String domain, List<AlertRule> rules) {
+      public Collector(AlertEvent event, String domain, List<AlertRuleSet> rules) {
          m_event = event;
          m_domain = domain;
          m_typeNamesMap = new HashMap<String, Set<String>>();
 
-         for (AlertRule rule : rules) {
+         for (AlertRuleSet rule : rules) {
             String type = rule.getDynamicAttribute("type");
             String name = rule.getDynamicAttribute("name");
             Set<String> names = m_typeNamesMap.get(type);

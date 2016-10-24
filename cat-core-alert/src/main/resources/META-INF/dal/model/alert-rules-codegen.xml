@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <model>
-  <entity name="rules" root="true">
-    <entity-ref name="rule" type="list" names="rules" />
+  <entity name="model" root="true">
+    <entity-ref name="rule-set" type="list" names="rule-sets" />
   </entity>
-  <entity name="rule">
+  <entity name="rule-set">
     <attribute name="type-name" value-type="String" />
     <attribute name="field-name" value-type="String" />
     <attribute name="domain" value-type="String" />
     <attribute name="type" value-type="String" />
     <attribute name="name" value-type="String" />
-    <entity-ref name="constrains" type="list" names="constrainses" />
+    <entity-ref name="rule-segment" type="list" names="rule-segments" />
   </entity>
-  <entity name="constrains">
+  <entity name="rule-segment">
     <attribute name="start-time" value-type="String" />
     <attribute name="end-time" value-type="String" />
     <attribute name="week-days" value-type="String" />
-    <entity-ref name="constrain" type="list" names="constrains" />
+    <entity-ref name="rule" type="list" names="rules" />
   </entity>
-  <entity name="constrain">
+  <entity name="rule">
     <attribute name="time-window" value-type="int" />
     <attribute name="level" value-type="String" />
     <entity-ref name="condition" type="list" names="conditions" />

@@ -131,5 +131,12 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
 
          m_dispatcher.dispatch(metric.getMetrics());
       }
+
+      @Override
+      public void visitAlertReport(AlertReport alertReport) {
+         super.visitAlertReport(alertReport);
+
+         m_dispatcher.checkpoint();
+      }
    }
 }

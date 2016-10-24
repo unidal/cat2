@@ -57,4 +57,21 @@ public class DefaultMetricsDispatcher extends ContainerHolder implements Metrics
          list.add(listener);
       }
    }
+
+   @Override
+   public void checkpoint() {
+      for (List<MetricsListener<Metrics>> listeners : m_map.values()) {
+         for (MetricsListener<Metrics> listener : listeners) {
+            try {
+               listener.checkpoint();
+            } catch (Throwable e) {
+               // first exception will be logged
+               if (!m_exceptions.contains(e)) {
+                  Cat.logError(e);
+                  m_exceptions.add(e);
+               }
+            }
+         }
+      }
+   }
 }

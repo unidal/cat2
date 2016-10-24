@@ -52,6 +52,19 @@
 				<requirement>
 					<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.metric.handler.HandlerManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.handler.Handler</role>
+			<role-hint>transaction</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionHandler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.metric.handler.AlertMessageSink</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

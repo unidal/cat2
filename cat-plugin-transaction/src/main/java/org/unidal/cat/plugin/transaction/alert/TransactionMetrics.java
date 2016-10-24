@@ -64,4 +64,8 @@ public class TransactionMetrics extends AbstractMetrics {
    public String getType() {
       return m_type;
    }
+
+   public double getValue(String field) {
+      return getDouble(field, 0);
+   }
 }

@@ -5,18 +5,29 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.unidal.cat.core.alert.metric.MetricsListener;
 import org.unidal.cat.core.alert.metric.MetricsQueue;
+import org.unidal.cat.core.alert.metric.handler.Handler;
+import org.unidal.cat.core.alert.metric.handler.HandlerManager;
+import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = MetricsListener.class, value = "transaction")
+@Named(type = MetricsListener.class, value = TransactionConstants.NAME)
 public class TransactionMetricsListener implements MetricsListener<TransactionMetrics>, Task {
    @Inject
    private MetricsQueue<TransactionMetrics> m_queue;
 
+   @Inject
+   private HandlerManager m_manager;
+
    private AtomicBoolean m_enabled;
 
    private CountDownLatch m_latch;
+
+   @Override
+   public void checkpoint() {
+      m_queue.add(new TransactionMetrics(null));
+   }
 
    @Override
    public String getName() {
@@ -43,7 +54,9 @@ public class TransactionMetricsListener implements MetricsListener<TransactionMe
             TransactionMetrics metrics = m_queue.poll();
 
             if (metrics != null) {
-               // TODO
+               for (Handler<TransactionMetrics> handler : m_manager.getHandlers(metrics)) {
+                  handler.handle(metrics);
+               }
             }
          }
       } catch (InterruptedException e) {
@@ -62,17 +75,5 @@ public class TransactionMetricsListener implements MetricsListener<TransactionMe
       } catch (InterruptedException e) {
          // ignore it
       }
-   }
-
-   static enum Functions {
-      NOW,
-
-      SUM,
-
-      AVG,
-
-      MIN,
-
-      MAX;
    }
 }
