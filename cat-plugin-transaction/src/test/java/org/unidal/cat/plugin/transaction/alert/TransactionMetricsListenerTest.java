@@ -62,12 +62,12 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       @Override
       public List<AlertRuleSet> getRuleSets() {
          try {
-            InputStream in = getClass().getResourceAsStream("listener-rules.xml");
+            InputStream in = getClass().getResourceAsStream("transaction-rules.xml");
             AlertModel model = DefaultSaxParser.parse(in);
 
             return model.getRuleSets();
          } catch (Exception e) {
-            throw new IllegalStateException("Error when loading listener-rules.xml!", e);
+            throw new IllegalStateException("Error when loading transaction-rules.xml!", e);
          }
       }
 

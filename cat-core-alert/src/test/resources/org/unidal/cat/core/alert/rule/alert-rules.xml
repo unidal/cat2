@@ -12,6 +12,16 @@
       <rule-segment>
       </rule-segment>
    </rule-set>
-   <rule-set>
+   <rule-set type-name="transaction" field-name="fails" domain="cat" type="URL" name="/cat/r/t">
+      <rule-segment start-time="00:00" end-time="24:00" week-days="1,2,3,4,5,6,7">
+         <rule time-window="3" level="warning">
+            <condition type="min" op="ge" value="10"/>
+            <condition/>
+         </rule>
+         <rule>
+         </rule>
+      </rule-segment>
+      <rule-segment>
+      </rule-segment>
    </rule-set>
 </model>
