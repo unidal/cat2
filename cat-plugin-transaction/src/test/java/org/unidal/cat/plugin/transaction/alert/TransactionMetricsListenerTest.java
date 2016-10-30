@@ -35,10 +35,6 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       return new TransactionMetrics(m);
    }
 
-   private TransactionMetrics next() {
-      return new TransactionMetrics(null);
-   }
-
    @Test
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public void test() throws Exception {
@@ -57,7 +53,7 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       listener.onMetrics(metrics("/cat/r/m", "ip2", 200, 4, 300));
       listener.onMetrics(metrics("/cat/r/m", "ip3", 120, 3, 1300));
 
-      listener.onMetrics(next());
+      listener.checkpoint();
 
       listener.onMetrics(metrics("/cat/r/t", "ip1", 140, 1, 300));
       listener.onMetrics(metrics("/cat/r/t", "ip2", 200, 8, 300));
@@ -67,7 +63,7 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       listener.onMetrics(metrics("/cat/r/m", "ip2", 200, 14, 300));
       listener.onMetrics(metrics("/cat/r/m", "ip3", 120, 23, 1300));
 
-      listener.onMetrics(next());
+      listener.checkpoint();
 
       listener.onMetrics(metrics("/cat/r/t", "ip1", 140, 1, 300));
       listener.onMetrics(metrics("/cat/r/t", "ip2", 200, 8, 300));
@@ -77,7 +73,7 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       listener.onMetrics(metrics("/cat/r/m", "ip2", 200, 24, 300));
       listener.onMetrics(metrics("/cat/r/m", "ip3", 120, 36, 1300));
 
-      listener.onMetrics(next());
+      listener.checkpoint();
 
       if (listener instanceof Task) {
          ((Task) listener).shutdown();

@@ -67,6 +67,6 @@ public abstract class AbstractMetrics implements Metrics {
 
    @Override
    public String toString() {
-      return m_metric.toString();
+      return m_metric != null ? m_metric.toString() : "AlertMetric[]";
    }
 }
