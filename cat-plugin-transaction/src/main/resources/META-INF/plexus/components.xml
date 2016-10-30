@@ -53,14 +53,15 @@
 					<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.metric.handler.HandlerManager</role>
+					<role>org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.metric.handler.Handler</role>
+			<role>org.unidal.cat.core.alert.metric.handler.RuleEvaluator</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionHandler</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionRuleEvaluator</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.alert.metric.handler.AlertMessageSink</role>

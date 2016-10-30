@@ -3,7 +3,7 @@ package org.unidal.cat.core.alert.rule;
 import java.util.List;
 import java.util.Set;
 
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSet;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = AlertRuleService.class)
@@ -15,7 +15,7 @@ public class DefaultAlertRuleService implements AlertRuleService {
    }
 
    @Override
-   public List<AlertRuleSet> getRuleSetByAttribute(String type, String name, String value) {
+   public List<AlertRuleSetDef> getRuleSetByAttribute(String type, String name, String value) {
       // TODO Auto-generated method stub
       return null;
    }
@@ -27,7 +27,7 @@ public class DefaultAlertRuleService implements AlertRuleService {
    }
 
    @Override
-   public List<AlertRuleSet> getRuleSets() {
+   public List<AlertRuleSetDef> getRuleSets() {
       return null;
    }
 }

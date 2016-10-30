@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="org.unidal.cat.core.alert.data" class-prefix="AlertData" enable-sax-parser="true"
+   enable-native-builder='true' enable-native-parser="true" enable-base-visitor="true">
+  <entity name="model" root="true">
+    <entity-ref name="store" type="map" names="stores" />
+  </entity>
+  <entity name="store">
+    <attribute name="id" value-type="String" key="true" />
+    <attribute name="pointer" value-type="int" primitive="true" render="false" />
+    <entity-ref name="segment" type="map" names="segments" method-find-or-create="true" />
+  </entity>
+  <entity name="segment">
+    <attribute name="id" value-type="String" key="true" />
+    <attribute name="store" value-type="AlertDataStore" render="false" />
+    <entity-ref name="shard" type="list" names="shards" method-find-or-create="true" />
+  </entity>
+  <entity name="shard" dynamic-attributes="true" >
+    <attribute name="id" value-type="String" key="true" />
+    <attribute name="hits" value-type="String" enabled="false" />
+    <attribute name="fails" value-type="String" enabled="false" />
+    <element name="metrics" value-type="org.unidal.cat.core.alert.metric.Metrics" type="list" render="false" />
+  </entity>
+</model>
+

@@ -6,4 +6,7 @@
    <model package="org.unidal.cat.core.alert.rules" name="alert-rules">
       <sample-model>src/test/resources/org/unidal/cat/core/alert/rule/alert-rules.xml</sample-model>
    </model>
+   <model package="org.unidal.cat.core.alert.data" name="alert-data">
+      <sample-model>src/test/resources/org/unidal/cat/core/alert/data/alert-data.xml</sample-model>
+   </model>
 </wizard>

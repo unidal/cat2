@@ -4,7 +4,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.core.alert.metric.handler.TimeMatcher;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSegment;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
 
 public class TimeMatcherTest {
    @Test
@@ -22,7 +22,7 @@ public class TimeMatcherTest {
    }
 
    private void checkInRange(String startTime, String endTime, int... minutes) {
-      AlertRuleSegment segment = new AlertRuleSegment().setStartTime(startTime).setEndTime(endTime);
+      AlertRuleDef segment = new AlertRuleDef().setStartTime(startTime).setEndTime(endTime);
       TimeMatcher matcher = new TimeMatcher(segment);
 
       for (int minute : minutes) {
@@ -31,7 +31,7 @@ public class TimeMatcherTest {
    }
 
    private void checkNotInRange(String startTime, String endTime, int... minutes) {
-      AlertRuleSegment segment = new AlertRuleSegment().setStartTime(startTime).setEndTime(endTime);
+      AlertRuleDef segment = new AlertRuleDef().setStartTime(startTime).setEndTime(endTime);
       TimeMatcher matcher = new TimeMatcher(segment);
 
       for (int minute : minutes) {

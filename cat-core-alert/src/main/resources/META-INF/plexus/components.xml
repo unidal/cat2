@@ -39,8 +39,8 @@
 			<implementation>org.unidal.cat.core.alert.metric.handler.DefaultAlertMessageSink</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.metric.handler.HandlerManager</role>
-			<implementation>org.unidal.cat.core.alert.metric.handler.HandlerManager</implementation>
+			<role>org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager</role>
+			<implementation>org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.alert.rule.AlertRuleService</role>

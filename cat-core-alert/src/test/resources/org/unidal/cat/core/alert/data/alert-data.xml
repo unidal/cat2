@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<model>
+   <store id="transaction">
+      <segment id="cat:URL:/cat/r/t">
+         <shard id="127.0.0.1" hits="123,171,154,180" fails="0,2,0,1"/>
+         <shard id="127.0.0.2" hits="0,0,134,234" fails="0,0,3,0"/>
+      </segment>
+      <segment id="cat:URL:/cat/r/m">
+      </segment>
+   </store>
+   <store id="event">
+   </store>
+</model>

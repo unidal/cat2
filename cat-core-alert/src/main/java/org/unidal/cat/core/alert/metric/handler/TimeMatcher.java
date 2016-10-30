@@ -1,48 +1,57 @@
 package org.unidal.cat.core.alert.metric.handler;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Calendar;
 
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSegment;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
 
 public class TimeMatcher {
    private long m_startMinutes;
 
    private long m_endMinutes;
 
-   public TimeMatcher(AlertRuleSegment segment) {
-      String startTime = segment.getStartTime();
-      String endTime = segment.getEndTime();
+   public TimeMatcher(AlertRuleDef rule) {
+      String startTime = rule.getStartTime();
+      String endTime = rule.getEndTime();
 
-      m_startMinutes = toMinutes(startTime);
-      m_endMinutes = toMinutes(endTime);
+      m_startMinutes = toMinutes(startTime, 0);
+      m_endMinutes = toMinutes(endTime, 1440);
    }
 
    public boolean matches(long timestamp) {
-      long minutes = TimeUnit.MILLISECONDS.toMinutes(timestamp) % 1440;
+      Calendar cal = Calendar.getInstance();
+      int hour = cal.get(Calendar.HOUR_OF_DAY);
+      int minute = cal.get(Calendar.MINUTE);
+      long minutes = hour * 60 + minute;
 
       return m_startMinutes <= minutes && minutes < m_endMinutes;
    }
 
-   private long toMinutes(String str) {
-      int len = str.length();
-      long minutes = 0;
-      int part = 0;
+   private long toMinutes(String str, int defaultValue) {
+      try {
+         int len = str.length();
+         long minutes = 0;
+         int part = 0;
 
-      for (int i = 0; i < len; i++) {
-         char ch = str.charAt(i);
+         for (int i = 0; i < len; i++) {
+            char ch = str.charAt(i);
 
-         if (Character.isDigit(ch)) {
-            part = part * 10 + (ch - '0');
-         } else if (ch == ':') {
-            minutes += part * 60;
-            part = 0;
-         } else {
-            throw new IllegalStateException("Invalid time format: " + str + "!");
+            if (Character.isDigit(ch)) {
+               part = part * 10 + (ch - '0');
+            } else if (ch == ':') {
+               minutes += part * 60;
+               part = 0;
+            } else {
+               throw new IllegalStateException("Invalid time format: " + str + "!");
+            }
          }
+
+         minutes += part;
+
+         return minutes;
+      } catch (Exception e) {
+         // ignore it
       }
 
-      minutes += part;
-
-      return minutes;
+      return defaultValue;
    }
 }

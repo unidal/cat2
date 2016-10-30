@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.rule.AlertRuleService;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSet;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
@@ -46,19 +46,19 @@ public class TransactionMetricsBuilderTest extends ComponentTestCase {
       }
 
       @Override
-      public List<AlertRuleSet> getRuleSetByAttribute(String type, String name, String value) {
-         List<AlertRuleSet> rules = new ArrayList<AlertRuleSet>();
+      public List<AlertRuleSetDef> getRuleSetByAttribute(String type, String name, String value) {
+         List<AlertRuleSetDef> rules = new ArrayList<AlertRuleSetDef>();
          int val = Integer.parseInt(value.substring(3));
 
          for (int i = 1; i <= val; i++) {
-            rules.add(new AlertRuleSet().set("type", "type" + i).set("name", "name" + i));
+            rules.add(new AlertRuleSetDef().set("type", "type" + i).set("name", "name" + i));
          }
 
          return rules;
       }
 
       @Override
-      public List<AlertRuleSet> getRuleSets() {
+      public List<AlertRuleSetDef> getRuleSets() {
          throw new UnsupportedOperationException();
       }
 

@@ -19,4 +19,9 @@ public class DefaultMetricsQueue<T extends Metrics> implements MetricsQueue<T> {
    public T poll() throws InterruptedException {
       return m_queue.poll(5, TimeUnit.MILLISECONDS);
    }
+
+   @Override
+   public int size() {
+      return m_queue.size();
+   }
 }

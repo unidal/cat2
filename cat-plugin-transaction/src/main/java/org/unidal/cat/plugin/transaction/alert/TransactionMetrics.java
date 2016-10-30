@@ -23,14 +23,16 @@ public class TransactionMetrics extends AbstractMetrics {
    public TransactionMetrics(AlertMetric metric) {
       super(metric);
 
-      m_domain = getString("domain");
-      m_type = getString("type");
-      m_name = getString("name");
-      m_total = getLong("total", 0);
-      m_fail = getLong("fail", 0);
-      m_min = getDouble("min", 0);
-      m_max = getDouble("max", 0);
-      m_duration = getDouble("duration", 0);
+      if (metric != null) {
+         m_domain = getString("domain");
+         m_type = getString("type");
+         m_name = getString("name");
+         m_total = getLong("total", 0);
+         m_fail = getLong("fail", 0);
+         m_min = getDouble("min", 0);
+         m_max = getDouble("max", 0);
+         m_duration = getDouble("duration", 0);
+      }
    }
 
    public String getDomain() {
