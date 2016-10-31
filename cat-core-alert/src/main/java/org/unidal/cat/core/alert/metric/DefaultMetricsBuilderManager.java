@@ -8,8 +8,8 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationExce
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = MetricsManager.class)
-public class DefaultMetricsManager extends ContainerHolder implements MetricsManager, Initializable {
+@Named(type = MetricsBuilderManager.class)
+public class DefaultMetricsBuilderManager extends ContainerHolder implements MetricsBuilderManager, Initializable {
    private Map<String, MetricsBuilder> m_builders = new LinkedHashMap<String, MetricsBuilder>();
 
    @Override

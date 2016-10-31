@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.metric.handler;
+package org.unidal.cat.core.alert.rule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.unidal.cat.core.alert.data.entity.AlertDataSegment;
 import org.unidal.cat.core.alert.data.entity.AlertDataShard;
 import org.unidal.cat.core.alert.data.entity.AlertDataStore;
+import org.unidal.cat.core.alert.message.AlertMessageSink;
 import org.unidal.cat.core.alert.message.DefaultAlertMessage;
 import org.unidal.cat.core.alert.metric.Metrics;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;

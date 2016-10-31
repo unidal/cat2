@@ -63,7 +63,6 @@ public class EventsReportManager extends AbstractReportManager<EventsReport> {
     * prepares events report for persistance.
     */
    @Override
-   @SuppressWarnings("unchecked")
    public List<Map<String, EventsReport>> getLocalReports(int hour) {
       EventsReport report = buildReport(hour, null);
       Map<String, EventsReport> map = new HashMap<String, EventsReport>();

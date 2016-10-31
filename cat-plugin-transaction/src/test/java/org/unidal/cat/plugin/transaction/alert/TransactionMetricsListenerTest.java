@@ -8,11 +8,11 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.core.alert.message.AlertMessage;
+import org.unidal.cat.core.alert.message.AlertMessageSink;
 import org.unidal.cat.core.alert.metric.Metrics;
 import org.unidal.cat.core.alert.metric.MetricsListener;
-import org.unidal.cat.core.alert.metric.handler.AlertMessageSink;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
-import org.unidal.cat.core.alert.rule.AlertRuleService;
+import org.unidal.cat.core.alert.rule.RuleService;
 import org.unidal.cat.core.alert.rules.entity.AlertModelDef;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.cat.core.alert.rules.transform.DefaultSaxParser;
@@ -38,7 +38,7 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
    @Test
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public void test() throws Exception {
-      defineComponent(AlertRuleService.class, MockAlertRuleService.class);
+      defineComponent(RuleService.class, MockAlertRuleService.class);
       defineComponent(AlertMessageSink.class, MockAlertMessageSink.class);
 
       MetricsListener listener = lookup(MetricsListener.class, TransactionConstants.NAME);
@@ -98,8 +98,8 @@ public class TransactionMetricsListenerTest extends ComponentTestCase {
       }
    }
 
-   @Named(type = AlertRuleService.class)
-   public static class MockAlertRuleService implements AlertRuleService {
+   @Named(type = RuleService.class)
+   public static class MockAlertRuleService implements RuleService {
       @Override
       public Set<String> getAttributes(String type, String name) {
          throw new UnsupportedOperationException();

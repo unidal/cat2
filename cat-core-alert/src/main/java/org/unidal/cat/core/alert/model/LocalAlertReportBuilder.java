@@ -1,14 +1,14 @@
-package org.unidal.cat.core.alert.service;
+package org.unidal.cat.core.alert.model;
 
 import java.util.Map;
 import java.util.Set;
 
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
-import org.unidal.cat.core.alert.metric.MetricsManager;
+import org.unidal.cat.core.alert.metric.MetricsBuilderManager;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
-import org.unidal.cat.core.alert.rule.AlertRuleService;
+import org.unidal.cat.core.alert.rule.RuleService;
 import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -18,10 +18,10 @@ import com.dianping.cat.Cat;
 @Named(type = AlertReportBuilder.class)
 public class LocalAlertReportBuilder implements AlertReportBuilder {
    @Inject
-   private MetricsManager m_manager;
+   private MetricsBuilderManager m_manager;
 
    @Inject
-   private AlertRuleService m_service;
+   private RuleService m_service;
 
    @Override
    public AlertReport build() {

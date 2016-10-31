@@ -5,15 +5,15 @@ import java.util.List;
 
 import org.unidal.cat.core.alert.CatAlertModule;
 import org.unidal.cat.core.alert.config.DefaultAlertConfiguration;
+import org.unidal.cat.core.alert.message.DefaultAlertMessageSink;
 import org.unidal.cat.core.alert.metric.DefaultMetricsDispatcher;
 import org.unidal.cat.core.alert.metric.DefaultMetricsEngine;
-import org.unidal.cat.core.alert.metric.DefaultMetricsManager;
+import org.unidal.cat.core.alert.metric.DefaultMetricsBuilderManager;
 import org.unidal.cat.core.alert.metric.DefaultMetricsQueue;
-import org.unidal.cat.core.alert.metric.handler.DefaultAlertMessageSink;
-import org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager;
-import org.unidal.cat.core.alert.rule.DefaultAlertRuleService;
-import org.unidal.cat.core.alert.service.DefaultAlertReportService;
-import org.unidal.cat.core.alert.service.LocalAlertReportBuilder;
+import org.unidal.cat.core.alert.model.DefaultAlertReportService;
+import org.unidal.cat.core.alert.model.LocalAlertReportBuilder;
+import org.unidal.cat.core.alert.rule.DefaultRuleService;
+import org.unidal.cat.core.alert.rule.RuleEvaluatorManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
@@ -27,11 +27,11 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultAlertConfiguration.class));
       all.add(A(LocalAlertReportBuilder.class));
       all.add(A(DefaultAlertReportService.class));
-      all.add(A(DefaultAlertRuleService.class));
+      all.add(A(DefaultRuleService.class));
       all.add(A(DefaultAlertMessageSink.class));
       all.add(A(RuleEvaluatorManager.class));
 
-      all.add(A(DefaultMetricsManager.class));
+      all.add(A(DefaultMetricsBuilderManager.class));
       all.add(A(DefaultMetricsEngine.class));
       all.add(A(DefaultMetricsDispatcher.class));
       all.add(A(DefaultMetricsQueue.class));

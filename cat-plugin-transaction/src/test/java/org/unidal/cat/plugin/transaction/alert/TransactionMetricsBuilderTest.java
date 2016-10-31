@@ -12,7 +12,7 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
-import org.unidal.cat.core.alert.rule.AlertRuleService;
+import org.unidal.cat.core.alert.rule.RuleService;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
@@ -26,7 +26,7 @@ import org.unidal.lookup.annotation.Named;
 public class TransactionMetricsBuilderTest extends ComponentTestCase {
    @Test
    public void test() throws Exception {
-      defineComponent(AlertRuleService.class, MockAlertRuleService.class);
+      defineComponent(RuleService.class, MockAlertRuleService.class);
       defineComponent(ReportManager.class, TransactionConstants.NAME, MockTransactionReportManager.class);
 
       MetricsBuilder builder = lookup(MetricsBuilder.class, TransactionConstants.NAME);
@@ -38,8 +38,8 @@ public class TransactionMetricsBuilderTest extends ComponentTestCase {
       Assert.assertEquals(9, event.getMetrics().size());
    }
 
-   @Named(type = AlertRuleService.class)
-   public static class MockAlertRuleService implements AlertRuleService {
+   @Named(type = RuleService.class)
+   public static class MockAlertRuleService implements RuleService {
       @Override
       public Set<String> getAttributes(String type, String name) {
          return setOf("cat1", "cat3", "cat5");

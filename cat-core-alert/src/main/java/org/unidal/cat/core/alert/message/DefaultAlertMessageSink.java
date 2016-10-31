@@ -1,6 +1,5 @@
-package org.unidal.cat.core.alert.metric.handler;
+package org.unidal.cat.core.alert.message;
 
-import org.unidal.cat.core.alert.message.AlertMessage;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = AlertMessageSink.class)

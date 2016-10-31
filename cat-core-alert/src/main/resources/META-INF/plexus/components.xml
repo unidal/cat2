@@ -10,20 +10,20 @@
 			<implementation>org.unidal.cat.core.alert.config.DefaultAlertConfiguration</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
-			<implementation>org.unidal.cat.core.alert.service.LocalAlertReportBuilder</implementation>
+			<role>org.unidal.cat.core.alert.model.AlertReportBuilder</role>
+			<implementation>org.unidal.cat.core.alert.model.LocalAlertReportBuilder</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.alert.metric.MetricsManager</role>
+					<role>org.unidal.cat.core.alert.metric.MetricsBuilderManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.rule.AlertRuleService</role>
+					<role>org.unidal.cat.core.alert.rule.RuleService</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.service.AlertReportService</role>
-			<implementation>org.unidal.cat.core.alert.service.DefaultAlertReportService</implementation>
+			<role>org.unidal.cat.core.alert.model.AlertReportService</role>
+			<implementation>org.unidal.cat.core.alert.model.DefaultAlertReportService</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
@@ -31,25 +31,25 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.rule.AlertRuleService</role>
-			<implementation>org.unidal.cat.core.alert.rule.DefaultAlertRuleService</implementation>
+			<role>org.unidal.cat.core.alert.rule.RuleService</role>
+			<implementation>org.unidal.cat.core.alert.rule.DefaultRuleService</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.metric.handler.AlertMessageSink</role>
-			<implementation>org.unidal.cat.core.alert.metric.handler.DefaultAlertMessageSink</implementation>
+			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertMessageSink</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager</role>
-			<implementation>org.unidal.cat.core.alert.metric.handler.RuleEvaluatorManager</implementation>
+			<role>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</role>
+			<implementation>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.core.alert.rule.AlertRuleService</role>
+					<role>org.unidal.cat.core.alert.rule.RuleService</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.metric.MetricsManager</role>
-			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsManager</implementation>
+			<role>org.unidal.cat.core.alert.metric.MetricsBuilderManager</role>
+			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsBuilderManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.metric.MetricsEngine</role>
@@ -59,7 +59,7 @@
 					<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.service.AlertReportService</role>
+					<role>org.unidal.cat.core.alert.model.AlertReportService</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.core.alert.metric.MetricsDispatcher</role>
@@ -113,7 +113,7 @@
 					<role>org.unidal.cat.core.alert.page.service.JspViewer</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.core.alert.service.AlertReportBuilder</role>
+					<role>org.unidal.cat.core.alert.model.AlertReportBuilder</role>
 				</requirement>
 			</requirements>
 		</component>

@@ -6,8 +6,8 @@ import java.util.Set;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.lookup.annotation.Named;
 
-@Named(type = AlertRuleService.class)
-public class DefaultAlertRuleService implements AlertRuleService {
+@Named(type = RuleService.class)
+public class DefaultRuleService implements RuleService {
    @Override
    public Set<String> getAttributes(String type, String name) {
       // TODO Auto-generated method stub

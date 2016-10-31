@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.metric.handler;
+package org.unidal.cat.core.alert.rule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,6 @@ import java.util.Map;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.alert.data.entity.AlertDataStore;
-import org.unidal.cat.core.alert.rule.AlertRuleService;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.lookup.ContainerHolder;
@@ -20,7 +19,7 @@ import org.unidal.lookup.annotation.Named;
 @Named
 public class RuleEvaluatorManager extends ContainerHolder implements Initializable {
    @Inject
-   private AlertRuleService m_service;
+   private RuleService m_service;
 
    private Map<String, Entry> m_map = new HashMap<String, Entry>();
 

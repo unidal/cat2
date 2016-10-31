@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
-import org.unidal.cat.core.alert.rule.AlertRuleService;
+import org.unidal.cat.core.alert.rule.RuleService;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
@@ -27,7 +27,7 @@ public class TransactionMetricsBuilder implements MetricsBuilder {
    private ReportManager<TransactionReport> m_manager;
 
    @Inject
-   private AlertRuleService m_service;
+   private RuleService m_service;
 
    @Override
    public void build(AlertEvent event) {

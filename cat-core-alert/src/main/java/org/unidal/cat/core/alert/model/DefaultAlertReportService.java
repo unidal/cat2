@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.service;
+package org.unidal.cat.core.alert.model;
 
 import java.io.IOException;
 import java.io.InputStream;

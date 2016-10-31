@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.metric.handler;
+package org.unidal.cat.core.alert.rule;
 
 import org.unidal.cat.core.alert.data.entity.AlertDataStore;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;

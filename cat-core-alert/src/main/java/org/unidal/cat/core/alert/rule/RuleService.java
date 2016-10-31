@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 
-public interface AlertRuleService {
+public interface RuleService {
    public Set<String> getAttributes(String type, String name);
 
    public List<AlertRuleSetDef> getRuleSetByAttribute(String type, String name, String value);

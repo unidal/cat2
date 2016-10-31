@@ -109,7 +109,6 @@ public class EventsReportManagerTest extends ComponentTestCase {
 
    public static class MockEventReportManager extends EventReportManager {
       @Override
-      @SuppressWarnings("unchecked")
       public List<Map<String, EventReport>> getLocalReports(int hour) {
          Map<String, EventReport> map = new HashMap<String, EventReport>();
 

@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.metric.handler;
+package org.unidal.cat.core.alert.rule;
 
 import java.util.Calendar;
 
@@ -19,6 +19,9 @@ public class TimeMatcher {
 
    public boolean matches(long timestamp) {
       Calendar cal = Calendar.getInstance();
+
+      cal.setTimeInMillis(timestamp);
+
       int hour = cal.get(Calendar.HOUR_OF_DAY);
       int minute = cal.get(Calendar.MINUTE);
       long minutes = hour * 60 + minute;

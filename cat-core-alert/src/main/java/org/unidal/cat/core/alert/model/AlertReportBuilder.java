@@ -1,4 +1,4 @@
-package org.unidal.cat.core.alert.service;
+package org.unidal.cat.core.alert.model;
 
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 

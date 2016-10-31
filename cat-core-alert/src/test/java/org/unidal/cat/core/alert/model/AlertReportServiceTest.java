@@ -1,8 +1,11 @@
-package org.unidal.cat.core.alert.service;
+package org.unidal.cat.core.alert.model;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 
 import javax.servlet.Filter;
@@ -40,6 +43,8 @@ import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.DefaultNativeBuilder;
+import org.unidal.cat.core.alert.rule.RuleService;
+import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.lookup.extension.PostConstructionPhase;
@@ -152,6 +157,39 @@ public class AlertReportServiceTest extends JettyServer {
       }
    }
 
+   @Named(type = RuleService.class)
+   public static class MockAlertRuleService implements RuleService {
+      @Override
+      public Set<String> getAttributes(String type, String name) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public List<AlertRuleSetDef> getRuleSetByAttribute(String type, String name, String value) {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public List<AlertRuleSetDef> getRuleSets() {
+         throw new UnsupportedOperationException();
+      }
+
+      @Override
+      public Set<String> getTypes() {
+         return setOf("mock1", "mock2");
+      }
+
+      private Set<String> setOf(String... values) {
+         Set<String> set = new LinkedHashSet<String>();
+
+         for (String value : values) {
+            set.add(value);
+         }
+
+         return set;
+      }
+   }
+
    public static class MockGzipFilter implements Filter {
       private GzipFilter m_gzipFilter = new GzipFilter();
 
@@ -197,7 +235,6 @@ public class AlertReportServiceTest extends JettyServer {
 
       @Override
       protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-
          try {
             AlertReport report = m_builder.build();
             String acceptEncoding = req.getHeader("Accept-Encoding");
