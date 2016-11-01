@@ -1,5 +1,12 @@
 package org.unidal.cat.plugin.transaction.alert;
 
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.DOMAIN;
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.DURATION;
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.FAILS;
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.HITS;
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.NAME;
+import static org.unidal.cat.plugin.transaction.alert.TransactionField.TYPE;
+
 import org.unidal.cat.core.alert.metric.AbstractMetrics;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 
@@ -10,13 +17,9 @@ public class TransactionMetrics extends AbstractMetrics {
 
    private String m_name;
 
-   private long m_total;
+   private long m_hits;
 
-   private long m_fail;
-
-   private double m_min;
-
-   private double m_max;
+   private long m_fails;
 
    private double m_duration;
 
@@ -24,14 +27,12 @@ public class TransactionMetrics extends AbstractMetrics {
       super(metric);
 
       if (metric != null) {
-         m_domain = getString("domain");
-         m_type = getString("type");
-         m_name = getString("name");
-         m_total = getLong("total", 0);
-         m_fail = getLong("fail", 0);
-         m_min = getDouble("min", 0);
-         m_max = getDouble("max", 0);
-         m_duration = getDouble("duration", 0);
+         m_domain = DOMAIN.getString(this);
+         m_type = TYPE.getString(this);
+         m_name = NAME.getString(this);
+         m_hits = HITS.getLong(this);
+         m_fails = FAILS.getLong(this);
+         m_duration = DURATION.getDouble(this);
       }
    }
 
@@ -43,31 +44,19 @@ public class TransactionMetrics extends AbstractMetrics {
       return m_duration;
    }
 
-   public long getFail() {
-      return m_fail;
+   public long getFails() {
+      return m_fails;
    }
 
-   public double getMax() {
-      return m_max;
-   }
-
-   public double getMin() {
-      return m_min;
+   public long getHits() {
+      return m_hits;
    }
 
    public String getName() {
       return m_name;
    }
 
-   public long getTotal() {
-      return m_total;
-   }
-
    public String getType() {
       return m_type;
-   }
-
-   public double getValue(String field) {
-      return getDouble(field, 0);
    }
 }

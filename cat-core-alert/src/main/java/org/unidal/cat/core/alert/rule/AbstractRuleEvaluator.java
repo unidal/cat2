@@ -9,12 +9,13 @@ import org.unidal.cat.core.alert.data.entity.AlertDataStore;
 import org.unidal.cat.core.alert.message.AlertMessageSink;
 import org.unidal.cat.core.alert.message.DefaultAlertMessage;
 import org.unidal.cat.core.alert.metric.Metrics;
-import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.rules.entity.AlertConditionDef;
 import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
 import org.unidal.lookup.annotation.Inject;
 
-public abstract class AbstractRuleEvaluator implements RuleEvaluator {
+import com.dianping.cat.Cat;
+
+public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEvaluator {
    @Inject
    private AlertMessageSink m_sink;
 
@@ -33,20 +34,39 @@ public abstract class AbstractRuleEvaluator implements RuleEvaluator {
       if (m_matcher.matches(System.currentTimeMillis())) {
          boolean passed = true;
 
-         for (ConditionEvaluator evaluator : m_evaluators) {
-            if (!evaluator.evaluate()) {
-               passed = false;
-               break;
+         try {
+            for (ConditionEvaluator evaluator : m_evaluators) {
+               if (!evaluator.evaluate()) {
+                  passed = false;
+                  break;
+               }
             }
+         } catch (Exception e) {
+            Cat.logError(e);
+            passed = false;
          }
 
          tryFireAlert(passed);
       }
    }
 
-   protected abstract double handleFunction(String function, String field, List<AlertMetric> metrics);
+   protected abstract double handleFunction(String function, String field, List<T> lasts);
 
-   protected abstract boolean handleOperator(String op, double v1, double v2);
+   protected boolean handleOperator(String op, double v1, double v2) {
+      if ("ge".equals(op)) {
+         return v1 >= v2;
+      } else if ("le".equals(op)) {
+         return v1 <= v2;
+      } else if ("gt".equals(op)) {
+         return v1 > v2;
+      } else if ("lt".equals(op)) {
+         return v1 < v2;
+      } else if ("eq".equals(op)) {
+         return v1 == v2;
+      } else {
+         return false;
+      }
+   }
 
    @Override
    public void initialize(AlertDataStore store, AlertRuleDef rule) {
@@ -127,16 +147,21 @@ public abstract class AbstractRuleEvaluator implements RuleEvaluator {
          m_field = field;
       }
 
+      @SuppressWarnings("unchecked")
       public double execute() {
-         List<AlertMetric> metrics = new ArrayList<AlertMetric>();
+         List<T> lasts = new ArrayList<T>();
 
          for (AlertDataShard shard : m_segment.getShards()) {
             List<Metrics> list = shard.getMetricsList();
 
-            metrics.add(list.get(list.size() - 1).getAlertMetric());
+            if (list.size() > 0) {
+               Metrics last = list.get(list.size() - 1);
+
+               lasts.add((T) last);
+            }
          }
 
-         return handleFunction(m_function, m_field, metrics);
+         return handleFunction(m_function, m_field, lasts);
       }
 
       @Override

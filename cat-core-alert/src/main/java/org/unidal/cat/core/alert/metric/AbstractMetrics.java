@@ -14,45 +14,9 @@ public abstract class AbstractMetrics implements Metrics {
       return m_metric;
    }
 
-   protected double getDouble(String property, double defaultValue) {
-      try {
-         return Double.parseDouble(m_metric.get(property));
-      } catch (Exception e) {
-         return defaultValue;
-      }
-   }
-
    @Override
    public String getFromIp() {
       return m_metric.getFromIp();
-   }
-
-   protected int getInt(String property, int defaultValue) {
-      try {
-         return Integer.parseInt(m_metric.get(property));
-      } catch (Exception e) {
-         return defaultValue;
-      }
-   }
-
-   protected long getLong(String property, long defaultValue) {
-      try {
-         return Long.parseLong(m_metric.get(property));
-      } catch (Exception e) {
-         return defaultValue;
-      }
-   }
-
-   protected String getString(String property) {
-      return getString(property, null);
-   }
-
-   protected String getString(String property, String defaultValue) {
-      try {
-         return m_metric.get(property);
-      } catch (Exception e) {
-         return defaultValue;
-      }
    }
 
    @Override

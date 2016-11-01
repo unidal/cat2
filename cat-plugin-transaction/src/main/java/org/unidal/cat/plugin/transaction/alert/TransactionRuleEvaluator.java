@@ -2,45 +2,32 @@ package org.unidal.cat.plugin.transaction.alert;
 
 import java.util.List;
 
-import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.rule.AbstractRuleEvaluator;
 import org.unidal.cat.core.alert.rule.RuleEvaluator;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = RuleEvaluator.class, value = TransactionConstants.NAME, instantiationStrategy = Named.PER_LOOKUP)
-public class TransactionRuleEvaluator extends AbstractRuleEvaluator {
+public class TransactionRuleEvaluator extends AbstractRuleEvaluator<TransactionMetrics> {
    @Override
-   protected double handleFunction(String function, String field, List<AlertMetric> metrics) {
+   protected double handleFunction(String function, String field, List<TransactionMetrics> lasts) {
+      TransactionField f = TransactionField.getByName(field);
       double sum = 0;
       int count = 0;
 
-      for (AlertMetric metric : metrics) {
-         String value = metric.get(field);
+      for (TransactionMetrics metric : lasts) {
+         double value = f.getValue(metric);
 
-         sum += value == null ? 0 : Double.parseDouble(value);
+         sum += value;
          count++;
       }
 
       if ("avg".equals(function)) {
-         return sum / count;
+         return count == 0 ? 0 : sum / count;
       } else if ("sum".equals(function)) {
          return sum;
       } else {
          return 0;
-      }
-   }
-
-   @Override
-   protected boolean handleOperator(String op, double v1, double v2) {
-      if ("ge".equals(op)) {
-         return v1 >= v2;
-      } else if ("le".equals(op)) {
-         return v1 <= v2;
-      } else if ("eq".equals(op)) {
-         return v1 == v2;
-      } else {
-         return false;
       }
    }
 }

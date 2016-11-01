@@ -21,6 +21,38 @@
          return m_dynamicAttributes.get(name);
       }
 
+      public double getDouble(String property, double defaultValue) {
+         try {
+            return Double.parseDouble(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public int getInt(String property, int defaultValue) {
+         try {
+            return Integer.parseInt(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public long getLong(String property, long defaultValue) {
+         try {
+            return Long.parseLong(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public String getString(String property, String defaultValue) {
+         try {
+            return get(property);
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+
       public org.unidal.cat.core.alert.metric.Metrics getMetrics() {
          if (m_typeClass == null) {
             throw new IllegalStateException("No type class found!");

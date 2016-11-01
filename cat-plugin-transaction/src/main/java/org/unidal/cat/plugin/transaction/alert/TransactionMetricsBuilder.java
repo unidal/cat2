@@ -86,14 +86,28 @@ public class TransactionMetricsBuilder implements MetricsBuilder {
          if (names != null && names.contains(name.getId())) {
             AlertMetric metric = new AlertMetric();
 
-            metric.set("domain", m_domain);
-            metric.set("type", m_type);
-            metric.set("name", name.getId());
-            metric.set("total", name.getTotalCount());
-            metric.set("fail", name.getFailCount());
-            metric.set("min", name.getMin());
-            metric.set("max", name.getMax());
-            metric.set("duration", name.getSum());
+            for (TransactionField field : TransactionField.values()) {
+               switch (field) {
+               case DOMAIN:
+                  metric.set(field.getName(), m_domain);
+                  break;
+               case TYPE:
+                  metric.set(field.getName(), m_type);
+                  break;
+               case NAME:
+                  metric.set(field.getName(), name.getId());
+                  break;
+               case HITS:
+                  metric.set(field.getName(), name.getTotalCount());
+                  break;
+               case FAILS:
+                  metric.set(field.getName(), name.getFailCount());
+                  break;
+               case DURATION:
+                  metric.set(field.getName(), name.getSum());
+                  break;
+               }
+            }
 
             m_event.addMetric(metric);
          }
