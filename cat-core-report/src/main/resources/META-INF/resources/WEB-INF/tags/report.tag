@@ -37,23 +37,36 @@
 
    <jsp:invoke fragment="resource"/>
 </head>
+
 <body class="no-skin">
-   <c:if test="${head ne 'false'}">
-      <r:report-header/>
-   </c:if>
-   
-   <div class="main-container" id="main-container">
-      <c:if test="${menu ne 'false'}">
-         <r:report-menu/>
-      </c:if>
-         
-      <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
-         <c:if test="${navbar ne 'false'}">
-            <r:report-navbar/>
+   <c:choose>
+      <c:when test="${param.fullscreen eq 'true'}">
+         <div class="main-container" id="main-container">
+            <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
+               <jsp:doBody/>
+            </div>
+         </div>
+      </c:when>
+      <c:otherwise>
+         <c:if test="${head ne 'false'}">
+            <r:report-header/>
          </c:if>
-            
-         <jsp:doBody/>
-      </div>
-   </div>
+         
+         <div class="main-container" id="main-container">
+            <c:if test="${menu ne 'false'}">
+               <r:report-menu/>
+            </c:if>
+               
+            <div class="main-content" style="padding-top:2px;padding-left:2px;padding-right:8px;">
+               <c:if test="${navbar ne 'false'}">
+                  <r:report-navbar/>
+               </c:if>
+
+               <jsp:doBody/>
+            </div>
+         </div>
+      </c:otherwise>
+   </c:choose>
 </body>
+
 </html>
