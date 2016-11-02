@@ -1,7 +1,7 @@
 <alert-report>
    <machine ip="127.0.0.1">
-      <event type="Transaction">
-         <metric ip="127.0.0.1" type="Transaction" />
+      <event type-name="Transaction" type-class="org.unidal.cat.plugin.transaction.alert.TransactionMetrics">
+         <metric from-ip="127.0.0.1" type-name="Transaction" />
          <metric/>
       </event>
       <event/>

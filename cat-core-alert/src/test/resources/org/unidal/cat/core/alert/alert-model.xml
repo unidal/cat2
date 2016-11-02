@@ -1,7 +1,8 @@
+<!-- DELETE IT -->
 <model>
    <machine ip="127.0.0.1">
       <event type="transaction">
-         <metric domain="cat" type="URL" name="/r/t" count="100" fails="1" sum="12345" />
+         <metric domain="cat" type="URL" name="/r/t" total="100" fails="1" sum="12345" />
       </event>
       <event type="event">
          <metric domain="cat" type="System" name="Reboot" count="1" fails="0" />

@@ -31,13 +31,40 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.AlertMetricBuilder</role>
+			<role>org.unidal.cat.core.alert.metric.MetricsBuilder</role>
 			<role-hint>transaction</role-hint>
-			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionAlertMetricBuilder</implementation>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionMetricsBuilder</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.spi.report.ReportManager</role>
 					<role-hint>transaction</role-hint>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.rule.RuleService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.MetricsListener</role>
+			<role-hint>transaction</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionMetricsListener</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.rule.RuleEvaluator</role>
+			<role-hint>transaction</role-hint>
+			<implementation>org.unidal.cat.plugin.transaction.alert.TransactionRuleEvaluator</implementation>
+			<instantiation-strategy>per-lookup</instantiation-strategy>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
 				</requirement>
 			</requirements>
 		</component>

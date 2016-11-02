@@ -8,12 +8,13 @@
     <entity-ref name="event" type="list" names="events" />
   </entity>
   <entity name="event">
-    <attribute name="type" value-type="String" />
+    <attribute name="type-name" value-type="String" />
+    <attribute name="type-class" value-type="String" />
     <entity-ref name="metric" type="list" names="metrics" />
   </entity>
   <entity name="metric">
-    <attribute name="ip" value-type="String" />
-    <attribute name="type" value-type="String" />
+    <attribute name="from-ip" value-type="String" />
+    <attribute name="type-name" value-type="String" />
   </entity>
 </model>
 

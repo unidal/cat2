@@ -9,15 +9,64 @@
     <entity-ref name="event" type="map" names="events" />
   </entity>
   <entity name="event">
-    <attribute name="type" value-type="String" key="true" />
+    <attribute name="type-name" value-type="String" key="true" />
     <entity-ref name="metric" type="list" names="metrics" />
   </entity>
   <entity name="metric" dynamic-attributes="true">
-    <attribute name="ip" value-type="String" />
-    <attribute name="type" value-type="String" />
-    <snippet lang="java">
+    <attribute name="from-ip" value-type="String" />
+    <attribute name="type-name" value-type="String" />
+    <attribute name="type-class" value-type="String" />
+    <snippet lang="java"><![CDATA[
       public String get(String name) {
          return m_dynamicAttributes.get(name);
+      }
+
+      public double getDouble(String property, double defaultValue) {
+         try {
+            return Double.parseDouble(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public int getInt(String property, int defaultValue) {
+         try {
+            return Integer.parseInt(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public long getLong(String property, long defaultValue) {
+         try {
+            return Long.parseLong(get(property));
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+   
+      public String getString(String property, String defaultValue) {
+         try {
+            return get(property);
+         } catch (Exception e) {
+            return defaultValue;
+         }
+      }
+
+      public org.unidal.cat.core.alert.metric.Metrics getMetrics() {
+         if (m_typeClass == null) {
+            throw new IllegalStateException("No type class found!");
+         }
+   
+         try {
+            Class<?> clazz = Class.forName(m_typeClass);
+            java.lang.reflect.Constructor<?> c = clazz.getDeclaredConstructor(AlertMetric.class);
+   
+            c.setAccessible(true);
+            return (org.unidal.cat.core.alert.metric.Metrics) c.newInstance(this);
+         } catch (Throwable e) {
+            throw new IllegalStateException("Error when instantiating class: " + m_typeClass, e);
+         }
       }
 
       public AlertMetric set(String name, Object value) {
@@ -29,7 +78,7 @@
          
          return this;
       }
-    </snippet>
+    ]]></snippet>
   </entity>
 </model>
 

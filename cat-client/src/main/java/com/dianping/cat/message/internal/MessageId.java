@@ -1,194 +1,214 @@
 package com.dianping.cat.message.internal;
 
 public class MessageId {
-	private String m_domain;
+   private String m_domain;
 
-	private String m_ipAddressInHex;
+   private String m_ipAddressInHex;
 
-	private int m_hour;
+   private int m_hour;
 
-	private int m_index;
+   private int m_index;
 
-	public MessageId(String domain, String ipAddressInHex, int hour, int index) {
-		m_domain = domain;
-		m_ipAddressInHex = ipAddressInHex;
-		m_hour = hour;
-		m_index = index;
-	}
+   public MessageId(String domain, String ipAddressInHex, int hour, int index) {
+      m_domain = domain;
+      m_ipAddressInHex = ipAddressInHex;
+      m_hour = hour;
+      m_index = index;
 
-	public static MessageId parse(String messageId) {
-		int index = -1;
-		int hour = -1;
-		String ipAddressInHex = null;
-		String domain = null;
-		int len = messageId == null ? 0 : messageId.length();
-		int part = 4;
-		int end = len;
+      validate(domain);
+   }
 
-		for (int i = len - 1; i >= 0; i--) {
-			char ch = messageId.charAt(i);
+   public static MessageId parse(String messageId) {
+      int index = -1;
+      int hour = -1;
+      String ipAddressInHex = null;
+      String domain = null;
+      int len = messageId == null ? 0 : messageId.length();
+      int part = 4;
+      int end = len;
 
-			if (ch == '-') {
-				switch (part) {
-				case 4:
-					index = Integer.parseInt(messageId.substring(i + 1, end));
-					end = i;
-					part--;
-					break;
-				case 3:
-					hour = Integer.parseInt(messageId.substring(i + 1, end));
-					end = i;
-					part--;
-					break;
-				case 2:
-					ipAddressInHex = messageId.substring(i + 1, end);
-					domain = messageId.substring(0, i);
-					part--;
-					break;
-				default:
-					break;
-				}
-			}
-		}
+      try {
+         for (int i = end - 1; i >= 0; i--) {
+            char ch = messageId.charAt(i);
 
-		if (domain == null || ipAddressInHex == null || hour < 0 || index < 0) {
-			throw new RuntimeException("Invalid message ID format: " + messageId);
-		} else {
-			return new MessageId(domain, ipAddressInHex, hour, index);
-		}
-	}
+            if (ch == '-') {
+               switch (part) {
+               case 4:
+                  index = Integer.parseInt(messageId.substring(i + 1, end));
+                  end = i;
+                  part--;
+                  break;
+               case 3:
+                  hour = Integer.parseInt(messageId.substring(i + 1, end));
+                  end = i;
+                  part--;
+                  break;
+               case 2:
+                  ipAddressInHex = messageId.substring(i + 1, end);
+                  domain = messageId.substring(0, i);
+                  part--;
+                  break;
+               default:
+                  break;
+               }
+            }
+         }
+      } catch (NumberFormatException e) {
+         throw new RuntimeException("Invalid message ID format: " + messageId, e);
+      }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof MessageId) {
-			MessageId o = (MessageId) obj;
+      if (domain == null || ipAddressInHex == null || hour < 0 || index < 0) {
+         throw new RuntimeException("Invalid message ID format: " + messageId);
+      } else {
+         return new MessageId(domain, ipAddressInHex, hour, index);
+      }
+   }
 
-			if (!m_domain.equals(o.m_domain)) {
-				return false;
-			}
+   @Override
+   public boolean equals(Object obj) {
+      if (obj instanceof MessageId) {
+         MessageId o = (MessageId) obj;
 
-			if (!m_ipAddressInHex.equals(o.m_ipAddressInHex)) {
-				return false;
-			}
+         if (!m_domain.equals(o.m_domain)) {
+            return false;
+         }
 
-			if (m_hour != o.m_hour) {
-				return false;
-			}
+         if (!m_ipAddressInHex.equals(o.m_ipAddressInHex)) {
+            return false;
+         }
 
-			if (m_index != o.m_index) {
-				return false;
-			}
+         if (m_hour != o.m_hour) {
+            return false;
+         }
 
-			return true;
-		}
+         if (m_index != o.m_index) {
+            return false;
+         }
 
-		return false;
-	}
+         return true;
+      }
 
-	public String getDomain() {
-		return m_domain;
-	}
+      return false;
+   }
 
-	public int getHour() {
-		return m_hour;
-	}
+   public String getDomain() {
+      return m_domain;
+   }
 
-	public int getIndex() {
-		return m_index;
-	}
+   public int getHour() {
+      return m_hour;
+   }
 
-	public String getIpAddress() {
-		StringBuilder sb = new StringBuilder();
-		String local = m_ipAddressInHex;
-		int length = local.length();
+   public int getIndex() {
+      return m_index;
+   }
 
-		for (int i = 0; i < length; i += 2) {
-			char ch1 = local.charAt(i);
-			char ch2 = local.charAt(i + 1);
-			int value = 0;
+   public String getIpAddress() {
+      StringBuilder sb = new StringBuilder();
+      String local = m_ipAddressInHex;
+      int length = local.length();
 
-			if (ch1 >= '0' && ch1 <= '9') {
-				value += (ch1 - '0') << 4;
-			} else {
-				value += ((ch1 - 'a') + 10) << 4;
-			}
+      for (int i = 0; i < length; i += 2) {
+         char ch1 = local.charAt(i);
+         char ch2 = local.charAt(i + 1);
+         int value = 0;
 
-			if (ch2 >= '0' && ch2 <= '9') {
-				value += ch2 - '0';
-			} else {
-				value += (ch2 - 'a') + 10;
-			}
+         if (ch1 >= '0' && ch1 <= '9') {
+            value += (ch1 - '0') << 4;
+         } else {
+            value += ((ch1 - 'a') + 10) << 4;
+         }
 
-			if (sb.length() > 0) {
-				sb.append('.');
-			}
+         if (ch2 >= '0' && ch2 <= '9') {
+            value += ch2 - '0';
+         } else {
+            value += (ch2 - 'a') + 10;
+         }
 
-			sb.append(value);
-		}
+         if (sb.length() > 0) {
+            sb.append('.');
+         }
 
-		return sb.toString();
-	}
+         sb.append(value);
+      }
 
-	public String getIpAddressInHex() {
-		return m_ipAddressInHex;
-	}
+      return sb.toString();
+   }
 
-	public int getIpAddressValue() {
-		String local = m_ipAddressInHex;
-		int length = local.length();
-		int ip = 0;
+   public String getIpAddressInHex() {
+      return m_ipAddressInHex;
+   }
 
-		for (int i = 0; i < length; i += 2) {
-			char ch1 = local.charAt(i);
-			char ch2 = local.charAt(i + 1);
-			int value = 0;
+   public int getIpAddressValue() {
+      String local = m_ipAddressInHex;
+      int length = local.length();
+      int ip = 0;
 
-			if (ch1 >= '0' && ch1 <= '9') {
-				value += (ch1 - '0') << 4;
-			} else {
-				value += ((ch1 - 'a') + 10) << 4;
-			}
+      for (int i = 0; i < length; i += 2) {
+         char ch1 = local.charAt(i);
+         char ch2 = local.charAt(i + 1);
+         int value = 0;
 
-			if (ch2 >= '0' && ch2 <= '9') {
-				value += ch2 - '0';
-			} else {
-				value += (ch2 - 'a') + 10;
-			}
+         if (ch1 >= '0' && ch1 <= '9') {
+            value += (ch1 - '0') << 4;
+         } else {
+            value += ((ch1 - 'a') + 10) << 4;
+         }
 
-			ip = (ip << 8) + value;
-		}
+         if (ch2 >= '0' && ch2 <= '9') {
+            value += ch2 - '0';
+         } else {
+            value += (ch2 - 'a') + 10;
+         }
 
-		return ip;
-	}
+         ip = (ip << 8) + value;
+      }
 
-	public long getTimestamp() {
-		return m_hour * 3600 * 1000L;
-	}
+      return ip;
+   }
 
-	@Override
-	public int hashCode() {
-		int result = 1;
+   public long getTimestamp() {
+      return m_hour * 3600 * 1000L;
+   }
 
-		result = 31 * result + ((m_domain == null) ? 0 : m_domain.hashCode());
-		result = 31 * result + ((m_ipAddressInHex == null) ? 0 : m_ipAddressInHex.hashCode());
-		result = 31 * result + m_hour;
-		result = 31 * result + m_index;
+   @Override
+   public int hashCode() {
+      int result = 1;
 
-		return result;
-	}
+      result = 31 * result + ((m_domain == null) ? 0 : m_domain.hashCode());
+      result = 31 * result + ((m_ipAddressInHex == null) ? 0 : m_ipAddressInHex.hashCode());
+      result = 31 * result + m_hour;
+      result = 31 * result + m_index;
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(m_domain.length() + 24);
+      return result;
+   }
 
-		sb.append(m_domain);
-		sb.append('-');
-		sb.append(m_ipAddressInHex);
-		sb.append('-');
-		sb.append(m_hour);
-		sb.append('-');
-		sb.append(m_index);
+   @Override
+   public String toString() {
+      StringBuilder sb = new StringBuilder(m_domain.length() + 24);
 
-		return sb.toString();
-	}
+      sb.append(m_domain);
+      sb.append('-');
+      sb.append(m_ipAddressInHex);
+      sb.append('-');
+      sb.append(m_hour);
+      sb.append('-');
+      sb.append(m_index);
+
+      return sb.toString();
+   }
+
+   void validate(String domain) {
+      int len = domain.length();
+
+      for (int i = 0; i < len; i++) {
+         char ch = domain.charAt(i);
+
+         if (Character.isJavaIdentifierPart(ch) || ch == '.') {
+            continue;
+         } else {
+            throw new RuntimeException("Invalid domain of message ID: " + this);
+         }
+      }
+   }
 }

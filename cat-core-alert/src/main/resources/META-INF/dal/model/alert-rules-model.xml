@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="org.unidal.cat.core.alert.rules" class-prefix="Alert" class-suffix="Def" enable-sax-parser="true" enable-base-visitor="true">
+  <entity name="rule-set" dynamic-attributes="true">
+    <attribute name="domain" value-type="String" enabled="false" />
+    <attribute name="type" value-type="String" enabled="false" />
+    <attribute name="name" value-type="String" enabled="false" />
+    <snippet lang="java"><![CDATA[
+      public String get(String name) {
+         return m_dynamicAttributes.get(name);
+      }
+
+      public AlertRuleSetDef set(String name, Object value) {
+         if (value != null) {
+            m_dynamicAttributes.put(name, String.valueOf(value));
+         } else {
+            m_dynamicAttributes.remove(name);
+         }
+         
+         return this;
+      }
+    ]]></snippet>
+  </entity>
+  <entity name="model" root="true">
+    <entity-ref name="rule-set" type="list" names="rule-sets" />
+  </entity>
+  <entity name="rule-set">
+    <attribute name="id" value-type="String" key="true" />
+    <entity-ref name="rule" type="list" names="rules" />
+  </entity>
+  <entity name="rule">
+    <attribute name="rule-set" value-type="AlertRuleSetDef" render="false" />
+    <attribute name="id" value-type="String" key="true" />
+    <attribute name="time-window" value-type="int" primitive="true" />
+    <entity-ref name="condition" type="list" names="conditions" />
+  </entity>
+  <entity name="condition">
+    <attribute name="value" value-type="String" />
+  </entity>
+</model>
+

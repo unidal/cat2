@@ -1,0 +1,22 @@
+<plexus>
+	<components>
+		<component>
+			<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
+			<implementation>org.unidal.cat.core.alert.model.AlertReportServiceTest$MockAlertConfiguration</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.MetricsBuilder</role>
+			<role-hint>mock1</role-hint>
+			<implementation>org.unidal.cat.core.alert.model.AlertReportServiceTest$MockAlertMetricBuilder1</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.metric.MetricsBuilder</role>
+			<role-hint>mock2</role-hint>
+			<implementation>org.unidal.cat.core.alert.model.AlertReportServiceTest$MockAlertMetricBuilder2</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.rule.RuleService</role>
+			<implementation>org.unidal.cat.core.alert.model.AlertReportServiceTest$MockAlertRuleService</implementation>
+		</component>
+	</components>
+</plexus>
