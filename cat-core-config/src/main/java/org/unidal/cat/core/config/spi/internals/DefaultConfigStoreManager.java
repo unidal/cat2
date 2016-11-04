@@ -54,7 +54,7 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
       ConfigChangeListener listener = m_listeners.get(key);
 
       if (listener != null) {
-         // ConfigException would be thrown if the config is NOT appliable
+         // ConfigException should be thrown if the config is NOT appliable
          listener.onChanged(config);
       }
 

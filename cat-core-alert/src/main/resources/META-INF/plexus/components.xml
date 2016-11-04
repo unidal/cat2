@@ -33,6 +33,11 @@
 		<component>
 			<role>org.unidal.cat.core.alert.rule.RuleService</role>
 			<implementation>org.unidal.cat.core.alert.rule.DefaultRuleService</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
