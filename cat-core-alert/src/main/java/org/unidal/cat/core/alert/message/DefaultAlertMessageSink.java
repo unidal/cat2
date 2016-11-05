@@ -1,5 +1,6 @@
 package org.unidal.cat.core.alert.message;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -10,6 +11,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
+
+import com.dianping.cat.Cat;
 
 @Named(type = AlertMessageSink.class)
 public class DefaultAlertMessageSink implements AlertMessageSink, Task {
@@ -57,14 +60,20 @@ public class DefaultAlertMessageSink implements AlertMessageSink, Task {
 
    private void send(AlertMessage message) {
       String type = message.getRule().getRuleSet().getTypeName();
-      Map<String, AlertRecipient> recipients = m_recipientManager.getRecipients(message);
+      Map<String, List<AlertRecipient>> recipients = m_recipientManager.getRecipients(message);
 
-      for (Map.Entry<String, AlertRecipient> e : recipients.entrySet()) {
+      for (Map.Entry<String, List<AlertRecipient>> e : recipients.entrySet()) {
          String action = e.getKey();
-         AlertRecipient recipient = e.getValue();
-         AlertSender sender = m_senderManager.getSender(type, action);
 
-         sender.send(message, recipient);
+         for (AlertRecipient recipient : e.getValue()) {
+            AlertSender sender = m_senderManager.getSender(type, action);
+
+            try {
+               sender.send(message, recipient);
+            } catch (RuntimeException ex) {
+               Cat.logError(ex);
+            }
+         }
       }
    }
 

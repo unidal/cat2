@@ -28,6 +28,10 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.service.ContactorService</role>
+			<implementation>org.unidal.cat.core.config.service.DefaultContactorService</implementation>
+		</component>
+		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
 			<implementation>org.unidal.web.mvc.model.ModuleRegistry</implementation>
 			<configuration>

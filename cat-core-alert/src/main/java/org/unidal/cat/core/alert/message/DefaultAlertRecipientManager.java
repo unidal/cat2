@@ -1,79 +1,49 @@
 package org.unidal.cat.core.alert.message;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_ALERT;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.core.alert.rule.entity.AlertModelDef;
-import org.unidal.cat.core.alert.rule.transform.DefaultSaxParser;
-import org.unidal.cat.core.config.spi.ConfigChangeListener;
-import org.unidal.cat.core.config.spi.ConfigException;
-import org.unidal.cat.core.config.spi.ConfigStore;
-import org.unidal.cat.core.config.spi.ConfigStoreManager;
+import org.unidal.cat.core.alert.rule.entity.AlertActionDef;
+import org.unidal.cat.core.config.service.ContactorService;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
+import com.site.helper.Splitters;
 
 @Named(type = AlertRecipientManager.class)
-public class DefaultAlertRecipientManager implements AlertRecipientManager, ConfigChangeListener, Initializable,
-      LogEnabled {
-   private static final String NAME = "recipient";
-
+public class DefaultAlertRecipientManager implements AlertRecipientManager {
    @Inject
-   private ConfigStoreManager m_manager;
-
-   private AlertModelDef m_model;
-
-   private Logger m_logger;
+   private ContactorService m_service;
 
    @Override
-   public Map<String, AlertRecipient> getRecipients(AlertMessage message) {
-      return null;
-   }
+   public Map<String, List<AlertRecipient>> getRecipients(AlertMessage message) {
+      Map<String, List<AlertRecipient>> map = new HashMap<String, List<AlertRecipient>>();
+      List<AlertActionDef> actions = message.getRule().getActions();
 
-   @Override
-   public void enableLogging(Logger logger) {
-      m_logger = logger;
-   }
+      for (AlertActionDef action : actions) {
+         String type = action.getType();
+         List<AlertRecipient> recipients = resolveRecipients(type, action.getRecipients());
 
-   @Override
-   public void initialize() throws InitializationException {
-      m_manager.register(GROUP_ALERT, NAME, this);
-
-      ConfigStore store = m_manager.getConfigStore(GROUP_ALERT, NAME);
-      String config = store.getConfig();
-
-      if (config != null) {
-         try {
-            m_model = DefaultSaxParser.parse(config);
-         } catch (Exception e) {
-            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_ALERT,
-                  NAME, config), e);
-         }
-      } else {
-         Cat.logEvent("ConfigMissing", GROUP_ALERT + ":" + NAME);
-         m_logger.warn("No configure found for " + GROUP_ALERT + ":" + NAME);
+         map.put(type, recipients);
       }
 
-      if (m_model == null) {
-         m_model = new AlertModelDef();
-      }
+      return map;
    }
 
-   @Override
-   public void onChanged(String config) throws ConfigException {
-      if (config != null) {
-         try {
-            m_model = DefaultSaxParser.parse(config);
-         } catch (Exception e) {
-            throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_ALERT, NAME,
-                  config), e);
+   private List<AlertRecipient> resolveRecipients(String type, String str) {
+      List<AlertRecipient> recipients = new ArrayList<AlertRecipient>();
+      List<String> ids = Splitters.by(',').noEmptyItem().trim().split(str);
+
+      for (String id : ids) {
+         String contactId = m_service.getContactor(type, id);
+
+         if (contactId != null) {
+            recipients.add(new AlertRecipient(type, id));
          }
       }
+
+      return recipients;
    }
 }

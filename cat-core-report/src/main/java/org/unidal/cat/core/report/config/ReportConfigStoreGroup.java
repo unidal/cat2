@@ -64,7 +64,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
          } catch (DalNotFoundException e) {
             // continue
          } catch (DalException e) {
-            throw new RuntimeException(String.format("Error when adding report config(%s)!", m_name), e);
+            throw new RuntimeException(String.format("Error when updating report config(%s)!", m_name), e);
          }
 
          try {
@@ -79,7 +79,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
             m_dao.insert(c);
             m_config = config;
          } catch (DalException e) {
-            throw new RuntimeException(String.format("Error when updating report config(%s)!", m_name), e);
+            throw new RuntimeException(String.format("Error when inserting report config(%s)!", m_name), e);
          }
       }
    }
