@@ -9,7 +9,9 @@ import org.unidal.web.mvc.annotation.ModulePagesMeta;
 
 org.unidal.cat.core.alert.page.home.Handler.class,
 
-org.unidal.cat.core.alert.page.service.Handler.class
+org.unidal.cat.core.alert.page.service.Handler.class,
+
+org.unidal.cat.core.alert.page.update.Handler.class
 })
 public class AlertModule extends AbstractModule {
 

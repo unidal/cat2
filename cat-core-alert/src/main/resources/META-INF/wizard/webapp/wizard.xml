@@ -8,6 +8,9 @@
          <page name="service" title="Service" package="org.unidal.cat.core.alert.page.service" path="service" template="default">
             <description>Service</description>
          </page>
+         <page name="update" title="Update" package="org.unidal.cat.core.alert.page.update" path="update" template="default">
+            <description>Update</description>
+         </page>
       </module>
    </webapp>
 </wizard>

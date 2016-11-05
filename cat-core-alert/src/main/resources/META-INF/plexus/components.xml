@@ -176,5 +176,26 @@
 				</requirement>
 			</requirements>
 		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.update.Handler</role>
+			<implementation>org.unidal.cat.core.alert.page.update.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.page.update.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.update.JspViewer</role>
+			<implementation>org.unidal.cat.core.alert.page.update.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
 	</components>
 </plexus>
