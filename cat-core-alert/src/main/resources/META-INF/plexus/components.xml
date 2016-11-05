@@ -40,10 +40,6 @@
 			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
-			<implementation>org.unidal.cat.core.alert.message.DefaultAlertMessageSink</implementation>
-		</component>
-		<component>
 			<role>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</role>
 			<implementation>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</implementation>
 			<requirements>
@@ -51,6 +47,27 @@
 					<role>org.unidal.cat.core.alert.rule.RuleService</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertMessageSink</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.message.AlertRecipientManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.message.AlertSenderManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertSenderManager</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertSenderManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertSender</role>
+			<role-hint>email</role-hint>
+			<implementation>org.unidal.cat.core.alert.message.EmailAlertSender</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.metric.MetricsBuilderManager</role>
