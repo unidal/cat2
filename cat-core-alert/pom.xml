@@ -90,9 +90,11 @@
                      <goal>dal-model</goal>
                   </goals>
                   <configuration>
-                     <manifest><![CDATA[${basedir}/src/main/resources/META-INF/dal/model/alert-report-manifest.xml,
-                        ${basedir}/src/main/resources/META-INF/dal/model/alert-rules-manifest.xml,
-                        ${basedir}/src/main/resources/META-INF/dal/model/alert-data-manifest.xml,]]></manifest>
+                     <manifest><![CDATA[
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-report-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-rule-manifest.xml,
+                        ${basedir}/src/main/resources/META-INF/dal/model/alert-data-manifest.xml,
+                     ]]></manifest>
                   </configuration>
                </execution>
                <execution>
@@ -102,9 +104,9 @@
                      <goal>dal-jdbc</goal>
                   </goals>
                   <configuration>
-                     <manifest><![CDATA[,
+                     <manifest><![CDATA[
                         ${basedir}/src/main/resources/META-INF/dal/jdbc/alert-manifest.xml,
-                     ,]]></manifest>
+                     ]]></manifest>
                   </configuration>
                </execution>
             </executions>

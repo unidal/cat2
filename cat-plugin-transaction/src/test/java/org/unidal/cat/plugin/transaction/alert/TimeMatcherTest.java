@@ -6,7 +6,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.unidal.cat.core.alert.rule.TimeMatcher;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleDef;
 
 public class TimeMatcherTest {
    @Test

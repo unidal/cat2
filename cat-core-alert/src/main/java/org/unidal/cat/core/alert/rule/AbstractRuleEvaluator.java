@@ -9,8 +9,8 @@ import org.unidal.cat.core.alert.data.entity.AlertDataStore;
 import org.unidal.cat.core.alert.message.AlertMessageSink;
 import org.unidal.cat.core.alert.message.DefaultAlertMessage;
 import org.unidal.cat.core.alert.metric.Metrics;
-import org.unidal.cat.core.alert.rules.entity.AlertConditionDef;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
+import org.unidal.cat.core.alert.rule.entity.AlertConditionDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleDef;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;

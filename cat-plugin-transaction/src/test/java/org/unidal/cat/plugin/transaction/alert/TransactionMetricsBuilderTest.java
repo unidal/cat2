@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.rule.RuleService;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleSetDef;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.Machine;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;

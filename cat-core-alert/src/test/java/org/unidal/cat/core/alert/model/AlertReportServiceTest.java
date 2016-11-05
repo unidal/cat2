@@ -44,7 +44,7 @@ import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.DefaultNativeBuilder;
 import org.unidal.cat.core.alert.rule.RuleService;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleSetDef;
 import org.unidal.lookup.ContainerLoader;
 import org.unidal.lookup.annotation.Named;
 import org.unidal.lookup.extension.PostConstructionPhase;

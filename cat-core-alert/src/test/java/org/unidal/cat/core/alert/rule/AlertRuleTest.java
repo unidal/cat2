@@ -6,15 +6,15 @@ import java.io.InputStream;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.cat.core.alert.rules.entity.AlertModelDef;
-import org.unidal.cat.core.alert.rules.transform.DefaultSaxParser;
+import org.unidal.cat.core.alert.rule.entity.AlertModelDef;
+import org.unidal.cat.core.alert.rule.transform.DefaultSaxParser;
 import org.unidal.helper.Files;
 import org.xml.sax.SAXException;
 
-public class AlertRulesTest {
+public class AlertRuleTest {
    @Test
    public void test() throws SAXException, IOException {
-      InputStream in = getClass().getResourceAsStream("alert-rules.xml");
+      InputStream in = getClass().getResourceAsStream("alert-rule.xml");
       String xml = Files.forIO().readFrom(in, "utf-8");
       AlertModelDef model = DefaultSaxParser.parse(xml);
 
