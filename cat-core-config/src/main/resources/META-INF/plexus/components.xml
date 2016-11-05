@@ -10,16 +10,6 @@
 			<implementation>org.unidal.cat.core.config.spi.internals.DefaultConfigStoreManager</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
-			<role-hint>report</role-hint>
-			<implementation>org.unidal.cat.core.config.spi.internals.ReportConfigStoreGroup</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.core.config.dal.ReportConfigDao</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>org.unidal.cat.core.view.menu.MenuManager</role>
 			<role-hint>config</role-hint>
 			<implementation>org.unidal.cat.core.config.view.ConfigMenuManager</implementation>
@@ -34,24 +24,6 @@
 			<requirements>
 				<requirement>
 					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
-			<role-hint>report-config</role-hint>
-			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
-			<configuration>
-				<physical-table-name>report_config</physical-table-name>
-				<data-source-name>cat</data-source-name>
-			</configuration>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.config.dal.ReportConfigDao</role>
-			<implementation>org.unidal.cat.core.config.dal.ReportConfigDao</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.dal.jdbc.QueryEngine</role>
 				</requirement>
 			</requirements>
 		</component>

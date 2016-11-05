@@ -1,10 +1,10 @@
-package org.unidal.cat.core.config.spi.internals;
+package org.unidal.cat.core.report.config;
 
-import org.unidal.cat.core.config.dal.ReportConfig;
-import org.unidal.cat.core.config.dal.ReportConfigDao;
-import org.unidal.cat.core.config.dal.ReportConfigEntity;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreGroup;
+import org.unidal.cat.core.report.dal.ReportConfigDao;
+import org.unidal.cat.core.report.dal.ReportConfigDo;
+import org.unidal.cat.core.report.dal.ReportConfigEntity;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.lookup.annotation.Inject;
@@ -37,7 +37,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
       public String getConfig() {
          if (m_config == null) {
             try {
-               ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+               ReportConfigDo c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
 
                m_config = c.getContent();
             } catch (Throwable e) {
@@ -51,7 +51,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
       @Override
       public void setConfig(String config) {
          try {
-            ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+            ReportConfigDo c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
 
             c.setContent(config);
             c.setVersion(c.getVersion() + 1);
@@ -68,7 +68,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
          }
 
          try {
-            ReportConfig c = m_dao.createLocal();
+            ReportConfigDo c = m_dao.createLocal();
 
             c.setReportName(m_name);
             c.setContent(config);

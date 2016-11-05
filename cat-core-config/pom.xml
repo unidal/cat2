@@ -79,18 +79,6 @@
                      ]]></manifest>
                   </configuration>
                </execution>
-               <execution>
-                  <id>generate dal jdbc model</id>
-                  <phase>generate-sources</phase>
-                  <goals>
-                     <goal>dal-jdbc</goal>
-                  </goals>
-                  <configuration>
-                     <manifest><![CDATA[
-                        ${basedir}/src/main/resources/META-INF/dal/jdbc/config-manifest.xml,
-                     ]]></manifest>
-                  </configuration>
-               </execution>
             </executions>
          </plugin>
       </plugins>

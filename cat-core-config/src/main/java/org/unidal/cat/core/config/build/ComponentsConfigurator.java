@@ -7,7 +7,6 @@ import org.unidal.cat.core.config.CatConfigModule;
 import org.unidal.cat.core.config.service.DefaultDomainGroupConfigService;
 import org.unidal.cat.core.config.service.DefaultDomainOrgConfigService;
 import org.unidal.cat.core.config.spi.internals.DefaultConfigStoreManager;
-import org.unidal.cat.core.config.spi.internals.ReportConfigStoreGroup;
 import org.unidal.cat.core.config.view.ConfigMenuManager;
 import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
@@ -24,14 +23,12 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(CatConfigModule.class));
 
       all.add(A(DefaultConfigStoreManager.class));
-      all.add(A(ReportConfigStoreGroup.class));
 
       all.add(A(ConfigMenuManager.class));
 
       all.add(A(DefaultDomainGroupConfigService.class));
       all.add(A(DefaultDomainOrgConfigService.class));
 
-      all.addAll(new CatDatabaseConfigurator().defineComponents());
       all.addAll(new WebComponentConfigurator().defineComponents());
 
       return all;
