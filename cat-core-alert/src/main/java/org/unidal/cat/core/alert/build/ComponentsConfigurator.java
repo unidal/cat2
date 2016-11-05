@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.alert.CatAlertModule;
+import org.unidal.cat.core.alert.config.AlertConfigStoreGroup;
 import org.unidal.cat.core.alert.config.DefaultAlertConfiguration;
 import org.unidal.cat.core.alert.message.DefaultAlertMessageSink;
 import org.unidal.cat.core.alert.message.DefaultAlertSenderManager;
@@ -25,6 +26,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       List<Component> all = new ArrayList<Component>();
 
       all.add(A(CatAlertModule.class));
+      all.add(A(AlertConfigStoreGroup.class));
 
       all.add(A(DefaultAlertConfiguration.class));
       all.add(A(LocalAlertReportBuilder.class));
@@ -40,6 +42,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultMetricsEngine.class));
       all.add(A(DefaultMetricsDispatcher.class));
       all.add(A(DefaultMetricsQueue.class));
+
+      all.addAll(new CatDatabaseConfigurator().defineComponents());
 
       // Please keep it as last
       all.addAll(new WebComponentConfigurator().defineComponents());

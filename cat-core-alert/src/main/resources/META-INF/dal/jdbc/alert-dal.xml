@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities do-package="org.unidal.cat.core.alert" gen="true" do-class-suffix="Do">
+  <entity name="alert-config" table="alert_config" alias="ac">
+    <query-defs>
+      <query name="find-by-name" type="SELECT">
+        <param name="name" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='name'/> = ${name}
+        ]]></statement>
+      </query>
+      <query name="update-by-name" type="UPDATE">
+        <param name="name" />
+        <statement><![CDATA[
+        UPDATE <TABLE/>
+        SET <FIELDS/>
+        WHERE <FIELD name='name'/> = ${name}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+</entities>
+

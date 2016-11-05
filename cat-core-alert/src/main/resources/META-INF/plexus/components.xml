@@ -6,6 +6,16 @@
 			<implementation>org.unidal.cat.core.alert.CatAlertModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
+			<role-hint>alert</role-hint>
+			<implementation>org.unidal.cat.core.alert.config.AlertConfigStoreGroup</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.AlertConfigDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
 			<implementation>org.unidal.cat.core.alert.config.DefaultAlertConfiguration</implementation>
 		</component>
@@ -96,6 +106,24 @@
 			<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
 			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsQueue</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>alert-config</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>alert_config</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.AlertConfigDao</role>
+			<implementation>org.unidal.cat.core.alert.AlertConfigDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
