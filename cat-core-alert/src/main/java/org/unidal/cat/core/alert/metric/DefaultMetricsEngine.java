@@ -13,12 +13,12 @@ import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.BaseVisitor;
-import org.unidal.helper.Dates;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 
 @Named(type = MetricsEngine.class)
@@ -56,7 +56,7 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
 
       try {
          while (m_enabled.get()) {
-            Transaction t = Cat.newTransaction("Alert", Dates.now().asString("mm"));
+            Transaction t = Cat.newTransaction("Alert", "Check");
             long start = System.currentTimeMillis();
 
             try {
@@ -65,8 +65,9 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
                if (report != null) {
                   report.accept(m_feeder);
                }
+
+               t.setStatus(Message.SUCCESS);
             } catch (Throwable e) {
-               e.printStackTrace();
                t.setStatus(e);
                Cat.logError(e);
             } finally {

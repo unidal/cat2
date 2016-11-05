@@ -7,6 +7,7 @@ import org.unidal.cat.core.alert.CatAlertModule;
 import org.unidal.cat.core.alert.config.AlertConfigStoreGroup;
 import org.unidal.cat.core.alert.config.DefaultAlertConfiguration;
 import org.unidal.cat.core.alert.message.DefaultAlertMessageSink;
+import org.unidal.cat.core.alert.message.DefaultAlertRecipientManager;
 import org.unidal.cat.core.alert.message.DefaultAlertSenderManager;
 import org.unidal.cat.core.alert.message.EmailAlertSender;
 import org.unidal.cat.core.alert.metric.DefaultMetricsBuilderManager;
@@ -35,6 +36,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(RuleEvaluatorManager.class));
 
       all.add(A(DefaultAlertMessageSink.class));
+      all.add(A(DefaultAlertRecipientManager.class));
       all.add(A(DefaultAlertSenderManager.class));
       all.add(A(EmailAlertSender.class));
 

@@ -71,6 +71,15 @@
 			</requirements>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.alert.message.AlertRecipientManager</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertRecipientManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.service.ContactorService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.alert.message.AlertSenderManager</role>
 			<implementation>org.unidal.cat.core.alert.message.DefaultAlertSenderManager</implementation>
 		</component>

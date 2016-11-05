@@ -37,6 +37,7 @@ import org.mortbay.jetty.webapp.WebAppContext;
 import org.mortbay.servlet.GzipFilter;
 import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.config.DefaultAlertConfiguration;
+import org.unidal.cat.core.alert.metric.Metrics;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMachine;
@@ -143,6 +144,11 @@ public class AlertReportServiceTest extends JettyServer {
             event.addMetric(new AlertMetric().set("type", "type" + i).set("name", "name" + i));
          }
       }
+
+      @Override
+      public Class<? extends Metrics> getMetricsType() {
+         throw new UnsupportedOperationException();
+      }
    }
 
    @Named(type = MetricsBuilder.class, value = "mock2")
@@ -154,6 +160,11 @@ public class AlertReportServiceTest extends JettyServer {
          for (int i = 0; i < 3; i++) {
             event.addMetric(new AlertMetric().set("type", "type" + i).set("name", "name" + i));
          }
+      }
+
+      @Override
+      public Class<? extends Metrics> getMetricsType() {
+         throw new UnsupportedOperationException();
       }
    }
 

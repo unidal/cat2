@@ -36,6 +36,7 @@ public class LocalAlertReportBuilder implements AlertReportBuilder {
             MetricsBuilder builder = e.getValue();
             AlertEvent event = new AlertEvent(type);
 
+            event.setTypeClass(builder.getMetricsType().getName());
             machine.addEvent(event);
 
             try {

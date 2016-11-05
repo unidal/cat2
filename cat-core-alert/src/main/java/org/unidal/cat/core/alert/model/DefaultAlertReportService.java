@@ -88,7 +88,7 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
 
    @Override
    public AlertReport getReport() {
-      final Transaction t = Cat.getProducer().newTransaction("Service", "AlertReport");
+      final Transaction t = Cat.getProducer().newTransaction("Alert", "Report");
 
       try {
          Map<String, Boolean> servers = m_configuration.getServers();
@@ -137,18 +137,17 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
                }
             }
          } catch (InterruptedException e) {
-            e.printStackTrace();
+            // ignore it
          }
 
          if (reports.isEmpty()) {
             t.setStatus(Message.SUCCESS);
             return null;
          } else {
-            t.addData("reports", reports.size());
-            t.setStatus(Message.SUCCESS);
-
             AlertReport report = aggregate(reports);
 
+            t.addData("reports", reports.size());
+            t.setStatus(Message.SUCCESS);
             return report;
          }
       } catch (RuntimeException e) {
