@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.alert.data.entity.AlertDataSegment;
 import org.unidal.cat.core.alert.data.entity.AlertDataShard;
 import org.unidal.cat.core.alert.data.entity.AlertDataStore;
@@ -16,6 +17,10 @@ import org.unidal.cat.core.alert.rule.RuleEvaluatorManager;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
+
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 public abstract class AbstractMetricsListener<T extends Metrics> implements MetricsListener<T>, Task, Initializable,
       RoleHintEnabled {
@@ -88,8 +93,16 @@ public abstract class AbstractMetricsListener<T extends Metrics> implements Metr
 
             if (metrics != null) {
                if (metrics.getAlertMetric() == null) {
-                  for (RuleEvaluator evaluator : m_evaluators) {
-                     evaluator.evaluate();
+                  Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Evaluate");
+
+                  try {
+                     for (RuleEvaluator evaluator : m_evaluators) {
+                        evaluator.evaluate();
+                     }
+
+                     t.setStatus(Message.SUCCESS);
+                  } finally {
+                     t.complete();
                   }
                } else {
                   storeMetrics(m_store, metrics);
