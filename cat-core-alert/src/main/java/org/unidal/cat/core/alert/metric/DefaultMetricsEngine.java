@@ -60,10 +60,10 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
          TimeUnit.SECONDS.sleep(30);
 
          while (m_enabled.get()) {
-            Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Patrol");
+            Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Check");
             long start = System.currentTimeMillis();
 
-            Cat.logEvent("Metrics.Minute", Dates.now().asString("mm"));
+            Cat.logEvent(AlertConstants.TYPE_ALERT, "Minute:" + Dates.now().asString("mm"));
 
             try {
                AlertReport report = m_service.getReport();

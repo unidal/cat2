@@ -35,8 +35,10 @@ public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEv
    @Override
    public void evaluate() {
       if (m_matcher.matches(System.currentTimeMillis())) {
-         Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Rule:" + getClass().getSimpleName());
+         Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, getClass().getSimpleName());
          boolean passed = true;
+
+         t.addData("id", m_rule.getId());
 
          try {
             for (ConditionEvaluator evaluator : m_evaluators) {

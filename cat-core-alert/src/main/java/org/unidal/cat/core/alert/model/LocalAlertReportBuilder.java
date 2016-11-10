@@ -40,7 +40,7 @@ public class LocalAlertReportBuilder implements AlertReportBuilder {
             if (types.contains(type)) {
                MetricsBuilder builder = e.getValue();
                AlertEvent event = new AlertEvent(type);
-               Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Builder:" + builder.getClass().getSimpleName());
+               Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, builder.getClass().getSimpleName());
 
                event.setTypeClass(builder.getMetricsType().getName());
                machine.addEvent(event);

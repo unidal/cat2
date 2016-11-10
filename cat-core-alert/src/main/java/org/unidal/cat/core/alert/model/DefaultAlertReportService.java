@@ -54,7 +54,7 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
 
    private InputStream fetch(Transaction parentTransaction, String server) throws IOException {
       DefaultMessageProducer cat = (DefaultMessageProducer) Cat.getProducer();
-      Transaction t = cat.newTransaction(parentTransaction, AlertConstants.TYPE_ALERT, "Endpoint:" + server);
+      Transaction t = cat.newTransaction(parentTransaction, AlertConstants.TYPE_ALERT, server);
 
       try {
          String url = m_configuration.getServerUri(server);
