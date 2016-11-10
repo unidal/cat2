@@ -1,6 +1,6 @@
 function hourlyGraphLineChart(cell,response){
 	cell.style.display = 'block';
-	cell.parentNode.style.display = 'block';
+	cell.parentNode.style.display = '';
 	cell.innerHTML = response;
 
 	var data = $('#responseTrendMeta', cell).text();

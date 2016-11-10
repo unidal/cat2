@@ -6,28 +6,30 @@
 <jsp:useBean id="model" type="org.unidal.cat.core.message.page.home.Model" scope="request"/>
 
 <r:report>
-   <jsp:attribute name="head">${payload.noHeader eq 'true' ? 'false' : 'true'}</jsp:attribute>
-   <jsp:attribute name="menu">${payload.noHeader eq 'true' ? 'false' : 'true'}</jsp:attribute>
+   <jsp:attribute name="head">${payload.header}</jsp:attribute>
+   <jsp:attribute name="menu">${payload.header}</jsp:attribute>
    <jsp:attribute name="navbar">false</jsp:attribute>
    <jsp:attribute name="resource">
        <link rel="stylesheet" href="${model.webapp}/css/message.css">
        <script src="${model.webapp}/js/message.js"></script>
    </jsp:attribute>
-   
+
    <jsp:body>
       <c:choose>
          <c:when test="${empty model.html}">
             <div class="error">Sorry, the message is not found. It could be missing or even not created at all.</div>
          </c:when>
          <c:otherwise>
-            <c:choose>
-               <c:when test="${payload.waterfall eq 'true'}">
-                  <div>&nbsp;&nbsp;<a href="?${ctx.query.waterfall['']}">Text</a>&nbsp;&nbsp;&nbsp;&nbsp;Graph</div>
-               </c:when>
-               <c:otherwise>
-                  <div>&nbsp;&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;<a href="?${ctx.query.waterfall['true']}">Graph</a></div>
-               </c:otherwise>
-            </c:choose>
+            <c:if test="${payload.header}">
+               <c:choose>
+                  <c:when test="${payload.waterfall}">
+                     <div>&nbsp;&nbsp;<a href="?${ctx.query.waterfall['']}">Text</a>&nbsp;&nbsp;&nbsp;&nbsp;Graph</div>
+                  </c:when>
+                  <c:otherwise>
+                     <div>&nbsp;&nbsp;Text&nbsp;&nbsp;&nbsp;&nbsp;<a href="?${ctx.query.waterfall['true']}">Graph</a></div>
+                  </c:otherwise>
+               </c:choose>
+            </c:if>
             ${model.html}
          </c:otherwise>
       </c:choose>
