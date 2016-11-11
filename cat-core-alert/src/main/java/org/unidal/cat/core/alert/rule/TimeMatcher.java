@@ -2,7 +2,7 @@ package org.unidal.cat.core.alert.rule;
 
 import java.util.Calendar;
 
-import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleDef;
 
 public class TimeMatcher {
    private long m_startMinutes;

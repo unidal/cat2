@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.core.config.spi.ConfigChangeListener;
@@ -20,14 +22,23 @@ import org.unidal.cat.plugin.transaction.config.transform.DefaultSaxParser;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
+
 @Named
-public class TransactionConfigService implements Initializable, ConfigChangeListener {
+public class TransactionConfigService implements Initializable, LogEnabled, ConfigChangeListener {
    @Inject
    private ConfigStoreManager m_manager;
 
    private Set<String> m_matchedDomains;
 
    private List<String> m_startingDomains;
+
+   private Logger m_logger;
+
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
    @Override
    public void initialize() throws InitializationException {
@@ -36,15 +47,20 @@ public class TransactionConfigService implements Initializable, ConfigChangeList
       ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
       String config = store.getConfig();
 
-      try {
-         if (config != null) {
+      if (config != null) {
+         try {
             TransactionConfigModel root = DefaultSaxParser.parse(config);
 
             initialize(root);
+         } catch (Exception e) {
+            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_REPORT,
+                  NAME, config), e);
          }
-      } catch (Exception e) {
-         throw new InitializationException("Invalid transaction config:\r\n" + config, e);
+      } else {
+         Cat.logEvent("ConfigMissing", GROUP_REPORT + ":" + NAME);
+         m_logger.warn("No configure found for " + GROUP_REPORT + ":" + NAME);
       }
+
    }
 
    private void initialize(TransactionConfigModel root) {
@@ -92,7 +108,8 @@ public class TransactionConfigService implements Initializable, ConfigChangeList
             initialize(root);
          }
       } catch (Exception e) {
-         throw new ConfigException("Invalid transaction config:\r\n" + config, e);
+         throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_REPORT, NAME,
+               config), e);
       }
    }
 }

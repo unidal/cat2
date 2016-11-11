@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.core.report.CatReportModule;
+import org.unidal.cat.core.report.config.ReportConfigStoreGroup;
 import org.unidal.cat.core.report.nav.DomainGroupBar;
 import org.unidal.cat.core.report.remote.DefaultRemoteReportSkeleton;
 import org.unidal.cat.core.report.remote.DefaultRemoteReportStub;
@@ -60,6 +61,8 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultReportFilterManager.class));
       all.add(A(DefaultReportReducerManager.class));
       all.add(A(DefaultReportDelegateManager.class));
+
+      all.add(A(ReportConfigStoreGroup.class));
 
       all.add(A(DefaultReportTaskConsumer.class));
       all.add(A(DefaultReportTaskExecutor.class));

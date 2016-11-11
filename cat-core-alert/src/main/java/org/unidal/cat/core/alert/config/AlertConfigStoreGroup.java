@@ -1,8 +1,9 @@
-package org.unidal.cat.core.config.spi.internals;
+package org.unidal.cat.core.alert.config;
 
-import org.unidal.cat.core.config.dal.ReportConfig;
-import org.unidal.cat.core.config.dal.ReportConfigDao;
-import org.unidal.cat.core.config.dal.ReportConfigEntity;
+import org.unidal.cat.core.alert.AlertConfigDao;
+import org.unidal.cat.core.alert.AlertConfigDo;
+import org.unidal.cat.core.alert.AlertConfigEntity;
+import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreGroup;
 import org.unidal.dal.jdbc.DalException;
@@ -12,24 +13,22 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 
-@Named(type = ConfigStoreGroup.class, value = ReportConfigStoreGroup.ID)
-public class ReportConfigStoreGroup implements ConfigStoreGroup {
-   public static final String ID = "report";
-
+@Named(type = ConfigStoreGroup.class, value = AlertConstants.NAME)
+public class AlertConfigStoreGroup implements ConfigStoreGroup {
    @Inject
-   private ReportConfigDao m_dao;
+   private AlertConfigDao m_dao;
 
    @Override
    public ConfigStore getConfigStore(String name) {
-      return new ReportConfigStore(name);
+      return new AlertConfigStore(name);
    }
 
-   private class ReportConfigStore implements ConfigStore {
+   private class AlertConfigStore implements ConfigStore {
       private String m_name;
 
       private String m_config;
 
-      public ReportConfigStore(String name) {
+      public AlertConfigStore(String name) {
          m_name = name;
       }
 
@@ -37,7 +36,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
       public String getConfig() {
          if (m_config == null) {
             try {
-               ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+               AlertConfigDo c = m_dao.findByName(m_name, AlertConfigEntity.READSET_FULL);
 
                m_config = c.getContent();
             } catch (Throwable e) {
@@ -51,26 +50,26 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
       @Override
       public void setConfig(String config) {
          try {
-            ReportConfig c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
+            AlertConfigDo c = m_dao.findByName(m_name, AlertConfigEntity.READSET_FULL);
 
             c.setContent(config);
             c.setVersion(c.getVersion() + 1);
             c.setFormat(1);
             c.setLastModifiedBy("Admin"); // TODO
 
-            m_dao.updateByReportName(c, ReportConfigEntity.UPDATESET_FULL);
+            m_dao.updateByName(c, AlertConfigEntity.UPDATESET_FULL);
             m_config = config;
             return;
          } catch (DalNotFoundException e) {
             // continue
          } catch (DalException e) {
-            throw new RuntimeException(String.format("Error when adding report config(%s)!", m_name), e);
+            throw new RuntimeException(String.format("Error when updating report config(%s)!", m_name), e);
          }
 
          try {
-            ReportConfig c = m_dao.createLocal();
+            AlertConfigDo c = m_dao.createLocal();
 
-            c.setReportName(m_name);
+            c.setName(m_name);
             c.setContent(config);
             c.setVersion(1);
             c.setFormat(1);
@@ -79,7 +78,7 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
             m_dao.insert(c);
             m_config = config;
          } catch (DalException e) {
-            throw new RuntimeException(String.format("Error when updating report config(%s)!", m_name), e);
+            throw new RuntimeException(String.format("Error when inserting report config(%s)!", m_name), e);
          }
       }
    }

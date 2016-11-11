@@ -1,4 +1,4 @@
-package org.unidal.cat.core.config.build;
+package org.unidal.cat.core.alert.build;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +12,8 @@ final class CatDatabaseConfigurator extends AbstractJdbcResourceConfigurator {
       List<Component> all = new ArrayList<Component>();
 
 
-      defineSimpleTableProviderComponents(all, "cat", org.unidal.cat.core.config.dal._INDEX.getEntityClasses());
-      defineDaoComponents(all, org.unidal.cat.core.config.dal._INDEX.getDaoClasses());
+      defineSimpleTableProviderComponents(all, "cat", org.unidal.cat.core.alert._INDEX.getEntityClasses());
+      defineDaoComponents(all, org.unidal.cat.core.alert._INDEX.getDaoClasses());
 
       return all;
    }

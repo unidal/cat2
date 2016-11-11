@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.model.AlertReportService;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
@@ -19,6 +20,7 @@ import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 
 @Named(type = MetricsEngine.class)
@@ -55,9 +57,13 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
       long interval = m_config.getAlertCheckInterval();
 
       try {
+         TimeUnit.SECONDS.sleep(30);
+
          while (m_enabled.get()) {
-            Transaction t = Cat.newTransaction("Alert", Dates.now().asString("mm"));
+            Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Check");
             long start = System.currentTimeMillis();
+
+            Cat.logEvent(AlertConstants.TYPE_ALERT, "Minute:" + Dates.now().asString("mm"));
 
             try {
                AlertReport report = m_service.getReport();
@@ -65,8 +71,9 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
                if (report != null) {
                   report.accept(m_feeder);
                }
+
+               t.setStatus(Message.SUCCESS);
             } catch (Throwable e) {
-               e.printStackTrace();
                t.setStatus(e);
                Cat.logError(e);
             } finally {

@@ -7,7 +7,9 @@ public enum AlertPage implements Page {
 
    HOME("home", "home", "Home", "Home", true),
 
-   SERVICE("service", "service", "Service", "Service", true);
+   SERVICE("service", "service", "Service", "Service", true),
+
+   UPDATE("update", "update", "Update", "Update", true);
 
    private String m_name;
 

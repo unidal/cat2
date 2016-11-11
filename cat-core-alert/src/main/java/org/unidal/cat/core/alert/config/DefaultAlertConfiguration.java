@@ -32,7 +32,7 @@ public class DefaultAlertConfiguration implements Initializable, AlertConfigurat
 
    @Override
    public int getRemoteCallThreads() {
-      return 20;
+      return 3;
    }
 
    @Override

@@ -18,7 +18,9 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
 
    private Map<String, ConfigChangeListener> m_listeners = new LinkedHashMap<String, ConfigChangeListener>();
 
-   private ConfigStore createConfigStore(String key, String group, String name) {
+   private ConfigStore createConfigStore(String group, String name) {
+      String key = group + ":" + name;
+
       if (hasComponent(ConfigStore.class, key)) {
          return lookup(ConfigStore.class, key);
       } else if (hasComponent(ConfigStoreGroup.class, group)) {
@@ -36,7 +38,7 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
       ConfigStore store = m_stores.get(key);
 
       if (store == null) {
-         store = createConfigStore(key, group, name);
+         store = createConfigStore(group, name);
 
          if (store == null) {
             store = new DefaultConfigStore(null);
@@ -54,7 +56,7 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
       ConfigChangeListener listener = m_listeners.get(key);
 
       if (listener != null) {
-         // ConfigException would be thrown if the config is NOT appliable
+         // ConfigException should be thrown if the config is NOT appliable
          listener.onChanged(config);
       }
 
@@ -79,7 +81,7 @@ public class DefaultConfigStoreManager extends ContainerHolder implements Config
    @Override
    public void reloadConfigStore(String group, String name) throws ConfigException {
       String key = group + ":" + name;
-      ConfigStore store = createConfigStore(key, group, name);
+      ConfigStore store = createConfigStore(group, name);
       ConfigChangeListener listener = m_listeners.get(key);
 
       if (listener != null) {

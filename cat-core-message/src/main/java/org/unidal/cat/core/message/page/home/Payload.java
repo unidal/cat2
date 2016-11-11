@@ -13,8 +13,8 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    @FieldMeta("op")
    private Action m_action;
 
-   @FieldMeta("noHeader")
-   private boolean m_noHeader;
+   @FieldMeta("header")
+   private String m_header = "true";
 
    @FieldMeta("waterfall")
    private boolean m_waterfall;
@@ -54,8 +54,8 @@ public class Payload extends CoreReportPayload<MessagePage, Action> {
    }
 
    /* used by message.jsp */
-   public boolean isNoHeader() {
-      return m_noHeader;
+   public boolean isHeader() {
+      return m_header == null || m_header.length() == 0 || m_header.equals("true");
    }
 
    public boolean isWaterfall() {

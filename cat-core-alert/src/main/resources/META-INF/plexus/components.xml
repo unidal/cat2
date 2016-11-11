@@ -6,6 +6,16 @@
 			<implementation>org.unidal.cat.core.alert.CatAlertModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
+			<role-hint>alert</role-hint>
+			<implementation>org.unidal.cat.core.alert.config.AlertConfigStoreGroup</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.AlertConfigDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.alert.config.AlertConfiguration</role>
 			<implementation>org.unidal.cat.core.alert.config.DefaultAlertConfiguration</implementation>
 		</component>
@@ -33,10 +43,11 @@
 		<component>
 			<role>org.unidal.cat.core.alert.rule.RuleService</role>
 			<implementation>org.unidal.cat.core.alert.rule.DefaultRuleService</implementation>
-		</component>
-		<component>
-			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
-			<implementation>org.unidal.cat.core.alert.message.DefaultAlertMessageSink</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.rule.RuleEvaluatorManager</role>
@@ -46,6 +57,36 @@
 					<role>org.unidal.cat.core.alert.rule.RuleService</role>
 				</requirement>
 			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertMessageSink</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertMessageSink</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.message.AlertRecipientManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.alert.message.AlertSenderManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertRecipientManager</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertRecipientManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.service.ContactorService</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertSenderManager</role>
+			<implementation>org.unidal.cat.core.alert.message.DefaultAlertSenderManager</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.message.AlertSender</role>
+			<role-hint>email</role-hint>
+			<implementation>org.unidal.cat.core.alert.message.EmailAlertSender</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.core.alert.metric.MetricsBuilderManager</role>
@@ -74,6 +115,24 @@
 			<role>org.unidal.cat.core.alert.metric.MetricsQueue</role>
 			<implementation>org.unidal.cat.core.alert.metric.DefaultMetricsQueue</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>alert-config</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>alert_config</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.AlertConfigDao</role>
+			<implementation>org.unidal.cat.core.alert.AlertConfigDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
@@ -120,6 +179,27 @@
 		<component>
 			<role>org.unidal.cat.core.alert.page.service.JspViewer</role>
 			<implementation>org.unidal.cat.core.alert.page.service.JspViewer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.web.mvc.view.model.ModelHandler</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.update.Handler</role>
+			<implementation>org.unidal.cat.core.alert.page.update.Handler</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.alert.page.update.JspViewer</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.alert.page.update.JspViewer</role>
+			<implementation>org.unidal.cat.core.alert.page.update.JspViewer</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.web.mvc.view.model.ModelHandler</role>

@@ -3,17 +3,20 @@ package org.unidal.cat.core.alert.rule;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.alert.data.entity.AlertDataSegment;
 import org.unidal.cat.core.alert.data.entity.AlertDataShard;
 import org.unidal.cat.core.alert.data.entity.AlertDataStore;
 import org.unidal.cat.core.alert.message.AlertMessageSink;
 import org.unidal.cat.core.alert.message.DefaultAlertMessage;
 import org.unidal.cat.core.alert.metric.Metrics;
-import org.unidal.cat.core.alert.rules.entity.AlertConditionDef;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleDef;
+import org.unidal.cat.core.alert.rule.entity.AlertConditionDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleDef;
 import org.unidal.lookup.annotation.Inject;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Transaction;
 
 public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEvaluator {
    @Inject
@@ -32,7 +35,10 @@ public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEv
    @Override
    public void evaluate() {
       if (m_matcher.matches(System.currentTimeMillis())) {
+         Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, getClass().getSimpleName());
          boolean passed = true;
+
+         t.addData("id", m_rule.getId());
 
          try {
             for (ConditionEvaluator evaluator : m_evaluators) {
@@ -41,9 +47,15 @@ public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEv
                   break;
                }
             }
+
+            t.setStatus(Message.SUCCESS);
          } catch (Exception e) {
+            t.setStatus(e);
             Cat.logError(e);
             passed = false;
+         } finally {
+            t.addData("passed", passed);
+            t.complete();
          }
 
          tryFireAlert(passed);

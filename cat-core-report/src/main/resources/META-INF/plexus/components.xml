@@ -31,6 +31,16 @@
 			<implementation>org.unidal.cat.spi.report.internals.DefaultReportDelegateManager</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
+			<role-hint>report</role-hint>
+			<implementation>org.unidal.cat.core.report.config.ReportConfigStoreGroup</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.report.dal.ReportConfigDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.spi.report.task.ReportTaskConsumer</role>
 			<implementation>org.unidal.cat.spi.report.task.internals.DefaultReportTaskConsumer</implementation>
 			<requirements>
@@ -424,6 +434,15 @@
 			</configuration>
 		</component>
 		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>report-config</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>report_config</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.report.dal.HistoryReportDao</role>
 			<implementation>org.unidal.cat.core.report.dal.HistoryReportDao</implementation>
 			<requirements>
@@ -462,6 +481,15 @@
 		<component>
 			<role>org.unidal.cat.core.report.dal.ReportTaskDao</role>
 			<implementation>org.unidal.cat.core.report.dal.ReportTaskDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.report.dal.ReportConfigDao</role>
+			<implementation>org.unidal.cat.core.report.dal.ReportConfigDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>

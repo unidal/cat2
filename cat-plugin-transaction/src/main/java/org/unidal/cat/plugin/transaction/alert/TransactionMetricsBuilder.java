@@ -7,11 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.unidal.cat.core.alert.metric.Metrics;
 import org.unidal.cat.core.alert.metric.MetricsBuilder;
 import org.unidal.cat.core.alert.model.entity.AlertEvent;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.rule.RuleService;
-import org.unidal.cat.core.alert.rules.entity.AlertRuleSetDef;
+import org.unidal.cat.core.alert.rule.entity.AlertRuleSetDef;
 import org.unidal.cat.plugin.transaction.TransactionConstants;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionName;
 import org.unidal.cat.plugin.transaction.model.entity.TransactionReport;
@@ -34,21 +35,29 @@ public class TransactionMetricsBuilder implements MetricsBuilder {
       String type = TransactionConstants.NAME;
       int hour = (int) TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
       List<Map<String, TransactionReport>> list = m_manager.getLocalReports(hour);
-      Set<String> domains = m_service.getAttributes(type, "domain");
 
-      for (Map<String, TransactionReport> item : list) {
-         for (Map.Entry<String, TransactionReport> e : item.entrySet()) {
-            String domain = e.getKey();
+      if (!list.isEmpty()) {
+         Set<String> domains = m_service.getAttributes(type, "domain");
 
-            if (domains.contains(domain)) {
-               List<AlertRuleSetDef> rules = m_service.getRuleSetByAttribute(type, "domain", domain);
-               TransactionReport report = e.getValue();
-               Collector visitor = new Collector(event, domain, rules);
+         for (Map<String, TransactionReport> item : list) {
+            for (Map.Entry<String, TransactionReport> e : item.entrySet()) {
+               String domain = e.getKey();
 
-               report.accept(visitor);
+               if (domains.contains(domain)) {
+                  List<AlertRuleSetDef> rules = m_service.getRuleSetByAttribute(type, "domain", domain);
+                  TransactionReport report = e.getValue();
+                  Collector visitor = new Collector(event, domain, rules);
+
+                  report.accept(visitor);
+               }
             }
          }
       }
+   }
+
+   @Override
+   public Class<? extends Metrics> getMetricsType() {
+      return TransactionMetrics.class;
    }
 
    static class Collector extends BaseVisitor {

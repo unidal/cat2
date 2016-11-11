@@ -15,6 +15,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.DefaultMerger;
@@ -53,7 +54,7 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
 
    private InputStream fetch(Transaction parentTransaction, String server) throws IOException {
       DefaultMessageProducer cat = (DefaultMessageProducer) Cat.getProducer();
-      Transaction t = cat.newTransaction(parentTransaction, "Remote", server);
+      Transaction t = cat.newTransaction(parentTransaction, AlertConstants.TYPE_ALERT, server);
 
       try {
          String url = m_configuration.getServerUri(server);
@@ -67,7 +68,10 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
                .header("Accept-Encoding", "gzip").openStream(url, headers);
 
          if ("[gzip]".equals(String.valueOf(headers.get("Content-Encoding")))) {
+            t.addData("gzipped", "true");
             in = new GZIPInputStream(in);
+         } else {
+            t.addData("gzipped", "false");
          }
 
          t.setStatus(Message.SUCCESS);
@@ -88,7 +92,7 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
 
    @Override
    public AlertReport getReport() {
-      final Transaction t = Cat.getProducer().newTransaction("Service", "AlertReport");
+      final Transaction t = Cat.getProducer().newTransaction(AlertConstants.TYPE_ALERT, "RemoteReport");
 
       try {
          Map<String, Boolean> servers = m_configuration.getServers();
@@ -137,18 +141,17 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
                }
             }
          } catch (InterruptedException e) {
-            e.printStackTrace();
+            // ignore it
          }
 
          if (reports.isEmpty()) {
             t.setStatus(Message.SUCCESS);
             return null;
          } else {
-            t.addData("reports", reports.size());
-            t.setStatus(Message.SUCCESS);
-
             AlertReport report = aggregate(reports);
 
+            t.addData("reports", reports.size());
+            t.setStatus(Message.SUCCESS);
             return report;
          }
       } catch (RuntimeException e) {

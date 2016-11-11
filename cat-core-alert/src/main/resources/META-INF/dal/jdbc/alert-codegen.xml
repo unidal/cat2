@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entities>
-  <entity name="report-config" table="report_config" alias="rc">
+  <entity name="alert-config" table="alert_config" alias="ac">
     <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
-    <member name="report-name" field="report_name" value-type="String" length="50" nullable="false" />
+    <member name="name" field="name" value-type="String" length="50" nullable="false" />
     <member name="format" field="format" value-type="int" length="10" />
     <member name="version" field="version" value-type="int" length="10" />
     <member name="content" field="content" value-type="String" length="2147483647" />
@@ -11,7 +11,7 @@
     <member name="last-modified-by" field="last_modified_by" value-type="String" length="50" />
     <var name="key-id" value-type="int" key-member="id" />
     <primary-key name="PRIMARY" members="id" />
-    <index name="UIDX_ReportName" unique="true" members="report_name ASC" />
+    <index name="UIDX_Name" unique="true" members="name ASC" />
     <readsets>
       <readset name="FULL" all="true" />
     </readsets>

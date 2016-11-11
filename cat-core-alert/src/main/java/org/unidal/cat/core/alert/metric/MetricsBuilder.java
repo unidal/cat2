@@ -10,4 +10,6 @@ public interface MetricsBuilder {
     *           to add metrics
     */
    public void build(AlertEvent event);
+
+   public Class<? extends Metrics> getMetricsType();
 }

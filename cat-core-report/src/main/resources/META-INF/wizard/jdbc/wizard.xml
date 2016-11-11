@@ -14,6 +14,7 @@
          <table name="history_report"/>
          <table name="history_report_content"/>
          <table name="report_task"/>
+         <table name="report_config"/>
       </group>
    </jdbc>
 </wizard>
