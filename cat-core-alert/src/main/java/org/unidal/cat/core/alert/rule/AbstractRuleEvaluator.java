@@ -117,6 +117,8 @@ public abstract class AbstractRuleEvaluator<T extends Metrics> implements RuleEv
          if (shouldFire) {
             m_passes = new boolean[len]; // reset
             m_sink.add(new DefaultAlertMessage(m_rule, m_segment));
+
+            Cat.logEvent(AlertConstants.TYPE_ALERT, "Fired:" + m_rule.getId());
          }
       }
    }

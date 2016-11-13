@@ -14,7 +14,6 @@ import org.unidal.cat.core.alert.model.entity.AlertMachine;
 import org.unidal.cat.core.alert.model.entity.AlertMetric;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
 import org.unidal.cat.core.alert.model.transform.BaseVisitor;
-import org.unidal.helper.Dates;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -62,8 +61,6 @@ public class DefaultMetricsEngine extends ContainerHolder implements MetricsEngi
          while (m_enabled.get()) {
             Transaction t = Cat.newTransaction(AlertConstants.TYPE_ALERT, "Check");
             long start = System.currentTimeMillis();
-
-            Cat.logEvent(AlertConstants.TYPE_ALERT, "Minute:" + Dates.now().asString("mm"));
 
             try {
                AlertReport report = m_service.getReport();
