@@ -1,0 +1,7 @@
+<route-policy enabled="true" sample-ratio="1.0">
+   <server-node type="logtree" ip="127.0.0.1" port="2280" enabled="true"/>
+   <server-node type="logtree" ip="127.0.0.2" port="2280"/>
+   <server-node type="logtree" ip="127.0.0.3" port="2280"/>
+   <server-node type="log" ip="127.0.0.4" port="2280"/>
+   <server-node type="log" ip="127.0.0.5" port="2280"/>
+</route-policy>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="org.unidal.cat.config.route" enable-sax-parser="true">
+  <entity name="route-policy" root="true" dynamic-attributes="true">
+    <entity-ref name="server-node" type="list" names="server-nodes" />
+  </entity>
+  <entity name="server-node">
+    <attribute name="type" value-type="String" />
+    <attribute name="ip" value-type="String" />
+    <attribute name="port" value-type="int" />
+    <attribute name="enabled" value-type="boolean" default-value="true" />
+  </entity>
+</model>
+

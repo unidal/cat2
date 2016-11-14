@@ -9,6 +9,65 @@
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.config.internals.Settings</role>
+			<implementation>org.unidal.cat.config.internals.DefaultSettings</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.internals.DomainProvider</role>
+			<implementation>org.unidal.cat.config.internals.DefaultDomainProvider</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.internals.ServerDiscovery</role>
+			<implementation>org.unidal.cat.config.internals.DefaultServerDiscovery</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.internals.Settings</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationManager</role>
+			<implementation>org.unidal.cat.config.internals.DefaultClientConfigurationManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+					<role-hint>local</role-hint>
+					<field-name>m_local</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+					<role-hint>remote</role-hint>
+					<field-name>m_remote</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.config.internals.LocalClientConfigurationProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.internals.Settings</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+			<role-hint>remote</role-hint>
+			<implementation>org.unidal.cat.config.internals.RemoteClientConfigurationProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.internals.Settings</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.internals.ServerDiscovery</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.internals.DomainProvider</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.cat.message.spi.MessageCodec</role>
 			<role-hint>PT1</role-hint>
 			<implementation>com.dianping.cat.message.spi.codec.PlainTextMessageCodec</implementation>
