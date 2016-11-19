@@ -81,7 +81,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
    @Test
    public void getFromSystemProperties() {
-      System.setProperty("cat", "127.0.3.1,127.0.3.2:2281,127.0.3.3:2282");
+      System.setProperty("cat", "127.0.3.1:2281,127.0.3.2:2281,127.0.3.3:2282");
 
       try {
          ServerDiscovery d = lookup(ServerDiscovery.class);

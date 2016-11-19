@@ -15,6 +15,11 @@
 		<component>
 			<role>org.unidal.cat.config.internals.DomainProvider</role>
 			<implementation>org.unidal.cat.config.internals.DefaultDomainProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.internals.Settings</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.config.internals.ServerDiscovery</role>

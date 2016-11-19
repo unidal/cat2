@@ -55,7 +55,7 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    }
 
    protected int getDefaultServerHttpPort() {
-      return m_settings.getDefaultServerHttpPort();
+      return m_settings.getDefaultCatServerPort();
    }
 
    @Override
@@ -77,6 +77,10 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
       if (servers == null) {
          servers = getServersByCatHost();
       }
+      
+      if (servers == null) {
+         servers = getServersFromSettings();
+      }
 
       if (servers == null) {
          return Collections.emptyList();
@@ -90,7 +94,7 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    protected String getServersByCatHost() {
       return null;
    }
-
+   
    protected String getServersByDetection() {
       // Designed to be overridden
       return null;
@@ -124,6 +128,10 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
 
    protected String getServersFromEnvironmentVariable() {
       return System.getenv("CAT");
+   }
+
+   protected String getServersFromSettings() {
+      return m_settings.getDefaultCatServer();
    }
 
    protected String getServersFromSystemProperties() {
