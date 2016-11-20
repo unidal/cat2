@@ -161,6 +161,22 @@
 			<implementation>org.unidal.cat.message.command.DefaultCommandDispatcher</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.internals.CatInitializer</role>
+			<implementation>org.unidal.cat.internals.CatInitializer</implementation>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.MessageProducer</role>
+			<implementation>com.dianping.cat.message.internal.DefaultMessageProducer</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.MessageIdFactory</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.cat.message.spi.MessageManager</role>
 			<implementation>com.dianping.cat.message.internal.DefaultMessageManager</implementation>
 			<requirements>
@@ -169,18 +185,6 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.io.TransportManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.message.MessageIdFactory</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.message.MessageProducer</role>
-			<implementation>com.dianping.cat.message.internal.DefaultMessageProducer</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageManager</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.message.MessageIdFactory</role>

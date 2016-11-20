@@ -94,7 +94,7 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
 
    @Override
    public String getDefaultCatServer() {
-      String server = m_properties.getProperty("cat.server");
+      String server = m_properties.getProperty("cat.default.server");
 
       return server;
    }

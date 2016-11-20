@@ -5,6 +5,7 @@ import java.io.StringWriter;
 
 import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
@@ -19,280 +20,291 @@ import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.spi.MessageManager;
 import com.dianping.cat.message.spi.MessageTree;
 
+@Named(type = MessageProducer.class)
 public class DefaultMessageProducer implements MessageProducer {
-	@Inject
-	private MessageManager m_manager;
+   @Inject
+   private MessageManager m_manager;
 
-	@Inject
-	private MessageIdFactory m_factory;
+   @Inject
+   private MessageIdFactory m_factory;
 
-	@Override
-	public String createMessageId() {
-		return m_factory.getNextId();
-	}
+   @Override
+   public String createMessageId() {
+      return m_factory.getNextId();
+   }
 
-	@Override
-	public boolean isEnabled() {
-		return m_manager.isMessageEnabled();
-	}
+   @Override
+   public void disable() {
+      // TODO
+   }
 
-	@Override
-	public void logError(String message, Throwable cause) {
-		if (Cat.getManager().isCatEnabled()) {
-			if (shouldLog(cause)) {
-				m_manager.getThreadLocalMessageTree().setSample(false);
+   @Override
+   public MessageManager getManager() {
+      return m_manager;
+   }
 
-				StringWriter writer = new StringWriter(2048);
+   @Override
+   public boolean isEnabled() {
+      return m_manager.isMessageEnabled();
+   }
 
-				if (message != null) {
-					writer.write(message);
-					writer.write(' ');
-				}
+   @Override
+   public void logError(String message, Throwable cause) {
+      if (Cat.getManager().isCatEnabled()) {
+         if (shouldLog(cause)) {
+            m_manager.getThreadLocalMessageTree().setSample(false);
 
-				cause.printStackTrace(new PrintWriter(writer));
+            StringWriter writer = new StringWriter(2048);
 
-				String detailMessage = writer.toString();
+            if (message != null) {
+               writer.write(message);
+               writer.write(' ');
+            }
 
-				if (cause instanceof Error) {
-					logEvent("Error", cause.getClass().getName(), "ERROR", detailMessage);
-				} else if (cause instanceof RuntimeException) {
-					logEvent("RuntimeException", cause.getClass().getName(), "ERROR", detailMessage);
-				} else {
-					logEvent("Exception", cause.getClass().getName(), "ERROR", detailMessage);
-				}
-			}
-		} else {
-			cause.printStackTrace();
-		}
-	}
+            cause.printStackTrace(new PrintWriter(writer));
 
-	@Override
-	public void logError(Throwable cause) {
-		logError(null, cause);
-	}
+            String detailMessage = writer.toString();
 
-	@Override
-	public void logEvent(String type, String name) {
-		logEvent(type, name, Message.SUCCESS, null);
-	}
+            if (cause instanceof Error) {
+               logEvent("Error", cause.getClass().getName(), "ERROR", detailMessage);
+            } else if (cause instanceof RuntimeException) {
+               logEvent("RuntimeException", cause.getClass().getName(), "ERROR", detailMessage);
+            } else {
+               logEvent("Exception", cause.getClass().getName(), "ERROR", detailMessage);
+            }
+         }
+      } else {
+         cause.printStackTrace();
+      }
+   }
 
-	@Override
-	public void logEvent(String type, String name, String status, String nameValuePairs) {
-		Event event = newEvent(type, name);
+   @Override
+   public void logError(Throwable cause) {
+      logError(null, cause);
+   }
 
-		if (nameValuePairs != null && nameValuePairs.length() > 0) {
-			event.addData(nameValuePairs);
-		}
+   @Override
+   public void logEvent(String type, String name) {
+      logEvent(type, name, Message.SUCCESS, null);
+   }
 
-		event.setStatus(status);
-		event.complete();
-	}
+   @Override
+   public void logEvent(String type, String name, String status, String nameValuePairs) {
+      Event event = newEvent(type, name);
 
-	@Override
-	public void logHeartbeat(String type, String name, String status, String nameValuePairs) {
-		Heartbeat heartbeat = newHeartbeat(type, name);
+      if (nameValuePairs != null && nameValuePairs.length() > 0) {
+         event.addData(nameValuePairs);
+      }
 
-		heartbeat.addData(nameValuePairs);
-		heartbeat.setStatus(status);
-		heartbeat.complete();
-	}
+      event.setStatus(status);
+      event.complete();
+   }
 
-	@Override
-	public void logMetric(String name, String status, String nameValuePairs) {
-		String type = "";
-		Metric metric = newMetric(type, name);
+   @Override
+   public void logHeartbeat(String type, String name, String status, String nameValuePairs) {
+      Heartbeat heartbeat = newHeartbeat(type, name);
 
-		if (nameValuePairs != null && nameValuePairs.length() > 0) {
-			metric.addData(nameValuePairs);
-		}
+      heartbeat.addData(nameValuePairs);
+      heartbeat.setStatus(status);
+      heartbeat.complete();
+   }
 
-		metric.setStatus(status);
-		metric.complete();
-	}
+   @Override
+   public void logMetric(String name, String status, String nameValuePairs) {
+      String type = "";
+      Metric metric = newMetric(type, name);
 
-	@Override
-	public void logTrace(String type, String name) {
-		logTrace(type, name, Message.SUCCESS, null);
-	}
+      if (nameValuePairs != null && nameValuePairs.length() > 0) {
+         metric.addData(nameValuePairs);
+      }
 
-	@Override
-	public void logTrace(String type, String name, String status, String nameValuePairs) {
-		if (m_manager.isTraceMode()) {
-			Trace trace = newTrace(type, name);
+      metric.setStatus(status);
+      metric.complete();
+   }
 
-			if (nameValuePairs != null && nameValuePairs.length() > 0) {
-				trace.addData(nameValuePairs);
-			}
+   @Override
+   public void logTrace(String type, String name) {
+      logTrace(type, name, Message.SUCCESS, null);
+   }
 
-			trace.setStatus(status);
-			trace.complete();
-		}
-	}
+   @Override
+   public void logTrace(String type, String name, String status, String nameValuePairs) {
+      if (m_manager.isTraceMode()) {
+         Trace trace = newTrace(type, name);
 
-	@Override
-	public Event newEvent(String type, String name) {
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+         if (nameValuePairs != null && nameValuePairs.length() > 0) {
+            trace.addData(nameValuePairs);
+         }
 
-		if (m_manager.isMessageEnabled()) {
-			DefaultEvent event = new DefaultEvent(type, name, m_manager);
+         trace.setStatus(status);
+         trace.complete();
+      }
+   }
 
-			return event;
-		} else {
-			return NullMessage.EVENT;
-		}
-	}
+   @Override
+   public Event newEvent(String type, String name) {
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	public Event newEvent(Transaction parent, String type, String name) {
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled()) {
+         DefaultEvent event = new DefaultEvent(type, name, m_manager);
 
-		if (m_manager.isMessageEnabled() && parent != null) {
-			DefaultEvent event = new DefaultEvent(type, name);
+         return event;
+      } else {
+         return NullMessage.EVENT;
+      }
+   }
 
-			parent.addChild(event);
-			return event;
-		} else {
-			return NullMessage.EVENT;
-		}
-	}
+   public Event newEvent(Transaction parent, String type, String name) {
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	@Override
-	public ForkedTransaction newForkedTransaction(String type, String name) {
-		// this enable CAT client logging cat message without explicit setup
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled() && parent != null) {
+         DefaultEvent event = new DefaultEvent(type, name);
 
-		if (m_manager.isMessageEnabled()) {
-			MessageTree tree = m_manager.getThreadLocalMessageTree();
+         parent.addChild(event);
+         return event;
+      } else {
+         return NullMessage.EVENT;
+      }
+   }
 
-			if (tree.getMessageId() == null) {
-				tree.setMessageId(createMessageId());
-			}
+   @Override
+   public ForkedTransaction newForkedTransaction(String type, String name) {
+      // this enable CAT client logging cat message without explicit setup
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-			DefaultForkedTransaction transaction = new DefaultForkedTransaction(type, name, m_manager);
+      if (m_manager.isMessageEnabled()) {
+         MessageTree tree = m_manager.getThreadLocalMessageTree();
 
-			if (m_manager instanceof DefaultMessageManager) {
-				((DefaultMessageManager) m_manager).linkAsRunAway(transaction);
-			}
-			m_manager.start(transaction, true);
-			return transaction;
-		} else {
-			return NullMessage.TRANSACTION;
-		}
-	}
+         if (tree.getMessageId() == null) {
+            tree.setMessageId(createMessageId());
+         }
 
-	@Override
-	public Heartbeat newHeartbeat(String type, String name) {
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+         DefaultForkedTransaction transaction = new DefaultForkedTransaction(type, name, m_manager);
 
-		if (m_manager.isMessageEnabled()) {
-			DefaultHeartbeat heartbeat = new DefaultHeartbeat(type, name, m_manager);
+         if (m_manager instanceof DefaultMessageManager) {
+            ((DefaultMessageManager) m_manager).linkAsRunAway(transaction);
+         }
+         m_manager.start(transaction, true);
+         return transaction;
+      } else {
+         return NullMessage.TRANSACTION;
+      }
+   }
 
-			m_manager.getThreadLocalMessageTree().setSample(false);
-			return heartbeat;
-		} else {
-			return NullMessage.HEARTBEAT;
-		}
-	}
+   @Override
+   public Heartbeat newHeartbeat(String type, String name) {
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	@Override
-	public Metric newMetric(String type, String name) {
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled()) {
+         DefaultHeartbeat heartbeat = new DefaultHeartbeat(type, name, m_manager);
 
-		if (m_manager.isMessageEnabled()) {
-			DefaultMetric metric = new DefaultMetric(type == null ? "" : type, name, m_manager);
+         m_manager.getThreadLocalMessageTree().setSample(false);
+         return heartbeat;
+      } else {
+         return NullMessage.HEARTBEAT;
+      }
+   }
 
-			m_manager.getThreadLocalMessageTree().setSample(false);
-			return metric;
-		} else {
-			return NullMessage.METRIC;
-		}
-	}
+   @Override
+   public Metric newMetric(String type, String name) {
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	@Override
-	public TaggedTransaction newTaggedTransaction(String type, String name, String tag) {
-		// this enable CAT client logging cat message without explicit setup
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled()) {
+         DefaultMetric metric = new DefaultMetric(type == null ? "" : type, name, m_manager);
 
-		if (m_manager.isMessageEnabled()) {
-			MessageTree tree = m_manager.getThreadLocalMessageTree();
+         m_manager.getThreadLocalMessageTree().setSample(false);
+         return metric;
+      } else {
+         return NullMessage.METRIC;
+      }
+   }
 
-			if (tree.getMessageId() == null) {
-				tree.setMessageId(createMessageId());
-			}
-			DefaultTaggedTransaction transaction = new DefaultTaggedTransaction(type, name, tag, m_manager);
+   @Override
+   public TaggedTransaction newTaggedTransaction(String type, String name, String tag) {
+      // this enable CAT client logging cat message without explicit setup
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-			m_manager.start(transaction, true);
-			return transaction;
-		} else {
-			return NullMessage.TRANSACTION;
-		}
-	}
+      if (m_manager.isMessageEnabled()) {
+         MessageTree tree = m_manager.getThreadLocalMessageTree();
 
-	@Override
-	public Trace newTrace(String type, String name) {
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+         if (tree.getMessageId() == null) {
+            tree.setMessageId(createMessageId());
+         }
+         DefaultTaggedTransaction transaction = new DefaultTaggedTransaction(type, name, tag, m_manager);
 
-		if (m_manager.isMessageEnabled()) {
-			DefaultTrace trace = new DefaultTrace(type, name, m_manager);
+         m_manager.start(transaction, true);
+         return transaction;
+      } else {
+         return NullMessage.TRANSACTION;
+      }
+   }
 
-			return trace;
-		} else {
-			return NullMessage.TRACE;
-		}
-	}
+   @Override
+   public Trace newTrace(String type, String name) {
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	@Override
-	public Transaction newTransaction(String type, String name) {
-		// this enable CAT client logging cat message without explicit setup
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled()) {
+         DefaultTrace trace = new DefaultTrace(type, name, m_manager);
 
-		if (m_manager.isMessageEnabled()) {
-			DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
+         return trace;
+      } else {
+         return NullMessage.TRACE;
+      }
+   }
 
-			m_manager.start(transaction, false);
-			return transaction;
-		} else {
-			return NullMessage.TRANSACTION;
-		}
-	}
+   @Override
+   public Transaction newTransaction(String type, String name) {
+      // this enable CAT client logging cat message without explicit setup
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	public Transaction newTransaction(Transaction parent, String type, String name) {
-		// this enable CAT client logging cat message without explicit setup
-		if (!m_manager.hasContext()) {
-			m_manager.setup();
-		}
+      if (m_manager.isMessageEnabled()) {
+         DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
 
-		if (m_manager.isMessageEnabled() && parent != null) {
-			DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
+         m_manager.start(transaction, false);
+         return transaction;
+      } else {
+         return NullMessage.TRANSACTION;
+      }
+   }
 
-			parent.addChild(transaction);
-			transaction.setStandalone(false);
-			return transaction;
-		} else {
-			return NullMessage.TRANSACTION;
-		}
-	}
+   public Transaction newTransaction(Transaction parent, String type, String name) {
+      // this enable CAT client logging cat message without explicit setup
+      if (!m_manager.hasContext()) {
+         m_manager.setup();
+      }
 
-	private boolean shouldLog(Throwable e) {
-		if (m_manager instanceof DefaultMessageManager) {
-			return ((DefaultMessageManager) m_manager).shouldLog(e);
-		} else {
-			return true;
-		}
-	}
+      if (m_manager.isMessageEnabled() && parent != null) {
+         DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
+
+         parent.addChild(transaction);
+         transaction.setStandalone(false);
+         return transaction;
+      } else {
+         return NullMessage.TRANSACTION;
+      }
+   }
+
+   private boolean shouldLog(Throwable e) {
+      if (m_manager instanceof DefaultMessageManager) {
+         return ((DefaultMessageManager) m_manager).shouldLog(e);
+      } else {
+         return true;
+      }
+   }
 }
