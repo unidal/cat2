@@ -32,7 +32,7 @@ public class LocalClientConfigurationProvider implements ClientConfigurationProv
             DefaultClientConfiguration configure = new DefaultClientConfiguration();
 
             for (Server server : config.getServers()) {
-               configure.addServerNode(ClientConfiguration.TYPE_LOGTREE, server.getIp(), server.getPort());
+               configure.addServerForTree(server.getIp(), server.getPort());
             }
 
             configure.setEnabled(config.isEnabled());

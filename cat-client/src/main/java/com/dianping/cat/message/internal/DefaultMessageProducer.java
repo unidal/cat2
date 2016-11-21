@@ -4,10 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import org.unidal.cat.message.MessageIdFactory;
+import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.ForkedTransaction;
 import com.dianping.cat.message.Heartbeat;
@@ -23,6 +23,9 @@ import com.dianping.cat.message.spi.MessageTree;
 @Named(type = MessageProducer.class)
 public class DefaultMessageProducer implements MessageProducer {
    @Inject
+   private MessagePolicy m_policy;
+
+   @Inject
    private MessageManager m_manager;
 
    @Inject
@@ -34,23 +37,13 @@ public class DefaultMessageProducer implements MessageProducer {
    }
 
    @Override
-   public void disable() {
-      // TODO
-   }
-
-   @Override
    public MessageManager getManager() {
       return m_manager;
    }
 
    @Override
-   public boolean isEnabled() {
-      return m_manager.isMessageEnabled();
-   }
-
-   @Override
    public void logError(String message, Throwable cause) {
-      if (Cat.getManager().isCatEnabled()) {
+      if (m_policy.isEnabled()) {
          if (shouldLog(cause)) {
             m_manager.getThreadLocalMessageTree().setSample(false);
 
@@ -147,7 +140,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          DefaultEvent event = new DefaultEvent(type, name, m_manager);
 
          return event;
@@ -161,7 +154,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled() && parent != null) {
+      if (m_policy.isEnabled() && parent != null) {
          DefaultEvent event = new DefaultEvent(type, name);
 
          parent.addChild(event);
@@ -178,7 +171,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          MessageTree tree = m_manager.getThreadLocalMessageTree();
 
          if (tree.getMessageId() == null) {
@@ -203,7 +196,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          DefaultHeartbeat heartbeat = new DefaultHeartbeat(type, name, m_manager);
 
          m_manager.getThreadLocalMessageTree().setSample(false);
@@ -219,7 +212,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          DefaultMetric metric = new DefaultMetric(type == null ? "" : type, name, m_manager);
 
          m_manager.getThreadLocalMessageTree().setSample(false);
@@ -236,7 +229,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          MessageTree tree = m_manager.getThreadLocalMessageTree();
 
          if (tree.getMessageId() == null) {
@@ -257,7 +250,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          DefaultTrace trace = new DefaultTrace(type, name, m_manager);
 
          return trace;
@@ -273,7 +266,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled()) {
+      if (m_policy.isEnabled()) {
          DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
 
          m_manager.start(transaction, false);
@@ -289,7 +282,7 @@ public class DefaultMessageProducer implements MessageProducer {
          m_manager.setup();
       }
 
-      if (m_manager.isMessageEnabled() && parent != null) {
+      if (m_policy.isEnabled() && parent != null) {
          DefaultTransaction transaction = new DefaultTransaction(type, name, m_manager);
 
          parent.addChild(transaction);

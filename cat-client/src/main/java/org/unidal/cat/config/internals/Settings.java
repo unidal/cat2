@@ -17,6 +17,9 @@ public interface Settings {
 
    public String getDomain();
 
-   public String getRemoteConfigUrlPattern();
+   public String getHostName();
 
+   public String getIpAddress();
+
+   public String getRemoteConfigUrlPattern();
 }

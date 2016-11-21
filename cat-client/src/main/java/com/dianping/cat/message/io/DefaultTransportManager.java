@@ -1,62 +1,53 @@
 package com.dianping.cat.message.io;
 
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.config.ClientConfiguration;
+import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.configuration.ClientConfigManager;
-import com.dianping.cat.configuration.client.entity.Server;
-
+@Named(type = TransportManager.class)
 public class DefaultTransportManager implements TransportManager, Initializable, LogEnabled {
-	@Inject
-	private ClientConfigManager m_configManager;
+   @Inject
+   private ClientConfigurationManager m_manager;
 
-	@Inject
-	private TcpSocketSender m_tcpSocketSender;
+   @Inject(type = MessageSender.class)
+   private TcpSocketSender m_sender;
 
-	private Logger m_logger;
+   private Logger m_logger;
 
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
-	@Override
-	public MessageSender getSender() {
-		return m_tcpSocketSender;
-	}
+   @Override
+   public MessageSender getSender() {
+      return m_sender;
+   }
 
-	@Override
-	public void initialize() throws InitializationException {
-		List<Server> servers = m_configManager.getServers();
+   @Override
+   public void initialize() throws InitializationException {
+      ClientConfiguration config = m_manager.getConfig();
 
-		if (!m_configManager.isCatEnabled()) {
-			m_tcpSocketSender = null;
-			m_logger.warn("CAT was DISABLED due to not initialized yet!");
-		} else {
-			List<InetSocketAddress> addresses = new ArrayList<InetSocketAddress>();
+      if (config.isEnabled()) {
+         List<InetSocketAddress> addresses = config.getServersForTree();
 
-			for (Server server : servers) {
-				if (server.isEnabled()) {
-					addresses.add(new InetSocketAddress(server.getIp(), server.getPort()));
-				}
-			}
+         if (addresses.isEmpty()) {
+            throw new RuntimeException("No CAT servers configured!\r\n");
+         } else {
+            m_logger.info("CAT servers found: " + addresses);
 
-			m_logger.info("Remote CAT servers: " + addresses);
-
-			if (addresses.isEmpty()) {
-				throw new RuntimeException("All servers in configuration are disabled!\r\n" + servers);
-			} else {
-				m_tcpSocketSender.setServerAddresses(addresses);
-				m_tcpSocketSender.initialize();
-			}
-		}
-	}
+            m_sender.setServerAddresses(addresses);
+            m_sender.initialize();
+         }
+      }
+   }
 
 }

@@ -10,6 +10,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.configuration.client.entity.ClientConfig;
@@ -27,13 +28,15 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
 
    private static final String APP_PROPERTIES = "/META-INF/app.properties";
 
-   private Properties m_properties;
+   private Properties m_properties = new Properties();
 
    private ClientConfig m_config;
 
    private Logger m_logger;
 
    private String m_home;
+
+   private String m_domain;
 
    @Override
    public void enableLogging(Logger logger) {
@@ -106,17 +109,33 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
 
    @Override
    public String getDomain() {
-      String m_domain = m_properties.getProperty("app.name");
-
       if (m_domain == null) {
-         Map<String, Domain> domains = m_config.getDomains();
+         // try app.properties
+         String domain = m_properties.getProperty("app.name");
 
-         for (Domain domain : domains.values()) {
-            m_domain = domain.getId(); // first domain
+         // try client.xml
+         if (domain == null) {
+            Map<String, Domain> domains = m_config.getDomains();
+
+            for (Domain d : domains.values()) {
+               domain = d.getId(); // first domain
+            }
          }
+
+         m_domain = domain;
       }
 
       return m_domain;
+   }
+
+   @Override
+   public String getHostName() {
+      return Inets.IP4.getLocalHostName();
+   }
+
+   @Override
+   public String getIpAddress() {
+      return Inets.IP4.getLocalHostAddress();
    }
 
    @Override
@@ -128,7 +147,7 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
       InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
       if (in == null) {
-         in = DefaultDomainProvider.class.getResourceAsStream(resource);
+         in = DefaultSettings.class.getResourceAsStream(resource);
       }
 
       return in;

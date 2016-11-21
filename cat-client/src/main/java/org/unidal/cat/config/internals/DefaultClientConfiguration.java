@@ -19,19 +19,19 @@ public class DefaultClientConfiguration implements ClientConfiguration {
       m_policy = policy;
    }
 
-   public void addServerNode(String type, String ip, Integer port) {
+   public void addServerForTree(String ip, Integer port) {
       ServerNode node = new ServerNode();
 
-      node.setType(type).setIp(ip).setPort(port).setEnabled(true);
+      node.setType("tree").setIp(ip).setPort(port).setEnabled(true);
       m_policy.addServerNode(node);
    }
 
    @Override
-   public List<InetSocketAddress> getServerNodes(String type) {
+   public List<InetSocketAddress> getServersForTree() {
       List<InetSocketAddress> nodes = new ArrayList<InetSocketAddress>();
 
       for (ServerNode node : m_policy.getServerNodes()) {
-         if (node.isEnabled() && node.getType().equals(type)) {
+         if (node.isEnabled() && node.getType().equals("tree")) {
             nodes.add(new InetSocketAddress(node.getIp(), node.getPort()));
          }
       }

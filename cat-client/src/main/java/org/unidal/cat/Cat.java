@@ -5,11 +5,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.codehaus.plexus.PlexusContainer;
 import org.unidal.cat.internals.CatInitializer;
 import org.unidal.cat.internals.NullMessageProducer;
+import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.ContainerLoader;
 
+import com.dianping.cat.message.Event;
 import com.dianping.cat.message.MessageProducer;
+import com.dianping.cat.message.Transaction;
 
 /**
  * This is the main entry point of CAT API.
@@ -27,6 +31,10 @@ public class Cat {
    private AtomicBoolean m_initialized = new AtomicBoolean();
 
    private AtomicReference<MessageProducer> m_producer = new AtomicReference<MessageProducer>();
+
+   private PlexusContainer m_container;
+
+   private MessagePolicy m_policy;
 
    private Cat() {
    }
@@ -46,9 +54,9 @@ public class Cat {
    public static void disable() {
       CAT.m_enabled.set(false);
 
-      // Disable the producer if needed
-      if (CAT.m_producer.get() != null) {
-         CAT.m_producer.get().disable();
+      // Disable message if needed
+      if (CAT.m_policy != null) {
+         CAT.m_policy.disable();
       }
    }
 
@@ -56,14 +64,18 @@ public class Cat {
       CAT.getProducer().logMetric(metric, "T", String.valueOf(durationInMillis));
    }
 
+   @Deprecated
    public static String getMessageId() {
       return CAT.getProducer().getManager().getThreadLocalMessageTree().getMessageId();
    }
 
-   public static boolean isEnabled() {
-      MessageProducer producer = CAT.m_producer.get();
+   @Deprecated
+   public static boolean isInitialized() {
+      return CAT.m_initialized.get();
+   }
 
-      return producer != null && producer.isEnabled();
+   public static boolean isEnabled() {
+      return CAT.m_policy.isEnabled();
    }
 
    public static void logError(String message, Throwable cause) {
@@ -86,6 +98,14 @@ public class Cat {
       // TODO
    }
 
+   public static Event newEvent(String type, String name) {
+      return CAT.getProducer().newEvent(type, name);
+   }
+
+   public static Transaction newTransaction(String type, String name) {
+      return CAT.getProducer().newTransaction(type, name);
+   }
+
    public static void setProperty(String key, Object value) {
       CAT.m_properties.put(key, value);
    }
@@ -105,8 +125,12 @@ public class Cat {
                synchronized (this) {
                   if (!m_initialized.get()) {
                      try {
-                        CatInitializer initializer = ContainerLoader.getDefaultContainer().lookup(CatInitializer.class);
+                        PlexusContainer container = ContainerLoader.getDefaultContainer();
+                        CatInitializer initializer = container.lookup(CatInitializer.class);
+                        MessagePolicy policy = container.lookup(MessagePolicy.class);
 
+                        m_container = container;
+                        m_policy = policy;
                         m_producer.set(initializer.initialize(m_properties));
                      } catch (Exception e) {
                         m_producer.set(NullMessageProducer.INSTANCE);

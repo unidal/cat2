@@ -134,13 +134,6 @@ public interface MessageProducer {
    public MessageManager getManager();
 
    /**
-    * Check if the CAT client is enabled for current domain.
-    * 
-    * @return true if CAT client is enabled, false means CAT client is disabled.
-    */
-   public boolean isEnabled();
-
-   /**
     * Log an error.
     * 
     * @param cause
@@ -303,6 +296,4 @@ public interface MessageProducer {
     *           transaction name
     */
    public Transaction newTransaction(String type, String name);
-
-   public void disable();
 }

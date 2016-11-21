@@ -24,11 +24,6 @@ public enum NullMessageProducer implements MessageProducer {
    }
 
    @Override
-   public boolean isEnabled() {
-      return false;
-   }
-
-   @Override
    public void logError(String message, Throwable cause) {
    }
 
@@ -100,9 +95,5 @@ public enum NullMessageProducer implements MessageProducer {
    public Transaction newTransaction(String type, String name) {
       // TODO Auto-generated method stub
       return null;
-   }
-
-   @Override
-   public void disable() {
    }
 }

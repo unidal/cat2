@@ -50,7 +50,7 @@ public class DefaultClientConfigurationManager implements ClientConfigurationMan
 
    public class NullClientConfiguration implements ClientConfiguration {
       @Override
-      public List<InetSocketAddress> getServerNodes(String type) {
+      public List<InetSocketAddress> getServersForTree() {
          return Collections.emptyList();
       }
 

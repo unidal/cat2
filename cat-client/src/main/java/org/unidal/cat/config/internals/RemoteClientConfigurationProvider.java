@@ -27,15 +27,12 @@ public class RemoteClientConfigurationProvider implements ClientConfigurationPro
    @Inject
    private ServerDiscovery m_discovery;
 
-   @Inject
-   private DomainProvider m_provider;
-
    private Logger m_logger;
 
    private String buildUrl(InetSocketAddress server) {
       String host = server.getHostString();
       int port = server.getPort();
-      String domain = m_provider.getDomain();
+      String domain = m_settings.getDomain();
       String url = String.format(m_settings.getRemoteConfigUrlPattern(), host, port, domain);
 
       return url;
