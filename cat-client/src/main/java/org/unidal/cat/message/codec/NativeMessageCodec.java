@@ -389,7 +389,7 @@ public class NativeMessageCodec implements MessageCodec {
       }
 
       public long readDuration(ByteBuf buf) {
-         return readVarint(buf, 32);
+         return readVarint(buf, 64);
       }
 
       public char readId(ByteBuf buf) {
