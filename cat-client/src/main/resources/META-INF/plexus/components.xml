@@ -12,22 +12,17 @@
 		<component>
 			<role>org.unidal.cat.message.MessageIdFactory</role>
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
-			<role>org.unidal.cat.config.internals.Settings</role>
-			<implementation>org.unidal.cat.config.internals.DefaultSettings</implementation>
+			<role>org.unidal.cat.config.internals.ClientSettings</role>
+			<implementation>org.unidal.cat.config.internals.DefaultClientSettings</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.MessagePolicy</role>
 			<implementation>org.unidal.cat.message.internals.DefaultMessagePolicy</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -36,7 +31,7 @@
 			<implementation>org.unidal.cat.config.internals.DefaultServerDiscovery</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -66,7 +61,7 @@
 			<implementation>org.unidal.cat.config.internals.LocalClientConfigurationProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -76,7 +71,7 @@
 			<implementation>org.unidal.cat.config.internals.RemoteClientConfigurationProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.config.internals.ServerDiscovery</role>
@@ -191,7 +186,7 @@
 			<implementation>com.dianping.cat.message.internal.DefaultMessageManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.Settings</role>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.message.MessagePolicy</role>

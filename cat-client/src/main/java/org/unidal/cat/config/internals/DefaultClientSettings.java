@@ -22,8 +22,8 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
  * 
  * @author qmwu2000 <qmwu2000@gmail.com>
  */
-@Named(type = Settings.class)
-public class DefaultSettings implements Settings, Initializable, LogEnabled {
+@Named(type = ClientSettings.class)
+public class DefaultClientSettings implements ClientSettings, Initializable, LogEnabled {
    private static final String CLIENT_XML = "/META-INF/cat/client.xml";
 
    private static final String APP_PROPERTIES = "/META-INF/app.properties";
@@ -44,17 +44,6 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
    }
 
    @Override
-   public String getCatDataDir() {
-      String dir = m_properties.getProperty("cat.data.dir");
-
-      if (dir != null) {
-         return dir;
-      } else {
-         return getCatHome() + "/data";
-      }
-   }
-
-   @Override
    public String getCatHome() {
       if (m_home == null) {
          String home = System.getProperty("cat.home", null);
@@ -71,17 +60,6 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
       }
 
       return m_home;
-   }
-
-   @Override
-   public String getCatLogsDir() {
-      String dir = m_properties.getProperty("cat.logs.dir");
-
-      if (dir != null) {
-         return dir;
-      } else {
-         return getCatHome() + "/logs";
-      }
    }
 
    @Override
@@ -114,7 +92,7 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
          String domain = m_properties.getProperty("app.name");
 
          // try client.xml
-         if (domain == null) {
+         if (domain == null && m_config != null) {
             Map<String, Domain> domains = m_config.getDomains();
 
             for (Domain d : domains.values()) {
@@ -122,7 +100,11 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
             }
          }
 
-         m_domain = domain;
+         if (domain != null) {
+            m_domain = domain;
+         } else {
+            m_domain = "Unknown";
+         }
       }
 
       return m_domain;
@@ -147,7 +129,7 @@ public class DefaultSettings implements Settings, Initializable, LogEnabled {
       InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
       if (in == null) {
-         in = DefaultSettings.class.getResourceAsStream(resource);
+         in = DefaultClientSettings.class.getResourceAsStream(resource);
       }
 
       return in;

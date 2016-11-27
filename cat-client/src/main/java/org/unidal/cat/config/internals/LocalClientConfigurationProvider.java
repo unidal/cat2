@@ -17,7 +17,7 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
 @Named(type = ClientConfigurationProvider.class, value = "local")
 public class LocalClientConfigurationProvider implements ClientConfigurationProvider, LogEnabled {
    @Inject
-   private Settings m_settings;
+   private ClientSettings m_settings;
 
    private Logger m_logger;
 

@@ -48,8 +48,8 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
    @Test
    public void getFromClientXml() throws Exception {
-      defineComponent(Settings.class, MockSettings.class);
-      defineComponent(ServerDiscovery.class, MockServerDiscovery.class).req(Settings.class);
+      defineComponent(ClientSettings.class, MockSettings.class);
+      defineComponent(ServerDiscovery.class, MockServerDiscovery.class).req(ClientSettings.class);
 
       System.setProperty("client.xml", "true");
 
@@ -139,8 +139,8 @@ public class ServerDiscoveryTest extends ComponentTestCase {
       }
    }
 
-   @Named(type = Settings.class)
-   public static class MockSettings extends DefaultSettings {
+   @Named(type = ClientSettings.class)
+   public static class MockSettings extends DefaultClientSettings {
       @Override
       public File getClientXmlFile() {
          try {

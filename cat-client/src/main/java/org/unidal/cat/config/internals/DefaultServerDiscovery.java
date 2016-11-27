@@ -21,7 +21,7 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
 @Named(type = ServerDiscovery.class)
 public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    @Inject
-   private Settings m_settings;
+   private ClientSettings m_settings;
 
    private Logger m_logger;
 

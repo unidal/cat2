@@ -2,12 +2,8 @@ package org.unidal.cat.config.internals;
 
 import java.io.File;
 
-public interface Settings {
-   public String getCatDataDir();
-
+public interface ClientSettings {
    public String getCatHome();
-
-   public String getCatLogsDir();
 
    public File getClientXmlFile();
 

@@ -22,7 +22,7 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = ClientConfigurationProvider.class, value = "remote")
 public class RemoteClientConfigurationProvider implements ClientConfigurationProvider, LogEnabled {
    @Inject
-   private Settings m_settings;
+   private ClientSettings m_settings;
 
    @Inject
    private ServerDiscovery m_discovery;
