@@ -19,17 +19,17 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.unidal.cat.config.ClientConfiguration;
+import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Joiners;
-import org.unidal.helper.Joiners.IBuilder;
+import org.unidal.lookup.ContainerLoader;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.CatConstants;
-import com.dianping.cat.configuration.NetworkInterfaceManager;
-import com.dianping.cat.configuration.client.entity.Server;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.cat.message.internal.DefaultTransaction;
 import com.dianping.cat.message.spi.MessageTree;
 
@@ -38,16 +38,29 @@ import com.dianping.cat.message.spi.MessageTree;
 public class CatFilter implements Filter {
    private static Map<MessageFormat, String> s_patterns = new LinkedHashMap<MessageFormat, String>();
 
+   private static ClientConfiguration s_config;
+
    private List<Handler> m_handlers = new ArrayList<Handler>();
 
    @Override
    public void destroy() {
+      s_config = null;
+      s_patterns.clear();
+      m_handlers.clear();
    }
 
    @Override
    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
          ServletException {
       Context ctx = new Context((HttpServletRequest) request, (HttpServletResponse) response, chain, m_handlers);
+
+      if (s_config == null) {
+         try {
+            s_config = ContainerLoader.getDefaultContainer().lookup(ClientConfigurationManager.class).getConfig();
+         } catch (ComponentLookupException e) {
+            throw new ServletException("Unable to get " + ClientConfigurationManager.class.getName() + "!", e);
+         }
+      }
 
       ctx.handle();
    }
@@ -128,23 +141,10 @@ public class CatFilter implements Filter {
          private String m_servers;
 
          private String getCatServer() {
-            if (m_servers == null) {
-               DefaultMessageManager manager = (DefaultMessageManager) Cat.getManager();
-               List<Server> servers = manager.getConfigManager().getServers();
+            if (m_servers == null && s_config != null) {
+               List<String> servers = s_config.getServersForPlugin();
 
-               m_servers = Joiners.by(',').join(servers, new IBuilder<Server>() {
-                  @Override
-                  public String asString(Server server) {
-                     String ip = server.getIp();
-                     Integer httpPort = server.getHttpPort();
-
-                     if ("127.0.0.1".equals(ip)) {
-                        ip = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
-                     }
-
-                     return ip + ":" + httpPort;
-                  }
-               });
+               m_servers = Joiners.by(',').join(servers);
             }
 
             return m_servers;
@@ -260,7 +260,6 @@ public class CatFilter implements Filter {
       },
 
       LOG_SPAN {
-
          private void customizeStatus(Transaction t, HttpServletRequest req) {
             Object catStatus = req.getAttribute(CatConstants.CAT_STATE);
 
@@ -441,5 +440,4 @@ public class CatFilter implements Filter {
    protected static interface Handler {
       public void handle(Context ctx) throws IOException, ServletException;
    }
-
 }

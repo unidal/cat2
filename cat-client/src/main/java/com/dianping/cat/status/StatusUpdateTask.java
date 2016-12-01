@@ -9,12 +9,13 @@ import java.util.Map.Entry;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.config.ClientConfiguration;
+import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
@@ -31,7 +32,7 @@ public class StatusUpdateTask implements Task, Initializable {
    private MessageStatistics m_statistics;
 
    @Inject
-   private ClientConfigManager m_manager;
+   private ClientConfigurationManager m_configManager;
 
    private boolean m_active = true;
 
@@ -148,17 +149,19 @@ public class StatusUpdateTask implements Task, Initializable {
 
       while (m_active) {
          long start = MilliSecondTimer.currentTimeMillis();
+         ClientConfiguration config = m_configManager.getConfig();
 
-         if (m_manager.isCatEnabled()) {
+         if (config.isEnabled()) {
             Transaction t = cat.newTransaction("System", "Status");
             Heartbeat h = cat.newHeartbeat("Heartbeat", m_ipAddress);
             StatusInfo status = new StatusInfo();
 
-            t.addData("dumpLocked", m_manager.isDumpLocked());
+            t.addData("dumpLocked", config.isDumpLockedThread());
+
             try {
                StatusInfoCollector statusInfoCollector = new StatusInfoCollector(m_statistics, m_jars);
 
-               status.accept(statusInfoCollector.setDumpLocked(m_manager.isDumpLocked()));
+               status.accept(statusInfoCollector.setDumpLocked(config.isDumpLockedThread()));
 
                buildExtensionData(status);
                h.addData(status.toString());

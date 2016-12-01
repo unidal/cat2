@@ -3,13 +3,17 @@ package org.unidal.cat.config.internals;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.unidal.cat.config.ClientConfiguration;
 import org.unidal.cat.config.route.entity.RoutePolicy;
 import org.unidal.cat.config.route.entity.ServerNode;
+import org.unidal.helper.Inets;
 
 public class DefaultClientConfiguration implements ClientConfiguration {
    private RoutePolicy m_policy;
+
+   private String m_domain;
 
    public DefaultClientConfiguration() {
       m_policy = new RoutePolicy();
@@ -27,21 +31,76 @@ public class DefaultClientConfiguration implements ClientConfiguration {
    }
 
    @Override
-   public List<InetSocketAddress> getServersForTree() {
-      List<InetSocketAddress> nodes = new ArrayList<InetSocketAddress>();
+   public String getDomain() {
+      return m_domain;
+   }
 
+   @Override
+   public int getMaxMessageLines() {
+      return m_policy.getMaxMessageLines();
+   }
+
+   @Override
+   public long getRefreshInterval() {
+      return TimeUnit.MINUTES.toMillis(1); // 1 minute
+   }
+
+   @Override
+   public String getServerConfigUrl() {
       for (ServerNode node : m_policy.getServerNodes()) {
-         if (node.isEnabled() && node.getType().equals("tree")) {
-            nodes.add(new InetSocketAddress(node.getIp(), node.getPort()));
+         if (node.isEnabled() && node.getType().equals("http")) {
+            return String.format("http://%s:%d/cat/s/router?domain=%s&ip=%s&op=json", node.getIp().trim(),
+                  node.getPort(), m_domain, Inets.IP4.getLocalHostAddress());
          }
       }
 
-      return nodes;
+      return null;
+   }
+
+   @Override
+   public List<String> getServersForPlugin() {
+      List<String> servers = new ArrayList<String>();
+
+      for (ServerNode node : m_policy.getServerNodes()) {
+         if (node.isEnabled() && node.getType().equals("http")) {
+            servers.add(node.getIp() + ":" + node.getPort());
+         }
+      }
+
+      return servers;
+   }
+
+   @Override
+   public List<InetSocketAddress> getServersForTree() {
+      List<InetSocketAddress> servers = new ArrayList<InetSocketAddress>();
+
+      for (ServerNode node : m_policy.getServerNodes()) {
+         if (node.isEnabled() && node.getType().equals("tree")) {
+            servers.add(new InetSocketAddress(node.getIp(), node.getPort()));
+         }
+      }
+
+      return servers;
+   }
+
+   @Override
+   public int getTaggedTransactionCacheSize() {
+      return 1024; // TODO
+   }
+
+   @Override
+   public boolean isDumpLockedThread() {
+      return m_policy.getDumpLockedThread();
    }
 
    @Override
    public boolean isEnabled() {
       return m_policy.isEnabled();
+   }
+
+   public DefaultClientConfiguration setDomain(String domain) {
+      m_domain = domain;
+      return this;
    }
 
    public void setEnabled(boolean enabled) {

@@ -2,11 +2,9 @@ package com.dianping.cat.configuration;
 
 import java.io.File;
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
@@ -24,223 +22,175 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
 
 @Named(type = ClientConfigManager.class)
 public class DefaultClientConfigManager implements LogEnabled, ClientConfigManager, Initializable {
-	private static final String CAT_CLIENT_XML = "/META-INF/cat/client.xml";
+   private static final String CAT_CLIENT_XML = "/META-INF/cat/client.xml";
 
-	private static final String PROPERTIES_CLIENT_XML = "/META-INF/app.properties";
+   private static final String PROPERTIES_CLIENT_XML = "/META-INF/app.properties";
 
-	private static final String XML = "/data/appdatas/cat/client.xml";
+   private static final String XML = "/data/appdatas/cat/client.xml";
 
-	private Logger m_logger;
+   private Logger m_logger;
 
-	private ClientConfig m_config;
+   private ClientConfig m_config;
 
-	@Override
-	public void enableLogging(Logger logger) {
-		m_logger = logger;
-	}
+   @Override
+   public void enableLogging(Logger logger) {
+      m_logger = logger;
+   }
 
-	@Override
-	public Domain getDomain() {
-		Domain domain = null;
+   private Domain getDomain() {
+      Domain domain = null;
 
-		if (m_config != null) {
-			Map<String, Domain> domains = m_config.getDomains();
+      if (m_config != null) {
+         Map<String, Domain> domains = m_config.getDomains();
 
-			domain = domains.isEmpty() ? null : domains.values().iterator().next();
-		}
+         domain = domains.isEmpty() ? null : domains.values().iterator().next();
+      }
 
-		if (domain != null) {
-			return domain;
-		} else {
-			return new Domain("UNKNOWN").setEnabled(false);
-		}
-	}
+      if (domain != null) {
+         return domain;
+      } else {
+         return new Domain("UNKNOWN").setEnabled(false);
+      }
+   }
 
-	@Override
-	public int getMaxMessageLength() {
-		if (m_config == null) {
-			return 5000;
-		} else {
-			return getDomain().getMaxMessageSize();
-		}
-	}
+   @Override
+   public String getServerConfigUrl() {
+      if (m_config == null) {
+         return null;
+      } else {
+         List<Server> servers = m_config.getServers();
 
-	@Override
-	public long getServerAddressRefreshInterval() {
-		return TimeUnit.MINUTES.toMillis(1);
-	}
+         for (Server server : servers) {
+            Integer httpPort = server.getHttpPort();
 
-	@Override
-	public String getServerConfigUrl() {
-		if (m_config == null) {
-			return null;
-		} else {
-			List<Server> servers = m_config.getServers();
+            if (httpPort == null || httpPort == 0) {
+               httpPort = 8080;
+            }
+            return String.format("http://%s:%d/cat/s/router?domain=%s&ip=%s&op=json", server.getIp().trim(), httpPort,
+                  getDomain().getId(), Inets.IP4.getLocalHostAddress());
+         }
+      }
+      return null;
+   }
 
-			for (Server server : servers) {
-				Integer httpPort = server.getHttpPort();
+   @Override
+   public void initialize() throws InitializationException {
+      File configFile = new File(XML);
 
-				if (httpPort == null || httpPort == 0) {
-					httpPort = 8080;
-				}
-				return String.format("http://%s:%d/cat/s/router?domain=%s&ip=%s&op=json", server.getIp().trim(), httpPort,
-				      getDomain().getId(), Inets.IP4.getLocalHostAddress());
-			}
-		}
-		return null;
-	}
+      initialize(configFile);
+   }
 
-	@Override
-	public List<Server> getServers() {
-		if (m_config == null) {
-			return Collections.emptyList();
-		} else {
-			return m_config.getServers();
-		}
-	}
+   public void initialize(File configFile) throws InitializationException {
+      try {
+         ClientConfig globalConfig = null;
+         ClientConfig clientConfig = null;
 
-	@Override
-	public int getTaggedTransactionCacheSize() {
-		return 1024;
-	}
+         if (configFile != null) {
+            if (configFile.exists()) {
+               String xml = Files.forIO().readFrom(configFile.getCanonicalFile(), "utf-8");
 
-	@Override
-	public void initialize() throws InitializationException {
-		File configFile = new File(XML);
+               globalConfig = DefaultSaxParser.parse(xml);
+               m_logger.info(String.format("Global config file(%s) found.", configFile));
+            } else {
+               m_logger.warn(String.format("Global config file(%s) not found, IGNORED.", configFile));
+            }
+         }
 
-		initialize(configFile);
-	}
+         // load the client configure from Java class-path
+         clientConfig = loadConfigFromEnviroment();
 
-	@Override
-	public void initialize(File configFile) throws InitializationException {
-		try {
-			ClientConfig globalConfig = null;
-			ClientConfig clientConfig = null;
+         if (clientConfig == null) {
+            clientConfig = loadConfigFromXml();
+         }
+         // merge the two configures together to make it effected
+         if (globalConfig != null && clientConfig != null) {
+            globalConfig.accept(new ClientConfigMerger(clientConfig));
+         }
 
-			if (configFile != null) {
-				if (configFile.exists()) {
-					String xml = Files.forIO().readFrom(configFile.getCanonicalFile(), "utf-8");
+         if (clientConfig != null) {
+            clientConfig.accept(new ClientConfigValidator());
+         }
 
-					globalConfig = DefaultSaxParser.parse(xml);
-					m_logger.info(String.format("Global config file(%s) found.", configFile));
-				} else {
-					m_logger.warn(String.format("Global config file(%s) not found, IGNORED.", configFile));
-				}
-			}
+         m_config = clientConfig;
+      } catch (Exception e) {
+         throw new InitializationException(e.getMessage(), e);
+      }
+   }
 
-			// load the client configure from Java class-path
-			clientConfig = loadConfigFromEnviroment();
+   private ClientConfig loadConfigFromEnviroment() {
+      String appName = loadProjectName();
 
-			if (clientConfig == null) {
-				clientConfig = loadConfigFromXml();
-			}
-			// merge the two configures together to make it effected
-			if (globalConfig != null && clientConfig != null) {
-				globalConfig.accept(new ClientConfigMerger(clientConfig));
-			}
+      if (appName != null) {
+         ClientConfig config = new ClientConfig();
 
-			if (clientConfig != null) {
-				clientConfig.accept(new ClientConfigValidator());
-			}
+         config.addDomain(new Domain(appName));
+         return config;
+      }
+      return null;
+   }
 
-			m_config = clientConfig;
-		} catch (Exception e) {
-			throw new InitializationException(e.getMessage(), e);
-		}
-	}
+   private ClientConfig loadConfigFromXml() {
+      InputStream in = null;
+      try {
+         in = Thread.currentThread().getContextClassLoader().getResourceAsStream(CAT_CLIENT_XML);
 
-	@Override
-	public boolean isCatEnabled() {
-		if (m_config == null) {
-			return false;
-		} else {
-			return m_config.isEnabled();
-		}
-	}
+         if (in == null) {
+            in = Cat.class.getResourceAsStream(CAT_CLIENT_XML);
+         }
+         if (in != null) {
+            String xml = Files.forIO().readFrom(in, "utf-8");
 
-	@Override
-	public boolean isDumpLocked() {
-		if (m_config == null) {
-			return false;
-		} else {
-			return m_config.isDumpLocked();
-		}
-	}
+            m_logger.info(String.format("Resource file(%s) found.", Cat.class.getResource(CAT_CLIENT_XML)));
+            return DefaultSaxParser.parse(xml);
+         }
+         return null;
+      } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
+         if (in != null) {
+            try {
+               in.close();
+            } catch (Exception e) {
+            }
+         }
+      }
+      return null;
+   }
 
-	private ClientConfig loadConfigFromEnviroment() {
-		String appName = loadProjectName();
+   private String loadProjectName() {
+      String appName = null;
+      InputStream in = null;
+      try {
+         in = Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES_CLIENT_XML);
 
-		if (appName != null) {
-			ClientConfig config = new ClientConfig();
+         if (in == null) {
+            in = Cat.class.getResourceAsStream(PROPERTIES_CLIENT_XML);
+         }
+         if (in != null) {
+            Properties prop = new Properties();
 
-			config.addDomain(new Domain(appName));
-			return config;
-		}
-		return null;
-	}
+            prop.load(in);
 
-	private ClientConfig loadConfigFromXml() {
-		InputStream in = null;
-		try {
-			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(CAT_CLIENT_XML);
-
-			if (in == null) {
-				in = Cat.class.getResourceAsStream(CAT_CLIENT_XML);
-			}
-			if (in != null) {
-				String xml = Files.forIO().readFrom(in, "utf-8");
-
-				m_logger.info(String.format("Resource file(%s) found.", Cat.class.getResource(CAT_CLIENT_XML)));
-				return DefaultSaxParser.parse(xml);
-			}
-			return null;
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-		return null;
-	}
-
-	private String loadProjectName() {
-		String appName = null;
-		InputStream in = null;
-		try {
-			in = Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES_CLIENT_XML);
-
-			if (in == null) {
-				in = Cat.class.getResourceAsStream(PROPERTIES_CLIENT_XML);
-			}
-			if (in != null) {
-				Properties prop = new Properties();
-
-				prop.load(in);
-
-				appName = prop.getProperty("app.name");
-				if (appName != null) {
-					m_logger.info(String.format("Find domain name %s from app.properties.", appName));
-				} else {
-					m_logger.info(String.format("Can't find app.name from app.properties."));
-					return null;
-				}
-			} else {
-				m_logger.info(String.format("Can't find app.properties in %s", PROPERTIES_CLIENT_XML));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (Exception e) {
-				}
-			}
-		}
-		return appName;
-	}
+            appName = prop.getProperty("app.name");
+            if (appName != null) {
+               m_logger.info(String.format("Find domain name %s from app.properties.", appName));
+            } else {
+               m_logger.info(String.format("Can't find app.name from app.properties."));
+               return null;
+            }
+         } else {
+            m_logger.info(String.format("Can't find app.properties in %s", PROPERTIES_CLIENT_XML));
+         }
+      } catch (Exception e) {
+         e.printStackTrace();
+      } finally {
+         if (in != null) {
+            try {
+               in.close();
+            } catch (Exception e) {
+            }
+         }
+      }
+      return appName;
+   }
 }

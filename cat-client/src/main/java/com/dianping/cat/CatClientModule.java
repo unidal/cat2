@@ -1,17 +1,15 @@
 package com.dianping.cat;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.locks.LockSupport;
 
+import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.AbstractThreadListener;
 import org.unidal.initialization.AbstractModule;
-import org.unidal.initialization.DefaultModuleContext;
 import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleContext;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 import com.dianping.cat.message.io.TransportManager;
 import com.dianping.cat.status.StatusUpdateTask;
@@ -31,19 +29,19 @@ public class CatClientModule extends AbstractModule {
       Threads.addListener(new CatThreadListener(ctx));
 
       // warm up Cat
-      Cat.getInstance().setContainer(((DefaultModuleContext) ctx).getContainer());
+      // Cat.getInstance().setContainer(((DefaultModuleContext) ctx).getContainer());
 
       // bring up TransportManager
       ctx.lookup(TransportManager.class);
 
-      ClientConfigManager clientConfigManager = ctx.lookup(ClientConfigManager.class);
+      ClientConfigurationManager configManager = ctx.lookup(ClientConfigurationManager.class);
 
-      if (clientConfigManager.isCatEnabled()) {
+      if (configManager.getConfig().isEnabled()) {
          // start status update task
          StatusUpdateTask statusUpdateTask = ctx.lookup(StatusUpdateTask.class);
 
          Threads.forGroup("cat").start(statusUpdateTask);
-         LockSupport.parkNanos(10 * 1000 * 1000L); // wait 10 ms
+         // LockSupport.parkNanos(10 * 1000 * 1000L); // wait 10 ms
 
          // MmapConsumerTask mmapReaderTask = ctx.lookup(MmapConsumerTask.class);
          // Threads.forGroup("cat").start(mmapReaderTask);

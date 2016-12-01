@@ -67,8 +67,10 @@ public class RemoteClientConfigurationProvider implements ClientConfigurationPro
             String url = buildUrl(server);
             String xml = fetchConfig(url);
             RoutePolicy policy = DefaultSaxParser.parse(xml);
-
-            return new DefaultClientConfiguration(policy);
+            DefaultClientConfiguration config = new DefaultClientConfiguration(policy);
+            
+            config.setDomain(m_settings.getDomain());
+            return config;
          } catch (Throwable e) {
             m_logger.warn(String.format("Error when loading configure from server(%s)!", server), e);
          }

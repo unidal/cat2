@@ -44,6 +44,9 @@
 			<implementation>org.unidal.cat.config.internals.DefaultClientConfigurationManager</implementation>
 			<requirements>
 				<requirement>
+					<role>org.unidal.cat.config.internals.ClientSettings</role>
+				</requirement>
+				<requirement>
 					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
 					<role-hint>local</role-hint>
 					<field-name>m_local</field-name>
@@ -119,7 +122,7 @@
 			<implementation>org.unidal.cat.transport.DefaultSocketAddressProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -195,9 +198,6 @@
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
-				</requirement>
-				<requirement>
 					<role>com.dianping.cat.message.io.TransportManager</role>
 				</requirement>
 				<requirement>
@@ -245,7 +245,7 @@
 					<role>com.dianping.cat.message.spi.MessageStatistics</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 			</requirements>
 		</component>

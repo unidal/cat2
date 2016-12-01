@@ -25,6 +25,7 @@ public class LocalClientConfigurationProvider implements ClientConfigurationProv
          }
 
          configure.setEnabled(config.isEnabled());
+         configure.setDomain(m_settings.getDomain());
          return configure;
       }
 

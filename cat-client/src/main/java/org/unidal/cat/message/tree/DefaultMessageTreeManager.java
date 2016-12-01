@@ -20,7 +20,6 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.message.ForkedTransaction;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.TaggedTransaction;
@@ -43,10 +42,7 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
    private MessagePolicy m_policy;
 
    @Inject
-   private ClientConfigurationManager m_manager;
-
-   @Inject
-   private ClientConfigManager m_configManager;
+   private ClientConfigurationManager m_configManager;
 
    @Inject
    private TransportManager m_transportManager;
@@ -140,11 +136,6 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
       }
    }
 
-   @Deprecated
-   public ClientConfigManager getConfigManager() {
-      return m_configManager;
-   }
-
    @Override
    public Transaction getPeekTransaction() {
       Context ctx = m_context.get();
@@ -175,7 +166,7 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
    @Override
    public void initialize() throws InitializationException {
       // initialize the tagged transaction cache
-      final int size = m_configManager.getTaggedTransactionCacheSize();
+      final int size = m_configManager.getConfig().getTaggedTransactionCacheSize();
 
       m_taggedTransactions = new LinkedHashMap<String, TaggedTransaction>(size * 4 / 3 + 1, 0.75f, true) {
          private static final long serialVersionUID = 1L;
@@ -305,7 +296,7 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
          long treePeriod = trimToHour(m_tree.getMessage().getTimestamp());
          long messagePeriod = trimToHour(message.getTimestamp() - 10 * 1000L); // 10 seconds extra time allowed
 
-         if (treePeriod < messagePeriod || m_length >= m_configManager.getMaxMessageLength()) {
+         if (treePeriod < messagePeriod || m_length >= m_configManager.getConfig().getMaxMessageLines()) {
             m_helper.truncateAndFlush(this, message.getTimestamp());
          }
 

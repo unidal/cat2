@@ -7,17 +7,21 @@ import io.netty.channel.ChannelFuture;
 
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultTransaction;
@@ -28,7 +32,7 @@ import com.dianping.cat.message.spi.MessageTree;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @Named(type = MessageSender.class)
-public class TcpSocketSender implements Task, MessageSender, LogEnabled {
+public class TcpSocketSender extends ContainerHolder implements Task, MessageSender, LogEnabled {
    public static final int SIZE = 5000;
 
    private static final int MAX_CHILD_NUMBER = 200;
@@ -40,7 +44,7 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
    private MessageStatistics m_statistics;
 
    @Inject
-   private ClientConfigManager m_configManager;
+   private ClientConfigurationManager m_configManager;
 
    private MessageQueue m_queue = new DefaultMessageQueue(SIZE);
 
@@ -57,6 +61,8 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
    private AtomicInteger m_errors = new AtomicInteger();
 
    private AtomicInteger m_attempts = new AtomicInteger();
+
+   private CountDownLatch m_catServerLatch;
 
    private boolean checkWritable(ChannelFuture future) {
       boolean isWriteable = false;
@@ -88,8 +94,15 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
    }
 
    @Override
+   public void contextualize(Context context) throws ContextException {
+      super.contextualize(context);
+
+      m_catServerLatch = (CountDownLatch) context.get("cat.server.latch");
+   }
+
+   @Override
    public void initialize() {
-      m_manager = new ChannelManager(m_logger, m_serverAddresses, m_queue, m_configManager);
+      m_manager = new ChannelManager(m_logger, m_serverAddresses, m_queue, m_configManager, m_catServerLatch);
 
       Threads.forGroup("cat").start(this);
       Threads.forGroup("cat").start(m_manager);

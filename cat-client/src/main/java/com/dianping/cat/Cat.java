@@ -117,6 +117,8 @@ public class Cat {
    }
 
    public static void initialize(PlexusContainer container, File configFile) {
+      if (true) return;
+      
       ModuleContext ctx = new DefaultModuleContext(container);
       Module module = ctx.lookup(Module.class, CatClientModule.ID);
 
