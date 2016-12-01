@@ -1,11 +1,11 @@
 package org.unidal.cat.config.internals;
 
-import java.io.File;
+import com.dianping.cat.configuration.client.entity.ClientConfig;
 
 public interface ClientSettings {
    public String getCatHome();
 
-   public File getClientXmlFile();
+   public ClientConfig getClientXml();
 
    public String getDefaultCatServer();
 

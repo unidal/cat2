@@ -1,6 +1,5 @@
 package org.unidal.cat.config.internals;
 
-import java.io.File;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,14 +8,12 @@ import java.util.Map;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
-import org.unidal.helper.Files;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.configuration.client.entity.ClientConfig;
 import com.dianping.cat.configuration.client.entity.Server;
-import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
 
 @Named(type = ServerDiscovery.class)
 public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
@@ -77,7 +74,7 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
       if (servers == null) {
          servers = getServersByCatHost();
       }
-      
+
       if (servers == null) {
          servers = getServersFromSettings();
       }
@@ -94,33 +91,27 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    protected String getServersByCatHost() {
       return null;
    }
-   
+
    protected String getServersByDetection() {
       // Designed to be overridden
       return null;
    }
 
    protected String getServersFromClientXml() {
-      File file = m_settings.getClientXmlFile();
+      ClientConfig config = m_settings.getClientXml();
 
-      if (file.canRead()) {
-         try {
-            String xml = Files.forIO().readFrom(file, "utf-8");
-            ClientConfig config = DefaultSaxParser.parse(xml);
-            StringBuilder sb = new StringBuilder(256);
+      if (config != null) {
+         StringBuilder sb = new StringBuilder(256);
 
-            for (Server server : config.getServers()) {
-               if (sb.length() > 0) {
-                  sb.append(',');
-               }
-
-               sb.append(server.getIp()).append(':').append(server.getHttpPort());
+         for (Server server : config.getServers()) {
+            if (sb.length() > 0) {
+               sb.append(',');
             }
 
-            return sb.toString();
-         } catch (Exception e) {
-            m_logger.warn(String.format("Error when loading config from %s!", file), e);
+            sb.append(server.getIp()).append(':').append(server.getHttpPort());
          }
+
+         return sb.toString();
       }
 
       return null;
@@ -135,6 +126,6 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    }
 
    protected String getServersFromSystemProperties() {
-      return System.getProperty("cat", null);
+      return System.getProperty("cat.servers", null);
    }
 }

@@ -1,7 +1,6 @@
 package org.unidal.cat.config.internals;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
@@ -10,6 +9,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.helper.Files;
 import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Named;
 
@@ -63,14 +63,21 @@ public class DefaultClientSettings implements ClientSettings, Initializable, Log
    }
 
    @Override
-   public File getClientXmlFile() {
+   public ClientConfig getClientXml() {
       File file = new File(getCatHome(), "client.xml");
 
-      try {
-         return file.getCanonicalFile();
-      } catch (IOException e) {
-         return file;
+      if (file.canRead()) {
+         try {
+            String xml = Files.forIO().readFrom(file, "utf-8");
+            ClientConfig config = DefaultSaxParser.parse(xml);
+
+            return config;
+         } catch (Exception e) {
+            m_logger.warn(String.format("Error when loading config from %s!", file), e);
+         }
       }
+
+      return null;
    }
 
    @Override

@@ -1,12 +1,8 @@
 package org.unidal.cat.config.internals;
 
-import java.io.File;
-import java.io.IOException;
-
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
 import org.unidal.lookup.annotation.Named;
 
@@ -18,6 +14,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
    public void getByCatHost() throws Exception {
       defineComponent(ServerDiscovery.class, MockServerDiscovery.class);
 
+      // for test only
       System.setProperty("host", "true");
 
       try {
@@ -34,6 +31,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
    public void getByDetection() throws Exception {
       defineComponent(ServerDiscovery.class, MockServerDiscovery.class);
 
+      // for test only
       System.setProperty("detection", "true");
 
       try {
@@ -51,6 +49,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
       defineComponent(ClientSettings.class, MockSettings.class);
       defineComponent(ServerDiscovery.class, MockServerDiscovery.class).req(ClientSettings.class);
 
+      // for test only
       System.setProperty("client.xml", "true");
 
       try {
@@ -67,6 +66,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
    public void getFromEnvironmentVariable() throws Exception {
       defineComponent(ServerDiscovery.class, MockServerDiscovery.class);
 
+      // for test only
       System.setProperty("env", "127.0.2.1,127.0.2.2");
 
       try {
@@ -81,7 +81,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
    @Test
    public void getFromSystemProperties() {
-      System.setProperty("cat", "127.0.3.1:2281,127.0.3.2:2281,127.0.3.3:2282");
+      System.setProperty("cat.servers", "127.0.3.1:2281,127.0.3.2:2281,127.0.3.3:2282");
 
       try {
          ServerDiscovery d = lookup(ServerDiscovery.class);
@@ -89,7 +89,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
          Assert.assertEquals("[/127.0.3.1:2281, /127.0.3.2:2281, /127.0.3.3:2282]", servers);
       } finally {
-         System.getProperties().remove("cat");
+         System.getProperties().remove("cat.servers");
       }
    }
 
@@ -135,6 +135,7 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
       @Override
       protected String getServersFromEnvironmentVariable() {
+         // real environment variable is CAT
          return System.getProperty("env");
       }
    }
@@ -142,20 +143,13 @@ public class ServerDiscoveryTest extends ComponentTestCase {
    @Named(type = ClientSettings.class)
    public static class MockSettings extends DefaultClientSettings {
       @Override
-      public File getClientXmlFile() {
-         try {
-            File file = File.createTempFile("test", "xml");
-            ClientConfig config = new ClientConfig();
+      public ClientConfig getClientXml() {
+         ClientConfig config = new ClientConfig();
 
-            config.addServer(new Server("127.0.4.1").setHttpPort(2281));
-            config.addServer(new Server("127.0.4.2").setHttpPort(2282));
+         config.addServer(new Server("127.0.4.1").setHttpPort(2281));
+         config.addServer(new Server("127.0.4.2").setHttpPort(2282));
 
-            Files.forIO().writeTo(file, config.toString());
-
-            return file;
-         } catch (IOException e) {
-            throw new RuntimeException(e);
-         }
+         return config;
       }
    }
 }
