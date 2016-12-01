@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.config.internals.DefaultClientConfigurationManager;
-import org.unidal.cat.config.internals.DefaultServerDiscovery;
 import org.unidal.cat.config.internals.DefaultClientSettings;
+import org.unidal.cat.config.internals.DefaultServerDiscovery;
 import org.unidal.cat.config.internals.LocalClientConfigurationProvider;
 import org.unidal.cat.config.internals.RemoteClientConfigurationProvider;
 import org.unidal.cat.internals.CatInitializer;
@@ -24,7 +24,6 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.CatClientModule;
-import com.dianping.cat.configuration.DefaultClientConfigManager;
 import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.cat.message.internal.DefaultMessageProducer;
 import com.dianping.cat.message.io.DefaultTransportManager;
@@ -51,7 +50,6 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultMessagePolicy.class));
 
       all.add(A(DefaultServerDiscovery.class));
-      all.add(A(DefaultClientConfigManager.class));
       all.add(A(DefaultClientConfigurationManager.class));
       all.add(A(LocalClientConfigurationProvider.class));
       all.add(A(RemoteClientConfigurationProvider.class));

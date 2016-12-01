@@ -6,7 +6,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import org.unidal.cat.message.MessageIdFactoryTest;
 import org.unidal.cat.message.codec.BinaryMessageCodecTest;
 
-import com.dianping.cat.configuration.ConfigTest;
 import com.dianping.cat.message.EventTest;
 import com.dianping.cat.message.HeartbeatTest;
 import com.dianping.cat.message.MessageTest;
@@ -26,9 +25,6 @@ EventTest.class,
 HeartbeatTest.class,
 
 TransactionTest.class,
-
-/* .configuration */
-ConfigTest.class,
 
 MockMessageBuilderTest.class,
 
