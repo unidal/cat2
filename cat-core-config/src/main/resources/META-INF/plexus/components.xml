@@ -6,6 +6,16 @@
 			<implementation>org.unidal.cat.core.config.CatConfigModule</implementation>
 		</component>
 		<component>
+			<role>org.unidal.cat.core.config.spi.ConfigStoreGroup</role>
+			<role-hint>system</role-hint>
+			<implementation>org.unidal.cat.core.config.SystemConfigStoreGroup</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.core.config.dal.SystemConfigDao</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>org.unidal.cat.core.config.spi.ConfigStoreManager</role>
 			<implementation>org.unidal.cat.core.config.spi.internals.DefaultConfigStoreManager</implementation>
 		</component>
@@ -30,6 +40,24 @@
 		<component>
 			<role>org.unidal.cat.core.config.service.ContactorService</role>
 			<implementation>org.unidal.cat.core.config.service.DefaultContactorService</implementation>
+		</component>
+		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>system-config</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>system_config</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
+			<role>org.unidal.cat.core.config.dal.SystemConfigDao</role>
+			<implementation>org.unidal.cat.core.config.dal.SystemConfigDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.web.mvc.model.ModuleRegistry</role>
