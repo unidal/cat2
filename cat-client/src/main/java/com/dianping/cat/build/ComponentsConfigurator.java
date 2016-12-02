@@ -8,7 +8,7 @@ import org.unidal.cat.config.internals.DefaultClientEnvironmentSettings;
 import org.unidal.cat.config.internals.DefaultServerDiscovery;
 import org.unidal.cat.config.internals.LocalClientConfigurationProvider;
 import org.unidal.cat.config.internals.RemoteClientConfigurationProvider;
-import org.unidal.cat.internals.CatInitializer;
+import org.unidal.cat.internals.CatClientInitializer;
 import org.unidal.cat.message.DefaultClientTransportHub;
 import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.cat.message.codec.NativeCommandCodec;
@@ -42,7 +42,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       List<Component> all = new ArrayList<Component>();
 
       all.add(A(CatClientModule.class));
-      all.add(A(CatInitializer.class));
+      all.add(A(CatClientInitializer.class));
 
       all.add(A(MessageIdFactory.class));
 

@@ -13,7 +13,7 @@ import com.dianping.cat.CatClientModule;
 import com.dianping.cat.message.MessageProducer;
 
 @Named
-public class CatInitializer extends ContainerHolder {
+public class CatClientInitializer extends ContainerHolder {
    public MessageProducer initialize(Map<String, Object> properties) {
       try {
          Module module = lookup(Module.class, CatClientModule.ID);

@@ -130,7 +130,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
 
    @Override
    public String getRemoteConfigUrlPattern() {
-      return "http://%s:%s/cat/config/client?domain=%s";
+      return "http://%s:%s/cat/config/service?op=client&domain=%s";
    }
 
    private InputStream getResource(String resource) {

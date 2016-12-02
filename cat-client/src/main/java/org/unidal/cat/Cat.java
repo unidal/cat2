@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.codehaus.plexus.PlexusContainer;
-import org.unidal.cat.internals.CatInitializer;
+import org.unidal.cat.internals.CatClientInitializer;
 import org.unidal.cat.internals.NullMessageProducer;
 import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.ContainerLoader;
@@ -126,7 +126,7 @@ public class Cat {
                   if (!m_initialized.get()) {
                      try {
                         PlexusContainer container = ContainerLoader.getDefaultContainer();
-                        CatInitializer initializer = container.lookup(CatInitializer.class);
+                        CatClientInitializer initializer = container.lookup(CatClientInitializer.class);
                         MessagePolicy policy = container.lookup(MessagePolicy.class);
 
                         m_container = container;
