@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unidal.cat.config.internals.DefaultClientConfigurationManager;
-import org.unidal.cat.config.internals.DefaultClientSettings;
+import org.unidal.cat.config.internals.DefaultClientEnvironmentSettings;
 import org.unidal.cat.config.internals.DefaultServerDiscovery;
 import org.unidal.cat.config.internals.LocalClientConfigurationProvider;
 import org.unidal.cat.config.internals.RemoteClientConfigurationProvider;
@@ -46,7 +46,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
 
       all.add(A(MessageIdFactory.class));
 
-      all.add(A(DefaultClientSettings.class));
+      all.add(A(DefaultClientEnvironmentSettings.class));
       all.add(A(DefaultMessagePolicy.class));
 
       all.add(A(DefaultServerDiscovery.class));

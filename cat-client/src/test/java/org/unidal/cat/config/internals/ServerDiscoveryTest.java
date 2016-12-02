@@ -3,6 +3,7 @@ package org.unidal.cat.config.internals;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.lookup.ComponentTestCase;
 import org.unidal.lookup.annotation.Named;
 
@@ -46,8 +47,8 @@ public class ServerDiscoveryTest extends ComponentTestCase {
 
    @Test
    public void getFromClientXml() throws Exception {
-      defineComponent(ClientSettings.class, MockSettings.class);
-      defineComponent(ServerDiscovery.class, MockServerDiscovery.class).req(ClientSettings.class);
+      defineComponent(ClientEnvironmentSettings.class, MockSettings.class);
+      defineComponent(ServerDiscovery.class, MockServerDiscovery.class).req(ClientEnvironmentSettings.class);
 
       // for test only
       System.setProperty("client.xml", "true");
@@ -140,8 +141,8 @@ public class ServerDiscoveryTest extends ComponentTestCase {
       }
    }
 
-   @Named(type = ClientSettings.class)
-   public static class MockSettings extends DefaultClientSettings {
+   @Named(type = ClientEnvironmentSettings.class)
+   public static class MockSettings extends DefaultClientEnvironmentSettings {
       @Override
       public ClientConfig getClientXml() {
          ClientConfig config = new ClientConfig();

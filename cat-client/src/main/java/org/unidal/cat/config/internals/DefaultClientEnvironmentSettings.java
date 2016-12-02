@@ -9,6 +9,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.helper.Files;
 import org.unidal.helper.Inets;
 import org.unidal.lookup.annotation.Named;
@@ -22,8 +23,8 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
  * 
  * @author qmwu2000 <qmwu2000@gmail.com>
  */
-@Named(type = ClientSettings.class)
-public class DefaultClientSettings implements ClientSettings, Initializable, LogEnabled {
+@Named(type = ClientEnvironmentSettings.class)
+public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettings, Initializable, LogEnabled {
    private static final String CLIENT_XML = "/META-INF/cat/client.xml";
 
    private static final String APP_PROPERTIES = "/META-INF/app.properties";
@@ -136,7 +137,7 @@ public class DefaultClientSettings implements ClientSettings, Initializable, Log
       InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(resource);
 
       if (in == null) {
-         in = DefaultClientSettings.class.getResourceAsStream(resource);
+         in = DefaultClientEnvironmentSettings.class.getResourceAsStream(resource);
       }
 
       return in;

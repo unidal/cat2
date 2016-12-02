@@ -5,13 +5,14 @@ import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.config.ClientConfiguration;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.cat.config.ClientConfigurationProvider;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
 @Named(type = ClientConfigurationManager.class)
 public class DefaultClientConfigurationManager implements ClientConfigurationManager, LogEnabled {
    @Inject
-   private ClientSettings m_settings;
+   private ClientEnvironmentSettings m_settings;
    
    @Inject(type = ClientConfigurationProvider.class, value = "local")
    private LocalClientConfigurationProvider m_local;

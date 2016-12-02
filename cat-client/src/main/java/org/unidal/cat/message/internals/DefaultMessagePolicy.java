@@ -2,7 +2,7 @@ package org.unidal.cat.message.internals;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.unidal.cat.config.internals.ClientSettings;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -10,7 +10,7 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = MessagePolicy.class)
 public class DefaultMessagePolicy implements MessagePolicy {
    @Inject
-   private ClientSettings m_settings;
+   private ClientEnvironmentSettings m_settings;
 
    private AtomicBoolean m_enabled = new AtomicBoolean(true);
 

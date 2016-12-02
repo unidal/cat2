@@ -1,8 +1,8 @@
-package org.unidal.cat.config.internals;
+package org.unidal.cat.config;
 
 import com.dianping.cat.configuration.client.entity.ClientConfig;
 
-public interface ClientSettings {
+public interface ClientEnvironmentSettings {
    public String getCatHome();
 
    public ClientConfig getClientXml();

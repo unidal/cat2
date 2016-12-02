@@ -14,15 +14,15 @@
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.config.internals.ClientSettings</role>
-			<implementation>org.unidal.cat.config.internals.DefaultClientSettings</implementation>
+			<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+			<implementation>org.unidal.cat.config.internals.DefaultClientEnvironmentSettings</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.MessagePolicy</role>
 			<implementation>org.unidal.cat.message.internals.DefaultMessagePolicy</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -31,20 +31,16 @@
 			<implementation>org.unidal.cat.config.internals.DefaultServerDiscovery</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.configuration.ClientConfigManager</role>
-			<implementation>com.dianping.cat.configuration.DefaultClientConfigManager</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.config.ClientConfigurationManager</role>
 			<implementation>org.unidal.cat.config.internals.DefaultClientConfigurationManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
@@ -64,7 +60,7 @@
 			<implementation>org.unidal.cat.config.internals.LocalClientConfigurationProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -74,7 +70,7 @@
 			<implementation>org.unidal.cat.config.internals.RemoteClientConfigurationProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.config.internals.ServerDiscovery</role>
@@ -189,7 +185,7 @@
 			<implementation>com.dianping.cat.message.internal.DefaultMessageManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.internals.ClientSettings</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.message.MessagePolicy</role>
@@ -229,7 +225,7 @@
 					<role>com.dianping.cat.message.spi.MessageStatistics</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 			</requirements>
 		</component>

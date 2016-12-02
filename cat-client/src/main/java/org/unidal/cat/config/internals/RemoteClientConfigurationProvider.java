@@ -12,6 +12,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.config.ClientConfiguration;
 import org.unidal.cat.config.ClientConfigurationProvider;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.config.route.entity.RoutePolicy;
 import org.unidal.cat.config.route.transform.DefaultSaxParser;
 import org.unidal.helper.Files;
@@ -22,7 +23,7 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = ClientConfigurationProvider.class, value = "remote")
 public class RemoteClientConfigurationProvider implements ClientConfigurationProvider, LogEnabled {
    @Inject
-   private ClientSettings m_settings;
+   private ClientEnvironmentSettings m_settings;
 
    @Inject
    private ServerDiscovery m_discovery;

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -18,7 +19,7 @@ import com.dianping.cat.configuration.client.entity.Server;
 @Named(type = ServerDiscovery.class)
 public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    @Inject
-   private ClientSettings m_settings;
+   private ClientEnvironmentSettings m_settings;
 
    private Logger m_logger;
 

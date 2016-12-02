@@ -13,7 +13,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.cat.config.ClientConfigurationManager;
-import org.unidal.cat.config.internals.ClientSettings;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.ContainerHolder;
@@ -36,7 +36,7 @@ import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 @Named(type = MessageTreeManager.class)
 public class DefaultMessageTreeManager extends ContainerHolder implements MessageTreeManager, Initializable, LogEnabled {
    @Inject
-   private ClientSettings m_settings;
+   private ClientEnvironmentSettings m_settings;
 
    @Inject
    private MessagePolicy m_policy;
