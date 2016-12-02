@@ -28,9 +28,6 @@ public class CatClientModule extends AbstractModule {
       // tracking thread start/stop
       Threads.addListener(new CatThreadListener(ctx));
 
-      // warm up Cat
-      // Cat.getInstance().setContainer(((DefaultModuleContext) ctx).getContainer());
-
       // bring up TransportManager
       ctx.lookup(TransportManager.class);
 
@@ -38,13 +35,9 @@ public class CatClientModule extends AbstractModule {
 
       if (configManager.getConfig().isEnabled()) {
          // start status update task
-         StatusUpdateTask statusUpdateTask = ctx.lookup(StatusUpdateTask.class);
+         StatusUpdateTask task = ctx.lookup(StatusUpdateTask.class);
 
-         Threads.forGroup("cat").start(statusUpdateTask);
-         // LockSupport.parkNanos(10 * 1000 * 1000L); // wait 10 ms
-
-         // MmapConsumerTask mmapReaderTask = ctx.lookup(MmapConsumerTask.class);
-         // Threads.forGroup("cat").start(mmapReaderTask);
+         Threads.forGroup("Cat").start(task);
       }
    }
 

@@ -6,8 +6,8 @@
 			<implementation>com.dianping.cat.CatClientModule</implementation>
 		</component>
 		<component>
-			<role>org.unidal.cat.internals.CatInitializer</role>
-			<implementation>org.unidal.cat.internals.CatInitializer</implementation>
+			<role>org.unidal.cat.internals.CatClientInitializer</role>
+			<implementation>org.unidal.cat.internals.CatClientInitializer</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.MessageIdFactory</role>
