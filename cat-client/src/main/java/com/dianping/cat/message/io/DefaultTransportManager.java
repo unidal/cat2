@@ -49,5 +49,4 @@ public class DefaultTransportManager implements TransportManager, Initializable,
          }
       }
    }
-
 }

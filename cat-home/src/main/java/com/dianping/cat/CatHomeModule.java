@@ -1,8 +1,11 @@
 package com.dianping.cat;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 import org.unidal.cat.CatConstant;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.core.alert.CatAlertModule;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
@@ -14,6 +17,7 @@ import org.unidal.initialization.AbstractModule;
 import org.unidal.initialization.DefaultModuleContext;
 import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleContext;
+import org.xml.sax.SAXException;
 
 import com.dianping.cat.analysis.MessageConsumer;
 import com.dianping.cat.analysis.TcpSocketReceiver;
@@ -97,6 +101,7 @@ public class CatHomeModule extends AbstractModule {
       final TcpSocketReceiver receiver = ctx.lookup(TcpSocketReceiver.class);
 
       receiver.setup();
+      m_catServerLatch.countDown();
 
       Runtime.getRuntime().addShutdownHook(new Thread() {
          @Override
@@ -121,6 +126,10 @@ public class CatHomeModule extends AbstractModule {
       System.setProperty("cat.servers", "127.0.0.1");
       ((DefaultModuleContext) ctx).getContainer().addContextValue("cat.server.latch", m_catServerLatch);
 
+      setupServerConfigManager(ctx);
+   }
+
+   protected void setupServerConfigManager(ModuleContext ctx) throws SAXException, IOException, Exception {
       ServerConfigManager configManager = ctx.lookup(ServerConfigManager.class);
       ConfigStoreManager manager = ctx.lookup(ConfigStoreManager.class);
       String ip = Inets.IP4.getLocalHostAddress();
@@ -132,7 +141,10 @@ public class CatHomeModule extends AbstractModule {
 
          configManager.initialize(config);
       } else {
-         configManager.initialize(new ServerConfig());
+         ClientEnvironmentSettings settings = ctx.lookup(ClientEnvironmentSettings.class);
+         File configFile = new File(settings.getCatHome(), "server.xml");
+
+         configManager.initialize(configFile);
       }
    }
 }

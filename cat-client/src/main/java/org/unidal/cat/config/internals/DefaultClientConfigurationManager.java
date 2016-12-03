@@ -13,13 +13,13 @@ import org.unidal.lookup.annotation.Named;
 public class DefaultClientConfigurationManager implements ClientConfigurationManager, LogEnabled {
    @Inject
    private ClientEnvironmentSettings m_settings;
-   
+
    @Inject(type = ClientConfigurationProvider.class, value = "local")
    private LocalClientConfigurationProvider m_local;
 
    @Inject(type = ClientConfigurationProvider.class, value = "remote")
    private RemoteClientConfigurationProvider m_remote;
-   
+
    private ClientConfiguration m_config;
 
    private Logger m_logger;
@@ -42,7 +42,9 @@ public class DefaultClientConfigurationManager implements ClientConfigurationMan
             m_logger.warn("Unable to load client configuration, CAT is DISABLED!");
          }
 
-         m_config = new DefaultClientConfiguration();
+         if (m_config == null) {
+            m_config = new DefaultClientConfiguration();
+         }
       }
 
       return m_config;

@@ -98,9 +98,8 @@ public class DefaultClientConfiguration implements ClientConfiguration {
       return m_policy.isEnabled();
    }
 
-   public DefaultClientConfiguration setDomain(String domain) {
+   public void setDomain(String domain) {
       m_domain = domain;
-      return this;
    }
 
    public void setEnabled(boolean enabled) {

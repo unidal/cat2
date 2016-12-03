@@ -160,7 +160,9 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
 
    @Override
    public boolean hasContext() {
-      return m_context.get() != null;
+      Context ctx = m_context.get();
+
+      return ctx != null && !ctx.isEmpty();
    }
 
    @Override
@@ -219,7 +221,7 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
 
    @Override
    public void setup() {
-      m_context.set(new Context());
+      // m_context.set(new Context());
    }
 
    boolean shouldLog(Throwable e) {
@@ -368,6 +370,10 @@ public class DefaultMessageTreeManager extends ContainerHolder implements Messag
          }
 
          return null;
+      }
+
+      public boolean isEmpty() {
+         return m_stack.isEmpty();
       }
 
       public void setTraceMode(boolean traceMode) {

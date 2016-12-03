@@ -246,9 +246,6 @@ public class ServerConfigManager implements LogEnabled {
          m_logger.warn("CAT server is running in LOCAL mode! No HDFS or MySQL will be accessed!");
       }
 
-      m_logger.info("CAT server is running with hdfs," + isHdfsOn());
-      m_logger.info("CAT server is running with alert," + isAlertMachine());
-      m_logger.info("CAT server is running with job," + isJobMachine());
       m_logger.info(m_config.toString());
    }
 

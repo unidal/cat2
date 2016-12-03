@@ -129,6 +129,6 @@ public class RecentReportProvider<T extends Report> implements ReportProvider<T>
    public void initialize() throws InitializationException {
       int threads = m_configuration.getRemoteCallThreads();
 
-      m_pool = Threads.forPool().getFixedThreadPool(CatConstant.CAT + "-Report", threads);
+      m_pool = Threads.forPool().getFixedThreadPool(CatConstant.CAT + "-ReportService", threads);
    }
 }

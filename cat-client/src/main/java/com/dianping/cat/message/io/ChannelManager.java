@@ -13,6 +13,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -102,7 +103,6 @@ public class ChannelManager implements Task {
          } else {
             m_activeChannelHolder = new ChannelHolder();
             m_activeChannelHolder.setServerAddresses(serverAddresses);
-            m_logger.error("error when init cat module due to error config xml in /data/appdatas/cat/client.xml");
          }
       }
    }
@@ -142,7 +142,12 @@ public class ChannelManager implements Task {
    private void closeChannel(ChannelFuture channel) {
       try {
          if (channel != null) {
-            m_logger.info("close channel " + channel.channel().remoteAddress());
+            SocketAddress remoteAddress = channel.channel().remoteAddress();
+
+            if (remoteAddress != null) {
+               m_logger.info("close channel to " + remoteAddress);
+            }
+
             channel.channel().close();
          }
       } catch (Exception e) {
@@ -176,7 +181,7 @@ public class ChannelManager implements Task {
             return future;
          }
       } catch (Throwable e) {
-         m_logger.error("Error when connect server " + address.getAddress(), e);
+         m_logger.error("Error when connecting to server " + address.getAddress(), e);
 
          if (future != null) {
             closeChannel(future);
@@ -224,11 +229,12 @@ public class ChannelManager implements Task {
                   holder.setActiveFuture(future).setConnectChanged(true);
                }
             }
+
             if (holder != null) {
                holder.setActiveIndex(i).setIp(hostAddress);
                holder.setActiveServerConfig(serverConfig).setServerAddresses(addresses);
 
-               m_logger.info("success when init CAT server, new active holder" + holder.toString());
+               m_logger.info("success when init CAT server, new active holder " + holder.toString());
                return holder;
             }
          }
@@ -244,7 +250,7 @@ public class ChannelManager implements Task {
                sb.append(address.toString()).append(";");
             }
 
-            m_logger.info("Error when init CAT server " + sb.toString());
+            m_logger.info("Error when init CAT server with " + sb.toString());
          } catch (Exception e) {
             // ignore
          }
@@ -350,11 +356,13 @@ public class ChannelManager implements Task {
 
    @Override
    public void run() {
-      try {
-         m_catServerLatch.await();
-      } catch (InterruptedException e1) {
-         // ignore it
-         return;
+      if (m_catServerLatch != null) {
+         try {
+            m_catServerLatch.await();
+         } catch (InterruptedException e1) {
+            // ignore it
+            return;
+         }
       }
 
       while (m_active) {

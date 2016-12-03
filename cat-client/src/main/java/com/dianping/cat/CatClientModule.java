@@ -39,10 +39,10 @@ public class CatClientModule extends AbstractModule {
 
       ctx.lookup(MessageIdFactory.class).initialize(baseDir, settings.getDomain());
 
+      ClientConfigurationManager configManager = ctx.lookup(ClientConfigurationManager.class);
+
       // bring up TransportManager
       ctx.lookup(TransportManager.class);
-
-      ClientConfigurationManager configManager = ctx.lookup(ClientConfigurationManager.class);
 
       if (configManager.getConfig().isEnabled()) {
          // start status update task

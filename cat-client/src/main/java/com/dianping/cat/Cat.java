@@ -32,7 +32,7 @@ import com.dianping.cat.message.spi.MessageTree;
 public class Cat {
    private static Cat s_instance = new Cat();
 
-   private static volatile boolean s_init = false;
+   private static volatile boolean s_init = true;
 
    private MessageProducer m_producer;
 
@@ -157,7 +157,7 @@ public class Cat {
    static void log(String severity, String message) {
       MessageFormat format = new MessageFormat("[{0,date,MM-dd HH:mm:ss.sss}] [{1}] [{2}] {3}");
 
-      System.out.println(format.format(new Object[] { new Date(), severity, "cat", message }));
+      System.out.println(format.format(new Object[] { new Date(), severity, "Cat", message }));
    }
 
    public static void logError(String message, Throwable cause) {
