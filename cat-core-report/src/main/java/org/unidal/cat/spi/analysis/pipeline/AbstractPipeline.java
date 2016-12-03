@@ -18,7 +18,6 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.extension.RoleHintEnabled;
 
-import com.dianping.cat.CatConstants;
 import com.dianping.cat.message.spi.MessageTree;
 
 public abstract class AbstractPipeline extends ContainerHolder implements Pipeline, RoleHintEnabled, LogEnabled {

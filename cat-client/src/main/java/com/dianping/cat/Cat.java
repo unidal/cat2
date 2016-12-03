@@ -10,10 +10,6 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.unidal.helper.Files;
 import org.unidal.helper.Properties;
-import org.unidal.initialization.DefaultModuleContext;
-import org.unidal.initialization.Module;
-import org.unidal.initialization.ModuleContext;
-import org.unidal.initialization.ModuleInitializer;
 import org.unidal.lookup.ContainerLoader;
 
 import com.dianping.cat.configuration.client.entity.ClientConfig;
@@ -116,18 +112,20 @@ public class Cat {
       initialize(container, configFile);
    }
 
+   public static void initialize(PlexusContainer container) {
+      s_instance.setContainer(container);
+   }
+
    public static void initialize(PlexusContainer container, File configFile) {
-      if (true) return;
-      
-      ModuleContext ctx = new DefaultModuleContext(container);
-      Module module = ctx.lookup(Module.class, CatClientModule.ID);
-
-      if (!module.isInitialized()) {
-         ModuleInitializer initializer = ctx.lookup(ModuleInitializer.class);
-
-         ctx.setAttribute("cat-client-config-file", configFile);
-         initializer.execute(ctx, module);
-      }
+      // ModuleContext ctx = new DefaultModuleContext(container);
+      // Module module = ctx.lookup(Module.class, CatClientModule.ID);
+      //
+      // if (!module.isInitialized()) {
+      // ModuleInitializer initializer = ctx.lookup(ModuleInitializer.class);
+      //
+      // ctx.setAttribute("cat-client-config-file", configFile);
+      // initializer.execute(ctx, module);
+      // }
    }
 
    public static void initialize(String... servers) {

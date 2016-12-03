@@ -9,6 +9,7 @@ import org.unidal.initialization.ModuleInitializer;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
 import com.dianping.cat.CatClientModule;
 import com.dianping.cat.message.MessageProducer;
 
@@ -37,6 +38,8 @@ public class CatClientInitializer extends ContainerHolder {
                ctx.info("CAT is initialized successfully in " + (System.currentTimeMillis() - start) + " ms.");
             }
          }
+
+         Cat.initialize(getContainer());
 
          return lookup(MessageProducer.class);
       } catch (Throwable t) {

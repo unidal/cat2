@@ -32,8 +32,6 @@ public class Cat {
 
    private AtomicReference<MessageProducer> m_producer = new AtomicReference<MessageProducer>();
 
-   private PlexusContainer m_container;
-
    private MessagePolicy m_policy;
 
    private Cat() {
@@ -64,12 +62,10 @@ public class Cat {
       CAT.getProducer().logMetric(metric, "T", String.valueOf(durationInMillis));
    }
 
-   @Deprecated
    public static String getMessageId() {
       return CAT.getProducer().getManager().getThreadLocalMessageTree().getMessageId();
    }
 
-   @Deprecated
    public static boolean isInitialized() {
       return CAT.m_initialized.get();
    }
@@ -129,7 +125,6 @@ public class Cat {
                         CatClientInitializer initializer = container.lookup(CatClientInitializer.class);
                         MessagePolicy policy = container.lookup(MessagePolicy.class);
 
-                        m_container = container;
                         m_policy = policy;
                         m_producer.set(initializer.initialize(m_properties));
                      } catch (Exception e) {
