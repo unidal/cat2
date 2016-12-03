@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transaction;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_REPORT;
+import static org.unidal.cat.core.report.config.ReportConfigStoreGroup.ID;
 import static org.unidal.cat.plugin.transaction.TransactionConstants.NAME;
 
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class TransactionConfigService implements Initializable, LogEnabled, Conf
 
    @Override
    public void initialize() throws InitializationException {
-      m_manager.register(GROUP_REPORT, NAME, this);
+      m_manager.register(ID, NAME, this);
 
-      ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
+      ConfigStore store = m_manager.getConfigStore(ID, NAME);
       String config = store.getConfig();
 
       if (config != null) {
@@ -53,12 +53,12 @@ public class TransactionConfigService implements Initializable, LogEnabled, Conf
 
             initialize(root);
          } catch (Exception e) {
-            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_REPORT,
+            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", ID,
                   NAME, config), e);
          }
       } else {
-         Cat.logEvent("ConfigMissing", GROUP_REPORT + ":" + NAME);
-         m_logger.warn("No configure found for " + GROUP_REPORT + ":" + NAME);
+         Cat.logEvent("ConfigMissing", ID + ":" + NAME);
+         m_logger.warn("No configure found for " + ID + ":" + NAME);
       }
 
    }
@@ -108,7 +108,7 @@ public class TransactionConfigService implements Initializable, LogEnabled, Conf
             initialize(root);
          }
       } catch (Exception e) {
-         throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_REPORT, NAME,
+         throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", ID, NAME,
                config), e);
       }
    }

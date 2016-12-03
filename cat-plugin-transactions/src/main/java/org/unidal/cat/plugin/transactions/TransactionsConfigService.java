@@ -1,6 +1,6 @@
 package org.unidal.cat.plugin.transactions;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_REPORT;
+import static org.unidal.cat.core.report.config.ReportConfigStoreGroup.ID;
 import static org.unidal.cat.plugin.transactions.TransactionsConstants.NAME;
 
 import java.util.HashMap;
@@ -32,9 +32,9 @@ public class TransactionsConfigService implements Initializable, ConfigChangeLis
 
    @Override
    public void initialize() throws InitializationException {
-      m_manager.register(GROUP_REPORT, NAME, this);
+      m_manager.register(ID, NAME, this);
 
-      ConfigStore store = m_manager.getConfigStore(GROUP_REPORT, NAME);
+      ConfigStore store = m_manager.getConfigStore(ID, NAME);
       String config = store.getConfig();
 
       try {

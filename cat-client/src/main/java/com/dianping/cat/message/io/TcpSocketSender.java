@@ -204,7 +204,7 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
    @Override
    public void send(MessageTree tree) {
       if (isAtomicMessage(tree)) {
-         boolean result = m_atomicTrees.offer(tree, m_manager.getSample());
+         boolean result = m_atomicTrees.offer(tree);
 
          if (!result) {
             logQueueFullInfo(tree);

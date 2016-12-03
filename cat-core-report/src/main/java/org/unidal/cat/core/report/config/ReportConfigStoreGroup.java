@@ -40,6 +40,8 @@ public class ReportConfigStoreGroup implements ConfigStoreGroup {
                ReportConfigDo c = m_dao.findByReportName(m_name, ReportConfigEntity.READSET_FULL);
 
                m_config = c.getContent();
+            } catch (DalNotFoundException e) {
+               Cat.logEvent("ConfigMissing", ID + ":" + m_name);
             } catch (Throwable e) {
                Cat.logError(e);
             }

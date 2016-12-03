@@ -1,6 +1,6 @@
 package org.unidal.cat.core.alert.rule;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_ALERT;
+import static org.unidal.cat.core.alert.config.AlertConfigStoreGroup.ID;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,6 @@ import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
-
-import com.dianping.cat.Cat;
 
 @Named(type = RuleService.class)
 public class DefaultRuleService implements RuleService, ConfigChangeListener, Initializable, LogEnabled {
@@ -91,21 +89,20 @@ public class DefaultRuleService implements RuleService, ConfigChangeListener, In
 
    @Override
    public void initialize() throws InitializationException {
-      m_manager.register(GROUP_ALERT, NAME, this);
+      m_manager.register(ID, NAME, this);
 
-      ConfigStore store = m_manager.getConfigStore(GROUP_ALERT, NAME);
+      ConfigStore store = m_manager.getConfigStore(ID, NAME);
       String config = store.getConfig();
 
       if (config != null) {
          try {
             m_model = DefaultSaxParser.parse(config);
          } catch (Exception e) {
-            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_ALERT,
-                  NAME, config), e);
+            throw new InitializationException(String.format("Error when parsing config model(%s:%s)! %s", ID, NAME,
+                  config), e);
          }
       } else {
-         Cat.logEvent("ConfigMissing", GROUP_ALERT + ":" + NAME);
-         m_logger.warn("No configure found for " + GROUP_ALERT + ":" + NAME);
+         m_logger.warn("No configure found for " + ID + ":" + NAME);
       }
 
       if (m_model == null) {
@@ -119,8 +116,7 @@ public class DefaultRuleService implements RuleService, ConfigChangeListener, In
          try {
             m_model = DefaultSaxParser.parse(config);
          } catch (Exception e) {
-            throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", GROUP_ALERT, NAME,
-                  config), e);
+            throw new ConfigException(String.format("Error when parsing config model(%s:%s)! %s", ID, NAME, config), e);
          }
       }
    }

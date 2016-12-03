@@ -64,16 +64,27 @@ public class RemoteClientConfigurationProvider implements ClientConfigurationPro
       List<InetSocketAddress> servers = m_discovery.getMetaServers();
 
       for (InetSocketAddress server : servers) {
-         try {
-            String url = buildUrl(server);
-            String xml = fetchConfig(url);
-            RoutePolicy policy = DefaultSaxParser.parse(xml);
-            DefaultClientConfiguration config = new DefaultClientConfiguration(policy);
-            
-            config.setDomain(m_settings.getDomain());
-            return config;
-         } catch (Throwable e) {
-            m_logger.warn(String.format("Error when loading configure from server(%s)!", server), e);
+         if (server.getHostString().equals("127.0.0.1")) {
+            // This is for CAT server only!
+            // Build the client configuration directly
+            DefaultClientConfiguration configure = new DefaultClientConfiguration();
+
+            configure.addServerForTree(server.getAddress().getHostAddress(), 2280);
+            configure.setEnabled(true);
+            configure.setDomain(m_settings.getDomain());
+            return configure;
+         } else {
+            try {
+               String url = buildUrl(server);
+               String xml = fetchConfig(url);
+               RoutePolicy policy = DefaultSaxParser.parse(xml);
+               DefaultClientConfiguration config = new DefaultClientConfiguration(policy);
+
+               config.setDomain(m_settings.getDomain());
+               return config;
+            } catch (Throwable e) {
+               m_logger.warn(String.format("Error when loading configure from server(%s)!", server), e);
+            }
          }
       }
 

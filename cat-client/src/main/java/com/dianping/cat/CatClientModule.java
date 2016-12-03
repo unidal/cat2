@@ -1,8 +1,11 @@
 package com.dianping.cat;
 
+import java.io.File;
 import java.util.concurrent.ExecutorService;
 
 import org.unidal.cat.config.ClientConfigurationManager;
+import org.unidal.cat.config.ClientEnvironmentSettings;
+import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.AbstractThreadListener;
 import org.unidal.initialization.AbstractModule;
@@ -27,6 +30,12 @@ public class CatClientModule extends AbstractModule {
 
       // tracking thread start/stop
       Threads.addListener(new CatThreadListener(ctx));
+
+      // init message id factory
+      File baseDir = new File(System.getProperty("java.io.tmpdir"));
+      ClientEnvironmentSettings settings = ctx.lookup(ClientEnvironmentSettings.class);
+
+      ctx.lookup(MessageIdFactory.class).initialize(baseDir, settings.getDomain());
 
       // bring up TransportManager
       ctx.lookup(TransportManager.class);

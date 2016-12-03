@@ -1,0 +1,35 @@
+|CAT Server|
+start
+:setup parameters;
+
+|CAT Client|
+start
+:Millisecond Timer;
+:Thread Listener;
+:Client Warmup;
+:Bring up Client TransportManager;
+:Load Client Config;
+
+if (CAT is enabled) then (yes)
+   :Start Heartbeat thread;
+   :Wait 10 seconds for server to startup;
+endif
+
+:client initialized;
+
+|CAT Server|
+:Load Server Config;
+:Start up Consumer & analyzers;
+:Server Config Reload Thread;
+
+if (Is Job Machine) then (yes)
+   :Start Task Consumer Thread;
+endif
+
+if (Is Alert Machine) then (yes) 
+   :Bring up alert threads;
+endif
+
+:Add JVM shutdown hook;
+
+end

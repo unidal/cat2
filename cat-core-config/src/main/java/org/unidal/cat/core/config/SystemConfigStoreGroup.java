@@ -40,6 +40,8 @@ public class SystemConfigStoreGroup implements ConfigStoreGroup {
                SystemConfigDo c = m_dao.findByName(m_name, SystemConfigEntity.READSET_FULL);
 
                m_config = c.getContent();
+            } catch (DalNotFoundException e) {
+               Cat.logEvent("ConfigMissing", SystemConfigStoreGroup.ID + ":" + m_name);
             } catch (Throwable e) {
                Cat.logError(e);
             }
