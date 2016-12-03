@@ -3,12 +3,14 @@ package com.dianping.cat;
 import java.io.File;
 import java.util.concurrent.ExecutorService;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.message.MessageIdFactory;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.AbstractThreadListener;
 import org.unidal.initialization.AbstractModule;
+import org.unidal.initialization.DefaultModuleContext;
 import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleContext;
 import org.unidal.lookup.annotation.Named;
@@ -46,7 +48,7 @@ public class CatClientModule extends AbstractModule {
          // start status update task
          StatusUpdateTask task = ctx.lookup(StatusUpdateTask.class);
 
-         Threads.forGroup("Cat").start(task);
+         Threads.forGroup(CatConstant.CAT).start(task);
       }
    }
 
@@ -60,6 +62,10 @@ public class CatClientModule extends AbstractModule {
 
       private CatThreadListener(ModuleContext ctx) {
          m_ctx = ctx;
+
+         if (ctx instanceof DefaultModuleContext) {
+            ((DefaultModuleContext) m_ctx).skipClassForLogger(getClass());
+         }
       }
 
       @Override

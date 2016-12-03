@@ -27,9 +27,15 @@ public class CatClientInitializer extends ContainerHolder {
                ctx.setAttribute(e.getKey(), e.getValue());
             }
 
-            ctx.info("Start to initialize CAT ...");
-            initializer.execute(ctx, module);
-            ctx.info("CAT is initialized successfully in " + (System.currentTimeMillis() - start) + " ms.");
+            String serverMode = System.getProperty("ServerMode");
+
+            if (serverMode != null && "true".equals(serverMode)) {
+               initializer.execute(ctx, module);
+            } else {
+               ctx.info("Start to initialize CAT ...");
+               initializer.execute(ctx, module);
+               ctx.info("CAT is initialized successfully in " + (System.currentTimeMillis() - start) + " ms.");
+            }
          }
 
          return lookup(MessageProducer.class);

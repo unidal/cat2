@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.message.storage.MessageDumper;
 import org.unidal.cat.message.storage.MessageDumperManager;
 import org.unidal.cat.message.storage.hdfs.LogviewProcessor;
@@ -62,6 +63,6 @@ public class DefaultMessageDumperManager extends ContainerHolder implements Mess
 
 	@Override
 	public void initialize() throws InitializationException {
-		Threads.forGroup("cat").start(m_logviewProcessor);
+		Threads.forGroup(CatConstant.CAT).start(m_logviewProcessor);
 	}
 }

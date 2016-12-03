@@ -1,5 +1,6 @@
 package org.unidal.cat.core.report;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.core.config.CatConfigModule;
 import org.unidal.cat.spi.analysis.MessageDispatcher;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
@@ -27,11 +28,11 @@ public class CatReportModule extends AbstractModule {
       TimeWindowManager manager = ctx.lookup(TimeWindowManager.class);
 
       if (manager instanceof Task) {
-         Threads.forGroup("Cat").start((Task) manager);
+         Threads.forGroup(CatConstant.CAT).start((Task) manager);
       }
 
       ReportTaskConsumer consumer = ctx.lookup(ReportTaskConsumer.class);
 
-      Threads.forGroup("Cat").start(consumer);
+      Threads.forGroup(CatConstant.CAT).start(consumer);
    }
 }

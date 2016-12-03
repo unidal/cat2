@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.spi.analysis.event.TimeWindowHandler;
 import org.unidal.cat.spi.analysis.event.TimeWindowManager;
 import org.unidal.cat.spi.analysis.pipeline.Pipeline;
@@ -54,7 +55,7 @@ public class DefaultPipelineManager extends ContainerHolder implements PipelineM
    @Override
    public void initialize() {
       m_timeWindowManager.register(this);
-      m_executor = Threads.forPool().getFixedThreadPool("Cat", m_config.getCheckpointThreads());
+      m_executor = Threads.forPool().getFixedThreadPool(CatConstant.CAT + "-Pipeline", m_config.getCheckpointThreads());
    }
 
    @Override

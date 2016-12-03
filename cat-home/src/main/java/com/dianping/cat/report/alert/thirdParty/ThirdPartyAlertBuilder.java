@@ -5,6 +5,7 @@ import java.util.List;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.StringUtils;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -35,7 +36,7 @@ public class ThirdPartyAlertBuilder implements Task, LogEnabled {
 
 		for (Http http : https) {
 			if (!connectHttpUrl(http)) {
-				Threads.forGroup("cat").start(new HttpReconnector(this, http, current + DURATION));
+				Threads.forGroup(CatConstant.CAT).start(new HttpReconnector(this, http, current + DURATION));
 			}
 		}
 	}

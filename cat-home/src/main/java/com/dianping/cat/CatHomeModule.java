@@ -2,6 +2,7 @@ package com.dianping.cat;
 
 import java.util.concurrent.CountDownLatch;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.core.alert.CatAlertModule;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
@@ -50,12 +51,12 @@ public class CatHomeModule extends AbstractModule {
       ctx.lookup(MessageConsumer.class);
 
       ConfigReloadTask configReloadTask = ctx.lookup(ConfigReloadTask.class);
-      Threads.forGroup("cat").start(configReloadTask);
+      Threads.forGroup(CatConstant.CAT).start(configReloadTask);
 
       if (serverConfigManager.isJobMachine()) {
          DefaultTaskConsumer taskConsumer = ctx.lookup(DefaultTaskConsumer.class);
 
-         Threads.forGroup("cat").start(taskConsumer);
+         Threads.forGroup(CatConstant.CAT).start(taskConsumer);
       }
 
       if (serverConfigManager.isAlertMachine()) {
@@ -75,21 +76,21 @@ public class CatHomeModule extends AbstractModule {
          StorageSQLAlert storageDatabaseAlert = ctx.lookup(StorageSQLAlert.class);
          StorageCacheAlert storageCacheAlert = ctx.lookup(StorageCacheAlert.class);
 
-         Threads.forGroup("cat").start(networkAlert);
-         Threads.forGroup("cat").start(databaseAlert);
-         Threads.forGroup("cat").start(systemAlert);
-         Threads.forGroup("cat").start(metricAlert);
-         Threads.forGroup("cat").start(exceptionAlert);
-         Threads.forGroup("cat").start(frontEndExceptionAlert);
-         Threads.forGroup("cat").start(heartbeatAlert);
-         Threads.forGroup("cat").start(thirdPartyAlert);
-         Threads.forGroup("cat").start(alertBuildingTask);
-         Threads.forGroup("cat").start(appAlert);
-         Threads.forGroup("cat").start(webAlert);
-         Threads.forGroup("cat").start(transactionAlert);
-         Threads.forGroup("cat").start(eventAlert);
-         Threads.forGroup("cat").start(storageDatabaseAlert);
-         Threads.forGroup("cat").start(storageCacheAlert);
+         Threads.forGroup(CatConstant.CAT).start(networkAlert);
+         Threads.forGroup(CatConstant.CAT).start(databaseAlert);
+         Threads.forGroup(CatConstant.CAT).start(systemAlert);
+         Threads.forGroup(CatConstant.CAT).start(metricAlert);
+         Threads.forGroup(CatConstant.CAT).start(exceptionAlert);
+         Threads.forGroup(CatConstant.CAT).start(frontEndExceptionAlert);
+         Threads.forGroup(CatConstant.CAT).start(heartbeatAlert);
+         Threads.forGroup(CatConstant.CAT).start(thirdPartyAlert);
+         Threads.forGroup(CatConstant.CAT).start(alertBuildingTask);
+         Threads.forGroup(CatConstant.CAT).start(appAlert);
+         Threads.forGroup(CatConstant.CAT).start(webAlert);
+         Threads.forGroup(CatConstant.CAT).start(transactionAlert);
+         Threads.forGroup(CatConstant.CAT).start(eventAlert);
+         Threads.forGroup(CatConstant.CAT).start(storageDatabaseAlert);
+         Threads.forGroup(CatConstant.CAT).start(storageCacheAlert);
       }
 
       final MessageConsumer consumer = ctx.lookup(MessageConsumer.class);
@@ -113,7 +114,10 @@ public class CatHomeModule extends AbstractModule {
 
    @Override
    protected void setup(ModuleContext ctx) throws Exception {
+      ctx.info("Begin to start CAT server ...");
+
       // let CAT client connect to local CAT server directly
+      System.setProperty("ServerMode", "true");
       System.setProperty("cat.servers", "127.0.0.1");
       ((DefaultModuleContext) ctx).getContainer().addContextValue("cat.server.latch", m_catServerLatch);
 

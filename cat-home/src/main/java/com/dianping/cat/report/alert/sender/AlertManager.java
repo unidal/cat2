@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -112,8 +113,8 @@ public class AlertManager implements Initializable {
 
 	@Override
 	public void initialize() throws InitializationException {
-		Threads.forGroup("cat").start(new SendExecutor());
-		Threads.forGroup("cat").start(new RecoveryAnnouncer());
+		Threads.forGroup(CatConstant.CAT).start(new SendExecutor());
+		Threads.forGroup(CatConstant.CAT).start(new RecoveryAnnouncer());
 	}
 
 	public boolean isSuspend(String alertKey, int suspendMinute) {

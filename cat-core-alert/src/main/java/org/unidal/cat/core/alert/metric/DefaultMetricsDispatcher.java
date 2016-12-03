@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.ContainerHolder;
@@ -51,7 +52,7 @@ public class DefaultMetricsDispatcher extends ContainerHolder implements Metrics
          list.add(listener);
 
          if (listener instanceof Task) {
-            Threads.forGroup("cat").start((Task) listener);
+            Threads.forGroup(CatConstant.CAT).start((Task) listener);
          }
       }
    }

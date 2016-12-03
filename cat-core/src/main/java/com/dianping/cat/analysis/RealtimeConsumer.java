@@ -6,6 +6,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
@@ -131,7 +132,7 @@ public class RealtimeConsumer extends ContainerHolder implements MessageConsumer
 		m_periodManager = new PeriodManager(HOUR, m_analyzerManager, m_serverStateManager, m_logger);
 		m_periodManager.init();
 
-		Threads.forGroup("cat").start(m_periodManager);
+		Threads.forGroup(CatConstant.CAT).start(m_periodManager);
 	}
 
 }

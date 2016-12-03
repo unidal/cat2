@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -81,7 +82,7 @@ public class AggregationConfigManager implements Initializable {
 		}
 		m_handler.register(queryAggregationRules());
 
-		Threads.forGroup("cat").start(new ConfigReloadTask());
+		Threads.forGroup(CatConstant.CAT).start(new ConfigReloadTask());
 	}
 
 	public boolean insertAggregationRule(AggregationRule rule) {

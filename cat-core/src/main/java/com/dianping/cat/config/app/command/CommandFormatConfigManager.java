@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -98,7 +99,7 @@ public class CommandFormatConfigManager implements Initializable {
 		if (m_urlFormat == null) {
 			m_urlFormat = new CommandFormat();
 		}
-		Threads.forGroup("cat").start(new ConfigReloadTask());
+		Threads.forGroup(CatConstant.CAT).start(new ConfigReloadTask());
 	}
 
 	public boolean insert(String xml) {

@@ -14,6 +14,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.core.message.config.MessageConfiguration;
 import org.unidal.cat.core.message.service.MessageCodecService;
 import org.unidal.helper.Files;
@@ -158,7 +159,7 @@ public class RecentMessageProvider implements MessageProvider, Initializable {
    public void initialize() throws InitializationException {
       int threads = m_config.getRemoteCallThreads();
 
-      m_pool = Threads.forPool().getFixedThreadPool("cat", threads);
+      m_pool = Threads.forPool().getFixedThreadPool(CatConstant.CAT + "-Message", threads);
    }
 
    @Override

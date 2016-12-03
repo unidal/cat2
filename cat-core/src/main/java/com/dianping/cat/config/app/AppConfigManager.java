@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -269,7 +270,7 @@ public class AppConfigManager implements Initializable {
 		if (m_config == null) {
 			m_config = new AppConfig();
 		}
-		Threads.forGroup("cat").start(new ConfigReloadTask());
+		Threads.forGroup(CatConstant.CAT).start(new ConfigReloadTask());
 	}
 
 	public boolean insert(String xml) {

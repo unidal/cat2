@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -90,7 +91,7 @@ public class StorageAlertInfoManager implements Initializable {
 	@Override
 	public void initialize() throws InitializationException {
 		if (m_serverConfigManager.isAlertMachine()) {
-			Threads.forGroup("cat").start(new StorageAlerInfoLoadTask());
+			Threads.forGroup(CatConstant.CAT).start(new StorageAlerInfoLoadTask());
 		}
 	}
 

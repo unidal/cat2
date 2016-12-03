@@ -14,6 +14,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.helper.Threads;
@@ -104,9 +105,9 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
    public void initialize() {
       m_manager = new ChannelManager(m_logger, m_serverAddresses, m_queue, m_configManager, m_catServerLatch);
 
-      Threads.forGroup("cat").start(this);
-      Threads.forGroup("cat").start(m_manager);
-      Threads.forGroup("cat").start(new MergeAtomicTask());
+      Threads.forGroup(CatConstant.CAT).start(this);
+      Threads.forGroup(CatConstant.CAT).start(m_manager);
+      Threads.forGroup(CatConstant.CAT).start(new MergeAtomicTask());
    }
 
    private boolean isAtomicMessage(MessageTree tree) {
@@ -210,7 +211,7 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
             logQueueFullInfo(tree);
          }
       } else {
-         boolean result = m_queue.offer(tree, m_manager.getSample());
+         boolean result = m_queue.offer(tree);
 
          if (!result) {
             logQueueFullInfo(tree);

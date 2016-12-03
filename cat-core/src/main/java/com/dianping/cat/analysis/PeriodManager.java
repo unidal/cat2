@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -84,7 +85,7 @@ public class PeriodManager implements Task {
 					startPeriod(value);
 				} else if (value < 0) {
 					// last period is over,make it asynchronous
-					Threads.forGroup("cat").start(new EndTaskThread(-value));
+					Threads.forGroup(CatConstant.CAT).start(new EndTaskThread(-value));
 				}
 			} catch (Throwable e) {
 				Cat.logError(e);

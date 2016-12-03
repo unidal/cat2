@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Files;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
@@ -92,7 +93,7 @@ public class DumperPerfomaceTest extends ComponentTestCase {
 		for (int i = 0; i < 2; i++) {
 			Dumper task = new Dumper(i);
 
-			Threads.forGroup("cat").start(task);
+			Threads.forGroup(CatConstant.CAT).start(task);
 			threads.add(task);
 		}
 

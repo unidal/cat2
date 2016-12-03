@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -41,7 +42,7 @@ public class TcpSocketSkeleton implements Task, LogEnabled {
    @Override
    public void run() {
       try {
-         ServerTransport transport = Transports.asServer().name("Cat").bind(m_config.getTcpPort()) //
+         ServerTransport transport = Transports.asServer().name(CatConstant.CAT).bind(m_config.getTcpPort()) //
                .withBossThreads(m_config.getBossThreads()) //
                .withWorkerThreads(m_config.getWorkerThreads()) //
                .option(ChannelOption.SO_REUSEADDR, true) //

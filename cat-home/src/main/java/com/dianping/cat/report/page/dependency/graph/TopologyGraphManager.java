@@ -12,6 +12,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
@@ -160,7 +161,7 @@ public class TopologyGraphManager implements Initializable, LogEnabled {
 	@Override
 	public void initialize() throws InitializationException {
 		if (m_manager.isJobMachine()) {
-			Threads.forGroup("cat").start(new DependencyReloadTask());
+			Threads.forGroup(CatConstant.CAT).start(new DependencyReloadTask());
 		}
 	}
 

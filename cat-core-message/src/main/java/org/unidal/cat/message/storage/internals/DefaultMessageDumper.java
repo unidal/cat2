@@ -9,6 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.message.storage.BlockDumperManager;
 import org.unidal.cat.message.storage.BucketManager;
 import org.unidal.cat.message.storage.MessageDumper;
@@ -112,7 +113,7 @@ public class DefaultMessageDumper extends ContainerHolder implements MessageDump
 			m_processors.add(processor);
 
 			processor.initialize(hour, i, queue);
-			Threads.forGroup("Cat").start(processor);
+			Threads.forGroup(CatConstant.CAT).start(processor);
 		}
 	}
 
