@@ -11,6 +11,7 @@ import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreManager;
 import org.unidal.cat.core.document.CatDocumentModule;
 import org.unidal.cat.core.report.CatReportModule;
+import org.unidal.cat.server.CatServerConstant;
 import org.unidal.helper.Inets;
 import org.unidal.helper.Threads;
 import org.unidal.initialization.AbstractModule;
@@ -119,11 +120,11 @@ public class CatHomeModule extends AbstractModule {
 
    @Override
    protected void setup(ModuleContext ctx) throws Exception {
-      ctx.info("Begin to start CAT server ...");
+      ctx.info("Starting CAT server ...");
 
       // let CAT client connect to local CAT server directly
-      System.setProperty("ServerMode", "true");
-      System.setProperty("cat.servers", "127.0.0.1");
+      System.setProperty(CatConstant.PROPERTY_SERVER_MODE, "true");
+      System.setProperty(CatConstant.PROPERTY_CAT_SERVERS, "127.0.0.1");
       ((DefaultModuleContext) ctx).getContainer().addContextValue("cat.server.latch", m_catServerLatch);
 
       setupServerConfigManager(ctx);
@@ -142,7 +143,7 @@ public class CatHomeModule extends AbstractModule {
          configManager.initialize(config);
       } else {
          ClientEnvironmentSettings settings = ctx.lookup(ClientEnvironmentSettings.class);
-         File configFile = new File(settings.getCatHome(), "server.xml");
+         File configFile = new File(settings.getCatHome(), CatServerConstant.FILE_SERVER_XML);
 
          configManager.initialize(configFile);
       }
