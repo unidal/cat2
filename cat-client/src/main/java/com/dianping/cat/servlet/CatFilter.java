@@ -260,29 +260,29 @@ public class CatFilter implements Filter {
       },
 
       LOG_SPAN {
-         private void customizeStatus(Transaction t, HttpServletRequest req) {
+         private void customizeStatus(Transaction t, HttpServletRequest req, Context ctx) {
             Object catStatus = req.getAttribute(CatConstants.CAT_STATE);
 
-            if (catStatus != null) {
+            if (catStatus != null && ctx.isTop()) {
                t.setStatus(catStatus.toString());
             } else {
                t.setStatus(Message.SUCCESS);
             }
          }
 
-         private void customizeUri(Transaction t, HttpServletRequest req) {
+         private void customizeUri(Transaction t, HttpServletRequest req, Context ctx) {
             if (!(t instanceof DefaultTransaction)) {
                return;
             }
 
             Object catPageUri = req.getAttribute(CatConstants.CAT_PAGE_URI);
             DefaultTransaction transaction = (DefaultTransaction) t;
-            if (catPageUri != null) {
+            if (catPageUri != null && ctx.isTop()) {
                transaction.setName(catPageUri.toString());
             }
 
             Object catPageType = req.getAttribute(CatConstants.CAT_PAGE_TYPE);
-            if (catPageType != null) {
+            if (catPageType != null && ctx.isTop()) {
                transaction.setType(catPageType.toString());
             }
          }
@@ -315,7 +315,7 @@ public class CatFilter implements Filter {
 
             try {
                ctx.handle();
-               customizeStatus(t, req);
+               customizeStatus(t, req, ctx);
             } catch (ServletException e) {
                Cat.logError(e);
                t.setStatus(e);
@@ -333,7 +333,7 @@ public class CatFilter implements Filter {
                t.setStatus(e);
                throw e;
             } finally {
-               customizeUri(t, req);
+               customizeUri(t, req, ctx);
                t.complete();
             }
          }
