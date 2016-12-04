@@ -64,8 +64,7 @@ public class RemoteClientConfigurationProvider implements ClientConfigurationPro
       List<InetSocketAddress> servers = m_discovery.getMetaServers();
 
       for (InetSocketAddress server : servers) {
-         if (server.getHostString().equals("127.0.0.1")) {
-            // This is for CAT server only!
+         if (m_settings.isServerMode() || server.getHostString().equals("127.0.0.1")) {
             // Build the client configuration directly
             DefaultClientConfiguration configure = new DefaultClientConfiguration();
 

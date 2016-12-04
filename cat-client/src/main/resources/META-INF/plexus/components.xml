@@ -227,6 +227,9 @@
 				<requirement>
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
 			</requirements>
 		</component>
 		<component>

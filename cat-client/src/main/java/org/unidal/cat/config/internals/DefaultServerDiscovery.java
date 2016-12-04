@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.helper.Splitters;
 import org.unidal.lookup.annotation.Inject;
@@ -119,7 +120,7 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    }
 
    protected String getServersFromEnvironmentVariable() {
-      return System.getenv("CAT");
+      return System.getenv(CatConstant.ENV_CAT_SERVERS);
    }
 
    protected String getServersFromSettings() {
@@ -127,6 +128,6 @@ public class DefaultServerDiscovery implements ServerDiscovery, LogEnabled {
    }
 
    protected String getServersFromSystemProperties() {
-      return System.getProperty("cat.servers", null);
+      return System.getProperty(CatConstant.PROPERTY_CAT_SERVERS);
    }
 }

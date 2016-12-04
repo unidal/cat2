@@ -251,7 +251,7 @@ public class CatFilter implements Filter {
 
             String qs = req.getQueryString();
 
-            if (qs != null) {
+            if (qs != null && qs.length() > 0) {
                sb.append('?').append(qs);
             }
 

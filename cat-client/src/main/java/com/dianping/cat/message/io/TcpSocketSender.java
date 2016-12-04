@@ -16,6 +16,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientConfigurationManager;
+import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.cat.message.codec.NativeMessageCodec;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
@@ -46,6 +47,9 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
 
    @Inject
    private ClientConfigurationManager m_configManager;
+
+   @Inject
+   private ClientEnvironmentSettings m_settings;
 
    private MessageQueue m_queue = new DefaultMessageQueue(SIZE);
 
@@ -98,7 +102,11 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
    public void contextualize(Context context) throws ContextException {
       super.contextualize(context);
 
-      m_catServerLatch = (CountDownLatch) context.get("cat.server.latch");
+      try {
+         m_catServerLatch = (CountDownLatch) context.get("cat.server.latch");
+      } catch (Exception e) {
+         // ignore it
+      }
    }
 
    @Override
@@ -107,7 +115,10 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
 
       Threads.forGroup(CatConstant.CAT).start(this);
       Threads.forGroup(CatConstant.CAT).start(m_manager);
-      Threads.forGroup(CatConstant.CAT).start(new MergeAtomicTask());
+
+      if (!m_settings.isDevMode()) {
+         Threads.forGroup(CatConstant.CAT).start(new MergeAtomicTask());
+      }
    }
 
    private boolean isAtomicMessage(MessageTree tree) {
@@ -265,10 +276,9 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
    }
 
    public class MergeAtomicTask implements Task {
-
       @Override
       public String getName() {
-         return "merge-atomic-task";
+         return getClass().getSimpleName();
       }
 
       @Override

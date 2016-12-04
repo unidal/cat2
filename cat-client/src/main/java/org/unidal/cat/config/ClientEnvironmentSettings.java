@@ -18,4 +18,8 @@ public interface ClientEnvironmentSettings {
    public String getIpAddress();
 
    public String getRemoteConfigUrlPattern();
+
+   public boolean isDevMode();
+
+   public boolean isServerMode();
 }

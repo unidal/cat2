@@ -26,7 +26,6 @@ import org.unidal.helper.Files;
 import org.unidal.helper.Splitters;
 import org.unidal.helper.Threads.Task;
 import org.unidal.helper.Urls;
-import org.unidal.lookup.util.StringUtils;
 import org.unidal.tuple.Pair;
 
 import com.dianping.cat.configuration.KVConfig;
@@ -54,6 +53,7 @@ public class ChannelManager implements Task {
 
    private JsonBuilder m_jsonBuilder = new JsonBuilder();
 
+   // wait for server to startup in server mode
    private CountDownLatch m_catServerLatch;
 
    public ChannelManager(Logger logger, List<InetSocketAddress> serverAddresses, MessageQueue queue,
@@ -83,27 +83,32 @@ public class ChannelManager implements Task {
 
       m_bootstrap = bootstrap;
 
-      String serverConfig = loadServerConfig();
+      if (m_catServerLatch == null) {
+         String serverConfig = loadServerConfig();
 
-      if (StringUtils.isNotEmpty(serverConfig)) {
-         List<InetSocketAddress> configedAddresses = parseSocketAddress(serverConfig);
-         ChannelHolder holder = initChannel(configedAddresses, serverConfig);
+         if (serverConfig != null && serverConfig.length() > 0) {
+            List<InetSocketAddress> configedAddresses = parseSocketAddress(serverConfig);
+            ChannelHolder holder = initChannel(configedAddresses, serverConfig);
 
-         if (holder != null) {
-            m_activeChannelHolder = holder;
+            if (holder != null) {
+               m_activeChannelHolder = holder;
+            } else {
+               m_activeChannelHolder = new ChannelHolder();
+               m_activeChannelHolder.setServerAddresses(configedAddresses);
+            }
          } else {
-            m_activeChannelHolder = new ChannelHolder();
-            m_activeChannelHolder.setServerAddresses(configedAddresses);
+            ChannelHolder holder = initChannel(serverAddresses, null);
+
+            if (holder != null) {
+               m_activeChannelHolder = holder;
+            } else {
+               m_activeChannelHolder = new ChannelHolder();
+               m_activeChannelHolder.setServerAddresses(serverAddresses);
+            }
          }
       } else {
-         ChannelHolder holder = initChannel(serverAddresses, null);
-
-         if (holder != null) {
-            m_activeChannelHolder = holder;
-         } else {
-            m_activeChannelHolder = new ChannelHolder();
-            m_activeChannelHolder.setServerAddresses(serverAddresses);
-         }
+         m_activeChannelHolder = new ChannelHolder();
+         m_activeChannelHolder.setServerAddresses(serverAddresses);
       }
    }
 
@@ -289,12 +294,13 @@ public class ChannelManager implements Task {
 
          KVConfig routerConfig = (KVConfig) m_jsonBuilder.parse(content.trim(), KVConfig.class);
          String current = routerConfig.getValue("routers");
-         m_sample = Double.valueOf(routerConfig.getValue("sample").trim());
 
+         m_sample = Double.valueOf(routerConfig.getValue("sample").trim());
          return current.trim();
       } catch (Exception e) {
-         // ignore
+         // ignore it
       }
+
       return null;
    }
 
@@ -347,7 +353,7 @@ public class ChannelManager implements Task {
    private Pair<Boolean, String> routerConfigChanged() {
       String current = loadServerConfig();
 
-      if (!StringUtils.isEmpty(current) && !current.equals(m_activeChannelHolder.getActiveServerConfig())) {
+      if (current != null && !current.equals(m_activeChannelHolder.getActiveServerConfig())) {
          return new Pair<Boolean, String>(true, current);
       } else {
          return new Pair<Boolean, String>(false, current);

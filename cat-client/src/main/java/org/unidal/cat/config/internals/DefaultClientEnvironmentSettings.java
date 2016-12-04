@@ -9,6 +9,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientEnvironmentSettings;
 import org.unidal.helper.Files;
 import org.unidal.helper.Inets;
@@ -25,9 +26,17 @@ import com.dianping.cat.configuration.client.transform.DefaultSaxParser;
  */
 @Named(type = ClientEnvironmentSettings.class)
 public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettings, Initializable, LogEnabled {
-   private static final String CLIENT_XML = "/META-INF/cat/client.xml";
+   private static final String RESOURCE_CLIENT_XML = "/META-INF/cat/client.xml";
 
-   private static final String APP_PROPERTIES = "/META-INF/app.properties";
+   private static final String RESOURCE_APP_PROPERTIES = "/META-INF/app.properties";
+
+   private static final String KEY_APP_NAME = "app.name";
+
+   private static final String KEY_CAT_DEFAULT_SERVER = "cat.default.server";
+
+   private static final String KEY_CAT_HOME = "cat.home";
+
+   private static final String DOMAIN_UNKNOWN = "Unknown";
 
    private Properties m_properties = new Properties();
 
@@ -47,16 +56,16 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
    @Override
    public String getCatHome() {
       if (m_home == null) {
-         String home = System.getProperty("cat.home", null);
+         String home = System.getProperty(CatConstant.PROPERTY_CAT_HOME, null);
 
          if (home == null) {
-            home = System.getenv("CAT_HOME");
+            home = System.getenv(CatConstant.ENV_CAT_HOME);
          }
 
          if (home != null) {
             m_home = home;
          } else {
-            m_home = m_properties.getProperty("cat.home", "/data/appdatas/cat");
+            m_home = m_properties.getProperty(KEY_CAT_HOME, CatConstant.DEFAULT_CAT_HOME);
          }
       }
 
@@ -65,7 +74,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
 
    @Override
    public ClientConfig getClientXml() {
-      File file = new File(getCatHome(), "client.xml");
+      File file = new File(getCatHome(), CatConstant.FILE_CLIENT_XML);
 
       if (file.canRead()) {
          try {
@@ -83,7 +92,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
 
    @Override
    public String getDefaultCatServer() {
-      String server = m_properties.getProperty("cat.default.server");
+      String server = m_properties.getProperty(KEY_CAT_DEFAULT_SERVER);
 
       return server;
    }
@@ -97,7 +106,15 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
    public String getDomain() {
       if (m_domain == null) {
          // try app.properties
-         String domain = m_properties.getProperty("app.name");
+         String domain = null;
+
+         if (domain == null) {
+            domain = System.getProperty(CatConstant.PROPERTY_CAT_DOMAIN);
+         }
+
+         if (domain == null && m_properties != null) {
+            domain = m_properties.getProperty(KEY_APP_NAME);
+         }
 
          // try client.xml
          if (domain == null && m_config != null) {
@@ -111,7 +128,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
          if (domain != null) {
             m_domain = domain;
          } else {
-            m_domain = "Unknown";
+            m_domain = DOMAIN_UNKNOWN;
          }
       }
 
@@ -130,7 +147,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
 
    @Override
    public String getRemoteConfigUrlPattern() {
-      return "http://%s:%s/cat/config/service?op=client&domain=%s";
+      return "http://%s:%s/cat/config/service?op=client&domain=%s"; // TODO fix the hard code
    }
 
    private InputStream getResource(String resource) {
@@ -150,7 +167,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
    }
 
    private void loadAppProperties() {
-      InputStream in = getResource(APP_PROPERTIES);
+      InputStream in = getResource(RESOURCE_APP_PROPERTIES);
 
       if (in != null) {
          Properties properties = new Properties();
@@ -159,7 +176,7 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
             properties.load(in);
             m_properties = properties;
          } catch (Throwable e) {
-            m_logger.warn(String.format("Error when loading %s!", APP_PROPERTIES), e);
+            m_logger.warn(String.format("Error when loading %s!", RESOURCE_APP_PROPERTIES), e);
          } finally {
             try {
                in.close();
@@ -171,13 +188,13 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
    }
 
    private void loadClientConfig() {
-      InputStream in = getResource(CLIENT_XML);
+      InputStream in = getResource(RESOURCE_CLIENT_XML);
 
       if (in != null) {
          try {
             m_config = DefaultSaxParser.parse(in);
          } catch (Exception e) {
-            m_logger.warn(String.format("Error when loading %s!", CLIENT_XML), e);
+            m_logger.warn(String.format("Error when loading %s!", RESOURCE_CLIENT_XML), e);
          } finally {
             try {
                in.close();
@@ -186,5 +203,15 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
             }
          }
       }
+   }
+
+   @Override
+   public boolean isDevMode() {
+      return "true".equals(System.getProperty(CatConstant.PROPERTY_DEV_MODE));
+   }
+
+   @Override
+   public boolean isServerMode() {
+      return "true".equals(System.getProperty(CatConstant.PROPERTY_SERVER_MODE));
    }
 }
