@@ -44,7 +44,7 @@ public class CatClientModule extends AbstractModule {
       // bring up TransportManager
       ctx.lookup(TransportManager.class);
 
-      if (configManager.getConfig().isEnabled() && !settings.isDevMode()) {
+      if (configManager.getConfig().isEnabled() && !settings.isTestMode()) {
          // start status update task
          StatusUpdateTask task = ctx.lookup(StatusUpdateTask.class);
 

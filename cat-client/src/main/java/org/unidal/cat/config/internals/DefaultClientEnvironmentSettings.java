@@ -206,8 +206,8 @@ public class DefaultClientEnvironmentSettings implements ClientEnvironmentSettin
    }
 
    @Override
-   public boolean isDevMode() {
-      return "true".equals(System.getProperty(CatConstant.PROPERTY_DEV_MODE));
+   public boolean isTestMode() {
+      return "true".equals(System.getProperty(CatConstant.PROPERTY_TEST_MODE));
    }
 
    @Override

@@ -19,7 +19,7 @@ public interface ClientEnvironmentSettings {
 
    public String getRemoteConfigUrlPattern();
 
-   public boolean isDevMode();
+   public boolean isTestMode();
 
    public boolean isServerMode();
 }

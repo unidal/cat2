@@ -116,7 +116,7 @@ public class TcpSocketSender extends ContainerHolder implements Task, MessageSen
       Threads.forGroup(CatConstant.CAT).start(this);
       Threads.forGroup(CatConstant.CAT).start(m_manager);
 
-      if (!m_settings.isDevMode()) {
+      if (!m_settings.isTestMode()) {
          Threads.forGroup(CatConstant.CAT).start(new MergeAtomicTask());
       }
    }
