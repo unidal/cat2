@@ -602,7 +602,7 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
+					<role-hint>plain-text</role-hint>
 				</requirement>
 			</requirements>
 		</component>

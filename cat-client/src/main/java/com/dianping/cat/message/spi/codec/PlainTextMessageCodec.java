@@ -1,6 +1,7 @@
 package com.dianping.cat.message.spi.codec;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.UnpooledByteBufAllocator;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -19,6 +20,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
@@ -36,7 +38,9 @@ import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 @Named(type = MessageCodec.class, value = PlainTextMessageCodec.ID)
 public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
-   public static final String ID = "PT1"; // plain text version 1
+   public static final String ID = "plain-text";
+
+   private static final String VERSION = "PT1"; // plain text version 1
 
    private static final byte TAB = '\t'; // tab character
 
@@ -48,23 +52,56 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
 
    private DateHelper m_dateHelper = new DateHelper();
 
-   private ThreadLocal<Context> m_ctx = new ThreadLocal<Context>() {
-      @Override
-      protected Context initialValue() {
-         return new Context();
-      }
-   };
+   private ThreadLocal<Context> m_ctx;
 
    private Logger m_logger;
 
+   public static String encodeTree(MessageTree tree) {
+      String result = "";
+
+      try {
+         PlainTextMessageCodec codec = new PlainTextMessageCodec();
+         ByteBuf buf = codec.encode(tree);
+         buf.readInt(); // get rid of length
+         result = buf.toString(Charset.forName("utf-8"));
+         buf.release();
+      } catch (Exception ex) {
+         Cat.logError(ex);
+      }
+
+      return result;
+   }
+
+   @Override
+   public MessageTree decode(ByteBuf buf) {
+      buf.readInt(); // read the length of the message tree
+      MessageTree tree = new DefaultMessageTree();
+
+      decode(buf, tree);
+      return tree;
+   }
+
    @Override
    public void decode(ByteBuf buf, MessageTree tree) {
+      if (m_ctx == null) {
+         m_ctx = new ThreadLocal<Context>() {
+            @Override
+            protected Context initialValue() {
+               return new Context();
+            }
+         };
+      }
+
       Context ctx = m_ctx.get().setBuffer(buf);
 
-      decodeHeader(ctx, tree);
+      try {
+         decodeHeader(ctx, tree);
 
-      if (buf.readableBytes() > 0) {
-         decodeMessage(ctx, tree);
+         if (buf.readableBytes() > 0) {
+            decodeMessage(ctx, tree);
+         }
+      } finally {
+         ctx.removeBuf();
       }
    }
 
@@ -82,7 +119,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       String rootMessageId = helper.read(ctx, TAB);
       String sessionToken = helper.read(ctx, LF);
 
-      if (ID.equals(id)) {
+      if (VERSION.equals(id)) {
          tree.setDomain(domain);
          tree.setHostName(hostName);
          tree.setIpAddress(ipAddress);
@@ -110,9 +147,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       case 't':
          DefaultTransaction transaction = new DefaultTransaction(type, name, null);
 
-         if (tree instanceof DefaultMessageTree) {
-            ((DefaultMessageTree) tree).getTransactions().add(transaction);
-         }
+         tree.getTransactions().add(transaction);
 
          helper.read(ctx, LF); // get rid of line feed
          transaction.setTimestamp(m_dateHelper.parse(timestamp));
@@ -126,9 +161,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       case 'A':
          DefaultTransaction tran = new DefaultTransaction(type, name, null);
 
-         if (tree instanceof DefaultMessageTree) {
-            ((DefaultMessageTree) tree).getTransactions().add(tran);
-         }
+         tree.getTransactions().add(tran);
 
          String status = helper.read(ctx, TAB);
          String duration = helper.read(ctx, TAB);
@@ -164,11 +197,6 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
          return stack.pop();
       case 'E':
          DefaultEvent event = new DefaultEvent(type, name);
-
-         if (tree instanceof DefaultMessageTree) {
-            ((DefaultMessageTree) tree).getEvents().add(event);
-         }
-
          String eventStatus = helper.read(ctx, TAB);
          String eventData = helper.read(ctx, TAB);
 
@@ -176,6 +204,8 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
          event.setTimestamp(m_dateHelper.parse(timestamp));
          event.setStatus(eventStatus);
          event.addData(eventData);
+
+         tree.getEvents().add(event);
 
          if (parent != null) {
             parent.addChild(event);
@@ -186,9 +216,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       case 'M':
          DefaultMetric metric = new DefaultMetric(type, name);
 
-         if (tree instanceof DefaultMessageTree) {
-            ((DefaultMessageTree) tree).addMetric(metric);
-         }
+         tree.getMetrics().add(metric);
 
          String metricStatus = helper.read(ctx, TAB);
          String metricData = helper.read(ctx, TAB);
@@ -223,9 +251,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       case 'H':
          DefaultHeartbeat heartbeat = new DefaultHeartbeat(type, name);
 
-         if (tree instanceof DefaultMessageTree) {
-            ((DefaultMessageTree) tree).addHeartbeat(heartbeat);
-         }
+         tree.getHeartbeats().add(heartbeat);
 
          String heartbeatStatus = helper.read(ctx, TAB);
          String heartbeatData = helper.read(ctx, TAB);
@@ -271,118 +297,138 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
    }
 
    @Override
-   public void encode(MessageTree tree, ByteBuf buf) {
-      encodeHeader(tree, buf);
+   public ByteBuf encode(MessageTree tree) {
+      ByteBuf buf = UnpooledByteBufAllocator.DEFAULT.buffer(4 * 1024);
+      int count = 0;
+      int index = buf.writerIndex();
+
+      buf.writeInt(0); // place-holder
+      count += encodeHeader(tree, buf);
 
       if (tree.getMessage() != null) {
-         encodeMessage(tree.getMessage(), buf);
+         count += encodeMessage(tree.getMessage(), buf);
       }
+
+      buf.setInt(index, count);
+      return buf;
    }
 
-   protected void encodeHeader(MessageTree tree, ByteBuf buf) {
+   protected int encodeHeader(MessageTree tree, ByteBuf buf) {
       BufferHelper helper = m_bufferHelper;
+      int count = 0;
 
-      helper.write(buf, ID);
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getDomain());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getHostName());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getIpAddress());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getThreadGroupName());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getThreadId());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getThreadName());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getMessageId());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getParentMessageId());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getRootMessageId());
-      helper.write(buf, TAB);
-      helper.write(buf, tree.getSessionToken());
-      helper.write(buf, LF);
+      count += helper.write(buf, VERSION);
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getDomain());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getHostName());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getIpAddress());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getThreadGroupName());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getThreadId());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getThreadName());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getMessageId());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getParentMessageId());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getRootMessageId());
+      count += helper.write(buf, TAB);
+      count += helper.write(buf, tree.getSessionToken());
+      count += helper.write(buf, LF);
+
+      return count;
    }
 
-   protected void encodeLine(Message message, ByteBuf buf, char type, Policy policy) {
+   protected int encodeLine(Message message, ByteBuf buf, char type, Policy policy) {
       BufferHelper helper = m_bufferHelper;
+      int count = 0;
 
-      helper.write(buf, (byte) type);
+      count += helper.write(buf, (byte) type);
 
       if (type == 'T' && message instanceof Transaction) {
          long duration = ((Transaction) message).getDurationInMillis();
 
-         helper.write(buf, m_dateHelper.format(message.getTimestamp() + duration));
+         count += helper.write(buf, m_dateHelper.format(message.getTimestamp() + duration));
       } else {
-         helper.write(buf, m_dateHelper.format(message.getTimestamp()));
+         count += helper.write(buf, m_dateHelper.format(message.getTimestamp()));
       }
 
-      helper.write(buf, TAB);
-      helper.writeRaw(buf, message.getType());
-      helper.write(buf, TAB);
-      helper.writeRaw(buf, message.getName());
-      helper.write(buf, TAB);
+      count += helper.write(buf, TAB);
+      count += helper.writeRaw(buf, message.getType());
+      count += helper.write(buf, TAB);
+      count += helper.writeRaw(buf, message.getName());
+      count += helper.write(buf, TAB);
 
       if (policy != Policy.WITHOUT_STATUS) {
-         helper.writeRaw(buf, message.getStatus());
-         helper.write(buf, TAB);
+         count += helper.writeRaw(buf, message.getStatus());
+         count += helper.write(buf, TAB);
 
          Object data = message.getData();
 
          if (policy == Policy.WITH_DURATION && message instanceof Transaction) {
             long duration = ((Transaction) message).getDurationInMicros();
 
-            helper.write(buf, String.valueOf(duration));
-            helper.write(buf, "us");
-            helper.write(buf, TAB);
+            count += helper.write(buf, String.valueOf(duration));
+            count += helper.write(buf, "us");
+            count += helper.write(buf, TAB);
          }
 
-         helper.writeRaw(buf, String.valueOf(data));
-         helper.write(buf, TAB);
+         count += helper.writeRaw(buf, String.valueOf(data));
+         count += helper.write(buf, TAB);
       }
 
-      helper.write(buf, LF);
+      count += helper.write(buf, LF);
+
+      return count;
    }
 
-   public void encodeMessage(Message message, ByteBuf buf) {
+   public int encodeMessage(Message message, ByteBuf buf) {
       if (message instanceof Transaction) {
          Transaction transaction = (Transaction) message;
          List<Message> children = transaction.getChildren();
 
          if (children.isEmpty()) {
-            encodeLine(transaction, buf, 'A', Policy.WITH_DURATION);
+            return encodeLine(transaction, buf, 'A', Policy.WITH_DURATION);
          } else {
+            int count = 0;
             int len = children.size();
 
-            encodeLine(transaction, buf, 't', Policy.WITHOUT_STATUS);
+            count += encodeLine(transaction, buf, 't', Policy.WITHOUT_STATUS);
 
             for (int i = 0; i < len; i++) {
                Message child = children.get(i);
 
                if (child != null) {
-                  encodeMessage(child, buf);
+                  count += encodeMessage(child, buf);
                }
             }
 
-            encodeLine(transaction, buf, 'T', Policy.WITH_DURATION);
+            count += encodeLine(transaction, buf, 'T', Policy.WITH_DURATION);
+
+            return count;
          }
       } else if (message instanceof Event) {
-         encodeLine(message, buf, 'E', Policy.DEFAULT);
+         return encodeLine(message, buf, 'E', Policy.DEFAULT);
       } else if (message instanceof Trace) {
-         encodeLine(message, buf, 'L', Policy.DEFAULT);
+         return encodeLine(message, buf, 'L', Policy.DEFAULT);
       } else if (message instanceof Metric) {
-         encodeLine(message, buf, 'M', Policy.DEFAULT);
+         return encodeLine(message, buf, 'M', Policy.DEFAULT);
       } else if (message instanceof Heartbeat) {
-         encodeLine(message, buf, 'H', Policy.DEFAULT);
+         return encodeLine(message, buf, 'H', Policy.DEFAULT);
       } else {
          throw new RuntimeException(String.format("Unsupported message type: %s.", message));
       }
    }
 
+   @Override
    public void reset() {
-      m_ctx.remove();
+      if (m_ctx != null) {
+         m_ctx.remove();
+      }
    }
 
    protected void setBufferWriter(BufferWriter writer) {
@@ -467,11 +513,12 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
          }
       }
 
-      public void write(ByteBuf buf, byte b) {
+      public int write(ByteBuf buf, byte b) {
          buf.writeByte(b);
+         return 1;
       }
 
-      public void write(ByteBuf buf, String str) {
+      public int write(ByteBuf buf, String str) {
          if (str == null) {
             str = "null";
          }
@@ -479,9 +526,10 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
          byte[] data = str.getBytes();
 
          buf.writeBytes(data);
+         return data.length;
       }
 
-      public void writeRaw(ByteBuf buf, String str) {
+      public int writeRaw(ByteBuf buf, String str) {
          if (str == null) {
             str = "null";
          }
@@ -494,7 +542,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
             data = str.getBytes();
          }
 
-         m_writer.writeTo(buf, data);
+         return m_writer.writeTo(buf, data);
       }
    }
 
@@ -504,7 +552,7 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       private char[] m_data;
 
       public Context() {
-         m_data = new char[4 * 1024 * 1024];
+         m_data = new char[1024 * 1024];
       }
 
       public ByteBuf getBuffer() {
@@ -518,6 +566,10 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
       public Context setBuffer(ByteBuf buffer) {
          m_buffer = buffer;
          return this;
+      }
+
+      public void removeBuf() {
+         m_buffer = null;
       }
    }
 
@@ -604,5 +656,20 @@ public class PlainTextMessageCodec implements MessageCodec, LogEnabled {
             return DEFAULT;
          }
       }
+   }
+
+   @Override
+   public void encode(MessageTree tree, ByteBuf buf) {
+      int count = 0;
+      int index = buf.writerIndex();
+
+      buf.writeInt(0); // place-holder
+      count += encodeHeader(tree, buf);
+
+      if (tree.getMessage() != null) {
+         count += encodeMessage(tree.getMessage(), buf);
+      }
+
+      buf.setInt(index, count);
    }
 }

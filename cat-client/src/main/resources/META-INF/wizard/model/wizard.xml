@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wizard package="org.unidal.cat">
+<wizard package="com.dianping.cat">
    <model package="org.unidal.cat.config.route" name="route-policy">
       <sample-model>src/test/resources/org/unidal/cat/config/route-policy.xml</sample-model>
+   </model>
+   <model package="com.dianping.cat.configuration" name="property-config">
+      <sample-model>src/main/resources/config/property-config.xml</sample-model>
    </model>
 </wizard>

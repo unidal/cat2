@@ -131,12 +131,12 @@
 		</component>
 		<component>
 			<role>org.unidal.cat.transport.decode.DecodeHandler</role>
-			<role-hint>PT1</role-hint>
+			<role-hint>plain-text</role-hint>
 			<implementation>org.unidal.cat.spi.message.PlainTextMessageDecodeHandler</implementation>
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
+					<role-hint>plain-text</role-hint>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.analysis.MessageConsumer</role>
@@ -333,7 +333,7 @@
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>PT1</role-hint>
+					<role-hint>plain-text</role-hint>
 				</requirement>
 				<requirement>
 					<role>org.unidal.cat.message.storage.hdfs.MessageConsumerFinder</role>

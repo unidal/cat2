@@ -1,7 +1,6 @@
 package com.dianping.cat.message.spi.codec;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 import org.junit.Test;
 
@@ -19,20 +18,13 @@ public class MessageCodecPerformanceTest extends CatTestCase {
 	public void testCodePerformance() throws Exception {
 		MessageCodec codec = lookup(MessageCodec.class, ID);
 		MessageTree tree = buildMessage();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(10240);
-		
-		codec.encode(tree, buf);
+		ByteBuf buf = codec.encode(tree);
 
 		int count = 5000000;
 		for (int i = 0; i < count; i++) {
 
 			buf.markReaderIndex();
-			// read the size of the message
-			buf.readInt();
-			
-			DefaultMessageTree result = new DefaultMessageTree();
-			
-			codec.decode(buf, result);
+			DefaultMessageTree result = (DefaultMessageTree) codec.decode(buf);
 			buf.resetReaderIndex();
 			result.setBuffer(buf);
 		}

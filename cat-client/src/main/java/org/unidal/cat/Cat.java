@@ -7,13 +7,13 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.codehaus.plexus.PlexusContainer;
 import org.unidal.cat.internals.CatClientInitializer;
-import org.unidal.cat.internals.NullMessageProducer;
 import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.ContainerLoader;
 
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.Transaction;
+import com.dianping.cat.message.internal.NullMessageProducer;
 
 /**
  * This is the main entry point of CAT API.
@@ -128,7 +128,7 @@ public class Cat {
                         m_policy = policy;
                         m_producer.set(initializer.initialize(m_properties));
                      } catch (Exception e) {
-                        m_producer.set(NullMessageProducer.INSTANCE);
+                        m_producer.set(NullMessageProducer.NULL_MESSAGE_PRODUCER);
                         System.err.println("[WARN] Failed to initialize CAT, CAT is DISABLED!");
                         e.printStackTrace();
                      }
@@ -138,7 +138,7 @@ public class Cat {
                }
             }
          } else {
-            m_producer.set(NullMessageProducer.INSTANCE);
+            m_producer.set(NullMessageProducer.NULL_MESSAGE_PRODUCER);
          }
       }
 

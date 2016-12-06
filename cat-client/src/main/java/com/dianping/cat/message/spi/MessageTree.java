@@ -2,31 +2,45 @@ package com.dianping.cat.message.spi;
 
 import io.netty.buffer.ByteBuf;
 
+import java.util.List;
+
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
+import com.dianping.cat.message.Metric;
+import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.MessageId;
 
 public interface MessageTree extends Cloneable {
+	public boolean canDiscard();
+
 	public MessageTree copy();
 
 	public ByteBuf getBuffer();
-
-	public String getDomain();
 	
+	public String getDomain();
+
+	public List<Event> getEvents();
+
 	public MessageId getFormatMessageId();
+
+	public List<Heartbeat> getHeartbeats();
 
 	public String getHostName();
 
 	public String getIpAddress();
 
+	public String getSessionToken();
+
 	public Message getMessage();
 
 	public String getMessageId();
 
+	public List<Metric> getMetrics();
+
 	public String getParentMessageId();
 
 	public String getRootMessageId();
-
-	public String getSessionToken();
 
 	public String getThreadGroupName();
 
@@ -34,7 +48,11 @@ public interface MessageTree extends Cloneable {
 
 	public String getThreadName();
 
-	public boolean isSample();
+	public List<Transaction> getTransactions();
+
+	public boolean isProcessLoss();
+
+	public void setDiscard(boolean discard);
 
 	public void setDomain(String domain);
 
@@ -48,17 +66,18 @@ public interface MessageTree extends Cloneable {
 
 	public void setMessageId(String messageId);
 
+	public void setSessionToken(String session);
+
 	public void setParentMessageId(String parentMessageId);
+
+	public void setProcessLoss(boolean loss);
 
 	public void setRootMessageId(String rootMessageId);
 
-	public void setSample(boolean sample);
-
-	public void setSessionToken(String sessionToken);
-
 	public void setThreadGroupName(String name);
-	
+
 	public void setThreadId(String threadId);
 	
 	public void setThreadName(String id);
+
 }

@@ -14,6 +14,10 @@
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
 		</component>
 		<component>
+			<role>com.dianping.cat.message.internal.MessageIdFactory</role>
+			<implementation>com.dianping.cat.message.internal.MessageIdFactory</implementation>
+		</component>
+		<component>
 			<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 			<implementation>org.unidal.cat.config.internals.DefaultClientEnvironmentSettings</implementation>
 		</component>
@@ -79,7 +83,7 @@
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.MessageCodec</role>
-			<role-hint>PT1</role-hint>
+			<role-hint>plain-text</role-hint>
 			<implementation>com.dianping.cat.message.spi.codec.PlainTextMessageCodec</implementation>
 		</component>
 		<component>
@@ -170,13 +174,10 @@
 			<implementation>com.dianping.cat.message.internal.DefaultMessageProducer</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.message.MessagePolicy</role>
+					<role>com.dianping.cat.message.internal.MessageIdFactory</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.message.MessageIdFactory</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -185,19 +186,13 @@
 			<implementation>com.dianping.cat.message.internal.DefaultMessageManager</implementation>
 			<requirements>
 				<requirement>
-					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.message.MessagePolicy</role>
-				</requirement>
-				<requirement>
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.io.TransportManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.message.MessageIdFactory</role>
+					<role>com.dianping.cat.message.internal.MessageIdFactory</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -209,12 +204,12 @@
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.io.MessageSender</role>
+					<role>com.dianping.cat.message.io.TcpSocketSender</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.message.io.MessageSender</role>
+			<role>com.dianping.cat.message.io.TcpSocketSender</role>
 			<implementation>com.dianping.cat.message.io.TcpSocketSender</implementation>
 			<requirements>
 				<requirement>
@@ -228,7 +223,7 @@
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
-					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+					<role>com.dianping.cat.message.internal.MessageIdFactory</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -243,6 +238,15 @@
 				<requirement>
 					<role>com.dianping.cat.message.spi.MessageStatistics</role>
 				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.analyzer.DataUploader</role>
+			<implementation>com.dianping.cat.analyzer.DataUploader</implementation>
+			<requirements>
 				<requirement>
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>

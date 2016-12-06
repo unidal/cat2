@@ -45,19 +45,10 @@ public class PlainTextMessageCodecTest {
 
 	private void checkTree(MessageTree tree, String expected) {
 		PlainTextMessageCodec codec = new PlainTextMessageCodec();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(10240);
+		ByteBuf buf = codec.encode(tree);
+		MessageTree t = codec.decode(buf);
 
-		codec.encode(tree, buf);
-
-		String actual = buf.toString(Charset.forName("utf-8"));
-
-		Assert.assertEquals(expected, actual);
-
-		MessageTree t = new DefaultMessageTree();
-		
-		codec.decode(buf, t);
-
-		Assert.assertEquals(expected, t.toString());
+		Assert.assertEquals(expected, PlainTextMessageCodec.encodeTree(t));
 	}
 
 	private Event newEvent(String type, String name, long timestamp, String status, String data) {
@@ -201,24 +192,16 @@ public class PlainTextMessageCodecTest {
 		root.addChild(newTransaction("Service", "Auth", timestamp, "0", 20, "userId=1357&token=..."));
 		root.addChild(newTransaction("Cache", "findReviewByPK", timestamp + 22, "Missing", 1, "2468") //
 		      .addChild(newEvent("CacheHost", "host-1", timestamp + 22, "0", "ip=192.168.8.123")));
-		root.addChild(newTransaction("DAL", "findReviewByPK", timestamp + 25, "0", 5,
-		      "select title,content from Review where id = ?"));
+		root.addChild(newTransaction("DAL", "findReviewByPK", timestamp + 25, "0", 5, "select title,content from Review where id = ?"));
 		root.addChild(newEvent("URL", "View", timestamp + 40, "0", "view=HTML"));
 
-		check(root, "t2012-01-02 15:33:41.987\tURL\tReview\t\n"
-		      + //
-		      "E2012-01-02 15:33:41.987\tURL\tPayload\t0\tip=127.0.0.1&ua=Mozilla 5.0...&refer=...&...\t\n"
-		      + //
-		      "A2012-01-02 15:33:41.987\tService\tAuth\t0\t20000us\tuserId=1357&token=...\t\n"
-		      + //
-		      "t2012-01-02 15:33:42.009\tCache\tfindReviewByPK\t\n"
-		      + //
-		      "E2012-01-02 15:33:42.009\tCacheHost\thost-1\t0\tip=192.168.8.123\t\n"
-		      + //
-		      "T2012-01-02 15:33:42.010\tCache\tfindReviewByPK\tMissing\t1000us\t2468\t\n"
-		      + //
-		      "A2012-01-02 15:33:42.012\tDAL\tfindReviewByPK\t0\t5000us\tselect title,content from Review where id = ?\t\n"
-		      + //
+		check(root, "t2012-01-02 15:33:41.987\tURL\tReview\t\n" + //
+		      "E2012-01-02 15:33:41.987\tURL\tPayload\t0\tip=127.0.0.1&ua=Mozilla 5.0...&refer=...&...\t\n" + //
+		      "A2012-01-02 15:33:41.987\tService\tAuth\t0\t20000us\tuserId=1357&token=...\t\n" + //
+		      "t2012-01-02 15:33:42.009\tCache\tfindReviewByPK\t\n" + //
+		      "E2012-01-02 15:33:42.009\tCacheHost\thost-1\t0\tip=192.168.8.123\t\n" + //
+		      "T2012-01-02 15:33:42.010\tCache\tfindReviewByPK\tMissing\t1000us\t2468\t\n" + //
+		      "A2012-01-02 15:33:42.012\tDAL\tfindReviewByPK\t0\t5000us\tselect title,content from Review where id = ?\t\n" + //
 		      "E2012-01-02 15:33:42.027\tURL\tView\t0\tview=HTML\t\n" + //
 		      "T2012-01-02 15:33:42.087\tURL\tReview\t0\t100000us\t/review/2468\t\n");
 	}

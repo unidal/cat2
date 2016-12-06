@@ -9,9 +9,8 @@ import java.util.Map;
 import junit.framework.Assert;
 
 import org.junit.Test;
-
-import com.site.helper.Splitters;
-import com.site.helper.Stringizers;
+import org.unidal.helper.Splitters;
+import org.unidal.helper.Stringizers;
 import org.unidal.lookup.util.StringUtils;
 
 public class ToolsTest {

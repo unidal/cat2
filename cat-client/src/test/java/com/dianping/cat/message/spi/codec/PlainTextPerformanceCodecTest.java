@@ -1,7 +1,6 @@
 package com.dianping.cat.message.spi.codec;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -12,68 +11,18 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.DefaultTransaction;
 import com.dianping.cat.message.spi.MessageTree;
-import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 
 public class PlainTextPerformanceCodecTest {
-
-	private int count = 100000;
 
 	@Test
 	public void test() throws InterruptedException {
 		MessageTree tree = buildMessages();
 
 		PlainTextMessageCodec codec = new PlainTextMessageCodec();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
-		codec.encode(tree, buf);
+		ByteBuf buf = codec.encode(tree);
+		MessageTree tree2 = codec.decode(buf);
 
-		buf.readInt();
-		MessageTree tree2 = new DefaultMessageTree();
-		codec.decode(buf, tree2);
-
-		Thread.sleep(1000);
-	}
-
-	@Test
-	public void testMany() throws InterruptedException {
-		MessageTree tree = buildMessages();
-
-		PlainTextMessageCodec codec = new PlainTextMessageCodec();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
-		codec.encode(tree, buf);
-
-		buf.readInt();
-		buf.markReaderIndex();
-
-		long current = System.currentTimeMillis();
-		for (int i = 0; i < count; i++) {
-			MessageTree tree2 = new DefaultMessageTree();
-			codec.decode(buf, tree2);
-			buf.resetReaderIndex();
-		}
-		System.out.println("Cost:" + (System.currentTimeMillis() - current));
-
-		Thread.sleep(1000);
-	}
-
-	@Test
-	public void testManyOld() throws InterruptedException {
-		MessageTree tree = buildMessages();
-		PlainTextMessageCodec codec = new PlainTextMessageCodec();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(8192);
-
-		codec.encode(tree, buf);
-
-		buf.readInt();
-		buf.markReaderIndex();
-
-		long current = System.currentTimeMillis();
-		for (int i = 0; i < count; i++) {
-			MessageTree tree2 = new DefaultMessageTree();
-			codec.decode(buf, tree2);
-			buf.resetReaderIndex();
-		}
-		System.out.println("Cost:" + (System.currentTimeMillis() - current));
-
+		System.out.println(tree2);
 		Thread.sleep(1000);
 	}
 
@@ -88,7 +37,6 @@ public class PlainTextPerformanceCodecTest {
 		Transaction t8 = Cat.newTransaction("type4", "name4\t\n\t\n\\");
 
 		Cat.logEvent("type1\t\n", "name\t\n", "sdfsdf\t\n", convertException(new NullPointerException()));
-		Cat.logHeartbeat("type1\t\n", "name\t\n", "sdfsdf\t\n", convertException(new NullPointerException()));
 
 		Cat.logError(new RuntimeException());
 

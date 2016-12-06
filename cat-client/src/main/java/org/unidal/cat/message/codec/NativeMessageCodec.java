@@ -468,4 +468,18 @@ public class NativeMessageCodec implements MessageCodec {
          buf.writeBytes(version.getBytes());
       }
    }
+
+   @Override
+   public MessageTree decode(ByteBuf buf) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public ByteBuf encode(MessageTree tree) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public void reset() {
+   }
 }

@@ -1,15 +1,16 @@
 package com.dianping.cat.status;
 
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.config.ClientConfiguration;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -17,14 +18,25 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
+import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 import com.dianping.cat.message.spi.MessageStatistics;
+import com.dianping.cat.status.datasource.c3p0.C3P0InfoCollector;
+import com.dianping.cat.status.datasource.druid.DruidInfoCollector;
+import com.dianping.cat.status.jvm.ClassLoadingInfoCollector;
+import com.dianping.cat.status.jvm.JvmInfoCollector;
+import com.dianping.cat.status.jvm.ThreadInfoCollector;
+import com.dianping.cat.status.model.entity.CustomInfo;
 import com.dianping.cat.status.model.entity.Extension;
 import com.dianping.cat.status.model.entity.StatusInfo;
+import com.dianping.cat.status.send.HttpAgentSender;
+import com.dianping.cat.status.send.HttpSendConfig;
+import com.dianping.cat.status.system.ProcessorInfoCollector;
+import com.dianping.cat.status.system.StaticInfoCollector;
 
 @Named
 public class StatusUpdateTask implements Task, Initializable {
@@ -36,57 +48,62 @@ public class StatusUpdateTask implements Task, Initializable {
 
    private boolean m_active = true;
 
-   private String m_ipAddress;
+   private long m_interval = 60 * 1000;
 
-   private long m_interval = 60 * 1000; // 60 seconds
+   private HttpAgentSender m_sender;
 
-   private String m_jars;
+   private boolean m_httpEnabled;
 
-   private void buildClasspath() {
-      ClassLoader loader = StatusUpdateTask.class.getClassLoader();
-      StringBuilder sb = new StringBuilder();
-
-      buildClasspath(loader, sb);
-      if (sb.length() > 0) {
-         m_jars = sb.substring(0, sb.length() - 1);
-      }
-   }
-
-   private void buildClasspath(ClassLoader loader, StringBuilder sb) {
-      if (loader instanceof URLClassLoader) {
-         URL[] urLs = ((URLClassLoader) loader).getURLs();
-         for (URL url : urLs) {
-            String jar = parseJar(url.toExternalForm());
-
-            if (jar != null) {
-               sb.append(jar).append(',');
-            }
-         }
-         ClassLoader parent = loader.getParent();
-
-         buildClasspath(parent, sb);
-      }
-   }
-
-   private void buildExtensionData(StatusInfo status) {
+   private void buildExtraStatus(StatusInfo status) {
       StatusExtensionRegister res = StatusExtensionRegister.getInstance();
       List<StatusExtension> extensions = res.getStatusExtension();
 
       for (StatusExtension extension : extensions) {
-         String id = extension.getId();
-         String des = extension.getDescription();
-         Map<String, String> propertis = extension.getProperties();
-         Extension item = status.findOrCreateExtension(id).setDescription(des);
+         Transaction t = Cat.newTransaction("System", "StatusExtension-" + extension.getId());
 
-         for (Entry<String, String> entry : propertis.entrySet()) {
-            try {
-               double value = Double.parseDouble(entry.getValue());
-               item.findOrCreateExtensionDetail(entry.getKey()).setValue(value);
-            } catch (Exception e) {
-               Cat.logError("StatusExtension can only be double type", e);
+         try {
+            Map<String, String> propertis = extension.getProperties();
+
+            if (propertis.size() > 0) {
+               String id = extension.getId();
+               String des = extension.getDescription();
+               Extension item = status.findOrCreateExtension(id).setDescription(des);
+               long mills = System.currentTimeMillis();
+
+               for (Entry<String, String> entry : propertis.entrySet()) {
+                  final String key = entry.getKey();
+                  final String value = entry.getValue();
+
+                  try {
+                     double doubleValue = Double.parseDouble(value);
+
+                     item.findOrCreateExtensionDetail(key).setValue(doubleValue);
+
+                     if (m_httpEnabled) {
+                        m_sender.asyncSend(key, value, mills);
+                     }
+                  } catch (Exception e) {
+                     status.getCustomInfos().put(key, new CustomInfo().setKey(key).setValue(value));
+                  }
+               }
             }
+            t.setSuccessStatus();
+         } catch (Exception e) {
+            t.setStatus(e);
+         } finally {
+            t.complete();
          }
       }
+   }
+
+   private String buildJstack() {
+      ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+
+      bean.setThreadContentionMonitoringEnabled(true);
+
+      ThreadInfo[] threads = bean.dumpAllThreads(false, false);
+
+      return threadDump(threads);
    }
 
    @Override
@@ -96,18 +113,36 @@ public class StatusUpdateTask implements Task, Initializable {
 
    @Override
    public void initialize() throws InitializationException {
-      m_ipAddress = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
+      try {
+         JvmInfoCollector.getInstance().registerJVMCollector();
+         StatusExtensionRegister.getInstance().register(new StaticInfoCollector());
+         StatusExtensionRegister.getInstance().register(new ClassLoadingInfoCollector());
+         StatusExtensionRegister.getInstance().register(new ProcessorInfoCollector());
+         StatusExtensionRegister.getInstance().register(new ThreadInfoCollector());
+         StatusExtensionRegister.getInstance().register(new C3P0InfoCollector());
+         StatusExtensionRegister.getInstance().register(new DruidInfoCollector());
+         HttpSendConfig config = HttpSendConfig.loadDefaultConfig();
+
+         m_httpEnabled = (!config.isDisabled()) && (!jmonitorExsit());
+
+         if (m_httpEnabled) {
+            m_sender = HttpAgentSender.getInstance(config);
+
+            m_sender.initWorkThread();
+         }
+      } catch (Exception e) {
+         // ignore
+      }
    }
 
-   private String parseJar(String path) {
-      if (path.endsWith(".jar")) {
-         int index = path.lastIndexOf('/');
+   private boolean jmonitorExsit() {
+      try {
+         Class.forName("com.meituan.jmonitor.config.JMonitorConfig");
 
-         if (index > -1) {
-            return path.substring(index + 1);
-         }
+         return true;
+      } catch (Exception e) {
+         return false;
       }
-      return null;
    }
 
    @Override
@@ -135,35 +170,24 @@ public class StatusUpdateTask implements Task, Initializable {
          }
       }
 
-      try {
-         buildClasspath();
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
       MessageProducer cat = Cat.getProducer();
       Transaction reboot = cat.newTransaction("System", "Reboot");
+      final String localHostAddress = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
       reboot.setStatus(Message.SUCCESS);
-      cat.logEvent("Reboot", NetworkInterfaceManager.INSTANCE.getLocalHostAddress(), Message.SUCCESS, null);
+      cat.logEvent("Reboot", localHostAddress, Message.SUCCESS, null);
       reboot.complete();
 
-      while (m_active) {
+      while (m_active && Cat.isEnabled()) {
          long start = MilliSecondTimer.currentTimeMillis();
-         ClientConfiguration config = m_configManager.getConfig();
 
-         if (config.isEnabled()) {
+         if (m_configManager.getConfig().isEnabled()) {
             Transaction t = cat.newTransaction("System", "Status");
-            Heartbeat h = cat.newHeartbeat("Heartbeat", m_ipAddress);
+            Heartbeat h = cat.newHeartbeat("Heartbeat", localHostAddress);
             StatusInfo status = new StatusInfo();
 
-            t.addData("dumpLocked", config.isDumpLockedThread());
-
             try {
-               StatusInfoCollector statusInfoCollector = new StatusInfoCollector(m_statistics, m_jars);
-
-               status.accept(statusInfoCollector.setDumpLocked(config.isDumpLockedThread()));
-
-               buildExtensionData(status);
+               buildExtraStatus(status);
                h.addData(status.toString());
                h.setStatus(Message.SUCCESS);
             } catch (Throwable e) {
@@ -172,9 +196,23 @@ public class StatusUpdateTask implements Task, Initializable {
             } finally {
                h.complete();
             }
+            Cat.logEvent("Heartbeat", "jstack", Event.SUCCESS, buildJstack());
             t.setStatus(Message.SUCCESS);
             t.complete();
          }
+
+         try {
+            long current = System.currentTimeMillis() / 1000 / 60;
+            int min = (int) (current % (60));
+
+            // refresh config 3 minute
+            if (min % 3 == 0) {
+               // m_configManager.refreshConfig(); TODO remove it?
+            }
+         } catch (Exception e) {
+            // ignore
+         }
+
          long elapsed = MilliSecondTimer.currentTimeMillis() - start;
 
          if (elapsed < m_interval) {
@@ -187,12 +225,25 @@ public class StatusUpdateTask implements Task, Initializable {
       }
    }
 
-   public void setInterval(long interval) {
-      m_interval = interval;
-   }
-
    @Override
    public void shutdown() {
       m_active = false;
+   }
+
+   private String threadDump(ThreadInfo[] threads) {
+      StringBuilder sb = new StringBuilder(32768);
+      int index = 1;
+
+      TreeMap<String, ThreadInfo> sortedThreads = new TreeMap<String, ThreadInfo>();
+
+      for (ThreadInfo thread : threads) {
+         sortedThreads.put(thread.getThreadName(), thread);
+      }
+
+      for (ThreadInfo thread : sortedThreads.values()) {
+         sb.append(index++).append(": ").append(thread);
+      }
+
+      return sb.toString();
    }
 }

@@ -15,6 +15,7 @@ import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleContext;
 import org.unidal.lookup.annotation.Named;
 
+import com.dianping.cat.analyzer.DataUploader;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 import com.dianping.cat.message.io.TransportManager;
 import com.dianping.cat.status.StatusUpdateTask;
@@ -45,10 +46,9 @@ public class CatClientModule extends AbstractModule {
       ctx.lookup(TransportManager.class);
 
       if (configManager.getConfig().isEnabled() && !settings.isTestMode()) {
-         // start status update task
-         StatusUpdateTask task = ctx.lookup(StatusUpdateTask.class);
-
-         Threads.forGroup(CatConstant.CAT).start(task);
+         // start status update task & data uploader task
+         Threads.forGroup(CatConstant.CAT).start(ctx.lookup(StatusUpdateTask.class));
+         Threads.forGroup("cat").start(ctx.lookup(DataUploader.class));
       }
    }
 

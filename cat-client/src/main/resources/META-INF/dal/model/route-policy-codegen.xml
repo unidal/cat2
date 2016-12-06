@@ -5,6 +5,7 @@
     <attribute name="sample-ratio" value-type="double" />
     <attribute name="dump-locked-thread" value-type="boolean" />
     <attribute name="max-message-lines" value-type="int" />
+    <attribute name="blocked" value-type="boolean" />
     <entity-ref name="server-node" type="list" names="server-nodes" />
   </entity>
   <entity name="server-node">

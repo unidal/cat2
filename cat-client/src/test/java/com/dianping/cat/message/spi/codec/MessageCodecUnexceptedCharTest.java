@@ -1,7 +1,6 @@
 package com.dianping.cat.message.spi.codec;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -20,11 +19,8 @@ public class MessageCodecUnexceptedCharTest extends CatTestCase {
 	public void testCodePerformance() throws Exception {
 		MessageCodec codec = lookup(MessageCodec.class, ID);
 		MessageTree tree = buildMessage();
-		ByteBuf buf = ByteBufAllocator.DEFAULT.buffer(10240);
-		
-		codec.encode(tree, buf);
-		MessageTree result = new DefaultMessageTree();
-		codec.decode(buf, result);
+		ByteBuf buf = codec.encode(tree);
+		MessageTree result = codec.decode(buf);
 		Assert.assertEquals(tree.toString(), result.toString());
 	}
 

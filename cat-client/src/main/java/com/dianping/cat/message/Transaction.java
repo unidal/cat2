@@ -50,6 +50,13 @@ public interface Transaction extends Message {
 	 * @return all children messages, empty if there is no nested children.
 	 */
 	public List<Message> getChildren();
+	
+	/**
+	 * set duration in micros.
+	 * 
+	 * @return duration time in microsecond
+	 */
+	public void setDurationInMillis(long duration);
 
 	/**
 	 * How long the transaction took from construction to complete. Time unit is microsecond.
