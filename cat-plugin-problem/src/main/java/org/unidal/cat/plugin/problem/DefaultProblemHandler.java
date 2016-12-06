@@ -24,7 +24,6 @@ public class DefaultProblemHandler extends AbstractProblemHandler {
    @Inject
    private ServerConfigManager m_configManager;
 
-   @Inject
    private Set<String> m_errorTypes;
 
    @Override
@@ -101,5 +100,4 @@ public class DefaultProblemHandler extends AbstractProblemHandler {
    public void setErrorType(String type) {
       m_errorTypes = new HashSet<String>(Splitters.by(',').noEmptyItem().split(type));
    }
-
 }
