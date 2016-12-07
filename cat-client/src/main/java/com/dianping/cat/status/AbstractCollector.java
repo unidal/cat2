@@ -5,19 +5,17 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public abstract class AbstractCollector implements StatusExtension {
+   protected Map<String, String> convert(Map<String, Number> map) {
+      Map<String, String> result = new LinkedHashMap<String, String>();
 
-	protected Map<String, String> convert(Map<String, Number> map) {
-		Map<String, String> result = new LinkedHashMap<String, String>();
+      for (Entry<String, Number> entry : map.entrySet()) {
+         result.put(entry.getKey(), entry.getValue().toString());
+      }
+      return result;
+   }
 
-		for (Entry<String, Number> entry : map.entrySet()) {
-			result.put(entry.getKey(), entry.getValue().toString());
-		}
-		return result;
-	}
-	
-	@Override
-	public String getDescription() {
-		return getId();
-	}
-
+   @Override
+   public String getDescription() {
+      return getId();
+   }
 }

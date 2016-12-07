@@ -48,7 +48,7 @@ public class CatClientModule extends AbstractModule {
       if (configManager.getConfig().isEnabled() && !settings.isTestMode()) {
          // start status update task & data uploader task
          Threads.forGroup(CatConstant.CAT).start(ctx.lookup(StatusUpdateTask.class));
-         Threads.forGroup("cat").start(ctx.lookup(DataUploader.class));
+         Threads.forGroup(CatConstant.CAT).start(ctx.lookup(DataUploader.class));
       }
    }
 

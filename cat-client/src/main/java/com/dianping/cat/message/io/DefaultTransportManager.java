@@ -15,10 +15,10 @@ public class DefaultTransportManager implements TransportManager, Initializable,
    @Inject
    private ClientConfigurationManager m_configManager;
 
-   private Logger m_logger;
-
    @Inject
    private TcpSocketSender m_tcpSocketSender;
+
+   private Logger m_logger;
 
    @Override
    public void enableLogging(Logger logger) {
@@ -34,7 +34,7 @@ public class DefaultTransportManager implements TransportManager, Initializable,
    public void initialize() {
       if (!m_configManager.getConfig().isEnabled()) {
          m_tcpSocketSender = null;
-         m_logger.warn("CAT was DISABLED due to not initialized yet!");
+         m_logger.warn("CAT was DISABLED or NOTE initialized correctly!");
       } else {
          List<InetSocketAddress> addresses = m_configManager.getConfig().getServersForTree();
 
