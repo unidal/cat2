@@ -45,7 +45,7 @@ public class DefaultBlock implements Block {
 
    public static int MAX_SIZE = 256 * 1024;
 
-   public static CompressTye COMMPRESS_TYPE = CompressTye.SNAPPY;
+   public static CompressType COMMPRESS_TYPE = CompressType.SNAPPY;
 
    public static int DEFLATE_LEVEL = 5;
 
@@ -58,7 +58,7 @@ public class DefaultBlock implements Block {
       this(domain, hour, COMMPRESS_TYPE);
    }
 
-   public DefaultBlock(String domain, int hour, CompressTye type) {
+   public DefaultBlock(String domain, int hour, CompressType type) {
       m_domain = domain;
       m_hour = hour;
       COMMPRESS_TYPE = type;
@@ -72,23 +72,23 @@ public class DefaultBlock implements Block {
       m_offsets.clear();
    }
 
-   private InputStream createInputSteam(ByteBuf buf, CompressTye type) {
+   private InputStream createInputSteam(ByteBuf buf, CompressType type) {
       ByteBufInputStream os = new ByteBufInputStream(buf);
       InputStream in = null;
 
-      if (type == CompressTye.SNAPPY) {
+      if (type == CompressType.SNAPPY) {
          try {
             in = new SnappyInputStream(os);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.GZIP) {
+      } else if (type == CompressType.GZIP) {
          try {
             in = new GZIPInputStream(os, BUFFER_SIZE);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.DEFLATE) {
+      } else if (type == CompressType.DEFLATE) {
          Inflater inflater = new Inflater(true);
 
          in = new DataInputStream(new InflaterInputStream(os, inflater, BUFFER_SIZE));
@@ -96,19 +96,19 @@ public class DefaultBlock implements Block {
       return in;
    }
 
-   private OutputStream createOutputSteam(ByteBuf buf, CompressTye type) {
+   private OutputStream createOutputSteam(ByteBuf buf, CompressType type) {
       ByteBufOutputStream os = new ByteBufOutputStream(buf);
       OutputStream out = null;
 
-      if (type == CompressTye.SNAPPY) {
+      if (type == CompressType.SNAPPY) {
          out = new SnappyOutputStream(os);
-      } else if (type == CompressTye.GZIP) {
+      } else if (type == CompressType.GZIP) {
          try {
             out = new GZIPOutputStream(os, BUFFER_SIZE);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.DEFLATE) {
+      } else if (type == CompressType.DEFLATE) {
          out = new DeflaterOutputStream(os, new Deflater(DEFLATE_LEVEL, true), BUFFER_SIZE);
       }
       return out;

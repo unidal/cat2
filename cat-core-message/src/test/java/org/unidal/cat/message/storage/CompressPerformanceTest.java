@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.unidal.cat.message.storage.internals.CompressTye;
+import org.unidal.cat.message.storage.internals.CompressType;
 import org.unidal.cat.message.storage.internals.DefaultBlock;
 import org.unidal.helper.Files;
 import org.unidal.lookup.ComponentTestCase;
@@ -40,7 +40,7 @@ public class CompressPerformanceTest extends ComponentTestCase {
 		long start = System.currentTimeMillis();
 		long size = 0;
 		for (int i = 0; i < m_total; i++) {
-			Block block = new DefaultBlock(domain, hour, CompressTye.GZIP);
+			Block block = new DefaultBlock(domain, hour, CompressType.GZIP);
 
 			for (int index = 0; index < 500; index++) {
 				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
@@ -64,7 +64,7 @@ public class CompressPerformanceTest extends ComponentTestCase {
 		long start = System.currentTimeMillis();
 		long size = 0;
 		for (int i = 0; i < m_total; i++) {
-			Block block = new DefaultBlock(domain, hour, CompressTye.DEFLATE);
+			Block block = new DefaultBlock(domain, hour, CompressType.DEFLATE);
 
 			for (int index = 0; index < 500; index++) {
 				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
@@ -89,7 +89,7 @@ public class CompressPerformanceTest extends ComponentTestCase {
 		long start = System.currentTimeMillis();
 		long size = 0;
 		for (int i = 0; i < m_total; i++) {
-			Block block = new DefaultBlock(domain, hour, CompressTye.SNAPPY);
+			Block block = new DefaultBlock(domain, hour, CompressType.SNAPPY);
 
 			for (int index = 0; index < 500; index++) {
 				MessageId id = new MessageId(domain, ip, hour, i * 10 + index);
