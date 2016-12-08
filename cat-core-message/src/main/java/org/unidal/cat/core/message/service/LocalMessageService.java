@@ -30,7 +30,7 @@ public class LocalMessageService implements MessageService {
       ByteBuf buf = m_finderManager.find(id);
 
       if (buf == null) {
-         Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddress(), id.getHour(), false);
+         Bucket bucket = m_localBucketManager.getBucket(id.getDomain(), id.getIpAddressInHex(), id.getHour(), false);
 
          if (bucket != null) {
             bucket.flush();
