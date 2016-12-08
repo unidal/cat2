@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model model-package="org.unidal.cat.config.route" enable-sax-parser="true">
+  <entity name="route-policy" root="true" dynamic-attributes="true">
+    <attribute name="sample-ratio" value-type="double" primitive="true" default-value="1.0" />
+    <attribute name="dump-locked-thread" value-type="boolean" primitive="true" />
+    <attribute name="max-message-lines" value-type="int" primitive="true" default-value="1000" />
+    <entity-ref name="server-node" type="list" names="server-nodes" />
+  </entity>
+  <entity name="server-node">
+    <attribute name="type" value-type="String" />
+    <attribute name="ip" value-type="String" />
+    <attribute name="port" value-type="int" />
+    <attribute name="enabled" value-type="boolean" default-value="true" />
+  </entity>
+</model>
+

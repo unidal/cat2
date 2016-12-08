@@ -12,6 +12,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
@@ -108,7 +109,7 @@ public class NetGraphManager implements Initializable, LogEnabled {
 	@Override
 	public void initialize() throws InitializationException {
 		if (m_serverConfigManager.isJobMachine()) {
-			Threads.forGroup("cat").start(new NetGraphReloader());
+			Threads.forGroup(CatConstant.CAT).start(new NetGraphReloader());
 		}
 	}
 

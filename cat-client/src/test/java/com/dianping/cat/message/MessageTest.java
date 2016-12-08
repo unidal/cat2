@@ -17,7 +17,6 @@ import org.unidal.helper.Reflects;
 import org.unidal.lookup.ComponentTestCase;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.configuration.ClientConfigManager;
 import com.dianping.cat.configuration.client.entity.ClientConfig;
 import com.dianping.cat.configuration.client.entity.Domain;
 import com.dianping.cat.configuration.client.entity.Server;
@@ -75,9 +74,6 @@ public class MessageTest extends ComponentTestCase {
 
       File configurationFile = getConfigurationFile();
       Cat.initialize(configurationFile);
-
-      ClientConfigManager configManager = lookup(ClientConfigManager.class);
-      configManager.initialize(configurationFile);
 
       m_queue.clear();
 

@@ -15,6 +15,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.model.entity.AlertReport;
@@ -171,6 +172,6 @@ public class DefaultAlertReportService implements AlertReportService, Initializa
    public void initialize() throws InitializationException {
       int threads = m_configuration.getRemoteCallThreads();
 
-      m_pool = Threads.forPool().getFixedThreadPool("cat-alert", threads);
+      m_pool = Threads.forPool().getFixedThreadPool(CatConstant.CAT + "-Alert", threads);
    }
 }

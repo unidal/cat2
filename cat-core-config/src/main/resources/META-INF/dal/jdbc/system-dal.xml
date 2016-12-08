@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entities do-package="org.unidal.cat.core.config.dal" gen="true" do-class-suffix="Do">
+  <entity name="system-config" table="system_config" alias="sc">
+    <query-defs>
+      <query name="find-by-name" type="SELECT">
+        <param name="name" />
+        <statement><![CDATA[
+        SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='name'/> = ${name}
+        ]]></statement>
+      </query>
+      <query name="update-by-name" type="UPDATE">
+        <param name="name" />
+        <statement><![CDATA[
+        UPDATE <TABLE/>
+        SET <FIELDS/>
+        WHERE <FIELD name='name'/> = ${name}
+        ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
+</entities>
+
+

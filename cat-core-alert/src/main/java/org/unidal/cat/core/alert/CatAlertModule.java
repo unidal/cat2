@@ -1,5 +1,6 @@
 package org.unidal.cat.core.alert;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.core.alert.config.AlertConfiguration;
 import org.unidal.cat.core.alert.metric.MetricsEngine;
 import org.unidal.cat.core.config.CatConfigModule;
@@ -20,7 +21,7 @@ public class CatAlertModule extends AbstractModule {
       if (configure.isEnabled()) {
          MetricsEngine engine = ctx.lookup(MetricsEngine.class);
 
-         Threads.forGroup("cat").start(engine);
+         Threads.forGroup(CatConstant.CAT).start(engine);
       }
    }
 

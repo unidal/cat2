@@ -27,7 +27,6 @@ import com.dianping.cat.configuration.server.entity.StorageConfig;
 import com.dianping.cat.configuration.server.transform.DefaultSaxParser;
 
 public class ServerConfigManager implements LogEnabled {
-
    private static final long DEFAULT_HDFS_FILE_MAX_SIZE = 128 * 1024 * 1024L; // 128M
 
    private volatile ServerConfig m_config;
@@ -226,9 +225,7 @@ public class ServerConfigManager implements LogEnabled {
          String xml = Files.forIO().readFrom(configFile, "utf-8");
          ServerConfig config = DefaultSaxParser.parse(xml);
 
-         // do validation
-         config.accept(new ServerConfigValidator());
-         m_config = config;
+         initialize(config);
       } else {
          if (configFile != null) {
             m_logger.warn(String.format("Configuration file(%s) not found, IGNORED.", configFile.getCanonicalPath()));
@@ -236,17 +233,19 @@ public class ServerConfigManager implements LogEnabled {
 
          ServerConfig config = new ServerConfig();
 
-         // do validation
-         config.accept(new ServerConfigValidator());
-         m_config = config;
+         initialize(config);
       }
+   }
+
+   public void initialize(ServerConfig config) throws Exception {
+      // do validation
+      config.accept(new ServerConfigValidator());
+      m_config = config;
 
       if (m_config.isLocalMode()) {
          m_logger.warn("CAT server is running in LOCAL mode! No HDFS or MySQL will be accessed!");
       }
-      m_logger.info("CAT server is running with hdfs," + isHdfsOn());
-      m_logger.info("CAT server is running with alert," + isAlertMachine());
-      m_logger.info("CAT server is running with job," + isJobMachine());
+
       m_logger.info(m_config.toString());
    }
 

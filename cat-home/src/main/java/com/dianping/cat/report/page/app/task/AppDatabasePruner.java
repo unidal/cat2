@@ -3,6 +3,7 @@ package com.dianping.cat.report.page.app.task;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
@@ -40,7 +41,7 @@ public class AppDatabasePruner implements TaskBuilder {
 
 	@Override
 	public boolean buildDailyTask(String name, String domain, Date period) {
-		Threads.forGroup("cat").start(new DeleteTask());
+		Threads.forGroup(CatConstant.CAT).start(new DeleteTask());
 
 		return true;
 	}

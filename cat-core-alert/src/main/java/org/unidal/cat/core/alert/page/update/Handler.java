@@ -1,6 +1,6 @@
 package org.unidal.cat.core.alert.page.update;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.*;
+import static org.unidal.cat.core.alert.config.AlertConfigStoreGroup.ID;
 
 import java.io.IOException;
 
@@ -16,8 +16,8 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 public class Handler implements PageHandler<Context> {
-	@Inject
-	private JspViewer m_jspViewer;
+   @Inject
+   private JspViewer m_jspViewer;
 
    @Inject
    private ConfigStoreManager m_storeManager;
@@ -35,7 +35,7 @@ public class Handler implements PageHandler<Context> {
             String content = payload.getContent();
 
             try {
-               m_storeManager.onChanged(GROUP_ALERT, name, content);
+               m_storeManager.onChanged(ID, name, content);
             } catch (Exception e) {
                ctx.addError("config.update.error", e).addArgument("name", payload.getName());
             }
@@ -62,7 +62,7 @@ public class Handler implements PageHandler<Context> {
             break;
          }
       default:
-         ConfigStore store = m_storeManager.getConfigStore(GROUP_ALERT, name);
+         ConfigStore store = m_storeManager.getConfigStore(ID, name);
 
          model.setContent(store.getConfig());
          break;

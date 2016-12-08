@@ -1,7 +1,5 @@
 package org.unidal.cat.core.config.page.update;
 
-import static org.unidal.cat.core.config.spi.ConfigStoreManager.GROUP_REPORT;
-
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -16,6 +14,8 @@ import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
 public class Handler implements PageHandler<Context> {
+   private static final String GROUP_REPORT = "report";
+
    @Inject
    private JspViewer m_jspViewer;
 

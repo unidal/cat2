@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model>
+  <entity name="route-policy" root="true">
+    <attribute name="enabled" value-type="boolean" />
+    <attribute name="sample-ratio" value-type="double" />
+    <attribute name="dump-locked-thread" value-type="boolean" />
+    <attribute name="max-message-lines" value-type="int" />
+    <entity-ref name="server-node" type="list" names="server-nodes" />
+  </entity>
+  <entity name="server-node">
+    <attribute name="type" value-type="String" />
+    <attribute name="ip" value-type="String" />
+    <attribute name="port" value-type="int" />
+    <attribute name="enabled" value-type="boolean" />
+  </entity>
+</model>
+

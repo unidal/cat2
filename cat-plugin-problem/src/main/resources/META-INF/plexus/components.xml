@@ -65,16 +65,6 @@
 			<role-hint>problem</role-hint>
 			<implementation>org.unidal.cat.plugin.problem.ProblemReportAnalyzer</implementation>
 			<instantiation-strategy>per-lookup</instantiation-strategy>
-			<requirements>
-				<requirement>
-					<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
-					<role-hints>
-						<role-hint>default</role-hint>
-						<role-hint>long-execution</role-hint>
-					</role-hints>
-					<field-name>m_handlers</field-name>
-				</requirement>
-			</requirements>
 		</component>
 		<component>
 			<role>org.unidal.cat.plugin.problem.ProblemHandler</role>
@@ -82,9 +72,6 @@
 			<requirements>
 				<requirement>
 					<role>com.dianping.cat.config.server.ServerConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>java.util.Set</role>
 				</requirement>
 			</requirements>
 		</component>

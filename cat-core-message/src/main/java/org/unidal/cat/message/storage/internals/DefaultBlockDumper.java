@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.message.storage.Block;
 import org.unidal.cat.message.storage.BlockDumper;
 import org.unidal.cat.message.storage.BlockWriter;
@@ -106,7 +107,7 @@ public class DefaultBlockDumper extends ContainerHolder implements BlockDumper, 
 			m_writers.add(writer);
 
 			writer.initialize(hour, i, queue);
-			Threads.forGroup("Cat").start(writer);
+			Threads.forGroup(CatConstant.CAT).start(writer);
 		}
 	}
 }

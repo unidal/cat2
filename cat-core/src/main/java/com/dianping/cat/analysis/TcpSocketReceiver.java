@@ -87,7 +87,7 @@ public final class TcpSocketReceiver implements Initializable, LogEnabled {
       m_channelClass = linux ? EpollServerSocketChannel.class : NioServerSocketChannel.class;
    }
 
-   public synchronized void init() throws Exception {
+   public synchronized void setup() throws Exception {
       ServerBootstrap bootstrap = new ServerBootstrap();
 
       bootstrap.group(m_bossGroup, m_workerGroup).channel(m_channelClass);

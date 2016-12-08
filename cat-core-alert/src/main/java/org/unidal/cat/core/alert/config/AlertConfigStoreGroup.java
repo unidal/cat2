@@ -3,7 +3,6 @@ package org.unidal.cat.core.alert.config;
 import org.unidal.cat.core.alert.AlertConfigDao;
 import org.unidal.cat.core.alert.AlertConfigDo;
 import org.unidal.cat.core.alert.AlertConfigEntity;
-import org.unidal.cat.core.alert.AlertConstants;
 import org.unidal.cat.core.config.spi.ConfigStore;
 import org.unidal.cat.core.config.spi.ConfigStoreGroup;
 import org.unidal.dal.jdbc.DalException;
@@ -13,8 +12,10 @@ import org.unidal.lookup.annotation.Named;
 
 import com.dianping.cat.Cat;
 
-@Named(type = ConfigStoreGroup.class, value = AlertConstants.NAME)
+@Named(type = ConfigStoreGroup.class, value = AlertConfigStoreGroup.ID)
 public class AlertConfigStoreGroup implements ConfigStoreGroup {
+   public static final String ID = "alert";
+
    @Inject
    private AlertConfigDao m_dao;
 
@@ -39,6 +40,8 @@ public class AlertConfigStoreGroup implements ConfigStoreGroup {
                AlertConfigDo c = m_dao.findByName(m_name, AlertConfigEntity.READSET_FULL);
 
                m_config = c.getContent();
+            } catch (DalNotFoundException e) {
+               Cat.logEvent("ConfigMissing", ID + ":" + m_name);
             } catch (Throwable e) {
                Cat.logError(e);
             }

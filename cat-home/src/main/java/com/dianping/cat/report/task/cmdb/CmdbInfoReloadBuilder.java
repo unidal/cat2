@@ -2,6 +2,7 @@ package com.dianping.cat.report.task.cmdb;
 
 import java.util.Date;
 
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Threads;
 import org.unidal.lookup.annotation.Inject;
 
@@ -22,7 +23,7 @@ public class CmdbInfoReloadBuilder implements TaskBuilder {
 
 	@Override
 	public boolean buildHourlyTask(String name, String domain, Date period) {
-		Threads.forGroup(Constants.CAT).start(m_projectUpdateTask);
+		Threads.forGroup(CatConstant.CAT).start(m_projectUpdateTask);
 		return true;
 	}
 

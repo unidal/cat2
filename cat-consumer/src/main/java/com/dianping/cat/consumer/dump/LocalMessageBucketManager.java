@@ -16,6 +16,7 @@ import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.CatConstant;
 import org.unidal.helper.Scanners;
 import org.unidal.helper.Scanners.FileMatcher;
 import org.unidal.helper.Threads;
@@ -111,8 +112,8 @@ public class LocalMessageBucketManager extends ContainerHolder implements Messag
 	public void initialize() throws InitializationException {
 		m_baseDir = new File(m_configManager.getHdfsLocalBaseDir(ServerConfigManager.DUMP_DIR));
 
-		Threads.forGroup("cat").start(new BlockDumper(m_buckets, m_messageBlocks, m_serverStateManager));
-		Threads.forGroup("cat").start(new LogviewUploader(this, m_buckets, m_logviewUploader, m_configManager));
+		Threads.forGroup(CatConstant.CAT).start(new BlockDumper(m_buckets, m_messageBlocks, m_serverStateManager));
+		Threads.forGroup(CatConstant.CAT).start(new LogviewUploader(this, m_buckets, m_logviewUploader, m_configManager));
 
 		if (m_configManager.isLocalMode()) {
 			m_gzipThreads = 2;
@@ -122,7 +123,7 @@ public class LocalMessageBucketManager extends ContainerHolder implements Messag
 			LinkedBlockingQueue<MessageItem> messageQueue = new LinkedBlockingQueue<MessageItem>(m_gzipMessageSize);
 
 			m_messageQueues.put(i, messageQueue);
-			Threads.forGroup("cat").start(new MessageGzip(messageQueue, i));
+			Threads.forGroup(CatConstant.CAT).start(new MessageGzip(messageQueue, i));
 		}
 		m_last = m_messageQueues.get(m_gzipThreads - 1);
 	}

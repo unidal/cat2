@@ -1,12 +1,81 @@
 <plexus>
 	<components>
 		<component>
-			<role>com.dianping.cat.configuration.ClientConfigManager</role>
-			<implementation>com.dianping.cat.configuration.DefaultClientConfigManager</implementation>
+			<role>org.unidal.initialization.Module</role>
+			<role-hint>cat-client</role-hint>
+			<implementation>com.dianping.cat.CatClientModule</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.internals.CatClientInitializer</role>
+			<implementation>org.unidal.cat.internals.CatClientInitializer</implementation>
 		</component>
 		<component>
 			<role>org.unidal.cat.message.MessageIdFactory</role>
 			<implementation>org.unidal.cat.message.MessageIdFactory</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+			<implementation>org.unidal.cat.config.internals.DefaultClientEnvironmentSettings</implementation>
+		</component>
+		<component>
+			<role>org.unidal.cat.message.MessagePolicy</role>
+			<implementation>org.unidal.cat.message.internals.DefaultMessagePolicy</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.internals.ServerDiscovery</role>
+			<implementation>org.unidal.cat.config.internals.DefaultServerDiscovery</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationManager</role>
+			<implementation>org.unidal.cat.config.internals.DefaultClientConfigurationManager</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+					<role-hint>local</role-hint>
+					<field-name>m_local</field-name>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+					<role-hint>remote</role-hint>
+					<field-name>m_remote</field-name>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+			<role-hint>local</role-hint>
+			<implementation>org.unidal.cat.config.internals.LocalClientConfigurationProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>org.unidal.cat.config.ClientConfigurationProvider</role>
+			<role-hint>remote</role-hint>
+			<implementation>org.unidal.cat.config.internals.RemoteClientConfigurationProvider</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.internals.ServerDiscovery</role>
+				</requirement>
+			</requirements>
 		</component>
 		<component>
 			<role>com.dianping.cat.message.spi.MessageCodec</role>
@@ -49,7 +118,7 @@
 			<implementation>org.unidal.cat.transport.DefaultSocketAddressProvider</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -97,11 +166,32 @@
 			<implementation>org.unidal.cat.message.command.DefaultCommandDispatcher</implementation>
 		</component>
 		<component>
+			<role>com.dianping.cat.message.MessageProducer</role>
+			<implementation>com.dianping.cat.message.internal.DefaultMessageProducer</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.cat.message.MessagePolicy</role>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.MessageIdFactory</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
 			<role>com.dianping.cat.message.spi.MessageManager</role>
 			<implementation>com.dianping.cat.message.internal.DefaultMessageManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.message.MessagePolicy</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
 					<role>com.dianping.cat.message.io.TransportManager</role>
@@ -112,44 +202,33 @@
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.message.MessageProducer</role>
-			<implementation>com.dianping.cat.message.internal.DefaultMessageProducer</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageManager</role>
-				</requirement>
-				<requirement>
-					<role>org.unidal.cat.message.MessageIdFactory</role>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
-			<role>com.dianping.cat.message.io.TcpSocketSender</role>
-			<implementation>com.dianping.cat.message.io.TcpSocketSender</implementation>
-			<requirements>
-				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageStatistics</role>
-					<field-name>m_statistics</field-name>
-				</requirement>
-				<requirement>
-					<role>com.dianping.cat.message.spi.MessageCodec</role>
-					<role-hint>NT1</role-hint>
-					<field-name>m_codec</field-name>
-				</requirement>
-			</requirements>
-		</component>
-		<component>
 			<role>com.dianping.cat.message.io.TransportManager</role>
 			<implementation>com.dianping.cat.message.io.DefaultTransportManager</implementation>
 			<requirements>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.io.TcpSocketSender</role>
+					<role>com.dianping.cat.message.io.MessageSender</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.message.io.MessageSender</role>
+			<implementation>com.dianping.cat.message.io.TcpSocketSender</implementation>
+			<requirements>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageCodec</role>
+					<role-hint>NT1</role-hint>
+				</requirement>
+				<requirement>
+					<role>com.dianping.cat.message.spi.MessageStatistics</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
+				</requirement>
+				<requirement>
+					<role>org.unidal.cat.config.ClientEnvironmentSettings</role>
 				</requirement>
 			</requirements>
 		</component>
@@ -165,14 +244,9 @@
 					<role>com.dianping.cat.message.spi.MessageStatistics</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.configuration.ClientConfigManager</role>
+					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 			</requirements>
-		</component>
-		<component>
-			<role>org.unidal.initialization.Module</role>
-			<role-hint>cat-client</role-hint>
-			<implementation>com.dianping.cat.CatClientModule</implementation>
 		</component>
 	</components>
 </plexus>

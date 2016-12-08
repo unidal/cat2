@@ -17,7 +17,7 @@ public class TcpSocketReceiverTest extends ComponentTestCase {
 
 		TcpSocketReceiver receiver = lookup(TcpSocketReceiver.class);
 
-		receiver.init();
+		receiver.setup();
 		receiver.destory();
 	}
 

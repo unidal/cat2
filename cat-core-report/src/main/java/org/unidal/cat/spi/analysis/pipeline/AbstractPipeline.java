@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.CatConstant;
 import org.unidal.cat.spi.Report;
 import org.unidal.cat.spi.analysis.CheckpointService;
 import org.unidal.cat.spi.analysis.MessageAnalyzer;
@@ -128,7 +129,7 @@ public abstract class AbstractPipeline extends ContainerHolder implements Pipeli
             try {
                analyzer.initialize(i, hour);
                m_analyzers.add(analyzer);
-               Threads.forGroup("Cat").start(analyzer);
+               Threads.forGroup(CatConstant.CAT).start(analyzer);
             } catch (Throwable e) {
                String msg = String.format("Error when initializing analyzer %s!", analyzer);
 

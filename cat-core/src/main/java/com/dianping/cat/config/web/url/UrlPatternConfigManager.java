@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.CatConstant;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
 import org.unidal.helper.Threads;
@@ -155,7 +156,7 @@ public class UrlPatternConfigManager implements Initializable {
 		}
 		m_handler.register(queryUrlPatternRules());
 		refreshData();
-		Threads.forGroup("cat").start(new ConfigReloadTask());
+		Threads.forGroup(CatConstant.CAT).start(new ConfigReloadTask());
 	}
 
 	public boolean insert(String xml) {
