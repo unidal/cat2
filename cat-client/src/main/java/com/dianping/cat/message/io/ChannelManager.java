@@ -20,11 +20,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.Cat;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads.Task;
 import org.unidal.tuple.Pair;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.message.internal.MessageIdFactory;
 
 public class ChannelManager implements Task {

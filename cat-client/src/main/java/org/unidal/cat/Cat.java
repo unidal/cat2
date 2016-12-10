@@ -6,6 +6,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.codehaus.plexus.PlexusContainer;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.unidal.cat.config.ClientEnvironmentSettings;
+import org.unidal.cat.config.internals.DefaultClientEnvironmentSettings;
 import org.unidal.cat.internals.CatClientInitializer;
 import org.unidal.cat.message.MessagePolicy;
 import org.unidal.lookup.ContainerLoader;
@@ -22,7 +25,7 @@ import com.dianping.cat.message.internal.NullMessageProducer;
  * @since 2.0
  */
 public class Cat {
-   public static final Cat CAT = new Cat();
+   public static final Cat CAT2 = new Cat();
 
    private Map<String, Object> m_properties = new HashMap<String, Object>();
 
@@ -38,52 +41,35 @@ public class Cat {
    }
 
    public static void count(String metric) {
-      CAT.getProducer().logMetric(metric, "C", "1");
+      CAT2.getProducer().logMetric(metric, "C", "1");
    }
 
    public static void count(String metric, int quantity) {
-      CAT.getProducer().logMetric(metric, "C", String.valueOf(quantity));
-   }
-
-   /**
-    * Disable the CAT client, no message will be construct and send to CAT server.
-    * <p>
-    */
-   public static void disable() {
-      CAT.m_enabled.set(false);
-
-      // Disable message if needed
-      if (CAT.m_policy != null) {
-         CAT.m_policy.disable();
-      }
+      CAT2.getProducer().logMetric(metric, "C", String.valueOf(quantity));
    }
 
    public static void duration(String metric, long durationInMillis) {
-      CAT.getProducer().logMetric(metric, "T", String.valueOf(durationInMillis));
-   }
-
-   public static String getMessageId() {
-      return CAT.getProducer().getManager().getThreadLocalMessageTree().getMessageId();
+      CAT2.getProducer().logMetric(metric, "T", String.valueOf(durationInMillis));
    }
 
    public static boolean isEnabled() {
-      return CAT.m_enabled.get() && CAT.m_policy != null && CAT.m_policy.isEnabled();
+      return CAT2.m_enabled.get() && (CAT2.m_policy == null || CAT2.m_policy != null && CAT2.m_policy.isEnabled());
    }
 
-   public static boolean isInitialized() {
-      return CAT.m_initialized.get();
+   public boolean isInitialized() {
+      return m_initialized.get();
    }
 
    public static void logError(String message, Throwable cause) {
-      CAT.getProducer().logError(message, cause);
+      CAT2.getProducer().logError(message, cause);
    }
 
    public static void logError(Throwable cause) {
-      CAT.getProducer().logError(cause);
+      CAT2.getProducer().logError(cause);
    }
 
    public static void logEvent(String type, String name) {
-      CAT.getProducer().logEvent(type, name);
+      CAT2.getProducer().logEvent(type, name);
    }
 
    public static void logRemoteCallClient(Context ctx, String serverDomain) {
@@ -95,19 +81,44 @@ public class Cat {
    }
 
    public static Event newEvent(String type, String name) {
-      return CAT.getProducer().newEvent(type, name);
+      return CAT2.getProducer().newEvent(type, name);
    }
 
    public static Transaction newTransaction(String type, String name) {
-      return CAT.getProducer().newTransaction(type, name);
+      return CAT2.getProducer().newTransaction(type, name);
    }
 
    public static Transaction newTransaction(Transaction parent, String type, String name) {
-      return CAT.getProducer().newTransaction(parent, type, name);
+      return CAT2.getProducer().newTransaction(parent, type, name);
    }
 
-   public static void setProperty(String key, Object value) {
-      CAT.m_properties.put(key, value);
+   /**
+    * Disable the CAT client, no message will be construct and send to CAT server.
+    * <p>
+    */
+   public void disable() {
+      m_enabled.set(false);
+
+      // Disable message if needed
+      if (m_policy != null) {
+         m_policy.disable();
+      }
+   }
+
+   public String getCatHome() {
+      ClientEnvironmentSettings settings;
+
+      try {
+         settings = ContainerLoader.getDefaultContainer().lookup(ClientEnvironmentSettings.class);
+      } catch (ComponentLookupException e) {
+         settings = new DefaultClientEnvironmentSettings();
+      }
+
+      return settings.getCatHome();
+   }
+
+   public String getMessageId() {
+      return CAT2.getProducer().getMessageId();
    }
 
    /**
@@ -119,6 +130,12 @@ public class Cat {
     * @return the message producer
     */
    public MessageProducer getProducer() {
+      initialize();
+
+      return m_producer.get();
+   }
+
+   private synchronized void initialize() {
       if (m_producer.get() == null) {
          if (m_enabled.get()) {
             if (!m_initialized.get()) {
@@ -127,12 +144,11 @@ public class Cat {
                      try {
                         PlexusContainer container = ContainerLoader.getDefaultContainer();
                         CatClientInitializer initializer = container.lookup(CatClientInitializer.class);
-                        MessagePolicy policy = container.lookup(MessagePolicy.class);
+                        MessageProducer producer = initializer.initialize(m_properties);
 
-                        m_policy = policy;
-                        m_producer.set(initializer.initialize(m_properties));
+                        m_producer.set(producer);
+                        m_policy = container.lookup(MessagePolicy.class);
                      } catch (Exception e) {
-                        m_producer.set(NullMessageProducer.NULL_MESSAGE_PRODUCER);
                         System.err.println("[WARN] Failed to initialize CAT, CAT is DISABLED!");
                         e.printStackTrace();
                      }
@@ -142,11 +158,16 @@ public class Cat {
                }
             }
          } else {
-            m_producer.set(NullMessageProducer.NULL_MESSAGE_PRODUCER);
          }
       }
 
-      return m_producer.get();
+      if (m_producer.get() == null) {
+         m_producer.set(NullMessageProducer.NULL_MESSAGE_PRODUCER);
+      }
+   }
+
+   public void setProperty(String key, Object value) {
+      m_properties.put(key, value);
    }
 
    public static interface Context {

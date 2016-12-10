@@ -112,7 +112,7 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
 
 	@Override
 	public void initialize() {
-		String config = System.getProperty(Cat.CLENT_CONFIG);
+		String config = System.getProperty("cat-client-config");
 
 		if (StringUtils.isNotEmpty(config)) {
 			try {

@@ -138,6 +138,13 @@ public interface MessageProducer {
    public MessageManager getManager();
 
    /**
+    * Get current thread local message id.
+    * 
+    * @return message id
+    */
+   public String getMessageId();
+
+   /**
     * Log an error.
     * 
     * @param cause

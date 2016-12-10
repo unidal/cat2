@@ -28,16 +28,16 @@ public class CatTest extends ComponentTestCase {
 
    @Test
    public void disable() {
-      Cat.disable();
+      Cat.CAT2.disable();
 
-      Assert.assertEquals(false, Cat.isEnabled());
+      Assert.assertEquals(false, Cat.CAT2.isEnabled());
    }
 
    @Test
    public void messageId() {
-      String id = Cat.getMessageId();
+      String id = Cat.CAT2.getMessageId();
 
-      System.out.println(id);
+      System.out.println("msg id: " + id);
    }
 
    @Test
@@ -49,7 +49,7 @@ public class CatTest extends ComponentTestCase {
 
    @Test
    public void setClientXml() {
-      Cat.setProperty("cat.client.xml", new File("client.xml"));
+      Cat.CAT2.setProperty("cat.client.xml", new File("client.xml"));
 
       Cat.logError(new Exception());
    }

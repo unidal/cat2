@@ -11,17 +11,16 @@ import java.util.TreeMap;
 
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
+import org.unidal.cat.Cat;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads.Task;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.Event;
 import com.dianping.cat.message.Heartbeat;
 import com.dianping.cat.message.Message;
-import com.dianping.cat.message.MessageProducer;
 import com.dianping.cat.message.Transaction;
 import com.dianping.cat.message.internal.MilliSecondTimer;
 import com.dianping.cat.message.spi.MessageStatistics;
@@ -170,20 +169,19 @@ public class StatusUpdateTask implements Task, Initializable {
          }
       }
 
-      MessageProducer cat = Cat.getProducer();
-      Transaction reboot = cat.newTransaction("System", "Reboot");
+      Transaction reboot = Cat.newTransaction("System", "Reboot");
       final String localHostAddress = NetworkInterfaceManager.INSTANCE.getLocalHostAddress();
 
       reboot.setStatus(Message.SUCCESS);
-      cat.logEvent("Reboot", localHostAddress, Message.SUCCESS, null);
+      Cat.logEvent("Reboot", localHostAddress);
       reboot.complete();
 
       while (m_active && Cat.isEnabled()) {
          long start = MilliSecondTimer.currentTimeMillis();
 
          if (m_configManager.getConfig().isEnabled()) {
-            Transaction t = cat.newTransaction("System", "Status");
-            Heartbeat h = cat.newHeartbeat("Heartbeat", localHostAddress);
+            Transaction t = Cat.newTransaction("System", "Status");
+            Heartbeat h = Cat.CAT2.getProducer().newHeartbeat("Heartbeat", localHostAddress);
             StatusInfo status = new StatusInfo();
 
             try {
@@ -192,11 +190,11 @@ public class StatusUpdateTask implements Task, Initializable {
                h.setStatus(Message.SUCCESS);
             } catch (Throwable e) {
                h.setStatus(e);
-               cat.logError(e);
+               Cat.logError(e);
             } finally {
                h.complete();
             }
-            Cat.logEvent("Heartbeat", "jstack", Event.SUCCESS, buildJstack());
+            Cat.CAT2.getProducer().logEvent("Heartbeat", "jstack", Event.SUCCESS, buildJstack());
             t.setStatus(Message.SUCCESS);
             t.complete();
          }

@@ -16,6 +16,7 @@ import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
+import org.unidal.cat.Cat;
 import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads;
@@ -24,7 +25,6 @@ import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.analyzer.EventAggregator;
 import com.dianping.cat.analyzer.TransactionAggregator;
 import com.dianping.cat.message.Event;

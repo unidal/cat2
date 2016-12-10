@@ -11,12 +11,12 @@ import java.util.Stack;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
+import org.unidal.cat.Cat;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
-import com.dianping.cat.Cat;
 import com.dianping.cat.configuration.NetworkInterfaceManager;
 import com.dianping.cat.message.ForkedTransaction;
 import com.dianping.cat.message.Message;
@@ -120,7 +120,7 @@ public class DefaultMessageManager extends ContainerHolder implements MessageMan
    }
 
    private Context getContext() {
-      if (Cat.isInitialized()) {
+      if (Cat.CAT2.isInitialized()) {
          Context ctx = m_context.get();
 
          if (ctx != null) {

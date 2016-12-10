@@ -109,4 +109,9 @@ public class NullMessageProducer implements MessageProducer {
    public Transaction newTransaction(Transaction parent, String type, String name) {
       return NullMessage.TRANSACTION;
    }
+
+   @Override
+   public String getMessageId() {
+      return null;
+   }
 }

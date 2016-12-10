@@ -1,5 +1,8 @@
 package com.dianping.cat.hadoop.sql;
 
+import java.net.InetSocketAddress;
+import java.util.List;
+
 import com.dianping.cat.message.io.DefaultMessageQueue;
 import com.dianping.cat.message.io.MessageSender;
 import com.dianping.cat.message.io.TransportManager;
@@ -22,15 +25,10 @@ public class MockTransportManager implements TransportManager {
 		private DefaultMessageQueue m_queue = new DefaultMessageQueue(10);
 
 		public MockMessageSender() {
-			initialize();
 		}
 
 		public MessageQueue getQueue() {
 			return m_queue;
-		}
-
-		@Override
-		public void initialize() {
 		}
 
 		@Override
@@ -41,5 +39,9 @@ public class MockTransportManager implements TransportManager {
 		@Override
 		public void shutdown() {
 		}
+
+      @Override
+      public void initialize(List<InetSocketAddress> addresses) {
+      }
 	}
 }
