@@ -257,7 +257,7 @@ public class UrlPatternConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "UrlPattern-Config-Reload";
+			return getClass().getSimpleName();
 		}
 
 		@Override

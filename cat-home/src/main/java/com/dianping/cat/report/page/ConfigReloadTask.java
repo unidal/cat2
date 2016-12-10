@@ -31,7 +31,7 @@ public class ConfigReloadTask implements Task {
 
 	@Override
 	public String getName() {
-		return "Config-Reload";
+		return getClass().getSimpleName();
 	}
 
 	@Override

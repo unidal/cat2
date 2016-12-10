@@ -199,7 +199,7 @@ public class AppSpeedConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "App-Speed-Config-Reload";
+		   return getClass().getSimpleName();
 		}
 
 		@Override

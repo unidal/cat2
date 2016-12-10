@@ -552,7 +552,7 @@ public class AppConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "App-Config-Reload";
+			return getClass().getSimpleName();
 		}
 
 		@Override

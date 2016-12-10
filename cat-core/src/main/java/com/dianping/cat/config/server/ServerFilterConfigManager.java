@@ -152,7 +152,7 @@ public class ServerFilterConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "Server-Filter-Config-Reload";
+			return getClass().getSimpleName();
 		}
 
 		@Override
