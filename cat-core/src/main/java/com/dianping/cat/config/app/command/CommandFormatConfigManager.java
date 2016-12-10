@@ -169,7 +169,7 @@ public class CommandFormatConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "App-Rule-Config-Reload";
+		   return getClass().getSimpleName();
 		}
 
 		@Override

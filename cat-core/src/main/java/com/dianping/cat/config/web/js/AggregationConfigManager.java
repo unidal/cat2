@@ -164,7 +164,7 @@ public class AggregationConfigManager implements Initializable {
 
 		@Override
 		public String getName() {
-			return "Aggreation-Config-Reload";
+		   return getClass().getSimpleName();
 		}
 
 		@Override

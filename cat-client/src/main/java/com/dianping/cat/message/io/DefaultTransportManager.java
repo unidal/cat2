@@ -6,8 +6,6 @@ import java.util.List;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
-import org.unidal.cat.config.ClientConfiguration;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
@@ -15,10 +13,10 @@ import org.unidal.lookup.annotation.Named;
 @Named(type = TransportManager.class)
 public class DefaultTransportManager implements TransportManager, Initializable, LogEnabled {
    @Inject
-   private ClientConfigurationManager m_manager;
+   private ClientConfigurationManager m_configManager;
 
    @Inject(type = MessageSender.class)
-   private TcpSocketSender m_sender;
+   private MessageSender m_sender;
 
    private Logger m_logger;
 
@@ -33,19 +31,19 @@ public class DefaultTransportManager implements TransportManager, Initializable,
    }
 
    @Override
-   public void initialize() throws InitializationException {
-      ClientConfiguration config = m_manager.getConfig();
+   public void initialize() {
+      if (!m_configManager.getConfig().isEnabled()) {
+         m_sender = null;
+         m_logger.warn("CAT was DISABLED or NOT initialized correctly!");
+      } else {
+         List<InetSocketAddress> addresses = m_configManager.getConfig().getServersForTree();
 
-      if (config.isEnabled()) {
-         List<InetSocketAddress> addresses = config.getServersForTree();
+         m_logger.info("Remote CAT servers: " + addresses);
 
          if (addresses.isEmpty()) {
-            throw new RuntimeException("No CAT servers configured!\r\n");
+            m_logger.error("No active servers found in the configuration!");
          } else {
-            m_logger.info("CAT servers found: " + addresses);
-
-            m_sender.setServerAddresses(addresses);
-            m_sender.initialize();
+            m_sender.initialize(addresses);
          }
       }
    }

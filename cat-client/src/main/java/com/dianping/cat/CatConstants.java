@@ -80,4 +80,8 @@ public class CatConstants {
 
 	public static final int SUCCESS_COUNT = 1000;
 
+   public static final String SPLIT = ";";
+
+   public static final char BATCH_FLAG = '@';
+
 }

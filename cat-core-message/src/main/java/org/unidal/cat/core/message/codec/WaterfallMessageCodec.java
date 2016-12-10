@@ -29,12 +29,12 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
 
    private static final String VERSION = "WF2"; // Waterfall version 2
 
-   @Inject(HtmlEncodingBufferWriter.ID)
-   private BufferWriter m_writer;
-
    private BufferHelper m_bufferHelper;
 
    private String[] m_colors = { "#0066ff", "#006699", "#006633", "#0033ff", "#003399", "#003333" };
+
+   @Inject(HtmlEncodingBufferWriter.ID)
+   private BufferWriter m_writer;
 
    protected int calculateLines(Transaction t) {
       int count = 1;
@@ -53,8 +53,18 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
    }
 
    @Override
+   public MessageTree decode(ByteBuf buf) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
    public void decode(ByteBuf buf, MessageTree tree) {
       throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
+   }
+
+   @Override
+   public ByteBuf encode(MessageTree tree) {
+      throw new UnsupportedOperationException();
    }
 
    @Override
@@ -350,27 +360,31 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
       m_bufferHelper = new BufferHelper(m_writer);
    }
 
+   @Override
+   public void reset() {
+   }
+
    public void setBufferWriter(BufferWriter writer) {
       m_writer = writer;
       m_bufferHelper = new BufferHelper(m_writer);
    }
 
    protected static class BufferHelper {
+      private static byte[] CRLF = "\r\n".getBytes();
+
+      private static byte[] NBSP = "&nbsp;".getBytes();
+
       private static byte[] TABLE1 = "<table class=\"logview\">".getBytes();
 
       private static byte[] TABLE2 = "</table>".getBytes();
-
-      private static byte[] TR1 = "<tr>".getBytes();
-
-      private static byte[] TR2 = "</tr>".getBytes();
 
       private static byte[] TD1 = "<td>".getBytes();
 
       private static byte[] TD2 = "</td>".getBytes();
 
-      private static byte[] NBSP = "&nbsp;".getBytes();
+      private static byte[] TR1 = "<tr>".getBytes();
 
-      private static byte[] CRLF = "\r\n".getBytes();
+      private static byte[] TR2 = "</tr>".getBytes();
 
       private BufferWriter m_writer;
 
@@ -508,13 +522,13 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
    }
 
    protected static class Locator {
-      private int m_level;
-
-      private int m_line;
+      private Stack<Integer> m_flags = new Stack<Integer>();
 
       private Stack<Boolean> m_last = new Stack<Boolean>();
 
-      private Stack<Integer> m_flags = new Stack<Integer>();
+      private int m_level;
+
+      private int m_line;
 
       public void downLevel(boolean atomic) {
          if (m_level > 0) {
@@ -658,19 +672,19 @@ public class WaterfallMessageCodec implements MessageCodec, Initializable {
    protected static class Ruler {
       private static final int[] UNITS = { 1, 2, 3, 5 };
 
+      private int m_height;
+
       private int m_maxValue;
+
+      private int m_offsetX;
+
+      private int m_offsetY;
 
       private int m_unitNum;
 
       private int m_unitStep;
 
       public int m_width;
-
-      private int m_height;
-
-      private int m_offsetX;
-
-      private int m_offsetY;
 
       public Ruler(int maxValue) {
          m_maxValue = maxValue;

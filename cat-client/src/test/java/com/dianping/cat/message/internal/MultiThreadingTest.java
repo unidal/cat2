@@ -1,6 +1,5 @@
 package com.dianping.cat.message.internal;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -20,10 +19,11 @@ public class MultiThreadingTest {
 
 	@Before
 	public void before() {
-		Cat.initialize(new File("/data/appdatas/cat/client.xml"));
+		Cat.initialize();
 	}
 
-	@Test
+	@SuppressWarnings("deprecation")
+   @Test
 	public void testForkedTransaction() throws Exception {
 		Transaction t = Cat.newTransaction("ForkedRoot", "Root");
 		ForkedTransaction t1 = Cat.newForkedTransaction("ForkedChild", "Child1");
@@ -38,7 +38,8 @@ public class MultiThreadingTest {
 		t.complete();
 	}
 
-	@Test
+	@SuppressWarnings("deprecation")
+   @Test
 	public void testTaggedTransaction() throws Exception {
 		Transaction t = Cat.newTransaction("TaggedRoot", "Root");
 		Cat.newTaggedTransaction("TaggedChild", "Child1", "Tag1");

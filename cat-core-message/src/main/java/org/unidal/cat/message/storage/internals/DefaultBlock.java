@@ -9,7 +9,9 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
@@ -26,7 +28,6 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.message.internal.MessageId;
 
 public class DefaultBlock implements Block {
-
    private String m_domain;
 
    private int m_hour;
@@ -45,9 +46,11 @@ public class DefaultBlock implements Block {
 
    public static int MAX_SIZE = 256 * 1024;
 
-   public static CompressTye COMMPRESS_TYPE = CompressTye.SNAPPY;
+   public static CompressType COMMPRESS_TYPE = CompressType.SNAPPY;
 
    public static int DEFLATE_LEVEL = 5;
+
+   private List<ByteBuf> m_bufs = new ArrayList<ByteBuf>(256);
 
    public DefaultBlock(MessageId id, int offset, byte[] data) {
       m_offsets.put(id, offset);
@@ -58,7 +61,7 @@ public class DefaultBlock implements Block {
       this(domain, hour, COMMPRESS_TYPE);
    }
 
-   public DefaultBlock(String domain, int hour, CompressTye type) {
+   public DefaultBlock(String domain, int hour, CompressType type) {
       m_domain = domain;
       m_hour = hour;
       COMMPRESS_TYPE = type;
@@ -72,23 +75,23 @@ public class DefaultBlock implements Block {
       m_offsets.clear();
    }
 
-   private InputStream createInputSteam(ByteBuf buf, CompressTye type) {
+   private InputStream createInputSteam(ByteBuf buf, CompressType type) {
       ByteBufInputStream os = new ByteBufInputStream(buf);
       InputStream in = null;
 
-      if (type == CompressTye.SNAPPY) {
+      if (type == CompressType.SNAPPY) {
          try {
             in = new SnappyInputStream(os);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.GZIP) {
+      } else if (type == CompressType.GZIP) {
          try {
             in = new GZIPInputStream(os, BUFFER_SIZE);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.DEFLATE) {
+      } else if (type == CompressType.DEFLATE) {
          Inflater inflater = new Inflater(true);
 
          in = new DataInputStream(new InflaterInputStream(os, inflater, BUFFER_SIZE));
@@ -96,19 +99,19 @@ public class DefaultBlock implements Block {
       return in;
    }
 
-   private OutputStream createOutputSteam(ByteBuf buf, CompressTye type) {
+   private OutputStream createOutputSteam(ByteBuf buf, CompressType type) {
       ByteBufOutputStream os = new ByteBufOutputStream(buf);
       OutputStream out = null;
 
-      if (type == CompressTye.SNAPPY) {
+      if (type == CompressType.SNAPPY) {
          out = new SnappyOutputStream(os);
-      } else if (type == CompressTye.GZIP) {
+      } else if (type == CompressType.GZIP) {
          try {
             out = new GZIPOutputStream(os, BUFFER_SIZE);
          } catch (IOException e) {
             Cat.logError(e);
          }
-      } else if (type == CompressTye.DEFLATE) {
+      } else if (type == CompressType.DEFLATE) {
          out = new DeflaterOutputStream(os, new Deflater(DEFLATE_LEVEL, true), BUFFER_SIZE);
       }
       return out;
@@ -144,15 +147,23 @@ public class DefaultBlock implements Block {
 
    @Override
    public synchronized void finish() {
-      if (m_out != null) {
-         try {
-            m_out.flush();
-            m_out.close();
-         } catch (IOException e) {
-            // ignore it
+      try {
+         for (ByteBuf buf : m_bufs) {
+            int len = buf.readableBytes();
+
+            writeInt(m_out, len);
+            buf.readBytes(m_out, len);
          }
 
-         m_out = null;
+         m_bufs.clear();
+
+         if (m_out != null) {
+            m_out.flush();
+            m_out.close();
+            m_out = null;
+         }
+      } catch (IOException e) {
+         Cat.logError(e);
       }
    }
 
@@ -185,23 +196,9 @@ public class DefaultBlock implements Block {
    public void pack(MessageId id, ByteBuf buf) throws IOException {
       int len = buf.readableBytes();
 
-      writeInt(m_out, len);
-      buf.readBytes(m_out, len);
+      m_bufs.add(buf);
       m_offsets.put(id, m_offset);
       m_offset += len + 4;
-
-   }
-
-   private void writeInt(OutputStream out, int value) throws IOException {
-      byte b0 = (byte) (value >>> 24);
-      byte b1 = (byte) (value >>> 16);
-      byte b2 = (byte) (value >>> 8);
-      byte b3 = (byte) value;
-
-      m_out.write(b0);
-      m_out.write(b1);
-      m_out.write(b2);
-      m_out.write(b3);
    }
 
    @Override
@@ -211,7 +208,11 @@ public class DefaultBlock implements Block {
       }
 
       DataInputStream in = new DataInputStream(createInputSteam(m_data, COMMPRESS_TYPE));
-      int offset = m_offsets.get(id);
+      Integer offset = m_offsets.get(id);
+
+      if (offset == null) {
+         return null;
+      }
 
       in.skip(offset);
 
@@ -224,5 +225,17 @@ public class DefaultBlock implements Block {
       ByteBuf buf = Unpooled.wrappedBuffer(data);
 
       return buf;
+   }
+
+   private void writeInt(OutputStream out, int value) throws IOException {
+      byte b0 = (byte) (value >>> 24);
+      byte b1 = (byte) (value >>> 16);
+      byte b2 = (byte) (value >>> 8);
+      byte b3 = (byte) value;
+
+      out.write(b0);
+      out.write(b1);
+      out.write(b2);
+      out.write(b3);
    }
 }

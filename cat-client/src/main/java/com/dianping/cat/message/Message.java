@@ -101,6 +101,12 @@ public interface Message {
 	 *           message status. "0" means success, otherwise error code.
 	 */
 	public void setStatus(String status);
+	
+	/**
+	 * Set the message  success status.
+	 * 
+	 */
+	public void setSuccessStatus();
 
 	/**
 	 * Set the message status with exception class name.

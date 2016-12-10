@@ -37,18 +37,28 @@ public class HtmlMessageCodec implements MessageCodec, Initializable {
 
    private static final String VERSION = "HT2"; // HTML version 2 since Mar 20, 2013
 
-   @Inject(HtmlEncodingBufferWriter.ID)
-   private BufferWriter m_writer;
-
-   private String m_logViewPrefix = "/cat/message/";
-
    private BufferHelper m_bufferHelper;
 
    private DateHelper m_dateHelper = new DateHelper();
 
+   private String m_logViewPrefix = "/cat/message/";
+
+   @Inject(HtmlEncodingBufferWriter.ID)
+   private BufferWriter m_writer;
+
+   @Override
+   public MessageTree decode(ByteBuf buf) {
+      throw new UnsupportedOperationException("Not implemented");
+   }
+
    @Override
    public void decode(ByteBuf buf, MessageTree tree) {
       throw new UnsupportedOperationException("HtmlMessageCodec only supports one-way encoding!");
+   }
+
+   @Override
+   public ByteBuf encode(MessageTree tree) {
+      throw new UnsupportedOperationException("Not implemented");
    }
 
    @Override
@@ -327,6 +337,10 @@ public class HtmlMessageCodec implements MessageCodec, Initializable {
       return links;
    }
 
+   @Override
+   public void reset() {
+   }
+
    public void setBufferWriter(BufferWriter writer) {
       m_writer = writer;
       m_bufferHelper = new BufferHelper(m_writer);
@@ -337,21 +351,21 @@ public class HtmlMessageCodec implements MessageCodec, Initializable {
    }
 
    protected static class BufferHelper {
+      private static byte[] CRLF = "\r\n".getBytes();
+
+      private static byte[] NBSP = "&nbsp;".getBytes();
+
       private static byte[] TABLE1 = "<table class=\"logview\">".getBytes();
 
       private static byte[] TABLE2 = "</table>".getBytes();
-
-      private static byte[] TR1 = "<tr>".getBytes();
-
-      private static byte[] TR2 = "</tr>".getBytes();
 
       private static byte[] TD1 = "<td>".getBytes();
 
       private static byte[] TD2 = "</td>".getBytes();
 
-      private static byte[] NBSP = "&nbsp;".getBytes();
+      private static byte[] TR1 = "<tr>".getBytes();
 
-      private static byte[] CRLF = "\r\n".getBytes();
+      private static byte[] TR2 = "</tr>".getBytes();
 
       private BufferWriter m_writer;
 
@@ -548,9 +562,9 @@ public class HtmlMessageCodec implements MessageCodec, Initializable {
    protected static enum Policy {
       DEFAULT,
 
-      WITHOUT_STATUS,
+      WITH_DURATION,
 
-      WITH_DURATION;
+      WITHOUT_STATUS;
 
       public static Policy getByMessageIdentifier(byte identifier) {
          switch (identifier) {

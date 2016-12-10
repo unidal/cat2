@@ -20,80 +20,83 @@ import com.dianping.cat.analysis.TcpSocketReceiver;
 import com.dianping.cat.report.ReportPage;
 
 public class Handler implements PageHandler<Context> {
-	@Inject
-	private JspViewer m_jspViewer;
+   @Inject
+   private JspViewer m_jspViewer;
 
-	@Inject
-	private TcpSocketReceiver m_receiver;
+   @Inject
+   private TcpSocketReceiver m_receiver;
 
-	@Inject(type = MessageConsumer.class)
-	private RealtimeConsumer m_realtimeConsumer;
+   @Inject(type = MessageConsumer.class)
+   private RealtimeConsumer m_realtimeConsumer;
 
-	@Override
-	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "home")
-	public void handleInbound(Context ctx) throws ServletException, IOException {
-	}
+   @Override
+   @PayloadMeta(Payload.class)
+   @InboundActionMeta(name = "home")
+   public void handleInbound(Context ctx) throws ServletException, IOException {
+   }
 
-	@Override
-	@OutboundActionMeta(name = "home")
-	public void handleOutbound(Context ctx) throws ServletException, IOException {
-		Model model = new Model(ctx);
-		Payload payload = ctx.getPayload();
+   @Override
+   @OutboundActionMeta(name = "home")
+   public void handleOutbound(Context ctx) throws ServletException, IOException {
+      Model model = new Model(ctx);
+      Payload payload = ctx.getPayload();
 
-		switch (payload.getAction()) {
-		case THREAD_DUMP:
-			showThreadDump(model, payload);
-			break;
-		case VIEW:
-			break;
-		case CHECKPOINT:
-			m_receiver.destory();
-			m_realtimeConsumer.doCheckpoint();
-			break;
-		default:
-			break;
-		}
+      switch (payload.getAction()) {
+      case THREAD_DUMP:
+         showThreadDump(model, payload);
+         break;
+      case VIEW:
+         break;
+      case CHECKPOINT:
+         // only localhost is allowed to do checkpoint
+         if ("127.0.0.1".equals(ctx.getHttpServletRequest().getRemoteAddr())) {
+            m_receiver.destory();
+            m_realtimeConsumer.doCheckpoint();
+         }
+         break;
+      default:
+         break;
+      }
 
-		model.setAction(payload.getAction());
-		model.setPage(ReportPage.HOME);
-		model.setDomain(payload.getDomain());
-		model.setDate(payload.getDate());
-		m_jspViewer.view(ctx, model);
-	}
+      model.setAction(payload.getAction());
+      model.setPage(ReportPage.HOME);
+      model.setDomain(payload.getDomain());
+      model.setDate(payload.getDate());
+      m_jspViewer.view(ctx, model);
+   }
 
-	private void showThreadDump(Model model, Payload payload) {
-		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-		ThreadInfo[] threads = bean.dumpAllThreads(true, true);
-		StringBuilder sb = new StringBuilder(32768);
-		int index = 1;
+   private void showThreadDump(Model model, Payload payload) {
+      ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+      ThreadInfo[] threads = bean.dumpAllThreads(true, true);
+      StringBuilder sb = new StringBuilder(32768);
+      int index = 1;
 
-		TreeMap<String, ThreadInfo> sortedThreads = new TreeMap<String, ThreadInfo>();
+      TreeMap<String, ThreadInfo> sortedThreads = new TreeMap<String, ThreadInfo>();
 
-		for (ThreadInfo thread : threads) {
-			sortedThreads.put(thread.getThreadName(), thread);
-		}
+      for (ThreadInfo thread : threads) {
+         sortedThreads.put(thread.getThreadName(), thread);
+      }
 
-		sb.append("Threads: ").append(threads.length);
-		sb.append("<pre>");
+      sb.append("Threads: ").append(threads.length);
+      sb.append("<pre>");
 
-		for (ThreadInfo thread : sortedThreads.values()) {
-			sb.append(index++).append(": <a href=\"#").append(thread.getThreadId()).append("\">")
-			      .append(thread.getThreadName()).append("</a>\r\n");
-		}
+      for (ThreadInfo thread : sortedThreads.values()) {
+         sb.append(index++).append(": <a href=\"#").append(thread.getThreadId()).append("\">")
+               .append(thread.getThreadName()).append("</a>\r\n");
+      }
 
-		sb.append("\r\n");
-		sb.append("\r\n");
+      sb.append("\r\n");
+      sb.append("\r\n");
 
-		index = 1;
+      index = 1;
 
-		for (ThreadInfo thread : sortedThreads.values()) {
-			sb.append("<a name=\"").append(thread.getThreadId()).append("\">").append(index++).append(": ").append(thread)
-			      .append("\r\n");
-		}
+      for (ThreadInfo thread : sortedThreads.values()) {
+         sb.append("<a name=\"").append(thread.getThreadId()).append("\">").append(index++).append(": ").append(thread)
+               .append("\r\n");
+      }
 
-		sb.append("</pre>");
+      sb.append("</pre>");
 
-		model.setContent(sb.toString());
-	}
+      model.setContent(sb.toString());
+   }
 }

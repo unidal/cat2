@@ -24,6 +24,7 @@ import org.unidal.lookup.configuration.AbstractResourceConfigurator;
 import org.unidal.lookup.configuration.Component;
 
 import com.dianping.cat.CatClientModule;
+import com.dianping.cat.analyzer.DataUploader;
 import com.dianping.cat.message.internal.DefaultMessageManager;
 import com.dianping.cat.message.internal.DefaultMessageProducer;
 import com.dianping.cat.message.io.DefaultTransportManager;
@@ -45,6 +46,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(CatClientInitializer.class));
 
       all.add(A(MessageIdFactory.class));
+      all.add(A(com.dianping.cat.message.internal.MessageIdFactory.class));
 
       all.add(A(DefaultClientEnvironmentSettings.class));
       all.add(A(DefaultMessagePolicy.class));
@@ -76,6 +78,7 @@ public class ComponentsConfigurator extends AbstractResourceConfigurator {
       all.add(A(DefaultMessageStatistics.class));
 
       all.add(A(StatusUpdateTask.class));
+      all.add(A(DataUploader.class));
 
       return all;
    }

@@ -104,7 +104,7 @@ public class MessageId {
    }
 
    public String getIpAddress() {
-      StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder(16);
       String local = m_ipAddressInHex;
       int length = local.length();
 

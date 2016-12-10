@@ -1,11 +1,10 @@
 package com.dianping.cat.message.spi;
 
+import java.util.Map;
+
 public interface MessageStatistics {
-	public long getBytes();
-
-	public long getOverflowed();
-
-	public long getProduced();
+	
+	public Map<String,Long> getStatistics();
 
 	public void onBytes(int size);
 

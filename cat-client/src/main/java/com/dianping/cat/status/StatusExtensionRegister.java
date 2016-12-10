@@ -5,13 +5,13 @@ import java.util.List;
 
 public class StatusExtensionRegister {
 
+	private List<StatusExtension> m_extensions = new ArrayList<StatusExtension>();
+
+	public static final StatusExtensionRegister s_register = new StatusExtensionRegister();
+
 	public static StatusExtensionRegister getInstance() {
 		return s_register;
 	}
-
-	private List<StatusExtension> m_extensions = new ArrayList<StatusExtension>();
-
-	public static StatusExtensionRegister s_register = new StatusExtensionRegister();
 
 	private StatusExtensionRegister() {
 	}
@@ -22,15 +22,15 @@ public class StatusExtensionRegister {
 		}
 	}
 
-	public void register(StatusExtension monitor) {
+	public void register(StatusExtension extension) {
 		synchronized (this) {
-			m_extensions.add(monitor);
+			m_extensions.add(extension);
 		}
 	}
 
-	public void unregister(StatusExtension monitor) {
+	public void unregister(StatusExtension extension) {
 		synchronized (this) {
-			m_extensions.remove(monitor);
+			m_extensions.remove(extension);
 		}
 	}
 }

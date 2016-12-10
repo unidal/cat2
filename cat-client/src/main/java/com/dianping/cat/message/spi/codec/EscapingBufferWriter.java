@@ -1,7 +1,10 @@
 package com.dianping.cat.message.spi.codec;
 
+import org.unidal.lookup.annotation.Named;
+
 import io.netty.buffer.ByteBuf;
 
+@Named(type = BufferWriter.class, value = EscapingBufferWriter.ID)
 public class EscapingBufferWriter implements BufferWriter {
 	public static final String ID = "escape";
 

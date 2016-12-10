@@ -3,14 +3,7 @@ package com.dianping.cat.message.internal;
 import java.util.Collections;
 import java.util.List;
 
-import com.dianping.cat.message.Event;
-import com.dianping.cat.message.ForkedTransaction;
-import com.dianping.cat.message.Heartbeat;
-import com.dianping.cat.message.Message;
-import com.dianping.cat.message.Metric;
-import com.dianping.cat.message.TaggedTransaction;
-import com.dianping.cat.message.Trace;
-import com.dianping.cat.message.Transaction;
+import com.dianping.cat.message.*;
 
 public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat, ForkedTransaction, TaggedTransaction {
 	TRANSACTION,
@@ -22,6 +15,8 @@ public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat,
 	TRACE,
 
 	HEARTBEAT;
+
+	private static String DEFAULT = "";
 
 	@Override
 	public Transaction addChild(Message message) {
@@ -55,7 +50,7 @@ public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat,
 
 	@Override
 	public Object getData() {
-		return null;
+		return DEFAULT;
 	}
 
 	@Override
@@ -70,40 +65,40 @@ public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat,
 
 	@Override
 	public String getForkedMessageId() {
-		throw new UnsupportedOperationException();
+		return DEFAULT;
 	}
 
 	@Override
 	public String getName() {
-		throw new UnsupportedOperationException();
+		return DEFAULT;
 	}
 
 	public String getParentMessageId() {
-		return null;
+		return DEFAULT;
 	}
 
 	public String getRootMessageId() {
-		return null;
+		return DEFAULT;
 	}
 
 	@Override
 	public String getStatus() {
-		throw new UnsupportedOperationException();
+		return DEFAULT;
 	}
 
 	@Override
 	public String getTag() {
-		throw new UnsupportedOperationException();
+		return DEFAULT;
 	}
 
 	@Override
 	public long getTimestamp() {
-		throw new UnsupportedOperationException();
+		return 0;
 	}
 
 	@Override
 	public String getType() {
-		throw new UnsupportedOperationException();
+		return DEFAULT;
 	}
 
 	@Override
@@ -127,6 +122,10 @@ public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat,
 	}
 
 	@Override
+	public void setDurationInMillis(long duration) {
+	}
+
+	@Override
 	public void setStatus(String status) {
 	}
 
@@ -135,6 +134,11 @@ public enum NullMessage implements Transaction, Event, Metric, Trace, Heartbeat,
 	}
 
 	@Override
+	public void setSuccessStatus() {
+	}
+
+	@Override
 	public void start() {
 	}
+
 }

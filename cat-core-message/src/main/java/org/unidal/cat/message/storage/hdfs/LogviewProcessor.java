@@ -106,7 +106,7 @@ public class LogviewProcessor implements Task, Initializable {
 
 	@Override
 	public String getName() {
-		return "logview-processor";
+		return getClass().getSimpleName();
 	}
 
 	@Override

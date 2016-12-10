@@ -10,10 +10,14 @@ import org.unidal.cat.config.route.entity.RoutePolicy;
 import org.unidal.cat.config.route.entity.ServerNode;
 import org.unidal.helper.Inets;
 
+import com.dianping.cat.message.spi.MessageTree;
+
 public class DefaultClientConfiguration implements ClientConfiguration {
+   private String m_domain;
+
    private RoutePolicy m_policy;
 
-   private String m_domain;
+   private double m_sampleRatio = 1.0;
 
    public DefaultClientConfiguration() {
       m_policy = new RoutePolicy();
@@ -43,6 +47,11 @@ public class DefaultClientConfiguration implements ClientConfiguration {
    @Override
    public long getRefreshInterval() {
       return TimeUnit.MINUTES.toMillis(1); // 1 minute
+   }
+
+   @Override
+   public double getSampleRatio() {
+      return m_sampleRatio;
    }
 
    @Override
@@ -89,6 +98,11 @@ public class DefaultClientConfiguration implements ClientConfiguration {
    }
 
    @Override
+   public boolean isBlocked() {
+      return m_policy.isBlocked();
+   }
+
+   @Override
    public boolean isDumpLockedThread() {
       return m_policy.getDumpLockedThread();
    }
@@ -104,5 +118,10 @@ public class DefaultClientConfiguration implements ClientConfiguration {
 
    public void setEnabled(boolean enabled) {
       m_policy.setEnabled(enabled);
+   }
+
+   @Override
+   public boolean isAtomic(MessageTree tree) {
+      return tree.canDiscard() && false; //TODO && m_atomicTreeParser.isAtomicMessage(tree)
    }
 }

@@ -15,7 +15,6 @@ import org.unidal.lookup.annotation.Named;
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Message;
 import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.internal.DefaultMessageProducer;
 
 @Named(type = RemoteReportStub.class)
 public class DefaultRemoteReportStub implements RemoteReportStub {
@@ -24,8 +23,7 @@ public class DefaultRemoteReportStub implements RemoteReportStub {
 
 	@Override
 	public InputStream getReport(RemoteReportContext ctx, String server) throws IOException {
-		DefaultMessageProducer cat = (DefaultMessageProducer) Cat.getProducer();
-		Transaction t = cat.newTransaction(ctx.getParentTransaction(), "Remote", server);
+		Transaction t = Cat.getProducer().newTransaction(ctx.getParentTransaction(), "Remote", server);
 
 		try {
 			String url = ctx.buildURL(m_configuration.getServerUriPrefix(server));

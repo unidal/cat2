@@ -39,8 +39,6 @@ ToolsTest.class,
 
 CatTest.class,
 
-ApiTest.class,
-
 /* .message */
 
 MessageIdFactoryTest.class,
