@@ -14,6 +14,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -41,16 +42,19 @@ public class ChannelManager implements Task {
 
    private MessageIdFactory m_idFactory;
 
+   // wait for server to startup in server mode
+   private CountDownLatch m_catServerLatch;
+
    private Logger m_logger;
 
    public ChannelManager(Logger logger, List<InetSocketAddress> serverAddresses,
-         ClientConfigurationManager configManager, MessageIdFactory idFactory) {
+         ClientConfigurationManager configManager, MessageIdFactory idFactory, CountDownLatch catServerLatch) {
       m_logger = logger;
       m_configManager = configManager;
       m_idFactory = idFactory;
+      m_catServerLatch = catServerLatch;
 
       EventLoopGroup group = new NioEventLoopGroup(1, new ThreadFactory() {
-
          @Override
          public Thread newThread(Runnable r) {
             Thread t = new Thread(r);
@@ -70,27 +74,28 @@ public class ChannelManager implements Task {
       });
       m_bootstrap = bootstrap;
 
-      List<InetSocketAddress> addresses = m_configManager.getConfig().getServersForTree();
+      if (m_catServerLatch == null) {
+         List<InetSocketAddress> addresses = m_configManager.getConfig().getServersForTree();
 
-      if (addresses.size() > 0) {
-         ChannelHolder holder = initChannel(addresses);
+         if (addresses.size() > 0) {
+            ChannelHolder holder = initChannel(addresses);
 
-         if (holder != null) {
-            m_activeChannelHolder = holder;
+            if (holder != null) {
+               m_activeChannelHolder = holder;
+            } else {
+               m_activeChannelHolder = new ChannelHolder().setServerAddresses(addresses);
+            }
          } else {
-            m_activeChannelHolder = new ChannelHolder();
-            m_activeChannelHolder.setServerAddresses(addresses);
+            ChannelHolder holder = initChannel(serverAddresses);
+
+            if (holder != null) {
+               m_activeChannelHolder = holder;
+            } else {
+               m_activeChannelHolder = new ChannelHolder().setServerAddresses(serverAddresses);
+            }
          }
       } else {
-         ChannelHolder holder = initChannel(serverAddresses);
-
-         if (holder != null) {
-            m_activeChannelHolder = holder;
-         } else {
-            m_activeChannelHolder = new ChannelHolder();
-            m_activeChannelHolder.setServerAddresses(serverAddresses);
-            m_logger.error("error when init cat module due to error config xml in client.xml");
-         }
+         m_activeChannelHolder = new ChannelHolder().setServerAddresses(serverAddresses);
       }
    }
 
@@ -114,7 +119,7 @@ public class ChannelManager implements Task {
          if (channel.isActive() && channel.isOpen()) {
             isActive = true;
          } else {
-            m_logger.warn("channel buf is not active ,current channel " + future.channel().remoteAddress());
+            m_logger.warn("Channel buffer is not active ,current channel " + future.channel().remoteAddress());
          }
       }
 
@@ -125,7 +130,8 @@ public class ChannelManager implements Task {
       Pair<Boolean, List<InetSocketAddress>> pair = serverAddressesChanged();
 
       if (pair.getKey()) {
-         m_logger.info("router config changed :" + pair.getValue());
+         m_logger.info("router config changed: " + pair.getValue());
+
          List<InetSocketAddress> serverAddresses = pair.getValue();
          ChannelHolder newHolder = initChannel(serverAddresses);
 
@@ -159,7 +165,7 @@ public class ChannelManager implements Task {
             int count = m_attempts.incrementAndGet();
 
             if (count % 1000 == 0 || count == 1) {
-               m_logger.warn("channel buf is is close when send msg! Attempts: " + count);
+               m_logger.warn("Channel buffer is close when sending messages! Attempts: " + count);
             }
          }
       }
@@ -173,7 +179,7 @@ public class ChannelManager implements Task {
             SocketAddress address = channel.channel().remoteAddress();
 
             if (address != null) {
-               m_logger.info("close channel " + address);
+               m_logger.info("Close channel " + address);
             }
             channel.channel().close();
          }
@@ -193,7 +199,7 @@ public class ChannelManager implements Task {
    }
 
    private ChannelFuture createChannel(InetSocketAddress address) {
-      m_logger.info("start connect server" + address.toString());
+      m_logger.info("Start connecting to server " + address.toString());
       ChannelFuture future = null;
 
       try {
@@ -208,7 +214,7 @@ public class ChannelManager implements Task {
             return future;
          }
       } catch (Throwable e) {
-         m_logger.error("Error when connect server " + address.getAddress(), e);
+         m_logger.error("Error when connecting to server " + address.getAddress(), e);
 
          if (future != null) {
             closeChannel(future);
@@ -230,7 +236,7 @@ public class ChannelManager implements Task {
 
    @Override
    public String getName() {
-      return "TcpSocketSender-ChannelManager";
+      return getClass().getSimpleName();
    }
 
    private ChannelHolder initChannel(List<InetSocketAddress> addresses) {
@@ -257,7 +263,7 @@ public class ChannelManager implements Task {
                holder.setActiveIndex(i).setIp(hostAddress);
                holder.setServerAddresses(addresses);
 
-               m_logger.info("success when init CAT server, new active holder" + holder.toString());
+               m_logger.info("Success when init CAT server, new active holder " + holder.toString());
                return holder;
             }
          }
@@ -322,6 +328,12 @@ public class ChannelManager implements Task {
 
    @Override
    public void run() {
+      try {
+         m_catServerLatch.await();
+      } catch (InterruptedException e) {
+         return;
+      }
+
       while (m_active && Cat.isEnabled()) {
          // make save message id index asyc
          m_idFactory.saveMark();

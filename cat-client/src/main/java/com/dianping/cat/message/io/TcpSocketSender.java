@@ -9,14 +9,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.codehaus.plexus.context.Context;
+import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.LogEnabled;
 import org.codehaus.plexus.logging.Logger;
 import org.unidal.cat.CatConstant;
 import org.unidal.cat.config.ClientConfigurationManager;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
+import org.unidal.lookup.ContainerHolder;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.lookup.annotation.Named;
 
@@ -37,8 +41,8 @@ import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import com.dianping.cat.status.AbstractCollector;
 import com.dianping.cat.status.StatusExtensionRegister;
 
-@Named
-public class TcpSocketSender implements Task, MessageSender, LogEnabled {
+@Named(type = MessageSender.class)
+public class TcpSocketSender extends ContainerHolder implements Task, MessageSender, LogEnabled {
    private static final int SIZE = 5000;
 
    @Inject(NativeMessageCodec.ID)
@@ -67,11 +71,24 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 
    private AtomicInteger m_sampleCount = new AtomicInteger();
 
+   private CountDownLatch m_catServerLatch;
+
    private static final int MAX_CHILD_NUMBER = 200;
 
    private static final int MAX_DURATION = 1000 * 30;
 
    private static final long HOUR = 1000 * 60 * 60L;
+
+   @Override
+   public void contextualize(Context context) throws ContextException {
+      super.contextualize(context);
+
+      try {
+         m_catServerLatch = (CountDownLatch) context.get("cat.server.latch");
+      } catch (Exception e) {
+         // ignore it
+      }
+   }
 
    @Override
    public void enableLogging(Logger logger) {
@@ -92,7 +109,7 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
    @Override
    public void initialize(List<InetSocketAddress> addresses) {
       if (Cat.isEnabled()) {
-         m_channelManager = new ChannelManager(m_logger, addresses, m_configManager, m_factory);
+         m_channelManager = new ChannelManager(m_logger, addresses, m_configManager, m_factory, m_catServerLatch);
 
          Threads.forGroup(CatConstant.CAT).start(this);
          Threads.forGroup(CatConstant.CAT).start(m_channelManager);
@@ -106,7 +123,6 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
          });
 
          StatusExtensionRegister.getInstance().register(new AbstractCollector() {
-
             @Override
             public String getId() {
                return "cat.status";

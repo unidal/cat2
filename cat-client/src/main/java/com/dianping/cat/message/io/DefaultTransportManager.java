@@ -15,8 +15,8 @@ public class DefaultTransportManager implements TransportManager, Initializable,
    @Inject
    private ClientConfigurationManager m_configManager;
 
-   @Inject
-   private TcpSocketSender m_tcpSocketSender;
+   @Inject(type = MessageSender.class)
+   private MessageSender m_sender;
 
    private Logger m_logger;
 
@@ -27,23 +27,23 @@ public class DefaultTransportManager implements TransportManager, Initializable,
 
    @Override
    public MessageSender getSender() {
-      return m_tcpSocketSender;
+      return m_sender;
    }
 
    @Override
    public void initialize() {
       if (!m_configManager.getConfig().isEnabled()) {
-         m_tcpSocketSender = null;
-         m_logger.warn("CAT was DISABLED or NOTE initialized correctly!");
+         m_sender = null;
+         m_logger.warn("CAT was DISABLED or NOT initialized correctly!");
       } else {
          List<InetSocketAddress> addresses = m_configManager.getConfig().getServersForTree();
 
          m_logger.info("Remote CAT servers: " + addresses);
 
          if (addresses.isEmpty()) {
-            m_logger.error("No active servers found in configuration!");
+            m_logger.error("No active servers found in the configuration!");
          } else {
-            m_tcpSocketSender.initialize(addresses);
+            m_sender.initialize(addresses);
          }
       }
    }

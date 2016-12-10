@@ -66,12 +66,12 @@ public class Cat {
       return CAT.getProducer().getManager().getThreadLocalMessageTree().getMessageId();
    }
 
-   public static boolean isInitialized() {
-      return CAT.m_initialized.get();
+   public static boolean isEnabled() {
+      return CAT.m_enabled.get() && CAT.m_policy != null && CAT.m_policy.isEnabled();
    }
 
-   public static boolean isEnabled() {
-      return CAT.m_policy.isEnabled();
+   public static boolean isInitialized() {
+      return CAT.m_initialized.get();
    }
 
    public static void logError(String message, Throwable cause) {
@@ -100,6 +100,10 @@ public class Cat {
 
    public static Transaction newTransaction(String type, String name) {
       return CAT.getProducer().newTransaction(type, name);
+   }
+
+   public static Transaction newTransaction(Transaction parent, String type, String name) {
+      return CAT.getProducer().newTransaction(parent, type, name);
    }
 
    public static void setProperty(String key, Object value) {

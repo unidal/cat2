@@ -122,6 +122,6 @@ public class DefaultClientConfiguration implements ClientConfiguration {
 
    @Override
    public boolean isAtomic(MessageTree tree) {
-      return tree.canDiscard() && true; //TODO && m_atomicTreeParser.isAtomicMessage(tree)
+      return tree.canDiscard() && false; //TODO && m_atomicTreeParser.isAtomicMessage(tree)
    }
 }

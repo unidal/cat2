@@ -204,12 +204,12 @@
 					<role>org.unidal.cat.config.ClientConfigurationManager</role>
 				</requirement>
 				<requirement>
-					<role>com.dianping.cat.message.io.TcpSocketSender</role>
+					<role>com.dianping.cat.message.io.MessageSender</role>
 				</requirement>
 			</requirements>
 		</component>
 		<component>
-			<role>com.dianping.cat.message.io.TcpSocketSender</role>
+			<role>com.dianping.cat.message.io.MessageSender</role>
 			<implementation>com.dianping.cat.message.io.TcpSocketSender</implementation>
 			<requirements>
 				<requirement>

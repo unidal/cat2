@@ -32,15 +32,10 @@ public class NativeMessageCodec implements MessageCodec {
       Context ctx = new Context(tree);
 
       Codec.HEADER.decode(ctx, buf);
-
-      Message msg = decodeMessage(ctx, buf);
-
-      tree.setMessage(msg);
+      decodeMessage(ctx, buf);
    }
 
-   private Message decodeMessage(Context ctx, ByteBuf buf) {
-      Message msg = null;
-
+   private void decodeMessage(Context ctx, ByteBuf buf) {
       while (buf.readableBytes() > 0) {
          char ch = ctx.readId(buf);
 
@@ -49,7 +44,7 @@ public class NativeMessageCodec implements MessageCodec {
             Codec.TRANSACTION_START.decode(ctx, buf);
             break;
          case 'T':
-            msg = Codec.TRANSACTION_END.decode(ctx, buf);
+            Codec.TRANSACTION_END.decode(ctx, buf);
             break;
          case 'E':
             Message e = Codec.EVENT.decode(ctx, buf);
@@ -75,8 +70,6 @@ public class NativeMessageCodec implements MessageCodec {
             throw new RuntimeException(String.format("Unsupported message type(%s).", ch));
          }
       }
-
-      return msg;
    }
 
    @Override
@@ -360,7 +353,9 @@ public class NativeMessageCodec implements MessageCodec {
       }
 
       public void addChild(Message msg) {
-         if (!m_parents.isEmpty()) {
+         if (m_parents.isEmpty()) {
+            m_tree.setMessage(msg);
+         } else {
             m_parents.peek().addChild(msg);
          }
       }
@@ -381,9 +376,7 @@ public class NativeMessageCodec implements MessageCodec {
       }
 
       public void pushTransaction(DefaultTransaction t) {
-         if (!m_parents.isEmpty()) {
-            m_parents.peek().addChild(t);
-         }
+         addChild(t);
 
          m_parents.push(t);
       }

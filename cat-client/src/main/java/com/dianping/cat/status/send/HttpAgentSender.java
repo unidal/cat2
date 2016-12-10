@@ -61,7 +61,7 @@ public class HttpAgentSender {
 	}
 
 	private String buildPostParam(List<Item> list) {
-		StringBuilder data = new StringBuilder();
+		StringBuilder data = new StringBuilder(1024);
 		String tag = m_config.getTag();
 		int step = m_config.getStep();
 
@@ -184,7 +184,7 @@ public class HttpAgentSender {
 				}
 			}
 		});
-		m_thread.setName("cat-local-http-send");
+		m_thread.setName(getClass().getSimpleName());
 		m_thread.setDaemon(true);
 		m_running = true;
 		m_thread.start();
@@ -203,5 +203,4 @@ public class HttpAgentSender {
 			m_mills = mills;
 		}
 	}
-
 }
